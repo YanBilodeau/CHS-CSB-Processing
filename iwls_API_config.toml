@@ -1,0 +1,33 @@
+[IWLS.API.TimeSeries]
+# Liste des séries temporelles à récupérer selon leur priorité d'utilisation.
+priority = ["wlo", "wlp"]
+# Intervalle de temps maximale sans données avant de déclencher le remplissage de données manquantes
+# avec des valeurs de la série temporelle suivante. Laisser vide "" pour désactiver.
+# {format "<number> <minutes|hours>"}
+max_time_gap = "15 minutes"
+threeshold_interpolation-filling = "3 hours"
+
+[IWLS.API.PROFILE]
+# {"dev", "prod", "public"}
+active = "public"
+
+[IWLS.API.ENVIRONMENT.dev]
+name = "DEV"
+endpoint = "EndpointPrivateDev"
+# Nombre maximal d'appels par période de temps
+calls = 30
+# Période de temps en secondes
+period = 1
+
+[IWLS.API.ENVIRONMENT.prod]
+name = "PROD"
+endpoint = "EndpointPrivateProd"
+calls = 20
+period = 1
+
+[IWLS.API.ENVIRONMENT.public]
+name = "PUBLIC"
+endpoint = "EndpointPublic"
+calls = 20
+period = 1
+
