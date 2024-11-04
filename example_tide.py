@@ -240,7 +240,7 @@ def main():
         export_dataframe_to_csv(
             dataframe=wl_combined,
             output_path=EXPORT /
-                f"{station_title}, {from_time} - {to_time}.csv".replace(":", "-")
+                f"{station_title} ({from_time} - {to_time}).csv".replace(":", "-")
 
         )
 
