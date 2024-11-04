@@ -99,9 +99,9 @@ def identify_data_gaps(
     """
     Identifie les périodes de données manquantes.
 
-    :param wl_dataframe: (pd.DataFrame) DataFrame contenant les données.
+    :param wl_dataframe: (pd.DataFrame[TimeSerieDataSchema]) DataFrame contenant les données.
     :param filling_time_gap: (str) Intervalle de temps pour combler les données manquantes.
-    :return: (pd.DataFrame) Périodes de données manquantes.
+    :return: (pd.DataFrame[TimeSerieDataSchema]) Périodes de données manquantes.
     """
     LOGGER.debug(
         f"Identification des périodes de données manquantes de plus de {filling_time_gap}."
@@ -176,10 +176,10 @@ def fill_data_gaps(
     """
     Permet de remplir les périodes de données manquantes.
 
-    :param gaps_dataframe: (pd.DataFrame) DataFrame contenant les périodes de données manquantes.
-    :param wl_dataframe: (pd.DataFrame) DataFrame contenant les données à ajouter.
-    :param wl_combined_dataframe: (pd.DataFrame) DataFrame contenant les données combinées.
-    :return: (pd.DataFrame) DataFrame contenant les données ajoutées au données combinées.
+    :param gaps_dataframe: (pd.DataFrame[TimeSerieDataSchema]) DataFrame contenant les périodes de données manquantes.
+    :param wl_dataframe: (pd.DataFrame[TimeSerieDataSchema]) DataFrame contenant les données à ajouter.
+    :param wl_combined_dataframe: (pd.DataFrame[TimeSerieDataSchema]) DataFrame contenant les données combinées.
+    :return: (pd.DataFrame[TimeSerieDataSchema]) DataFrame contenant les données ajoutées au données combinées.
     """
     LOGGER.debug("Remplissage des données manquantes.")
 
@@ -240,10 +240,10 @@ def clean_time_series_data(
     """
     Nettoie les données de la série temporelle.
 
-    :param wl_data: (pd.DataFrame) Données de la série temporelle.
+    :param wl_data: (pd.DataFrame[TimeSerieDataSchema]) Données de la série temporelle.
     :param from_time: (str) Date de début.
     :param to_time: (str) Date de fin.
-    :return: (pd.DataFrame) Données de la série temporelle nettoyées.
+    :return: (pd.DataFrame[TimeSerieDataSchema]) Données de la série temporelle nettoyées.
     """
     LOGGER.debug(
         "Nettoyage des données de la série temporelle et validation du datetime de début et de fin."
@@ -275,7 +275,7 @@ def get_time_series_data(
     :param from_time: (str) Date de début.
     :param to_time: (str) Date de fin.
     :param time_serie_code: (TimeSeriesProtocol) Série temporelle.
-    :return: (pd.DataFrame | None) Données de la série temporelle.
+    :return: (pd.DataFrame[TimeSerieDataSchema] | None) Données de la série temporelle.
     """
     wl_data: pd.DataFrame[TimeSerieDataSchema] = (
         stations_handler.get_time_series_dataframe(
@@ -304,8 +304,9 @@ def process_gaps(
 
     :param wl_combined: (pd.DataFrame) DataFrame contenant les données combinées.
     :param wl_data: (pd.DataFrame) DataFrame contenant les données.
-    :param filling_time_gap:
-    :return
+    :param filling_time_gap: (str) Intervalle de temps pour combler les données manquantes.
+    :return: (tuple[pd.DataFrame[TimeSerieDataSchema], pd.DataFrame[TimeSerieDataSchema]]) Données de la série
+                                temporelle combinées et les périodes de données manquantes.
     """
 
     gaps: pd.DataFrame[TimeSerieDataSchema] = identify_data_gaps(
@@ -349,8 +350,8 @@ def get_water_level_data(
     :param from_time: (str) Date de début.
     :param to_time: (str) Date de fin.
     :param time_series_priority: (Collection[TimeSeriesProtocol]) Liste des séries temporelles à récupérer en ordre de priorité.
-    :param max_time_gap: (str) Intervalle de temps maximale permise.
-    :return: (pd.DataFrame) Données de niveau d'eau combinées.
+    :param max_time_gap: (str) Intervalle de temps maximal permis.
+    :return: (pd.DataFrame[TimeSerieDataSchema]) Données de niveau d'eau combinées.
     """
 
     def get_empty_dataframe() -> pd.DataFrame:
