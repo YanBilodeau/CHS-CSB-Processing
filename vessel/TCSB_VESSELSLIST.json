@@ -1,0 +1,267 @@
+[
+  {
+    "id": "0001",
+    "logger_id": "Frosti",
+    "axis_convention": "CARIS",
+    "nav": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "x": 0.000,
+        "y": 0.000,
+        "z": 0.000
+      },
+      {
+        "time_stamp": "2024-09-25T00:00:00Z",
+        "x": 0.000,
+        "y": 0.000,
+        "z": 0.400
+      }
+    ],
+    "motion": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "x": 0.000,
+        "y": 0.000,
+        "z": 0.000
+      }
+    ],
+    "sounder": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "x": 0.000,
+        "y": 0.000,
+        "z": 0.000
+      }
+    ],
+    "waterline": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "z": -3.000
+      },
+      {
+        "time_stamp": "2022-09-25T00:00:00Z",
+        "z": -4.000
+      }
+    ],
+    "ssp_applied": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "ssp": "False"
+      }
+    ],
+    "attribute": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "pltfrm": "Frosti",
+        "sdghdw": "1:found by Echo sounder",
+        "poshdw": "10",
+        "bureau": "",
+        "restrn": "1"
+      }
+    ]
+  },
+  {
+    "id": "0002",
+    "logger_id": "CHS1",
+    "axis_convention": "CARIS",
+    "nav": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "x": 0.000,
+        "y": 0.000,
+        "z": 0.000
+      }
+    ],
+    "motion": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "x": 0.620,
+        "y": 1.98,
+        "z": 0.850
+      }
+    ],
+    "sounder": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "x": -0.10,
+        "y": -2.70,
+        "z": 2.63
+      }
+    ],
+    "waterline": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "z": 1.88
+      }
+    ],
+    "ssp_applied": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "ssp": "False"
+      }
+    ],
+    "attribute": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "pltfrm": "CHS1_OFM_Pangnirtung",
+        "sdghdw": "1:found by Echo sounder",
+        "poshdw": "10",
+        "bureau": "",
+        "restrn": "1"
+      }
+    ]
+  },
+  {
+    "id": "0006",
+    "logger_id": "CHS5",
+    "axis_convention": "CARIS",
+    "nav": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "x": 0.000,
+        "y": -3.000,
+        "z": 0.000
+      }
+    ],
+    "motion": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "x": 0.000,
+        "y": 0.000,
+        "z": 0.000
+      }
+    ],
+    "sounder": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "x": 0.000,
+        "y": 0.000,
+        "z": 0.000
+      }
+    ],
+    "waterline": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "z": -2.280
+      }
+    ],
+    "ssp_applied": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "ssp": "False"
+      }
+    ],
+    "attribute": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "pltfrm": "CHS5_OFM_Nuliajuk",
+        "sdghdw": "1:found by Echo sounder",
+        "poshdw": "10",
+        "bureau": "",
+        "restrn": "1"
+      }
+    ]
+  },
+  {
+    "id": "0023",
+    "logger_id": "RDL",
+    "axis_convention": "CARIS",
+    "nav": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "x": 0.000,
+        "y": 0.000,
+        "z": 0.000
+      }
+    ],
+    "motion": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "x": 0.000,
+        "y": 0.000,
+        "z": 0.000
+      }
+    ],
+    "sounder": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "x": 0.150,
+        "y": -1.730,
+        "z": 1.060
+      }
+    ],
+    "waterline": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "z": 0.91
+      }
+    ],
+    "ssp_applied": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "ssp": "False"
+      }
+    ],
+    "attribute": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "pltfrm": "RDL_Jupiter_Actisense03_2024",
+        "sdghdw": "1:found by Echo sounder",
+        "poshdw": "10",
+        "bureau": "",
+        "restrn": "1"
+      }
+    ]
+  },
+  {
+    "id": "0024",
+    "logger_id": "ThaiDene",
+    "axis_convention": "CARIS",
+    "nav": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "x": 0.000,
+        "y": 0.000,
+        "z": 0.000
+      }
+    ],
+    "motion": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "x": 0.000,
+        "y": 0.000,
+        "z": 0.000
+      }
+    ],
+    "sounder": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "x": 0.000,
+        "y": 0.000,
+        "z": 0.000
+      }
+    ],
+    "waterline": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "z": 0.000
+      }
+    ],
+    "ssp_applied": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "ssp": "False"
+      }
+    ],
+    "attribute": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "pltfrm": "ThaiDene_ParksCanada",
+        "sdghdw": "1:found by Echo sounder",
+        "poshdw": "10",
+        "bureau": "",
+        "restrn": "1"
+      }
+    ]
+  }
+]
