@@ -260,7 +260,7 @@ def main():
     export_geodataframe_to_geojson(data, EXPORT / "random.geojson")
 
     # Get the polygon of the Voronoi diagram that intersects with the random points
-    interseted_data = get_polygon_by_geometry(gdf_voronoi=gdf_voronoi, geometry=data)
+    interseted_data: gpd.GeoDataFrame[VoronoiSchema] = get_polygon_by_geometry(gdf_voronoi=gdf_voronoi, geometry=data)
     export_geodataframe_to_geojson(interseted_data, EXPORT / "interseted.geojson")
 
     # todo faire l'interpotlation gap des données manquantes pour les courtes périodes

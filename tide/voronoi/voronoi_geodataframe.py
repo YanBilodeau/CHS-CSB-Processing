@@ -188,7 +188,7 @@ def get_polygon_by_geometry(
 
     :param gdf_voronoi: (gpd.GeoDataFrame[VoronoiSchema]) Le GeoDataFrame des polygones de Voronoi.
     :param geometry: (Geometry) La géométrie a utilisé pour l'intersection.
-    :return: (gpd.GeoDataFrame) Le GeoDataFrame des polygones de Voronoi qui intersectent les géométries.
+    :return: (gpd.GeoDataFrame[VoronoiSchema]) Le GeoDataFrame des polygones de Voronoi qui intersectent les géométries.
     """
     LOGGER.debug(
         "Récupération des polygones de Voronoi qui intersectent les géométries."
@@ -201,7 +201,7 @@ def get_polygon_by_geometry(
         dask_gdf_voronoi, dask_geometry, how="inner", predicate="intersects"
     )
     result_computed: gpd.GeoDataFrame = result.compute()
-    result_unique: gpd.GeoDataFrame = result_computed.drop_duplicates(subset=["id"]).reset_index(
+    result_unique: gpd.GeoDataFrame[VoronoiSchema] = result_computed.drop_duplicates(subset=["id"]).reset_index(
         drop=True
     )
 
