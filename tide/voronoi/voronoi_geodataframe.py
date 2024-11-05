@@ -194,16 +194,18 @@ def get_polygon_by_geometry(
         "Récupération des polygones de Voronoi qui intersectent les géométries."
     )
 
-    dask_gdf_voronoi: dgpd.GeoDataFrame[VoronoiSchema] = dgpd.from_geopandas(gdf_voronoi, npartitions=12)
+    dask_gdf_voronoi: dgpd.GeoDataFrame[VoronoiSchema] = dgpd.from_geopandas(
+        gdf_voronoi, npartitions=12
+    )
     dask_geometry: dgpd.GeoDataFrame = dgpd.from_geopandas(geometry, npartitions=12)
 
     result: dgpd.GeoDataFrame = dgpd.sjoin(
         dask_gdf_voronoi, dask_geometry, how="inner", predicate="intersects"
     )
     result_computed: gpd.GeoDataFrame = result.compute()
-    result_unique: gpd.GeoDataFrame[VoronoiSchema] = result_computed.drop_duplicates(subset=["id"]).reset_index(
-        drop=True
-    )
+    result_unique: gpd.GeoDataFrame[VoronoiSchema] = result_computed.drop_duplicates(
+        subset=["id"]
+    ).reset_index(drop=True)
 
     return result_unique[gdf_voronoi.columns]
 

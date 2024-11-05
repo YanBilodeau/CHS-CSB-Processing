@@ -241,9 +241,8 @@ def main():
         # Export the water level data to a CSV file
         export_dataframe_to_csv(
             dataframe=wl_combined,
-            output_path=EXPORT /
-                f"{station_title} ({from_time} - {to_time}).csv".replace(":", "-")
-
+            output_path=EXPORT
+            / f"{station_title} ({from_time} - {to_time}).csv".replace(":", "-"),
         )
 
         wl_combineds.append(wl_combined)

@@ -8,7 +8,7 @@ from iwls_api_request import (
     HandlerType,
     EndpointPublic,
     # RetryAdapterConfig,
-    SessionType
+    SessionType,
 )
 
 LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station")
@@ -26,29 +26,28 @@ def main():
         period=1,  # Period in seconds
         # Retry adapter configuration. Allow to retry the call if the http status code is in the list of status code.
         # If True, a RetryAdapterConfig object is created with the following parameters:
-            # max_retry: Optional[int] = 5
-            # backoff_factor: Optional[int] = 2
-            # status_code: Optional[Collection[int]] = field(default=(429, 500, 502, 503, 504))
+        # max_retry: Optional[int] = 5
+        # backoff_factor: Optional[int] = 2
+        # status_code: Optional[Collection[int]] = field(default=(429, 500, 502, 503, 504))
         # A custom RetryAdapterConfig object can be passed as parameters
-        retry_adapter_config=True, # Can be a boolean or a custom RetryAdapterConfig object
+        retry_adapter_config=True,  # Can be a boolean or a custom RetryAdapterConfig object
         # Session type configuration. Allow to choose the type of session to use.
         # Choice of session type (SessionType.REQUESTS or SessionType.CACHE).
         # If a SessionType.CACHE is chosen, a CachedSessionConfig is created with the following parameters:
-            # db: Optional[Path] = field(default=Path(__file__).resolve().parent / ".cache/IWLS")
-            # backend: Optional[str] = field(default="sqlite")
-            # allowable_methods: Optional[tuple[str]] = field(default=("GET",))
-            # expire_after: Optional[int] = field(default=600)
-            # timeout: Optional[int] = field(default=5)
+        # db: Optional[Path] = field(default=Path(__file__).resolve().parent / ".cache/IWLS")
+        # backend: Optional[str] = field(default="sqlite")
+        # allowable_methods: Optional[tuple[str]] = field(default=("GET",))
+        # expire_after: Optional[int] = field(default=600)
+        # timeout: Optional[int] = field(default=5)
         # A custom CachedSessionConfig object can be passed as parameters
-        session_type_config=SessionType.REQUESTS, # Can be a SessionType object or a CachedSessionConfig object
+        session_type_config=SessionType.REQUESTS,  # Can be a SessionType object or a CachedSessionConfig object
     )
 
     stations: Response = api.get_all_stations()  # Get all stations
 
-    station: Response = api.get_all_stations(code="02985") # Get a specific station.
+    station: Response = api.get_all_stations(code="02985")  # Get a specific station.
     # The code is the station code. See https://www.tides.gc.ca/en/stations for the station code.
     LOGGER.info(station)
-
 
     if not station.is_ok:
         LOGGER.warning("No station found.")
@@ -57,25 +56,29 @@ def main():
     station_id: str = station.data[0].get("id")  # Get the station id
     LOGGER.info(f"Station id : {station_id}")
 
-    station_metadata: Response = api.get_metadata_station(station=station_id)  # Get the station metadata
+    station_metadata: Response = api.get_metadata_station(
+        station=station_id
+    )  # Get the station metadata
     LOGGER.info(f"Station metadata : {station_metadata.data}")
 
     from_time: str = "2024-04-27T00:00:00Z"  # Start date in UTC ISO 8601 format
     to_time: str = "2024-04-28T00:00:00Z"  # End date in UTC ISO 8601 format
 
     wlo: Response = api.get_time_serie_block_data(
-        time_serie_code=TimeSeries.WLO, # TimeSeries.WLP for water level predictions, TimeSeries.WLO for water level observations, etc.
+        time_serie_code=TimeSeries.WLO,  # TimeSeries.WLP for water level predictions, TimeSeries.WLO for water level observations, etc.
         station=station_id,
         from_time=from_time,
         to_time=to_time,
     )
     LOGGER.info(wlo)
 
-    wlo_and_wlp: dict[TimeSeries, Response] = api.get_time_series_data(  # Get multiple time series data
-        time_series=[TimeSeries.WLO, TimeSeries.WLP],  # List of TimeSeries
-        station=station_id,
-        from_time=from_time,
-        to_time=to_time,
+    wlo_and_wlp: dict[TimeSeries, Response] = (
+        api.get_time_series_data(  # Get multiple time series data
+            time_series=[TimeSeries.WLO, TimeSeries.WLP],  # List of TimeSeries
+            station=station_id,
+            from_time=from_time,
+            to_time=to_time,
+        )
     )
     LOGGER.info(wlo_and_wlp)
 
@@ -90,5 +93,5 @@ def main():
     # All API endpoints are available in this library. See the documentation for more information.
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -93,9 +93,7 @@ def extend_rows_to_deltatime(
     return non_nan_dataframe
 
 
-def identify_data_gaps(
-    wl_dataframe: pd.DataFrame, max_time_gap: str
-) -> pd.DataFrame:
+def identify_data_gaps(wl_dataframe: pd.DataFrame, max_time_gap: str) -> pd.DataFrame:
     """
     Identifie les périodes de données manquantes.
 
@@ -324,10 +322,12 @@ def process_gaps(
 
     LOGGER.debug(get_data_gaps_message(gaps=gaps))
 
-    gaps_to_interpolate: pd.DataFrame[TimeSerieDataSchema] = gaps[gaps["data_time_gap"] < pd.Timedelta(threeshold_interpolation_filling)
+    gaps_to_interpolate: pd.DataFrame[TimeSerieDataSchema] = gaps[
+        gaps["data_time_gap"] < pd.Timedelta(threeshold_interpolation_filling)
     ]
 
-    gaps_to_fill: pd.DataFrame[TimeSerieDataSchema] = gaps[gaps["data_time_gap"] >= pd.Timedelta(threeshold_interpolation_filling)
+    gaps_to_fill: pd.DataFrame[TimeSerieDataSchema] = gaps[
+        gaps["data_time_gap"] >= pd.Timedelta(threeshold_interpolation_filling)
     ]
 
     if wl_data is None:
