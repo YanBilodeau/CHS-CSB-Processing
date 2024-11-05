@@ -72,10 +72,10 @@ def get_api_config(config_file: Optional[Path] = CONFIG_FILE) -> IWLSAPIConfig:
         public=environments["public"] if "public" in environments else None,
         time_series=TimeSeriesPriority(
             priority=config_data["IWLS"]["API"]["TimeSeries"]["priority"],
-            max_time_gap=config_data["IWLS"]["API"]["TimeSeries"]["max_time_gap"],
-            threeshold_interpolation_filling=config_data["IWLS"]["API"]["TimeSeries"][
-                "threeshold_interpolation-filling"
-            ],
+            max_time_gap=config_data["IWLS"]["API"]["TimeSeries"].get("max_time_gap"),
+            threeshold_interpolation_filling=config_data["IWLS"]["API"][
+                "TimeSeries"
+            ].get("threeshold_interpolation-filling"),
         ),
         profile=APIProfile(**config_data["IWLS"]["API"]["PROFILE"]),
     )
