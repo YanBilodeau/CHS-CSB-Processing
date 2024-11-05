@@ -181,7 +181,9 @@ def fill_data_gaps(
     :param wl_combined_dataframe: (pd.DataFrame[TimeSerieDataSchema]) DataFrame contenant les données combinées.
     :return: (pd.DataFrame[TimeSerieDataSchema]) DataFrame contenant les données ajoutées au données combinées.
     """
-    LOGGER.debug("Remplissage des données manquantes.")
+    LOGGER.debug(
+        f"Remplissage des données manquantes à partir de la série temporelle {wl_dataframe['time_serie_code'].unique()}."
+    )
 
     gaps_dataframe_list: list[pd.DataFrame[TimeSerieDataSchema]] = (
         get_gaps_dataframe_list(
@@ -246,7 +248,7 @@ def clean_time_series_data(
     :return: (pd.DataFrame[TimeSerieDataSchema]) Données de la série temporelle nettoyées.
     """
     LOGGER.debug(
-        "Nettoyage des données de la série temporelle et validation du datetime de début et de fin."
+        "Nettoyage des données de la série temporelle et validation du temps de début et de fin."
     )
 
     wl_data.dropna(subset=["value"], inplace=True)
@@ -340,7 +342,7 @@ def get_water_level_data(
     from_time: str,
     to_time: str,
     time_series_priority: Collection[TimeSeriesProtocol],
-    max_time_gap: str,
+    max_time_gap: str | None,
 ) -> pd.DataFrame:
     """
     Récupère et traite les séries temporelles de niveau d'eau pour une station donnée.
@@ -350,7 +352,7 @@ def get_water_level_data(
     :param from_time: (str) Date de début.
     :param to_time: (str) Date de fin.
     :param time_series_priority: (Collection[TimeSeriesProtocol]) Liste des séries temporelles à récupérer en ordre de priorité.
-    :param max_time_gap: (str) Intervalle de temps maximal permis.
+    :param max_time_gap: (str | None) Intervalle de temps maximal permis.
     :return: (pd.DataFrame[TimeSerieDataSchema]) Données de niveau d'eau combinées.
     """
 
@@ -374,6 +376,12 @@ def get_water_level_data(
             )
             continue
 
+        if max_time_gap is None:
+            LOGGER.debug(
+                f"L'interpolation et le remplissage des données manquantes est désactivée pour la station {station_id}."
+            )
+            return wl_data
+
         wl_combined, gaps = process_gaps(
             wl_combined=wl_data if wl_combined.empty else wl_combined,
             wl_data=wl_data if index != 0 else None,
@@ -381,13 +389,13 @@ def get_water_level_data(
         )
         if gaps.empty:
             LOGGER.debug(
-                f"Aucune donnée manquante avec les séries temporelles: {time_series_priority[:index + 1]}."
+                f"Aucune donnée manquante pour la station {station_id} avec les séries temporelles: {time_series_priority[:index + 1]}."
             )
             break
 
     else:
         LOGGER.debug(
-            f"Toutes les séries temporelles ont été traitées: {time_series_priority}."
+            f"Toutes les séries temporelles disponibles pour la station {station_id} ont été traitées: {time_series_priority}."
         )
 
     return wl_combined
