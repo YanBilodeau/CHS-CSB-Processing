@@ -5,6 +5,8 @@ priority = ["wlo", "wlp"]
 # avec des valeurs de la série temporelle suivante. Laisser vide "" pour désactiver.
 # {format "<number> <minutes|hours>"}
 max_time_gap = "15 minutes"
+# Seuil en dessous duquel les données manquantes sont interpolées et au dessus desquelles elles sont remplies par
+# la time serie suivante.
 threeshold_interpolation-filling = "3 hours"
 
 [IWLS.API.PROFILE]
