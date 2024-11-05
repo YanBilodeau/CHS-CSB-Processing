@@ -380,6 +380,7 @@ def get_water_level_data(
             LOGGER.debug(
                 f"L'interpolation et le remplissage des données manquantes est désactivée pour la station {station_id}."
             )
+
             return wl_data
 
         wl_combined, gaps = process_gaps(
