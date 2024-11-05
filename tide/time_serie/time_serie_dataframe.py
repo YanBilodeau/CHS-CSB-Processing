@@ -94,17 +94,17 @@ def extend_rows_to_deltatime(
 
 
 def identify_data_gaps(
-    wl_dataframe: pd.DataFrame, filling_time_gap: str
+    wl_dataframe: pd.DataFrame, max_time_gap: str
 ) -> pd.DataFrame:
     """
     Identifie les périodes de données manquantes.
 
     :param wl_dataframe: (pd.DataFrame[TimeSerieDataSchema]) DataFrame contenant les données.
-    :param filling_time_gap: (str) Intervalle de temps pour combler les données manquantes.
+    :param max_time_gap: (str) Intervalle de temps pour combler les données manquantes.
     :return: (pd.DataFrame[TimeSerieDataSchema]) Périodes de données manquantes.
     """
     LOGGER.debug(
-        f"Identification des périodes de données manquantes de plus de {filling_time_gap}."
+        f"Identification des périodes de données manquantes de plus de {max_time_gap}."
     )
 
     first_row, last_row = get_first_and_last_rows(wl_dataframe=wl_dataframe)
@@ -118,7 +118,7 @@ def identify_data_gaps(
     non_nan_dataframe["data_time_gap"] = non_nan_dataframe["event_date"].diff()
 
     gaps_dataframe: pd.DataFrame[TimeSerieDataSchema] = non_nan_dataframe[
-        non_nan_dataframe["data_time_gap"] > pd.Timedelta(filling_time_gap)
+        non_nan_dataframe["data_time_gap"] > pd.Timedelta(max_time_gap)
     ]
 
     return gaps_dataframe
@@ -296,7 +296,7 @@ def get_time_series_data(
 
 def process_gaps(
     wl_combined: pd.DataFrame,
-    filling_time_gap: str,
+    max_time_gap: str,
     wl_data: Optional[pd.DataFrame] = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
@@ -304,14 +304,14 @@ def process_gaps(
 
     :param wl_combined: (pd.DataFrame) DataFrame contenant les données combinées.
     :param wl_data: (pd.DataFrame) DataFrame contenant les données.
-    :param filling_time_gap: (str) Intervalle de temps pour combler les données manquantes.
+    :param max_time_gap: (str) Intervalle de temps maximal permis.
     :return: (tuple[pd.DataFrame[TimeSerieDataSchema], pd.DataFrame[TimeSerieDataSchema]]) Données de la série
                                 temporelle combinées et les périodes de données manquantes.
     """
 
     gaps: pd.DataFrame[TimeSerieDataSchema] = identify_data_gaps(
         wl_dataframe=wl_combined,
-        filling_time_gap=filling_time_gap,
+        max_time_gap=max_time_gap,
     )
 
     if gaps.empty:
@@ -377,7 +377,7 @@ def get_water_level_data(
         wl_combined, gaps = process_gaps(
             wl_combined=wl_data if wl_combined.empty else wl_combined,
             wl_data=wl_data if index != 0 else None,
-            filling_time_gap=max_time_gap,
+            max_time_gap=max_time_gap,
         )
         if gaps.empty:
             LOGGER.debug(
