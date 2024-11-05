@@ -220,6 +220,8 @@ def main():
             # data for the time series wlo will be retrieved first. If the gap between two consecutive
             # data points is greater than 1 hour, the data for the time series wlp will be retrieved to fill the gap.
             max_time_gap=iwls_config.time_series.max_time_gap,
+            # Threshold for the interpolation versus filling of the gaps in the data.
+            threeshold_interpolation_filling=iwls_config.time_series.threeshold_interpolation_filling,
         )
 
         if wl_combined.empty:
@@ -248,20 +250,20 @@ def main():
         titles.append(station_title)
 
     # Plot the water level data for each station
-    plot_time_series_dataframe(
-        dataframes=wl_combineds,
-        titles=titles,
-        show_plot=True, # Show the plot in a web browser
-        output_path=EXPORT / "WaterLevel.html", # Export the plot to an HTML file
-    )
+    # plot_time_series_dataframe(
+    #     dataframes=wl_combineds,
+    #     titles=titles,
+    #     show_plot=True, # Show the plot in a web browser
+    #     output_path=EXPORT / "WaterLevel.html", # Export the plot to an HTML file
+    # )
 
     # Create a GeoDataFrame with random points
-    data: gpd.GeoDataFrame = create_random_points_geodataframe(1_000_000)
-    export_geodataframe_to_geojson(data, EXPORT / "random.geojson")
+    # data: gpd.GeoDataFrame = create_random_points_geodataframe(1_000_000)
+    # export_geodataframe_to_geojson(data, EXPORT / "random.geojson")
 
     # Get the polygon of the Voronoi diagram that intersects with the random points
-    interseted_data: gpd.GeoDataFrame[VoronoiSchema] = get_polygon_by_geometry(gdf_voronoi=gdf_voronoi, geometry=data)
-    export_geodataframe_to_geojson(interseted_data, EXPORT / "interseted.geojson")
+    # interseted_data: gpd.GeoDataFrame[VoronoiSchema] = get_polygon_by_geometry(gdf_voronoi=gdf_voronoi, geometry=data)
+    # export_geodataframe_to_geojson(interseted_data, EXPORT / "interseted.geojson")
 
     # todo faire l'interpotlation gap des données manquantes pour les courtes périodes
 

@@ -299,14 +299,17 @@ def get_time_series_data(
 def process_gaps(
     wl_combined: pd.DataFrame,
     max_time_gap: str,
+    threeshold_interpolation_filling: str,
     wl_data: Optional[pd.DataFrame] = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Identifie et comble les données manquantes.
 
     :param wl_combined: (pd.DataFrame) DataFrame contenant les données combinées.
-    :param wl_data: (pd.DataFrame) DataFrame contenant les données.
+    :param wl_data: (pd.DataFrame) DataFrame contenant les données à ajouter aux données combinées.
     :param max_time_gap: (str) Intervalle de temps maximal permis.
+    :param threeshold_interpolation_filling: (str) Seuil de temps en dessous duquel les données manquantes sont interpolées
+                                                        ou remplies.
     :return: (tuple[pd.DataFrame[TimeSerieDataSchema], pd.DataFrame[TimeSerieDataSchema]]) Données de la série
                                 temporelle combinées et les périodes de données manquantes.
     """
@@ -320,6 +323,12 @@ def process_gaps(
         return wl_combined, gaps
 
     LOGGER.debug(get_data_gaps_message(gaps=gaps))
+
+    gaps_to_interpolate: pd.DataFrame[TimeSerieDataSchema] = gaps[gaps["data_time_gap"] < pd.Timedelta(threeshold_interpolation_filling)
+    ]
+
+    gaps_to_fill: pd.DataFrame[TimeSerieDataSchema] = gaps[gaps["data_time_gap"] >= pd.Timedelta(threeshold_interpolation_filling)
+    ]
 
     if wl_data is None:
         return wl_combined, gaps
@@ -342,7 +351,8 @@ def get_water_level_data(
     from_time: str,
     to_time: str,
     time_series_priority: Collection[TimeSeriesProtocol],
-    max_time_gap: str | None,
+    max_time_gap: Optional[str | None] = None,
+    threeshold_interpolation_filling: Optional[str] = "3 hours",
 ) -> pd.DataFrame:
     """
     Récupère et traite les séries temporelles de niveau d'eau pour une station donnée.
@@ -353,6 +363,8 @@ def get_water_level_data(
     :param to_time: (str) Date de fin.
     :param time_series_priority: (Collection[TimeSeriesProtocol]) Liste des séries temporelles à récupérer en ordre de priorité.
     :param max_time_gap: (str | None) Intervalle de temps maximal permis.
+    :param threeshold_interpolation_filling: (str) Seuil de temps en dessous duquel les données manquantes sont interpolées
+                                                        ou remplies.
     :return: (pd.DataFrame[TimeSerieDataSchema]) Données de niveau d'eau combinées.
     """
 
@@ -386,6 +398,7 @@ def get_water_level_data(
             wl_combined=wl_data if wl_combined.empty else wl_combined,
             wl_data=wl_data if index != 0 else None,
             max_time_gap=max_time_gap,
+            threeshold_interpolation_filling=threeshold_interpolation_filling,
         )
         if gaps.empty:
             LOGGER.debug(
