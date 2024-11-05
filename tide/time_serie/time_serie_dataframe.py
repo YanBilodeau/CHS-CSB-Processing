@@ -372,7 +372,7 @@ def get_water_level_data(
 
         if wl_data is None:
             LOGGER.debug(
-                f"Aucune donnée {time_serie} n'a été récupérée pour la station '{station_id}' de {from_time} à {to_time}."
+                f"Aucune donnée {time_serie} n'a été récupérée pour la station {station_id} de {from_time} à {to_time}."
             )
             continue
 
