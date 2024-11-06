@@ -25,4 +25,4 @@ def split_time(
         yield get_iso8601_from_datetime(current_start), get_iso8601_from_datetime(
             current_end
         )
-        current_start = current_end
+        current_start = current_end + timedelta(minutes=1)
