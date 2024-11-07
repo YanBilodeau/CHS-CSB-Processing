@@ -35,6 +35,6 @@ class StationsHandlerProtocol(Protocol):
         from_time: str,
         to_time: str,
         time_serie_code: Optional[TimeSeriesProtocol],
-        qc_flag_filter: Optional[list[str]]
+        qc_flag_filter: Optional[list[str]],
     ) -> pd.DataFrame:
         pass
