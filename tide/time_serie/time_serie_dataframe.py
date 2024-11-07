@@ -162,7 +162,9 @@ def resample_data(wl_dataframe: pd.DataFrame, time: str) -> pd.DataFrame:
     :param time: (str) Intervalle de temps.
     :return: (pd.DataFrame) DataFrame contenant les données rééchantillonnées.
     """
-    LOGGER.debug(f"Rééchantillonnage des données avec un intervalle de temps de {time}.")
+    LOGGER.debug(
+        f"Rééchantillonnage des données avec un intervalle de temps de {time}."
+    )
 
     wl_resampled: pd.DataFrame = wl_dataframe.resample(time).asfreq()
     wl_resampled["time_serie_code"] = wl_resampled["time_serie_code"].fillna(
