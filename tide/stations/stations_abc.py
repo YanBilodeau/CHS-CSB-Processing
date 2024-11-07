@@ -191,6 +191,17 @@ class StationsHandlerABC(ABC):
         """
         ...
 
+    @staticmethod
+    @abstractmethod
+    def _get_qc_flag(event: dict) -> str:
+        """
+        Récupère le type du flag de qualité.
+
+        :param event: (dict) Données de l'événement.
+        :return: (str) Type du flag de qualité.
+        """
+        ...
+
     def create_data_list(
         self, data: Collection[dict], time_serie_code: TimeSeriesProtocol
     ) -> list[dict]:
@@ -206,6 +217,7 @@ class StationsHandlerABC(ABC):
                 "event_date": self._get_event_date(event=event),
                 "value": event["value"],
                 "time_serie_code": time_serie_code,
+                "qc_flag": self._get_qc_flag(event=event),
             }
             for event in data
         ]
