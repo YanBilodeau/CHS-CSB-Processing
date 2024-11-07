@@ -162,6 +162,8 @@ def resample_data(wl_dataframe: pd.DataFrame, time: str) -> pd.DataFrame:
     :param time: (str) Intervalle de temps.
     :return: (pd.DataFrame) DataFrame contenant les données rééchantillonnées.
     """
+    LOGGER.debug(f"Rééchantillonnage des données avec un intervalle de temps de {time}.")
+
     wl_resampled: pd.DataFrame = wl_dataframe.resample(time).asfreq()
     wl_resampled["time_serie_code"] = wl_resampled["time_serie_code"].fillna(
         f"{wl_dataframe['time_serie_code'].unique()[0]}-interpolated"
@@ -181,6 +183,8 @@ def cubic_spline_interpolation(
     :param wl_resampled: (pd.DataFrame) DataFrame contenant les données rééchantillonnées.
     :return: (pd.DataFrame) DataFrame contenant les données interpolées.
     """
+    LOGGER.debug("Interpolation des données manquantes avec une spline cubique.")
+
     cubic_spline_interplation: CubicSpline = CubicSpline(index_time, values)
     wl_resampled["value"] = cubic_spline_interplation(
         wl_resampled.index.astype(np.int64) // 10**9
@@ -201,6 +205,8 @@ def reset_and_sort_index(
     :param inplace: (bool) Si True, modifie le DataFrame en place.
     :param wl_dataframe: (pd.DataFrame) DataFrame contenant les données.
     """
+    LOGGER.debug("Réinitialisation de l'index et trie par event_date du DataFrame.")
+
     wl_dataframe.sort_values(by="event_date", inplace=inplace)  # type: ignore
     wl_dataframe.reset_index(inplace=inplace, drop=drop)
 
