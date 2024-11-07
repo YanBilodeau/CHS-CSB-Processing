@@ -26,15 +26,15 @@ IWLSapiDict = dict[str, dict[str, TimeSeriesDict | EnvironmentDict | ProfileDict
 class TimeSeriesPriority(BaseModel):
     priority: list[TimeSeries]
     max_time_gap: str | None
-    threeshold_interpolation_filling: str | None
+    threshold_interpolation_filling: str | None
 
-    @field_validator("max_time_gap", "threeshold_interpolation_filling")
+    @field_validator("max_time_gap", "threshold_interpolation_filling")
     def validate_time_gap(cls, value):
         if value == "":
             return None
 
         if value is not None:
-            pattern = re.compile(r"^\d+\s*(minutes|hours)$")
+            pattern = re.compile(r"^\d+\s*(min|h)$")
             if not pattern.match(value):
                 raise ValueError(
                     'Le time gap doit être au format "<number> <minutes|hours>".'
@@ -73,9 +73,9 @@ def get_api_config(config_file: Optional[Path] = CONFIG_FILE) -> IWLSAPIConfig:
         time_series=TimeSeriesPriority(
             priority=config_data["IWLS"]["API"]["TimeSeries"]["priority"],
             max_time_gap=config_data["IWLS"]["API"]["TimeSeries"].get("max_time_gap"),
-            threeshold_interpolation_filling=config_data["IWLS"]["API"][
+            threshold_interpolation_filling=config_data["IWLS"]["API"][
                 "TimeSeries"
-            ].get("threeshold_interpolation-filling"),
+            ].get("threshold_interpolation-filling"),
         ),
         profile=APIProfile(**config_data["IWLS"]["API"]["PROFILE"]),
     )
