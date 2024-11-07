@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 from typing import Optional, Any, Collection
 
 import numpy as np
@@ -82,8 +82,7 @@ def extend_non_nan_dataframe(
     non_nan_dataframe = extend_rows_to_deltatime(
         non_nan_dataframe=non_nan_dataframe, first_row=first_row, last_row=last_row
     )
-    non_nan_dataframe.sort_values(by="event_date", inplace=True)
-    non_nan_dataframe.reset_index(drop=True, inplace=True)
+    reset_and_sort_index(wl_dataframe=non_nan_dataframe, drop=True)
     non_nan_dataframe["data_time_gap"] = non_nan_dataframe["event_date"].diff()
 
     return non_nan_dataframe
@@ -155,6 +154,57 @@ def identify_data_gaps(
     return gaps_dataframe, gaps_to_interpolate, gaps_to_fill
 
 
+def resample_data(wl_dataframe: pd.DataFrame, time: str) -> pd.DataFrame:
+    """
+    Rééchantillonne les données.
+
+    :param wl_dataframe: (pd.DataFrame) DataFrame contenant les données.
+    :param time: (str) Intervalle de temps.
+    :return: (pd.DataFrame) DataFrame contenant les données rééchantillonnées.
+    """
+    wl_resampled: pd.DataFrame = wl_dataframe.resample(time).asfreq()
+    wl_resampled["time_serie_code"] = wl_resampled["time_serie_code"].fillna(
+        f"{wl_dataframe['time_serie_code'].unique()[0]}-interpolated"
+    )
+
+    return wl_resampled
+
+
+def cubic_spline_interpolation(
+    index_time: pd.Index, values: pd.Series, wl_resampled: pd.DataFrame
+) -> pd.DataFrame:
+    """
+    Interpole les données manquantes avec une spline cubique.
+
+    :param index_time: (pd.Index) Index des données.
+    :param values: (pd.Series) Valeurs des données.
+    :param wl_resampled: (pd.DataFrame) DataFrame contenant les données rééchantillonnées.
+    :return: (pd.DataFrame) DataFrame contenant les données interpolées.
+    """
+    cubic_spline_interplation: CubicSpline = CubicSpline(index_time, values)
+    wl_resampled["value"] = cubic_spline_interplation(
+        wl_resampled.index.astype(np.int64) // 10**9
+    )
+
+    return wl_resampled
+
+
+def reset_and_sort_index(
+    wl_dataframe: pd.DataFrame,
+    drop: bool,
+    inplace: bool = True,
+) -> None:
+    """
+    Réinitialise et trie l'index du DataFrame.
+
+    :param drop: (bool) Si True, supprime l'ancien index.
+    :param inplace: (bool) Si True, modifie le DataFrame en place.
+    :param wl_dataframe: (pd.DataFrame) DataFrame contenant les données.
+    """
+    wl_dataframe.sort_values(by="event_date", inplace=inplace)  # type: ignore
+    wl_dataframe.reset_index(inplace=inplace, drop=drop)
+
+
 def interpolate_data_gaps(
     wl_dataframe: pd.DataFrame, gaps_dataframe: pd.DataFrame, max_time_gap: str
 ) -> pd.DataFrame:
@@ -172,27 +222,20 @@ def interpolate_data_gaps(
 
     wl_dataframe.set_index("event_date", inplace=True)
 
-    # Resample the data to fill the missing values
-    wl_resampled: pd.DataFrame = wl_dataframe.resample(max_time_gap).asfreq()
-    wl_resampled["time_serie_code"] = wl_resampled["time_serie_code"].fillna(
-        f"{wl_dataframe['time_serie_code'].unique()[0]}-interpolated"
+    wl_resampled: pd.DataFrame = resample_data(
+        wl_dataframe=wl_dataframe, time=max_time_gap
     )
 
-    # Convert the index to numeric values (e.g., Unix timestamps)
+    # Convertir l'index en valeur numérique pour l'interpolation
     time: pd.Index = wl_dataframe.index.astype(np.int64) // 10**9
     water_level_values: pd.Series = wl_dataframe["value"]
 
-    # Use cubic spline interpolation to fill the missing values
-    cubic_spline_interplation: CubicSpline = CubicSpline(time, water_level_values)
-    wl_resampled["value"] = cubic_spline_interplation(
-        wl_resampled.index.astype(np.int64) // 10**9
+    wl_resampled = cubic_spline_interpolation(
+        index_time=time, values=water_level_values, wl_resampled=wl_resampled
     )
 
-    # Reset the index and sort the values
-    wl_resampled.reset_index(inplace=True)
-    wl_resampled.sort_values(by="event_date", inplace=True)
-    wl_dataframe.reset_index(inplace=True)
-    wl_dataframe.sort_values(by="event_date", inplace=True)
+    reset_and_sort_index(wl_dataframe=wl_dataframe, drop=False)
+    reset_and_sort_index(wl_dataframe=wl_resampled, drop=False)
 
     return process_gaps_to_fill(
         gaps_dataframe=gaps_dataframe,
@@ -316,6 +359,31 @@ def fill_data_gaps(
     return wl_combined_dataframe
 
 
+def process_gaps_to_fill(
+    wl_combined_dataframe: pd.DataFrame,
+    gaps_dataframe: pd.DataFrame,
+    wl_dataframe: pd.DataFrame,
+) -> pd.DataFrame:
+    """
+    Identifie et comble les données manquantes.
+
+    :param wl_combined_dataframe: (pd.DataFrame) DataFrame contenant les données combinées.
+    :param gaps_dataframe: (pd.DataFrame) DataFrame contenant les périodes de données manquantes.
+    :param wl_dataframe: (pd.DataFrame) DataFrame contenant les données à ajouter aux données combinées.
+    :return: (pd.DataFrame[TimeSerieDataSchema]]) Données de niveau d'eau combinées.
+    """
+    LOGGER.debug(get_data_gaps_message(gaps=gaps_dataframe))
+
+    wl_combined_dataframe: pd.DataFrame[TimeSerieDataSchema] = fill_data_gaps(
+        gaps_dataframe=gaps_dataframe,
+        wl_dataframe=wl_dataframe,
+        wl_combined_dataframe=wl_combined_dataframe,
+    )
+    reset_and_sort_index(wl_dataframe=wl_combined_dataframe, drop=True)
+
+    return wl_combined_dataframe
+
+
 def get_data_gap_periods(gaps: pd.DataFrame) -> list[DataGapPeriod]:
     """
     Récupère les périodes de données manquantes.
@@ -369,8 +437,7 @@ def add_nan_date_row(wl_dataframe: pd.DataFrame, time: str) -> pd.DataFrame:
     LOGGER.debug(f"Ajout d'une ligne de données NaN à partir de la date '{time}'.")
 
     wl_dataframe.loc[len(wl_dataframe)] = create_nan_date_row(date_time=time)
-    wl_dataframe.sort_values(by="event_date", inplace=True)
-    wl_dataframe.reset_index(drop=True, inplace=True)
+    reset_and_sort_index(wl_dataframe=wl_dataframe, drop=True)
 
     return wl_dataframe
 
@@ -394,10 +461,10 @@ def clean_time_series_data(
 
     wl_dataframe.dropna(subset=["value"], inplace=True)
 
-    if wl_dataframe["event_date"].iloc[0] != pd.to_datetime(from_time):
+    if wl_dataframe["event_date"].iloc[0] > pd.to_datetime(from_time):
         wl_dataframe = add_nan_date_row(wl_dataframe=wl_dataframe, time=from_time)
 
-    if wl_dataframe["event_date"].iloc[-1] != pd.to_datetime(to_time):
+    if wl_dataframe["event_date"].iloc[-1] < pd.to_datetime(to_time):
         wl_dataframe = add_nan_date_row(wl_dataframe=wl_dataframe, time=to_time)
 
     return wl_dataframe
@@ -409,6 +476,7 @@ def get_time_series_data(
     from_time: str,
     to_time: str,
     time_serie_code: TimeSeriesProtocol,
+    buffer_time: Optional[timedelta] = None,
 ) -> pd.DataFrame | None:
     """
     Récupère les données de la série temporelle.
@@ -418,13 +486,25 @@ def get_time_series_data(
     :param from_time: (str) Date de début.
     :param to_time: (str) Date de fin.
     :param time_serie_code: (TimeSeriesProtocol) Série temporelle.
+    :param buffer_time: (Optional[timedelta]) Temps tampon à ajouter au début et à la fin de la période de données.
     :return: (pd.DataFrame[TimeSerieDataSchema] | None) Données de la série temporelle.
     """
+    from_time_buffered: str = (
+        get_iso8601_from_datetime(get_datetime_from_iso8601(from_time) - buffer_time)
+        if buffer_time
+        else from_time
+    )
+    to_time_buffered: str = (
+        get_iso8601_from_datetime(get_datetime_from_iso8601(to_time) + buffer_time)
+        if buffer_time
+        else to_time
+    )
+
     wl_data: pd.DataFrame[TimeSerieDataSchema] = (
         stations_handler.get_time_series_dataframe(
             station=station_id,
-            from_time=from_time,
-            to_time=to_time,
+            from_time=from_time_buffered,
+            to_time=to_time_buffered,
             time_serie_code=time_serie_code,
         )
     )
@@ -437,35 +517,16 @@ def get_time_series_data(
     )
 
 
-def process_gaps_to_fill(
-    wl_combined_dataframe: pd.DataFrame,
-    gaps_dataframe: pd.DataFrame,
-    wl_dataframe: pd.DataFrame,
-) -> pd.DataFrame:
-    """
-    Identifie et comble les données manquantes.
-
-    :param wl_combined_dataframe: (pd.DataFrame) DataFrame contenant les données combinées.
-    :param gaps_dataframe: (pd.DataFrame) DataFrame contenant les périodes de données manquantes.
-    :param wl_dataframe: (pd.DataFrame) DataFrame contenant les données à ajouter aux données combinées.
-    :return: (pd.DataFrame[TimeSerieDataSchema]]) Données de niveau d'eau combinées.
-    """
-    LOGGER.debug(get_data_gaps_message(gaps=gaps_dataframe))
-
-    wl_combined_dataframe: pd.DataFrame[TimeSerieDataSchema] = fill_data_gaps(
-        gaps_dataframe=gaps_dataframe,
-        wl_dataframe=wl_dataframe,
-        wl_combined_dataframe=wl_combined_dataframe,
-    )
-
-    wl_combined_dataframe.sort_values(by="event_date", inplace=True)
-    wl_combined_dataframe.reset_index(drop=True, inplace=True)
-
-    return wl_combined_dataframe
-
-
 def get_empty_dataframe() -> pd.DataFrame:
     return pd.DataFrame(columns=list(TimeSerieDataSchema.__annotations__.keys()))
+
+
+def get_datetime_from_iso8601(date: str) -> datetime:
+    return datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+
+
+def get_iso8601_from_datetime(date: datetime) -> str:
+    return date.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def get_water_level_data(
@@ -476,6 +537,7 @@ def get_water_level_data(
     time_series_priority: Collection[TimeSeriesProtocol],
     max_time_gap: Optional[str | None] = None,
     threshold_interpolation_filling: Optional[str | None] = None,
+    buffer_time: Optional[timedelta] = timedelta(hours=48),
 ) -> pd.DataFrame:
     """
     Récupère et traite les séries temporelles de niveau d'eau pour une station donnée.
@@ -490,6 +552,7 @@ def get_water_level_data(
     :param threshold_interpolation_filling: (Optional[str | None]) Seuil de temps en dessous duquel les données manquantes
                                                     sont interpolées ou remplies. Si None, les données manquantes sont
                                                     seulement remplies par la time série suivante.
+    :param buffer_time: (Optional[timedelta]) Temps tampon à ajouter au début et à la fin de la période de données.
     :return: (pd.DataFrame[TimeSerieDataSchema]) Données de niveau d'eau combinées.
     """
     wl_combined: pd.DataFrame = get_empty_dataframe()
@@ -501,6 +564,7 @@ def get_water_level_data(
             from_time=from_time,
             to_time=to_time,
             time_serie_code=time_serie,
+            buffer_time=buffer_time,
         )
 
         if wl_data is None:
@@ -550,3 +614,6 @@ def get_water_level_data(
         )
 
     return wl_combined
+
+
+# todo isTidal == False  -> interpolation linéaire plutôt que spline cubique ?
