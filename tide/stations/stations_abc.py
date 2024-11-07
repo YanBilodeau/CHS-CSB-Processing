@@ -230,6 +230,7 @@ class StationsHandlerABC(ABC):
         time_serie_code: Optional[TimeSeriesProtocol],
         time_delta: timedelta = timedelta(days=7),
         datetime_sorted: bool = True,
+        flag_filter: Collection[str] | None = None,
         **kwargs,
     ) -> pd.DataFrame:
         """
@@ -241,6 +242,7 @@ class StationsHandlerABC(ABC):
         :param time_serie_code: (TimeSeriesProtocol) Le code de la série temporelle désirée.
         :param time_delta: (timedelta) L'intervalle de temps maximale pour chaque requête.
         :param datetime_sorted: (bool) Si les données doivent être triées par date.
+        :param flag_filter: (Collection[str] | None) Liste des flags de qualité à filtrer.
         :return: (pd.DataFrame) Données des séries temporelles sous forme de DataFrame.
         """
         LOGGER.debug(
@@ -278,6 +280,14 @@ class StationsHandlerABC(ABC):
         )
 
         data_dataframe: pd.DataFrame[TimeSerieDataSchema] = pd.DataFrame(data_list)
+
+        data_dataframe = (
+            data_dataframe[~data_dataframe["qc_flag"].isin(flag_filter)]
+            if flag_filter
+            else data_dataframe
+        )
+        data_dataframe.drop(columns=["qc_flag"], inplace=True)
+
         validate_schema(df=data_dataframe, schema=TimeSerieDataSchema)
 
         return data_dataframe
