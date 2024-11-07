@@ -3,8 +3,8 @@ from datetime import datetime, UTC
 from pathlib import Path
 from typing import Optional, Collection
 
-import geopandas as gpd
 from diskcache import Cache
+import geopandas as gpd
 from loguru import logger
 
 from .stations_abc import StationsHandlerABC
@@ -90,3 +90,13 @@ class StationsHandlerPrivate(StationsHandlerABC):
         :return: (datetime) Date de l'événement.
         """
         return datetime.fromtimestamp(event["eventDateEpoch"] / 1000, tz=UTC)
+
+    @staticmethod
+    def _get_qc_flag(event: dict) -> str:
+        """
+        Récupère le type du flag de qualité.
+
+        :param event: (dict) Données de l'événement.
+        :return: (str) Type du flag de qualité.
+        """
+        return event["qcFlag"]
