@@ -27,6 +27,7 @@ class TimeSeriesPriority(BaseModel):
     priority: list[TimeSeries]
     max_time_gap: str | None
     threshold_interpolation_filling: str | None
+    qc_flag_filter: list[str] | None
 
     @field_validator("max_time_gap", "threshold_interpolation_filling")
     def validate_time_gap(cls, value):
@@ -76,6 +77,9 @@ def get_api_config(config_file: Optional[Path] = CONFIG_FILE) -> IWLSAPIConfig:
             threshold_interpolation_filling=config_data["IWLS"]["API"][
                 "TimeSeries"
             ].get("threshold_interpolation-filling"),
+            qc_flag_filter=config_data["IWLS"]["API"]["TimeSeries"].get(
+                "qc_flag_filter"
+            ),
         ),
         profile=APIProfile(**config_data["IWLS"]["API"]["PROFILE"]),
     )
