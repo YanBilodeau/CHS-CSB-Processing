@@ -228,9 +228,9 @@ class StationsHandlerABC(ABC):
         from_time: str,
         to_time: str,
         time_serie_code: Optional[TimeSeriesProtocol],
-        time_delta: timedelta = timedelta(days=7),
-        datetime_sorted: bool = True,
-        flag_filter: Collection[str] | None = None,
+        time_delta: Optional[timedelta] = timedelta(days=7),
+        datetime_sorted: Optional[bool] = True,
+        qc_flag_filter: Optional[Collection[str] | None] = None,
         **kwargs,
     ) -> pd.DataFrame:
         """
@@ -242,7 +242,7 @@ class StationsHandlerABC(ABC):
         :param time_serie_code: (TimeSeriesProtocol) Le code de la série temporelle désirée.
         :param time_delta: (timedelta) L'intervalle de temps maximale pour chaque requête.
         :param datetime_sorted: (bool) Si les données doivent être triées par date.
-        :param flag_filter: (Collection[str] | None) Liste des flags de qualité à filtrer.
+        :param qc_flag_filter: (Collection[str] | None) Liste des flags de qualité à filtrer.
         :return: (pd.DataFrame) Données des séries temporelles sous forme de DataFrame.
         """
         LOGGER.debug(
@@ -282,8 +282,8 @@ class StationsHandlerABC(ABC):
         data_dataframe: pd.DataFrame[TimeSerieDataSchema] = pd.DataFrame(data_list)
 
         data_dataframe = (
-            data_dataframe[~data_dataframe["qc_flag"].isin(flag_filter)]
-            if flag_filter
+            data_dataframe[~data_dataframe["qc_flag"].isin(qc_flag_filter)]
+            if qc_flag_filter
             else data_dataframe
         )
         data_dataframe.drop(columns=["qc_flag"], inplace=True)
