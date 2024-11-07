@@ -12,3 +12,5 @@ dask-geopandas
 pandera
 diskcache
 toml
+numpy
+scipy
