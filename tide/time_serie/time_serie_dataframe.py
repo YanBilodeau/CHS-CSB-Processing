@@ -392,6 +392,29 @@ def process_gaps_to_fill(
     return wl_combined_dataframe
 
 
+def combine_water_level_data(
+    wl_combined_dataframe: pd.DataFrame,
+    wl_data_dataframe: pd.DataFrame,
+    gaps_dataframe: pd.DataFrame,
+) -> pd.DataFrame:
+    """
+    Combine les données de niveau d'eau.
+
+    :param wl_combined_dataframe: (pd.DataFrame) DataFrame contenant les données de niveau d'eau combinées.
+    :param wl_data_dataframe: (pd.DataFrame) DataFrame contenant les données de niveau d'eau.
+    :param gaps_dataframe: (pd.DataFrame) DataFrame contenant les périodes de données manquantes.
+    :return: (pd.DataFrame) DataFrame contenant les données de niveau d'eau combinées.
+    """
+    if wl_combined_dataframe.empty:
+        return wl_data_dataframe
+
+    return process_gaps_to_fill(
+        wl_combined_dataframe=wl_combined_dataframe,
+        wl_dataframe=wl_data_dataframe,
+        gaps_dataframe=gaps_dataframe,
+    )
+
+
 def get_data_gap_periods(gaps: pd.DataFrame) -> list[DataGapPeriod]:
     """
     Récupère les périodes de données manquantes.
@@ -485,6 +508,7 @@ def get_time_series_data(
     to_time: str,
     time_serie_code: TimeSeriesProtocol,
     buffer_time: Optional[timedelta] = None,
+    qc_flag_filter: Optional[list[str] | None] = None,
 ) -> pd.DataFrame | None:
     """
     Récupère les données de la série temporelle.
@@ -495,6 +519,7 @@ def get_time_series_data(
     :param to_time: (str) Date de fin.
     :param time_serie_code: (TimeSeriesProtocol) Série temporelle.
     :param buffer_time: (Optional[timedelta]) Temps tampon à ajouter au début et à la fin de la période de données.
+    :param qc_flag_filter: (Optional[list[str] | None]) Filtre de qualité des données.
     :return: (pd.DataFrame[TimeSerieDataSchema] | None) Données de la série temporelle.
     """
     from_time_buffered: str = (
@@ -514,6 +539,7 @@ def get_time_series_data(
             from_time=from_time_buffered,
             to_time=to_time_buffered,
             time_serie_code=time_serie_code,
+            qc_flag_filter=qc_flag_filter,
         )
     )
 
@@ -546,6 +572,7 @@ def get_water_level_data(
     max_time_gap: Optional[str | None] = None,
     threshold_interpolation_filling: Optional[str | None] = None,
     buffer_time: Optional[timedelta] = timedelta(hours=48),
+    qc_flag_filter: Optional[list[str] | None] = None,
 ) -> pd.DataFrame:
     """
     Récupère et traite les séries temporelles de niveau d'eau pour une station donnée.
@@ -561,6 +588,7 @@ def get_water_level_data(
                                                     sont interpolées ou remplies. Si None, les données manquantes sont
                                                     seulement remplies par la time série suivante.
     :param buffer_time: (Optional[timedelta]) Temps tampon à ajouter au début et à la fin de la période de données.
+    :param qc_flag_filter: (Optional[list[str] | None]) Filtre de qualité des données.
     :return: (pd.DataFrame[TimeSerieDataSchema]) Données de niveau d'eau combinées.
     """
     wl_combined: pd.DataFrame = get_empty_dataframe()
@@ -573,6 +601,7 @@ def get_water_level_data(
             to_time=to_time,
             time_serie_code=time_serie,
             buffer_time=buffer_time,
+            qc_flag_filter=qc_flag_filter,
         )
 
         if wl_data is None:
@@ -607,14 +636,13 @@ def get_water_level_data(
             threshold_interpolation_filling=threshold_interpolation_filling,
         )
 
-        wl_combined = wl_data if wl_combined.empty else wl_combined
+        # todo : identifier les données manquantes après interpolation ?
 
-        if index > 0:
-            wl_combined: pd.DataFrame[TimeSerieDataSchema] = process_gaps_to_fill(
-                wl_combined_dataframe=wl_combined,
-                wl_dataframe=wl_data,
-                gaps_dataframe=gaps_to_fill,
-            )
+        wl_combined: pd.DataFrame[TimeSerieDataSchema] = combine_water_level_data(
+            wl_combined_dataframe=wl_combined,
+            wl_data_dataframe=wl_data,
+            gaps_dataframe=gaps_to_fill,
+        )
 
     else:
         LOGGER.debug(
@@ -625,3 +653,5 @@ def get_water_level_data(
 
 
 # todo isTidal == False  -> interpolation linéaire plutôt que spline cubique ?
+
+# todo enlever ce qui est qcflaq mauvaise donnée
