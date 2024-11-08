@@ -202,6 +202,9 @@ def plot_time_series_dataframe(
     :param show_plot: (bool) Afficher le graphique.
     :param template: (str) Le template du graphique.
     """
+    if not dataframes:
+        raise ValueError("Aucun DataFrame n'a été fourni.")
+
     LOGGER.debug(f"Affichage des graphiques des niveaux d'eau pour : {titles}.")
 
     if len(dataframes) != len(titles):
