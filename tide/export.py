@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 from typing import Optional
 
 import geopandas as gpd
@@ -37,7 +38,9 @@ def export_geodataframe_to_geojson(
     LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier GeoJSON : '{output_path}'.")
 
     transform_geodataframe_crs(geodataframe=geodataframe, to_epsg=to_epsg)
-    geodataframe.to_file(str(output_path), driver="GeoJSON")  # , RFC7946=True)
+    geodataframe.to_file(
+        str(sanitize_path_name(output_path)), driver="GeoJSON"
+    )  # , RFC7946=True)
 
 
 def export_dataframe_to_csv(dataframe: pd.DataFrame, output_path: Path) -> None:
@@ -49,4 +52,19 @@ def export_dataframe_to_csv(dataframe: pd.DataFrame, output_path: Path) -> None:
     """
     LOGGER.debug(f"Sauvegarde du DataFrame en fichier CSV : '{output_path}'.")
 
-    dataframe.to_csv(output_path, index=False)
+    dataframe.to_csv(sanitize_path_name(output_path), index=False)
+
+
+def sanitize_path_name(path: Path) -> Path:
+    """
+    Fonction qui remplace les caractères invalides dans le nom d'un fichier.
+
+    :param path: (Path) Le chemin du fichier.
+    :return: (Path) Le chemin du fichier avec un nom sans caractères invalides.
+    """
+    LOGGER.debug(f"Validation du nom du fichier : '{path.name}'.")
+
+    invalid_chars = r'[<>:"/\\|?*]'
+    sanitized_name = re.sub(invalid_chars, "_", path.name)
+
+    return path.with_name(sanitized_name)
