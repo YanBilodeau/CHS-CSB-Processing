@@ -9,11 +9,13 @@ max_time_gap = "1 min"
 # la time serie suivante.
 threshold_interpolation-filling = "1 h"
 # Liste des valeurs de qualité à filtrer des times series.
-qc_flag_filter = ["BAD", "MISSING"]
+# Flag de l'API privée [ GOOD, NOT_EVAL, QUESTIONABLE, BAD, MISSING ].
+# Flag de l'API publique [ 1, 2, 3 ].  1 = Good, 2 = Not evaluated, 3 = Questionable
+qc_flag_filter = ["BAD", "MISSING"]  # todo : est-ce qu'on enlève les valeurs "NOT_EVAL" et "3" ?
 
 [IWLS.API.PROFILE]
 # {"dev", "prod", "public"}
-active = "prod"
+active = "public"
 
 [IWLS.API.ENVIRONMENT.dev]
 name = "DEV"
