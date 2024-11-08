@@ -1,4 +1,6 @@
 from datetime import timedelta, datetime
+from functools import partial
+from tenacity import retry, stop_after_attempt, wait_exponential_jitter, before_log
 from typing import Optional, Any, Collection
 
 import numpy as np
@@ -17,6 +19,30 @@ from ..schema import TimeSerieDataSchema
 LOGGER = logger.bind(name="CSB-Pipeline.TimeSerie")
 
 NanDateRow = dict[str, Any]
+
+
+def double_buffer_time(retry_state) -> None:
+    buffer_time = retry_state.kwargs.get("buffer_time")
+
+    if buffer_time is None:
+        buffer_time = timedelta(hours=24)
+
+    LOGGER.debug(
+        f"Augmentation du temps tampon pour la prochaine tentative d'interpolation de "
+        f"{retry_state.kwargs.get('buffer_time')} à {buffer_time * 2}."
+    )
+
+    retry_state.kwargs["buffer_time"] = buffer_time * 2
+
+
+LEVEL: str = "TRACE"
+retry_tenacity = partial(
+    retry,
+    stop=stop_after_attempt(5),
+    wait=wait_exponential_jitter(initial=1, jitter=1, max=3),
+    before=before_log(LOGGER, LEVEL),  # type: ignore
+    after=double_buffer_time,
+)
 
 
 def get_row_by_index(wl_dataframe: pd.DataFrame, index: int) -> pd.DataFrame:
@@ -522,6 +548,11 @@ def get_time_series_data(
     :param qc_flag_filter: (Optional[list[str] | None]) Filtre de qualité des données.
     :return: (pd.DataFrame[TimeSerieDataSchema] | None) Données de la série temporelle.
     """
+    if buffer_time:
+        LOGGER.debug(
+            f"Récupération des données de la série temporelle {time_serie_code} pour la station {station_id} "
+            f"de {from_time} à {to_time} avec un temps tampon de {buffer_time}."
+        )
     from_time_buffered: str = (
         get_iso8601_from_datetime(get_datetime_from_iso8601(from_time) - buffer_time)
         if buffer_time
@@ -563,15 +594,16 @@ def get_iso8601_from_datetime(date: datetime) -> str:
     return date.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+@retry_tenacity()
 def get_water_level_data(
     stations_handler: StationsHandlerProtocol,
     station_id: str,
     from_time: str,
     to_time: str,
     time_series_priority: Collection[TimeSeriesProtocol],
+    buffer_time: Optional[timedelta | None] = None,
     max_time_gap: Optional[str | None] = None,
     threshold_interpolation_filling: Optional[str | None] = None,
-    buffer_time: Optional[timedelta] = timedelta(hours=48),
     qc_flag_filter: Optional[list[str] | None] = None,
 ) -> pd.DataFrame:
     """
@@ -582,12 +614,13 @@ def get_water_level_data(
     :param from_time: (str) Date de début.
     :param to_time: (str) Date de fin.
     :param time_series_priority: (Collection[TimeSeriesProtocol]) Liste des séries temporelles à récupérer en ordre de priorité.
+    :param buffer_time: (Optional[timedelta | None]) Temps tampon à ajouter au début et à la fin de la période de données.
+
     :param max_time_gap: (Optional[str | None]) Intervalle de temps maximal permis. Si None, l'interpolation et le remplissage
                                                 des données manquantes est désactivée.
     :param threshold_interpolation_filling: (Optional[str | None]) Seuil de temps en dessous duquel les données manquantes
                                                     sont interpolées ou remplies. Si None, les données manquantes sont
                                                     seulement remplies par la time série suivante.
-    :param buffer_time: (Optional[timedelta]) Temps tampon à ajouter au début et à la fin de la période de données.
     :param qc_flag_filter: (Optional[list[str] | None]) Filtre de qualité des données.
     :return: (pd.DataFrame[TimeSerieDataSchema]) Données de niveau d'eau combinées.
     """
@@ -653,5 +686,6 @@ def get_water_level_data(
 
 
 # todo isTidal == False  -> interpolation linéaire plutôt que spline cubique ?
-
-# todo enlever ce qui est qcflaq mauvaise donnée
+# todo problème avec l'interpolation même avec le buffer_time si les données sont manquantes à la fin
+#  ou au début de la période NaN
+# todo valider le holding avant de demander les données ! -> sinon refaire les polygon sans cette station ?
