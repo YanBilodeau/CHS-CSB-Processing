@@ -103,7 +103,7 @@ class StationsHandlerABC(ABC):
             {
                 "id": station["id"],
                 "code": station["code"],
-                "name": station[station_name_key],
+                "name": station[station_name_key].replace("/", "-"),
                 "time_series": (
                     ["Unknown"]
                     if index_map is None
