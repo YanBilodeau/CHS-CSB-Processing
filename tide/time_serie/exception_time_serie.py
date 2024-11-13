@@ -26,3 +26,7 @@ class WaterLevelDataGapError(Exception):
             f"Il y a des périodes de données manquantes qui excède la limite permise de {self.max_time_gap} pour la"
             f" station {self.station_id}. {get_data_gaps_message(gaps=self.gaps)}"
         )
+
+
+class InterpolationValueError(Exception):
+    pass
