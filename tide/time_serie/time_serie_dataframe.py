@@ -1,48 +1,21 @@
 from datetime import timedelta, datetime
-from functools import partial
-from tenacity import retry, stop_after_attempt, wait_exponential_jitter, before_log
 from typing import Optional, Any, Collection
 
+from loguru import logger
 import numpy as np
 import pandas as pd
 from scipy.interpolate import CubicSpline
 
-from loguru import logger
-
+from .exception_time_serie import InterpolationValueError
 from .time_serie_models import (
     DataGapPeriod,
     TimeSeriesProtocol,
     StationsHandlerProtocol,
 )
+from .time_serie_retry import interpolation_retry
 from ..schema import TimeSerieDataSchema
 
-LOGGER = logger.bind(name="CSB-Pipeline.TimeSerie")
-
 NanDateRow = dict[str, Any]
-
-
-def double_buffer_time(retry_state) -> None:
-    buffer_time = retry_state.kwargs.get("buffer_time")
-
-    if buffer_time is None:
-        buffer_time = timedelta(hours=24)
-
-    LOGGER.debug(
-        f"Augmentation du temps tampon pour la prochaine tentative d'interpolation de "
-        f"{retry_state.kwargs.get('buffer_time')} à {buffer_time * 2}."
-    )
-
-    retry_state.kwargs["buffer_time"] = buffer_time * 2
-
-
-LEVEL: str = "TRACE"
-retry_tenacity = partial(
-    retry,
-    stop=stop_after_attempt(5),
-    wait=wait_exponential_jitter(initial=1, jitter=1, max=3),
-    before=before_log(LOGGER, LEVEL),  # type: ignore
-    after=double_buffer_time,
-)
 
 
 def get_row_by_index(wl_dataframe: pd.DataFrame, index: int) -> pd.DataFrame:
@@ -213,7 +186,17 @@ def cubic_spline_interpolation(
     """
     LOGGER.debug("Interpolation des données manquantes avec une spline cubique.")
 
-    cubic_spline_interplation: CubicSpline = CubicSpline(index_time, values)
+    try:
+        cubic_spline_interplation: CubicSpline = CubicSpline(index_time, values)
+
+    except ValueError as e:
+        LOGGER.warning(
+            f"Erreur lors de l'interpolation cubique spline des données : {e}"
+        )
+
+        raise InterpolationValueError
+
+    # Convertir l'index en valeur numérique
     wl_resampled["value"] = cubic_spline_interplation(
         wl_resampled.index.astype(np.int64) // 10**9
     )
@@ -594,7 +577,7 @@ def get_iso8601_from_datetime(date: datetime) -> str:
     return date.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-@retry_tenacity()
+@interpolation_retry()
 def get_water_level_data(
     stations_handler: StationsHandlerProtocol,
     station_id: str,
@@ -688,4 +671,5 @@ def get_water_level_data(
 # todo isTidal == False  -> interpolation linéaire plutôt que spline cubique ?
 # todo problème avec l'interpolation même avec le buffer_time si les données sont manquantes à la fin
 #  ou au début de la période NaN
+# todo Valider qu' il y a au moins x heure de part et d autre pour faire l interpolation, sinon raise exception
 # todo valider le holding avant de demander les données ! -> sinon refaire les polygon sans cette station ?
