@@ -61,5 +61,10 @@ def get_data_gaps_message(gaps: pd.DataFrame) -> str:
     return f"{total_duration_minutes} minutes de données manquantes pour les périodes suivantes : {gaps_str}."
 
 
+@dataclass(frozen=True)
 class InterpolationValueError(Exception):
-    pass
+    from_time: pd.Timestamp
+    to_time: pd.Timestamp
+
+    def __str__(self) -> str:
+        return f"Impossible d'interpoler les valeurs de {self.from_time} à {self.to_time}. Il y a possiblement des données manquantes."
