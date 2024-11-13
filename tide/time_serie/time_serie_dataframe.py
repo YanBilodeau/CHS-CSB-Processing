@@ -6,15 +6,15 @@ import numpy as np
 import pandas as pd
 from scipy.interpolate import CubicSpline
 
-from .exception_time_serie import InterpolationValueError
+from .exception_time_serie import get_data_gaps_message, InterpolationValueError
 from .time_serie_models import (
-    DataGapPeriod,
     TimeSeriesProtocol,
     StationsHandlerProtocol,
 )
 from .time_serie_retry import interpolation_retry
 from ..schema import TimeSerieDataSchema
 
+LOGGER = logger.bind(name="CSB-Pipeline.TimeSerie")
 NanDateRow = dict[str, Any]
 
 
@@ -184,18 +184,20 @@ def cubic_spline_interpolation(
     :param wl_resampled: (pd.DataFrame) DataFrame contenant les données rééchantillonnées.
     :return: (pd.DataFrame) DataFrame contenant les données interpolées.
     """
-    LOGGER.debug("Interpolation des données manquantes avec une spline cubique.")
-
-    try:
-        cubic_spline_interplation: CubicSpline = CubicSpline(index_time, values)
-
-    except ValueError as e:
+    if values.isna().any():
         LOGGER.warning(
-            f"Erreur lors de l'interpolation cubique spline des données : {e}"
+            "L'interpolation cubique slpine ne peut pas être effectuée avec des données manquantes. "
+            "Des données manquantes ont été détectées dans les données de niveau d'eau de "
+            f"{wl_resampled.index[0]} à {wl_resampled.index[-1]}."
         )
 
-        raise InterpolationValueError
+        raise InterpolationValueError(
+            from_time=wl_resampled.index[0], to_time=wl_resampled.index[-1]
+        )
 
+    LOGGER.debug("Interpolation des données manquantes avec une spline cubique.")
+
+    cubic_spline_interplation: CubicSpline = CubicSpline(index_time, values)
     # Convertir l'index en valeur numérique
     wl_resampled["value"] = cubic_spline_interplation(
         wl_resampled.index.astype(np.int64) // 10**9
@@ -424,38 +426,6 @@ def combine_water_level_data(
     )
 
 
-def get_data_gap_periods(gaps: pd.DataFrame) -> list[DataGapPeriod]:
-    """
-    Récupère les périodes de données manquantes.
-
-    :param gaps: (pd.DataFrame) DataFrame contenant les périodes de données manquantes.
-    :return: (list[DataGap]) Périodes de données manquantes.
-    """
-    return [
-        DataGapPeriod(
-            start=row["event_date"] - row["data_time_gap"], end=row["event_date"]
-        )
-        for index, row in gaps.iterrows()
-    ]
-
-
-def get_data_gaps_message(gaps: pd.DataFrame) -> str:
-    """
-    Journalise les périodes de données manquantes.
-
-    :param gaps: (pd.DataFrame) Périodes de données manquantes.
-    :return: (str) Journalisation des périodes de données manquantes.
-    """
-    data_gaps_list: list[DataGapPeriod] = get_data_gap_periods(gaps=gaps)
-
-    total_duration_minutes = (
-        sum((gap.duration for gap in data_gaps_list), timedelta()).total_seconds() / 60
-    )
-    gaps_str = "; ".join([str(gap) for gap in data_gaps_list])
-
-    return f"{total_duration_minutes} minutes de données manquantes pour les périodes suivantes : {gaps_str}."
-
-
 def create_nan_date_row(date_time: str) -> NanDateRow:
     """
     Crée une ligne de données avec une valeur de NaN pour une date donnée.
@@ -598,7 +568,6 @@ def get_water_level_data(
     :param to_time: (str) Date de fin.
     :param time_series_priority: (Collection[TimeSeriesProtocol]) Liste des séries temporelles à récupérer en ordre de priorité.
     :param buffer_time: (Optional[timedelta | None]) Temps tampon à ajouter au début et à la fin de la période de données.
-
     :param max_time_gap: (Optional[str | None]) Intervalle de temps maximal permis. Si None, l'interpolation et le remplissage
                                                 des données manquantes est désactivée.
     :param threshold_interpolation_filling: (Optional[str | None]) Seuil de temps en dessous duquel les données manquantes
