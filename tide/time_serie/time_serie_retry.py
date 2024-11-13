@@ -29,7 +29,6 @@ def double_buffer_time(retry_state) -> None:
     retry_state.kwargs["buffer_time"] = buffer_time * 2
 
 
-
 LEVEL: str = "TRACE"
 interpolation_retry = partial(
     retry,
