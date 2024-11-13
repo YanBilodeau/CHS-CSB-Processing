@@ -32,7 +32,7 @@ def double_buffer_time(retry_state) -> None:
 LEVEL: str = "TRACE"
 interpolation_retry = partial(
     retry,
-    stop=stop_after_attempt(1),
+    stop=stop_after_attempt(5),
     wait=wait_exponential_jitter(initial=1, jitter=1, max=3),
     before=before_log(LOGGER, LEVEL),  # type: ignore
     after=double_buffer_time,
