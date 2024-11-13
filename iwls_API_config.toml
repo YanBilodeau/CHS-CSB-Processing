@@ -12,9 +12,8 @@ threshold_interpolation-filling = "4 h"
 # Flag de l'API privée [ GOOD, NOT_EVAL, QUESTIONABLE, BAD, MISSING ].
 # Flag de l'API publique [ 1, 2, 3 ].  1 = Good, 2 = Not evaluated, 3 = Questionable
 qc_flag_filter = ["BAD", "MISSING"]  # todo : est-ce qu'on enlève les valeurs "NOT_EVAL" et "3" ?
-# Temps tampon pour les données de la série temporelle à récupérer pour les interpolations.
-# Laisser vide "" pour désactiver. {format "<number> <min|h>"}
-buffer_time = "24 h"
+# Temps tampon en heures pour les données de la série temporelle à récupérer pour les interpolations.
+buffer_time = 24
 
 [IWLS.API.PROFILE]
 # {"dev", "prod", "public"}

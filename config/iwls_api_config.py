@@ -1,4 +1,5 @@
 import re
+from datetime import timedelta
 from pathlib import Path
 from typing import Optional
 
@@ -23,11 +24,17 @@ TimeSeriesDict = dict[str, list[str]]
 IWLSapiDict = dict[str, dict[str, TimeSeriesDict | EnvironmentDict | ProfileDict]]
 
 
-class TimeSeriesPriority(BaseModel):
+class TimeSeriesConfig(BaseModel):
     priority: list[TimeSeries]
     max_time_gap: str | None
     threshold_interpolation_filling: str | None
     qc_flag_filter: list[str] | None
+    buffer_time: timedelta | None
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        if isinstance(data.get("buffer_time"), int):
+            self.buffer_time = timedelta(hours=data["buffer_time"])
 
     @field_validator("max_time_gap", "threshold_interpolation_filling")
     def validate_time_gap(cls, value):
@@ -48,7 +55,7 @@ class IWLSAPIConfig(BaseModel):
     dev: Optional[APIEnvironment]
     prod: Optional[APIEnvironment]
     public: Optional[APIEnvironment]
-    time_series: TimeSeriesPriority
+    time_series: TimeSeriesConfig
     profile: APIProfile
 
 
@@ -71,7 +78,7 @@ def get_api_config(config_file: Optional[Path] = CONFIG_FILE) -> IWLSAPIConfig:
         dev=environments["dev"] if "dev" in environments else None,
         prod=environments["prod"] if "prod" in environments else None,
         public=environments["public"] if "public" in environments else None,
-        time_series=TimeSeriesPriority(
+        time_series=TimeSeriesConfig(
             priority=config_data["IWLS"]["API"]["TimeSeries"]["priority"],
             max_time_gap=config_data["IWLS"]["API"]["TimeSeries"].get("max_time_gap"),
             threshold_interpolation_filling=config_data["IWLS"]["API"][
@@ -80,6 +87,7 @@ def get_api_config(config_file: Optional[Path] = CONFIG_FILE) -> IWLSAPIConfig:
             qc_flag_filter=config_data["IWLS"]["API"]["TimeSeries"].get(
                 "qc_flag_filter"
             ),
+            buffer_time=config_data["IWLS"]["API"]["TimeSeries"].get("buffer_time"),
         ),
         profile=APIProfile(**config_data["IWLS"]["API"]["PROFILE"]),
     )
