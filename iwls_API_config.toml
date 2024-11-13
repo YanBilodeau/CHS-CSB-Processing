@@ -6,12 +6,15 @@ priority = ["wlo", "wlp"]
 # {format "<number> <min|h>"}
 max_time_gap = "1 min"
 # Seuil en dessous duquel les données manquantes sont interpolées et au dessus desquelles elles sont remplies par
-# la time serie suivante.
-threshold_interpolation-filling = "1 h"
+# la time serie suivante. # {format "<number> <min|h>"}
+threshold_interpolation-filling = "4 h"
 # Liste des valeurs de qualité à filtrer des times series.
 # Flag de l'API privée [ GOOD, NOT_EVAL, QUESTIONABLE, BAD, MISSING ].
 # Flag de l'API publique [ 1, 2, 3 ].  1 = Good, 2 = Not evaluated, 3 = Questionable
 qc_flag_filter = ["BAD", "MISSING"]  # todo : est-ce qu'on enlève les valeurs "NOT_EVAL" et "3" ?
+# Temps tampon pour les données de la série temporelle à récupérer pour les interpolations.
+# Laisser vide "" pour désactiver. {format "<number> <min|h>"}
+buffer_time = "24 h"
 
 [IWLS.API.PROFILE]
 # {"dev", "prod", "public"}
