@@ -42,6 +42,23 @@ class StationsHandlerPrivate(StationsHandlerABC):
             )
         ]
 
+    @staticmethod
+    def _get_time_series(
+        station: dict, index_map: dict[TimeSeriesProtocol, int] | None
+    ) -> list:
+        """
+        Récupère les séries temporelles de la station.
+
+        :param station: (dict) Données de la station.
+        :param index_map: (dict[str, int] | None) Carte d'index pour les séries temporelles.
+        :return: (list[str]) Liste des séries temporelles.
+        """
+        return [
+            ts["code"]
+            for ts in station["timeSeries"]
+            if ts["code"] in index_map.keys() and ts["active"]
+        ]
+
     def _fetch_time_series(self, station: dict) -> dict:
         station["timeSeries"] = self.api.get_time_series_station(
             station=station["id"]
