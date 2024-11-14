@@ -9,7 +9,7 @@ from pandera.typing.geopandas import GeoSeries
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.Schema")
 
 
-class StationsSchema(pa.DataFrameModel):
+class DataLoggerSchema(pa.DataFrameModel):
     LON: Series[pd.Float64Dtype()]
     LAT: Series[pd.Float64Dtype()]
     DEPTH: Series[pd.Float64Dtype()]
