@@ -222,6 +222,30 @@ class StationsHandlerABC(ABC):
             for event in data
         ]
 
+    @staticmethod
+    def filter_wlo_qc_flag(
+        data_dataframe: pd.DataFrame,
+        time_serie_code: TimeSeriesProtocol,
+        wlo_qc_flag_filter: Optional[Collection[str] | None] = None,
+    ) -> pd.DataFrame:
+        """
+        Filtre les données de la série temporelle WLO en fonction des flags de qualité.
+
+        :param data_dataframe: (pd.DataFrame) Données des séries temporelles sous forme de DataFrame.
+        :param time_serie_code: (TimeSeriesProtocol) Le code de la série temporelle des données.
+        :param wlo_qc_flag_filter: (Collection[str] | None) Liste des flags de qualité à filtrer pour la
+                                        série temporelle WLO.
+        :return: (pd.DataFrame) Données des séries temporelles sous forme de DataFrame.
+        """
+        if time_serie_code == TimeSeriesProtocol.WLO:
+            data_dataframe = (
+                data_dataframe[~data_dataframe["qc_flag"].isin(wlo_qc_flag_filter)]
+                if wlo_qc_flag_filter
+                else data_dataframe
+            )
+
+        return data_dataframe
+
     def get_time_series_dataframe(
         self,
         station: str,
@@ -281,12 +305,11 @@ class StationsHandlerABC(ABC):
 
         data_dataframe: pd.DataFrame[TimeSerieDataSchema] = pd.DataFrame(data_list)
 
-        if time_serie_code == TimeSeriesProtocol.WLO:
-            data_dataframe = (
-                data_dataframe[~data_dataframe["qc_flag"].isin(wlo_qc_flag_filter)]
-                if wlo_qc_flag_filter
-                else data_dataframe
-            )
+        data_dataframe = self.filter_wlo_qc_flag(
+            data_dataframe=data_dataframe,
+            time_serie_code=time_serie_code,
+            wlo_qc_flag_filter=wlo_qc_flag_filter,
+        )
 
         data_dataframe.drop(columns=["qc_flag"], inplace=True)
 
