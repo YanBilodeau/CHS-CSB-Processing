@@ -45,7 +45,7 @@ class StationsHandlerPrivate(StationsHandlerABC):
     @staticmethod
     def _get_time_series(
         station: dict, index_map: dict[TimeSeriesProtocol, int] | None
-    ) -> list:
+    ) -> list[str]:
         """
         Récupère les séries temporelles de la station.
 
