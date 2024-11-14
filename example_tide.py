@@ -20,14 +20,12 @@ from tide.stations import (
 )
 from tide.time_serie import (
     get_water_level_data,
-    WaterLevelDataError,
 )
 from tide.voronoi import (
     get_voronoi_geodataframe,
     get_time_series_by_station_id,
     get_name_by_station_id,
     get_code_by_station_id,
-    get_polygon_by_geometry,
 )
 from config.iwls_api_config import (
     get_api_config,
@@ -130,8 +128,8 @@ def initialize_station_info() -> tuple:
     :return: (tuple) Information of the stations.
     """
     station_rimouski: str = "5cebf1e03d0f4a073c4bbd92"
-    from_time_rimouski: str = "2024-10-01T17:00:00Z"
-    to_time_rimouski: str = "2024-10-28T00:00:00Z"
+    from_time_rimouski: str = "2024-10-01T12:00:00Z"
+    to_time_rimouski: str = "2024-10-29T13:00:00Z"
 
     station_winter = "5cebf1de3d0f4a073c4bba71"
     from_time_winter = "2024-08-01T8:00:00Z"
@@ -145,12 +143,36 @@ def initialize_station_info() -> tuple:
     from_time_quebec = "2024-07-07T8:00:00Z"
     to_time_quebec = "2024-10-28T10:00:00Z"
 
+    memphremagog = "5dd3064de0fdc4b9b4be664c"
+    from_time_memphremagog: str = "2024-10-01T00:00:00Z"
+    to_time_memphremagog: str = "2024-10-15T00:00:00Z"
+
+    rsp = "5dd30650e0fdc4b9b4be6bee"
+    from_time_rsp: str = "2024-09-29T00:00:00Z"
+    to_time_rsp: str = "2024-11-15T00:00:00Z"
+
     info_stations = (
         (station_rimouski, from_time_rimouski, to_time_rimouski),
-        (station_winter, from_time_winter, to_time_winter),
-        (station_montreal, from_time_montreal, to_time_montreal),
-        (station_quebec, from_time_quebec, to_time_quebec),
+        # (station_winter, from_time_winter, to_time_winter),
+        # (station_montreal, from_time_montreal, to_time_montreal),
+        # (station_quebec, from_time_quebec, to_time_quebec),
+        # (memphremagog, from_time_memphremagog, to_time_memphremagog),
+        # (rsp, from_time_rsp, to_time_rsp),
     )
+
+    return info_stations
+
+
+def initialize_all_station_info(
+    gdf_voronoi: gpd.GeoDataFrame, stations: slice = slice(0, 10)
+) -> list[tuple]:
+    gdf_voronoi.sort_values(by="id", inplace=True)
+    stations = gdf_voronoi.iloc[stations]["id"].to_list()
+
+    from_time: str = "2024-10-01T00:00:00Z"
+    to_time: str = "2024-10-15T00:00:00Z"
+
+    info_stations = [(station_id, from_time, to_time) for station_id in stations]
 
     return info_stations
 
@@ -185,10 +207,16 @@ def main():
     )
 
     # Initialize the information of the stations for the example
-    info_stations = initialize_station_info()
+    # info_stations = initialize_station_info()
+    # Initialize the information of the stations for the example
+    info_stations = initialize_all_station_info(
+        gdf_voronoi=gdf_voronoi, stations=slice(1000, 1500)
+    )
 
     wl_combineds = []
     titles = []
+    empty = []
+    exceptions = []
 
     # Get the water level data for each station
     for station, from_time, to_time in info_stations:
@@ -207,29 +235,40 @@ def main():
         )
 
         # Get the water level data for the station
-        wl_combined: pd.DataFrame[TimeSerieDataSchema] = get_water_level_data(
-            stations_handler=stations_handler,
-            station_id=station,
-            from_time=from_time,
-            to_time=to_time,
-            # Retrieve the data based on the priority of the time series.
-            time_series_priority=time_series_priority,
-            # Maximum time gap allowed for the data. The maximum time gap is defined in the configuration file.
-            # If the gap is greater than this value, data from the next time series will be retrieved to fill
-            # the gaps. For example, if the time series priority is [wlo, wlp] and the maximum time gap is 1 hour, the
-            # data for the time series wlo will be retrieved first. If the gap between two consecutive
-            # data points is greater than 1 hour, the data for the time series wlp will be retrieved to fill the gap.
-            max_time_gap=iwls_config.time_series.max_time_gap,
-            # Threshold for the interpolation versus filling of the gaps in the data.
-            threshold_interpolation_filling=iwls_config.time_series.threshold_interpolation_filling,
-        )
-
-        if wl_combined.empty:
-            raise WaterLevelDataError(
+        try:
+            wl_combined: pd.DataFrame[TimeSerieDataSchema] = get_water_level_data(
+                stations_handler=stations_handler,
                 station_id=station,
                 from_time=from_time,
                 to_time=to_time,
+                # Retrieve the data based on the priority of the time series.
+                time_series_priority=time_series_priority,
+                # Maximum time gap allowed for the data. The maximum time gap is defined in the configuration file.
+                # If the gap is greater than this value, data from the next time series will be retrieved to fill
+                # the gaps. For example, if the time series priority is [wlo, wlp] and the maximum time gap is 1 hour, the
+                # data for the time series wlo will be retrieved first. If the gap between two consecutive
+                # data points is greater than 1 hour, the data for the time series wlp will be retrieved to fill the gap.
+                max_time_gap=iwls_config.time_series.max_time_gap,
+                # Threshold for the interpolation versus filling of the gaps in the data.
+                threshold_interpolation_filling=iwls_config.time_series.threshold_interpolation_filling,
+                # Quality control flag filter for the wlo time series.
+                wlo_qc_flag_filter=iwls_config.time_series.wlo_qc_flag_filter,
+                # Buffer time to add before and after the requested time range for the interpolation.
+                buffer_time=iwls_config.time_series.buffer_time,
             )
+        except Exception as e:
+            LOGGER.exception(f"Erreur pour la station {station} : {e}")
+            exceptions.append((station, e))
+            wl_combined = pd.DataFrame()
+
+        if wl_combined.empty:
+            empty.append(station)
+            continue
+        #     raise WaterLevelDataError(
+        #         station_id=station,
+        #         from_time=from_time,
+        #         to_time=to_time
+        #     )
 
         LOGGER.info(wl_combined)
 
@@ -241,20 +280,24 @@ def main():
         # Export the water level data to a CSV file
         export_dataframe_to_csv(
             dataframe=wl_combined,
-            output_path=EXPORT
-            / f"{station_title} ({from_time} - {to_time}).csv".replace(":", "-"),
+            output_path=EXPORT / f"{station_title} ({from_time} - {to_time}).csv",
         )
 
         wl_combineds.append(wl_combined)
         titles.append(station_title)
 
     # Plot the water level data for each station
-    plot_time_series_dataframe(
-        dataframes=wl_combineds,
-        titles=titles,
-        show_plot=True,  # Show the plot in a web browser
-        output_path=EXPORT / "WaterLevel.html",  # Export the plot to an HTML file
-    )
+    if wl_combineds:
+        plot_time_series_dataframe(
+            dataframes=wl_combineds,
+            titles=titles,
+            show_plot=True,  # Show the plot in a web browser
+            output_path=EXPORT / "WaterLevel.html",  # Export the plot to an HTML file
+        )
+
+    LOGGER.debug(f"Stations vides : {empty}.")
+
+    LOGGER.debug(f"Exceptions : {exceptions}.")
 
     # Create a GeoDataFrame with random points
     # data: gpd.GeoDataFrame = create_random_points_geodataframe(1_000_000)
@@ -267,3 +310,27 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+    # Liste des stations avec les séries temporelles dans les métadonnées de la station mais aucune donnée dans le holding
+
+    # QC Private ['5cebf1de3d0f4a073c4bba5b', '5cebf1de3d0f4a073c4bbaf3', '5cebf1df3d0f4a073c4bbb5b',
+    # '5cebf1e43d0f4a073c4bc49e', '62a328b7bacf3e2d38aeb2f9']
+
+    # ATL [01569 - 5dd3064ce0fdc4b9b4be65e3] wlo rien dans le holding
+
+    # PAC [07843 - 5cebf1de3d0f4a073c4bb956, 09511 - 5cebf1de3d0f4a073c4bba1a] wlp avant 2023
+
+    # à valider
+    # CNA ['5cebf1dd3d0f4a073c4bb8c9', '5cebf1dd3d0f4a073c4bb8e3', '5cebf1de3d0f4a073c4bb9d5',
+    # '5cebf1de3d0f4a073c4bb9d9', '5cebf1de3d0f4a073c4bba7f', '5cebf1df3d0f4a073c4bbbf7',
+    # '5cebf1df3d0f4a073c4bbcfb', '5cebf1df3d0f4a073c4bbcfd', '5cebf1e13d0f4a073c4bbf75',
+    # '5cebf1e13d0f4a073c4bbf77', '5cebf1e13d0f4a073c4bbf7f', '5cebf1e13d0f4a073c4bbfa1',
+    # '5cebf1e23d0f4a073c4bbfa5', '5cebf1e23d0f4a073c4bbfc9', '5cebf1e23d0f4a073c4bbfcb',
+    # '5cebf1e23d0f4a073c4bc019', '5cebf1e23d0f4a073c4bc01b', '5cebf1e23d0f4a073c4bc01d',
+    # '5cebf1e23d0f4a073c4bc01f', '5cebf1e23d0f4a073c4bc021', '5cebf1e43d0f4a073c4bc3b8',
+    # '5cebf1e43d0f4a073c4bc3ba', '5cebf1e43d0f4a073c4bc3d1', '5cebf1e43d0f4a073c4bc3f9',
+    # '5dd3064ee0fdc4b9b4be67f4', '5dd3064ee0fdc4b9b4be67f6', '5dd3064ee0fdc4b9b4be67f8',
+    # '5dd3064ee0fdc4b9b4be6808', '5dd3064ee0fdc4b9b4be6812', '5dd3064ee0fdc4b9b4be6818',
+    # '5dd3064fe0fdc4b9b4be69f2', '5dd3064fe0fdc4b9b4be6afd', '5dd3064fe0fdc4b9b4be6b18',
+    # '5dd3064fe0fdc4b9b4be6b1b', '5dd30650e0fdc4b9b4be6d36', '5dd30650e0fdc4b9b4be6d89',
+    # '5dd30650e0fdc4b9b4be6db5', '5dd30650e0fdc4b9b4be6db8']
