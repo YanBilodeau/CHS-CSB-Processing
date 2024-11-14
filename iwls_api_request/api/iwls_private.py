@@ -180,7 +180,7 @@ class IWLSapiPrivate(IWLSapiABC):
         Méthode permettant de filtrer les stations selon le code d'une région.
 
         :param stations: (list[dict]) Une liste de stations à filtrer.
-        :param chs_region_code: (str) Le code d'une région (PAC, CNA, ATL, QUE).
+        :param chs_region_code: (Regions) Le code d'une région (PAC, CNA, ATL, QUE).
         :return: (list[dict]) Une liste contenant les stations filtrées.
         """
         if chs_region_code is None:
