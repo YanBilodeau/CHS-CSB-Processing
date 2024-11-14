@@ -48,12 +48,8 @@ class StationsHandlerPublic(StationsHandlerABC):
         :return: (list[str]) Liste des séries temporelles.
         """
         return [
-            ts["code"]
-            for ts in station["timeSeries"]
-            if ts["code"]
-            in index_map.keys()
+            ts["code"] for ts in station["timeSeries"] if ts["code"] in index_map.keys()
         ]
-
 
     def get_stations_geodataframe(
         self,
