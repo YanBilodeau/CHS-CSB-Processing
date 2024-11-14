@@ -18,6 +18,30 @@ class StationsHandlerPrivate(StationsHandlerABC):
     def __init__(self, api: IWLSapiProtocol):
         super().__init__(api=api)
 
+    @staticmethod
+    def _filter_stations(
+        stations: Collection[dict], filter_time_series: Collection[TimeSeriesProtocol]
+    ) -> list[dict]:
+        """
+        Filtre les stations en fonction des séries temporelles.
+
+        :param stations: (Collection[dict]) Liste des stations.
+        :param filter_time_series: (Collection[TimeSeriesProtocol]) Liste des séries temporelles pour filtrer les stations.
+        :return: (list[dict]) Liste des stations filtrées.
+        """
+        LOGGER.debug(
+            f"Filtrage des stations en fonction des séries temporelles : {filter_time_series}."
+        )
+
+        return [
+            station
+            for station in stations
+            if any(
+                ts["code"] in filter_time_series and ts["active"]
+                for ts in station["timeSeries"]
+            )
+        ]
+
     def _fetch_time_series(self, station: dict) -> dict:
         station["timeSeries"] = self.api.get_time_series_station(
             station=station["id"]
