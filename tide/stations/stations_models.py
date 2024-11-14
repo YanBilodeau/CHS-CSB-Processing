@@ -28,7 +28,7 @@ class ResponseProtocol(Protocol):
 
 
 class IWLSapiProtocol(Protocol):
-    def get_all_stations(self) -> ResponseProtocol:
+    def get_all_stations(self, **kwargs) -> ResponseProtocol:
         pass
 
     def get_time_series_station(self, station: str) -> ResponseProtocol:
