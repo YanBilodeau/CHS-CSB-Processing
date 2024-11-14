@@ -638,7 +638,6 @@ def get_water_level_data(
 
 
 # todo isTidal == False  -> interpolation linéaire plutôt que spline cubique ?
-# todo problème avec l'interpolation même avec le buffer_time si les données sont manquantes à la fin
-#  ou au début de la période NaN
+# todo problème avec l'interpolation si les données sont manquantes à la fin ou au début de la période NaN
 # todo Valider qu' il y a au moins x heure de part et d autre pour faire l interpolation, sinon raise exception
 # todo valider le holding avant de demander les données (n'enlève pas les trous de moins de 10 jours) seulement pour wlo ! -> sinon refaire les polygon sans cette station ?
