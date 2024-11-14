@@ -19,10 +19,11 @@ class DataGapPeriod:
 
 
 class TimeSeriesProtocol(Protocol):
-    WLO: str
-    WLF_SPINE: str
-    WLF: str
-    WLP: str
+    WLO: str = "wlo"
+    WLF_SPINE: str = "wlf-spine"
+    WLF_VTG: str = "wlf-vtg"
+    WLF: str = "wlf"
+    WLP: str = "wlp"
 
     def from_str(cls, value: str):
         pass
@@ -35,6 +36,6 @@ class StationsHandlerProtocol(Protocol):
         from_time: str,
         to_time: str,
         time_serie_code: Optional[TimeSeriesProtocol],
-        qc_flag_filter: Optional[list[str]],
+        wlo_qc_flag_filter: Optional[list[str]],
     ) -> pd.DataFrame:
         pass
