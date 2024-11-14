@@ -81,20 +81,19 @@ class StationsHandlerABC(ABC):
     @staticmethod
     @abstractmethod
     def _get_time_series(
-        stations: Collection[dict], index_map: dict[TimeSeriesProtocol, int] | None
+        station: dict, index_map: dict[TimeSeriesProtocol, int] | None
     ) -> list:
         """
         Récupère les séries temporelles de la station.
 
-        :param stations: (Collection[dict]) Liste des stations.
+        :param station: (dict) Données de la station.
         :param index_map: (dict[str, int] | None) Carte d'index pour les séries temporelles.
         :return: (list[str]) Liste des séries temporelles.
         """
         ...
 
-
-    @staticmethod
     def _create_attributes(
+        self,
         stations: Collection[dict],
         index_map: dict[TimeSeriesProtocol, int] | None,
         station_name_key: str,
@@ -118,12 +117,7 @@ class StationsHandlerABC(ABC):
                     ["Unknown"]
                     if index_map is None
                     else sorted(
-                        [
-                            ts["code"]
-                            for ts in station["timeSeries"]
-                            if ts["code"]
-                            in index_map.keys()  # todo pour private ajouter condition ts["active"]
-                        ],
+                        self._get_time_series(station=station, index_map=index_map),
                         key=lambda code: index_map.get(code, float("inf")),
                     )
                 ),
