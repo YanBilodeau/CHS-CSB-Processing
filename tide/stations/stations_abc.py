@@ -22,7 +22,9 @@ class StationsHandlerABC(ABC):
 
     @property
     def stations(self) -> list[dict]:
-        stations: ResponseProtocol = self.api.get_all_stations()  # type: ignore
+        stations: ResponseProtocol = self.api.get_all_stations(
+            chs_region_code="QUE"
+        )  # todo enlever le chs_region_code
 
         if not stations.is_ok:
             LOGGER.error(
@@ -49,6 +51,7 @@ class StationsHandlerABC(ABC):
         return {code: index for index, code in enumerate(filter_time_series)}
 
     @staticmethod
+    @abstractmethod
     def _filter_stations(
         stations: Collection[dict], filter_time_series: Collection[TimeSeriesProtocol]
     ) -> list[dict]:
@@ -59,15 +62,7 @@ class StationsHandlerABC(ABC):
         :param filter_time_series: (Collection[TimeSeriesProtocol]) Liste des séries temporelles pour filtrer les stations.
         :return: (list[dict]) Liste des stations filtrées.
         """
-        LOGGER.debug(
-            f"Filtrage des stations en fonction des séries temporelles : {filter_time_series}."
-        )
-
-        return [
-            station
-            for station in stations
-            if any(ts["code"] in filter_time_series for ts in station["timeSeries"])
-        ]
+        ...
 
     @staticmethod
     def _create_geometry(stations: Collection[dict]) -> list[Point]:
@@ -111,7 +106,8 @@ class StationsHandlerABC(ABC):
                         [
                             ts["code"]
                             for ts in station["timeSeries"]
-                            if ts["code"] in index_map.keys()
+                            if ts["code"]
+                            in index_map.keys()  # todo pour private ajouter condition ts["active"]
                         ],
                         key=lambda code: index_map.get(code, float("inf")),
                     )
