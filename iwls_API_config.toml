@@ -8,10 +8,10 @@ max_time_gap = "1 min"
 # Seuil en dessous duquel les données manquantes sont interpolées et au dessus desquelles elles sont remplies par
 # la time serie suivante. # {format "<number> <min|h>"}
 threshold_interpolation-filling = "4 h"
-# Liste des valeurs de qualité à filtrer des times series.
+# Liste des valeurs de qualité à filtrer pour wlo.
 # Flag de l'API privée [ GOOD, NOT_EVAL, QUESTIONABLE, BAD, MISSING ].
 # Flag de l'API publique [ 1, 2, 3 ].  1 = Good, 2 = Not evaluated, 3 = Questionable
-qc_flag_filter = ["NOT_EVAL", "QUESTIONABLE", "BAD", "MISSING", "2", "3"]
+wlo_qc_flag_filter = ["NOT_EVAL", "QUESTIONABLE", "BAD", "MISSING", "2", "3"]  # todo investiger avec les 2 et 3 que c'est bien filtrer
 # Temps tampon en heures pour les données de la série temporelle à récupérer pour les interpolations.
 buffer_time = 24
 

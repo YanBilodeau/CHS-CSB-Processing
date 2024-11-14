@@ -28,7 +28,7 @@ class TimeSeriesConfig(BaseModel):
     priority: list[TimeSeries]
     max_time_gap: str | None
     threshold_interpolation_filling: str | None
-    qc_flag_filter: list[str] | None
+    wlo_qc_flag_filter: list[str] | None
     buffer_time: timedelta | None
 
     def __init__(self, **data):
@@ -84,8 +84,8 @@ def get_api_config(config_file: Optional[Path] = CONFIG_FILE) -> IWLSAPIConfig:
             threshold_interpolation_filling=config_data["IWLS"]["API"][
                 "TimeSeries"
             ].get("threshold_interpolation-filling"),
-            qc_flag_filter=config_data["IWLS"]["API"]["TimeSeries"].get(
-                "qc_flag_filter"
+            wlo_qc_flag_filter=config_data["IWLS"]["API"]["TimeSeries"].get(
+                "wlo_qc_flag_filter"
             ),
             buffer_time=config_data["IWLS"]["API"]["TimeSeries"].get("buffer_time"),
         ),
