@@ -196,6 +196,7 @@ class IWLSapiPrivate(IWLSapiABC):
             for station in stations
             if regions_dict[station[ids.DFO_REGION]] == chs_region_code.value
         ]
+
         return stations_list
 
     def _filter_stations_by_ts(
