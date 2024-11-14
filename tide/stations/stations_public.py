@@ -36,6 +36,25 @@ class StationsHandlerPublic(StationsHandlerABC):
             if any(ts["code"] in filter_time_series for ts in station["timeSeries"])
         ]
 
+    @staticmethod
+    def _get_time_series(
+        station: dict, index_map: dict[TimeSeriesProtocol, int] | None
+    ) -> list:
+        """
+        Récupère les séries temporelles de la station.
+
+        :param station: (dict) Données de la station.
+        :param index_map: (dict[str, int] | None) Carte d'index pour les séries temporelles.
+        :return: (list[str]) Liste des séries temporelles.
+        """
+        return [
+            ts["code"]
+            for ts in station["timeSeries"]
+            if ts["code"]
+            in index_map.keys()
+        ]
+
+
     def get_stations_geodataframe(
         self,
         filter_time_series: Collection[TimeSeriesProtocol] | None,
