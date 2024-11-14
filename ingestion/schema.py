@@ -13,7 +13,7 @@ class DataLoggerSchema(pa.DataFrameModel):
     LON: Series[pd.Float64Dtype()]
     LAT: Series[pd.Float64Dtype()]
     DEPTH: Series[pd.Float64Dtype()]
-    DATE: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
+    TIME: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
     geometry: GeoSeries
 
 
