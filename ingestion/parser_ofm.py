@@ -5,9 +5,11 @@ import geopandas as gpd
 from loguru import logger
 import pandas as pd
 
+from .schema import DataLoggerSchema, validate_schema
 from .parser_abc import DataParserABC
 
-LOGGER = logger.bind(name="Ingestion.Parser.OFM")
+
+LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.OFM")
 
 
 class DataParserOFM(DataParserABC):
@@ -45,12 +47,14 @@ class DataParserOFM(DataParserABC):
         Méthode permettant de transformer le geodataframe pour respecter le schéma de données.
 
         :param data: (gpd.GeoDataFrame) Le geodataframe à transformer.
-        :return: (gpd.GeoDataFrame) Le geodataframe transformé.
+        :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le geodataframe transformé.
         """
         LOGGER.debug(
             "Transformation et validation du geodataframe pour respecter le schéma de données."
         )
-        # todo valider schema
+
+        validate_schema(data, DataLoggerSchema)
+
         return data
 
     @classmethod
@@ -59,8 +63,11 @@ class DataParserOFM(DataParserABC):
         Méthode permettant de lire les fichiers brutes et retourne un geodataframe.
 
         :param files: (Collection[Path]) Les fichiers à lire.
-        :return: (gpd.GeoDataFrame) Un GeoDataFrame.
+        :return: (gpd.GeoDataFrame[DataLoggerSchema]) Un GeoDataFrame.
         """
         data_geodataframe: gpd.GeoDataFrame = cls.read(files=files)
+        data_geodataframe: gpd.GeoDataFrame[DataLoggerSchema] = cls.transform(
+            data=data_geodataframe
+        )
 
-        return cls.transform(data=data_geodataframe)
+        return data_geodataframe
