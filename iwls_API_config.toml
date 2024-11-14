@@ -30,7 +30,7 @@ period = 1
 [IWLS.API.ENVIRONMENT.prod]
 name = "PROD"
 endpoint = "EndpointPrivateProd"
-calls = 15
+calls = 10
 period = 1
 
 [IWLS.API.ENVIRONMENT.public]
@@ -38,4 +38,3 @@ name = "PUBLIC"
 endpoint = "EndpointPublic"
 calls = 15
 period = 1
-
