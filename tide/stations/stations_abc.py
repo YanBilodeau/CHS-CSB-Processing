@@ -22,9 +22,7 @@ class StationsHandlerABC(ABC):
 
     @property
     def stations(self) -> list[dict]:
-        stations: ResponseProtocol = self.api.get_all_stations(
-            chs_region_code="QUE"
-        )  # todo enlever le chs_region_code
+        stations: ResponseProtocol = self.api.get_all_stations()
 
         if not stations.is_ok:
             LOGGER.error(
