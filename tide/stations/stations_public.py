@@ -15,6 +15,27 @@ class StationsHandlerPublic(StationsHandlerABC):
     def __init__(self, api: IWLSapiProtocol):
         super().__init__(api=api)
 
+    @staticmethod
+    def _filter_stations(
+        stations: Collection[dict], filter_time_series: Collection[TimeSeriesProtocol]
+    ) -> list[dict]:
+        """
+        Filtre les stations en fonction des séries temporelles.
+
+        :param stations: (Collection[dict]) Liste des stations.
+        :param filter_time_series: (Collection[TimeSeriesProtocol]) Liste des séries temporelles pour filtrer les stations.
+        :return: (list[dict]) Liste des stations filtrées.
+        """
+        LOGGER.debug(
+            f"Filtrage des stations en fonction des séries temporelles : {filter_time_series}."
+        )
+
+        return [
+            station
+            for station in stations
+            if any(ts["code"] in filter_time_series for ts in station["timeSeries"])
+        ]
+
     def get_stations_geodataframe(
         self,
         filter_time_series: Collection[TimeSeriesProtocol] | None,
