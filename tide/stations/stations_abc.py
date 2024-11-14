@@ -79,6 +79,21 @@ class StationsHandlerABC(ABC):
         ]
 
     @staticmethod
+    @abstractmethod
+    def _get_time_series(
+        stations: Collection[dict], index_map: dict[TimeSeriesProtocol, int] | None
+    ) -> list:
+        """
+        Récupère les séries temporelles de la station.
+
+        :param stations: (Collection[dict]) Liste des stations.
+        :param index_map: (dict[str, int] | None) Carte d'index pour les séries temporelles.
+        :return: (list[str]) Liste des séries temporelles.
+        """
+        ...
+
+
+    @staticmethod
     def _create_attributes(
         stations: Collection[dict],
         index_map: dict[TimeSeriesProtocol, int] | None,
