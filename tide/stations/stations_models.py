@@ -9,10 +9,10 @@ class EndpointTypeProtocol(Protocol):
 
 
 class TimeSeriesProtocol(Protocol):
-    WLO: str
-    WLF_SPINE: str
-    WLF: str
-    WLP: str
+    WLO: str = "WLO"
+    WLF_SPINE: str = "WLF_SPINE"
+    WLF: str = "WLF"
+    WLP: str = "WLP"
 
     def from_str(cls, value: str):
         pass
