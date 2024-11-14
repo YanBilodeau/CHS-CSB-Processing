@@ -8,18 +8,35 @@ import geopandas as gpd
 
 @dataclass
 class DataParserABC(ABC):
+    @staticmethod
     @abstractmethod
-    def read(self, files: Collection[Path]):  # todo ajouter type hint
+    def read(files: Collection[Path]) -> gpd.GeoDataFrame:
+        """
+        Méthode permettant de lire les fichiers brutes et retourne un geodataframe.
+
+        :param files: (Collection[Path]) Les fichiers à lire.
+        :return: (gpd.GeoDataFrame) Un GeoDataFrame.
+        """
         pass
 
+    @staticmethod
     @abstractmethod
-    def transform(self, data) -> gpd.GeoDataFrame:  # todo ajouter type hint
+    def transform(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+        """
+        Méthode permettant de transformer le geodataframe pour respecter le schéma de données.
+
+        :param data: (gpd.GeoDataFrame) Le geodataframe à transformer.
+        :return: (gpd.GeoDataFrame) Le geodataframe transformé.
+        """
         pass
 
+    @classmethod
+    @abstractmethod
+    def from_files(cls, files: Collection[Path]) -> gpd.GeoDataFrame:
+        """
+        Méthode permettant de lire les fichiers brutes et retourne un geodataframe.
 
-class DataParserOFM(DataParserABC):
-    def read(self, files: Collection[Path]):
-        pass
-
-    def transform(self, data) -> gpd.GeoDataFrame:
+        :param files: (Collection[Path]) Les fichiers à lire.
+        :return: (gpd.GeoDataFrame) Un GeoDataFrame transformé respectant le schéma de données.
+        """
         pass
