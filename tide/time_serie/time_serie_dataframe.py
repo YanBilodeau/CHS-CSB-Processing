@@ -487,7 +487,7 @@ def get_time_series_data(
     to_time: str,
     time_serie_code: TimeSeriesProtocol,
     buffer_time: Optional[timedelta] = None,
-    qc_flag_filter: Optional[list[str] | None] = None,
+    wlo_qc_flag_filter: Optional[list[str] | None] = None,
 ) -> pd.DataFrame | None:
     """
     Récupère les données de la série temporelle.
@@ -498,7 +498,7 @@ def get_time_series_data(
     :param to_time: (str) Date de fin.
     :param time_serie_code: (TimeSeriesProtocol) Série temporelle.
     :param buffer_time: (Optional[timedelta]) Temps tampon à ajouter au début et à la fin de la période de données.
-    :param qc_flag_filter: (Optional[list[str] | None]) Filtre de qualité des données.
+    :param wlo_qc_flag_filter: (Optional[list[str] | None]) Filtre de qualité des données wlo.
     :return: (pd.DataFrame[TimeSerieDataSchema] | None) Données de la série temporelle.
     """
     if buffer_time:
@@ -523,7 +523,7 @@ def get_time_series_data(
             from_time=from_time_buffered,
             to_time=to_time_buffered,
             time_serie_code=time_serie_code,
-            qc_flag_filter=qc_flag_filter,
+            wlo_qc_flag_filter=wlo_qc_flag_filter,
         )
     )
 
@@ -557,7 +557,7 @@ def get_water_level_data(
     buffer_time: Optional[timedelta | None] = None,
     max_time_gap: Optional[str | None] = None,
     threshold_interpolation_filling: Optional[str | None] = None,
-    qc_flag_filter: Optional[list[str] | None] = None,
+    wlo_qc_flag_filter: Optional[list[str] | None] = None,
 ) -> pd.DataFrame:
     """
     Récupère et traite les séries temporelles de niveau d'eau pour une station donnée.
@@ -573,7 +573,7 @@ def get_water_level_data(
     :param threshold_interpolation_filling: (Optional[str | None]) Seuil de temps en dessous duquel les données manquantes
                                                     sont interpolées ou remplies. Si None, les données manquantes sont
                                                     seulement remplies par la time série suivante.
-    :param qc_flag_filter: (Optional[list[str] | None]) Filtre de qualité des données.
+    :param wlo_qc_flag_filter: (Optional[list[str] | None]) Filtre de qualité des données wlo.
     :return: (pd.DataFrame[TimeSerieDataSchema]) Données de niveau d'eau combinées.
     """
     wl_combined: pd.DataFrame = get_empty_dataframe()
@@ -586,7 +586,7 @@ def get_water_level_data(
             to_time=to_time,
             time_serie_code=time_serie,
             buffer_time=buffer_time,
-            qc_flag_filter=qc_flag_filter,
+            wlo_qc_flag_filter=wlo_qc_flag_filter,
         )
 
         if wl_data is None:
@@ -641,4 +641,4 @@ def get_water_level_data(
 # todo problème avec l'interpolation même avec le buffer_time si les données sont manquantes à la fin
 #  ou au début de la période NaN
 # todo Valider qu' il y a au moins x heure de part et d autre pour faire l interpolation, sinon raise exception
-# todo valider le holding avant de demander les données ! -> sinon refaire les polygon sans cette station ?
+# todo valider le holding avant de demander les données (n'enlève pas les trous de moins de 10 jours) seulement pour wlo ! -> sinon refaire les polygon sans cette station ?
