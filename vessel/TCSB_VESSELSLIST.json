@@ -1,7 +1,6 @@
 [
   {
-    "id": "0001",
-    "logger_id": "Frosti",
+    "id": "Frosti",
     "axis_convention": "CARIS",
     "nav": [
       {
@@ -61,8 +60,7 @@
     ]
   },
   {
-    "id": "0002",
-    "logger_id": "CHS1",
+    "id": "CHS1",
     "axis_convention": "CARIS",
     "nav": [
       {
@@ -112,8 +110,7 @@
     ]
   },
   {
-    "id": "0006",
-    "logger_id": "CHS5",
+    "id": "CHS5",
     "axis_convention": "CARIS",
     "nav": [
       {
@@ -163,8 +160,7 @@
     ]
   },
   {
-    "id": "0023",
-    "logger_id": "RDL",
+    "id": "RDL",
     "axis_convention": "CARIS",
     "nav": [
       {
@@ -214,8 +210,7 @@
     ]
   },
   {
-    "id": "0024",
-    "logger_id": "ThaiDene",
+    "id": "ThaiDene",
     "axis_convention": "CARIS",
     "nav": [
       {
