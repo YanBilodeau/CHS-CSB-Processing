@@ -7,14 +7,15 @@ import pandas as pd
 
 from .schema import DataLoggerSchema, validate_schema
 from .parser_abc import DataParserABC
+from . import parser_ids as ids
 
 
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.DCDB")
 
 DTYPE_DICT: dict[str, str] = {
-    "LAT": "float64",
-    "LON": "float64",
-    "DEPTH": "float64",
+    ids.LAT: ids.FLOAT64,
+    ids.LON: ids.FLOAT64,
+    ids.DEPTH: ids.FLOAT64,
 }
 
 
@@ -31,10 +32,10 @@ class DataParserBCDB(DataParserABC):
         if dtype_dict is None:
             dtype_dict = DTYPE_DICT
 
-        df: pd.DataFrame = pd.read_csv(file, dtype=dtype_dict, parse_dates=["TIME"])
+        df: pd.DataFrame = pd.read_csv(file, dtype=dtype_dict, parse_dates=[ids.TIME])
         gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
             df,
-            geometry=gpd.points_from_xy(df.LON, df.LAT, crs="EPSG:4326"),
+            geometry=gpd.points_from_xy(df.LON, df.LAT, crs=ids.EPSG_WGS84),
         )
 
         return gdf

@@ -1,4 +1,3 @@
-import concurrent.futures
 from pathlib import Path
 from typing import Collection
 
@@ -6,20 +5,26 @@ import geopandas as gpd
 from loguru import logger
 import pandas as pd
 
-from .schema import DataLoggerSchema, validate_schema
 from .parser_abc import DataParserABC
-
+from .parser_exception import (
+    LowranceDataframeTimeError,
+    LowranceDataframeLongitudeError,
+    LowranceDataframeLatitudeError,
+    LowranceDataframeDepthError,
+)
+from . import parser_ids as ids
+from .schema import DataLoggerSchema, validate_schema
 
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.Lowrance")
 
 DTYPE_DICT: dict[str, str] = {
-    "Longitude[°WGS48]": "float64",
-    "Latitude[°WGS84]": "float64",
-    "WaterDepth[Feet]": "float64",
+    ids.LONGITUDE_LOWRANCE: ids.FLOAT64,
+    ids.LATITUDE_LOWRANCE: ids.FLOAT64,
+    ids.DEPTH_LOWRANCE: ids.FLOAT64,
 }
 
 
-class DataParserBCDB(DataParserABC):
+class DataParserLowrance(DataParserABC):
     @staticmethod
     def read(file: Path, dtype_dict: dict[str, str] = None) -> gpd.GeoDataFrame:
         """
@@ -32,12 +37,30 @@ class DataParserBCDB(DataParserABC):
         if dtype_dict is None:
             dtype_dict = DTYPE_DICT
 
-        df: pd.DataFrame = pd.read_csv(
-            file, dtype=dtype_dict, parse_dates=["DateTime[UTC]"]
-        )
+        try:
+            df: pd.DataFrame = pd.read_csv(
+                file, dtype=dtype_dict, parse_dates=[ids.TIME_LOWRANCE]
+            )
+
+        except ValueError:
+            raise LowranceDataframeTimeError(file=file)
+
+        if ids.LONGITUDE_LOWRANCE not in df.columns:
+            raise LowranceDataframeLongitudeError(file=file)
+
+        if ids.LATITUDE_LOWRANCE not in df.columns:
+            raise LowranceDataframeLatitudeError(file=file)
+
+        if ids.DEPTH_LOWRANCE not in df.columns:
+            raise LowranceDataframeDepthError(file=file)
+
         gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
             df,
-            geometry=gpd.points_from_xy(df.LON, df.LAT, crs="EPSG:4326"),
+            geometry=gpd.points_from_xy(
+                df[ids.LONGITUDE_LOWRANCE],
+                df[ids.LATITUDE_LOWRANCE],
+                crs=ids.EPSG_WGS84,
+            ),
         )
 
         return gdf
@@ -53,13 +76,7 @@ class DataParserBCDB(DataParserABC):
             f"Ouverture des fichiers de données brutes Lowrance en geodataframe : {files}"
         )
 
-        geodataframe_list = []
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            futures = [executor.submit(self.read, file, DTYPE_DICT) for file in files]
-            for future in futures:
-                geodataframe_list.append(future.result())
-
-        return gpd.GeoDataFrame(pd.concat(geodataframe_list, ignore_index=True))
+        return super().read_files(files)
 
     def transform(self, data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         """
@@ -71,6 +88,21 @@ class DataParserBCDB(DataParserABC):
         LOGGER.debug(
             "Transformation et validation du geodataframe pour respecter le schéma de données."
         )
+
+        # valider si UTC, WGS84 et Feet sinon levé une exception
+
+        data = data.rename(
+            columns={
+                ids.TIME_LOWRANCE: ids.TIME,
+                ids.DEPTH_LOWRANCE: ids.DEPTH,
+                ids.LONGITUDE_LOWRANCE: ids.LON,
+                ids.LATITUDE_LOWRANCE: ids.LAT,
+            }
+        )
+
+        print(data.columns)
+
+        # tranformer feet to meters
 
         validate_schema(data, DataLoggerSchema)
 
