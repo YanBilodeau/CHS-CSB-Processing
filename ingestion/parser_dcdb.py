@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Collection
 
+
 import geopandas as gpd
 from loguru import logger
 import pandas as pd
@@ -20,8 +21,7 @@ DTYPE_DICT: dict[str, str] = {
 
 
 class DataParserBCDB(DataParserABC):
-    @staticmethod
-    def read(file: Path, dtype_dict: dict[str, str] = None) -> gpd.GeoDataFrame:
+    def read(self, file: Path, dtype_dict: dict[str, str] = None) -> gpd.GeoDataFrame:
         """
         Méthode permettant de lire un fichier brut et retourne un geodataframe.
 
@@ -32,10 +32,16 @@ class DataParserBCDB(DataParserABC):
         if dtype_dict is None:
             dtype_dict = DTYPE_DICT
 
-        df: pd.DataFrame = pd.read_csv(file, dtype=dtype_dict, parse_dates=[ids.TIME])
+        dataframe: pd.DataFrame = pd.read_csv(file)
+        dataframe = self.convert_and_clean_dataframe(
+            dataframe=dataframe, dtype_dict=dtype_dict, time_column=ids.TIME
+        )
+
         gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
-            data=df,
-            geometry=gpd.points_from_xy(x=df.LON, y=df.LAT, crs=ids.EPSG_WGS84),
+            data=dataframe,
+            geometry=gpd.points_from_xy(
+                x=dataframe.LON, y=dataframe.LAT, crs=ids.EPSG_WGS84
+            ),
         )
 
         return gdf
