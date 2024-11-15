@@ -1,19 +1,23 @@
 from pathlib import Path
+from typing import Type
 
 import geopandas as gpd
 from loguru import logger
 
-from ingestion.parser_ofm import DataParserOFM
+from export.export_utils import export_geodataframe_to_geojson
+from ingestion.parser_abc import DataParserABC
+from ingestion.parser_dcdb import DataParserBCDB
+from ingestion.parser_lowrance import DataParserLowrance
 
 
 LOGGER = logger.bind(name="Example.Parser")
 
 ROOT: Path = Path(__file__).parent
+EXPORT: Path = ROOT / "DataLogger"
 
 
-def main() -> None:
-    LOGGER.info("Parser")
-    files = [
+def get_ofm_files() -> tuple[list[Path], Type[DataParserABC]]:
+    return [
         ROOT
         / "ingestion"
         / "OFM"
@@ -22,12 +26,44 @@ def main() -> None:
         / "ingestion"
         / "OFM"
         / "CHS9-Aventure9_20241002132309_20241002144241-singlefile.xyz",
-    ]
+    ], DataParserBCDB
 
-    parser = DataParserOFM
+
+def get_dcdb_files() -> tuple[list[Path], Type[DataParserABC]]:
+    return [
+        ROOT
+        / "ingestion"
+        / "DCDB"
+        / "20240605215519876796_08b05f2b-eb9f-11ee-a43c-bd300fe11e8a_pointData.csv"
+    ], DataParserBCDB
+
+
+def get_lowrance_files() -> tuple[list[Path], Type[DataParserABC]]:
+    return [
+        ROOT / "ingestion" / "Lowrance" / "Sonar_2022-08-05_16.04.31-route.csv"
+    ], DataParserLowrance
+
+
+def main() -> None:
+    if not EXPORT.exists():
+        EXPORT.mkdir()
+
+    LOGGER.info("Parser Test")
+    # iles, parser = get_ofm_files()
+    # files, parser = get_dcdb_files()
+    files, parser = get_lowrance_files()
+
     data: gpd.GeoDataFrame = parser.from_files(files=files)
 
+    export_geodataframe_to_geojson(data, EXPORT / "ParsedData.geojson")
+
     print(data)
+    print(data.info())
+    print(data.columns)
+    print(data.dtypes)
+
+    # for row in data.iterrows():
+    #     print(row)
 
 
 if __name__ == "__main__":
