@@ -7,6 +7,8 @@ from typing import Collection
 import geopandas as gpd
 import pandas as pd
 
+from tide.plot import LOGGER
+from . import parser_ids as ids
 from .schema import DataLoggerSchema
 
 
@@ -61,6 +63,19 @@ class DataParserABC(ABC):
         data_geodataframe: gpd.GeoDataFrame = parser.read_files(files=files)
         data_geodataframe: gpd.GeoDataFrame[DataLoggerSchema] = parser.transform(
             data=data_geodataframe
+        )
+
+        LOGGER.debug("Tri du geodataframe par datetime.")
+        data_geodataframe = data_geodataframe.sort_values(by=[ids.TIME_UTC])
+
+        LOGGER.debug("Suppression des doublons.")
+        data_geodataframe = data_geodataframe.drop_duplicates(
+            subset=[
+                ids.TIME_UTC,
+                ids.LATITUDE_WGS84,
+                ids.LONGITUDE_WGS84,
+                ids.DEPTH_METER,
+            ]
         )
 
         return data_geodataframe
