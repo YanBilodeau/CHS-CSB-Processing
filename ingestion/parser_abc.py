@@ -9,6 +9,7 @@ import geopandas as gpd
 from loguru import logger
 import pandas as pd
 
+from .parser_exception import ColumnExceptions
 from . import parser_ids as ids
 from schema.model import DataLoggerSchema
 
@@ -17,6 +18,29 @@ LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser")
 
 @dataclass
 class DataParserABC(ABC):
+    @staticmethod
+    def validate_columns(
+        dataframe: pd.DataFrame, file: Path, columns: ColumnExceptions
+    ) -> None:
+        """
+        Méthode permettant de valider les colonnes du dataframe.
+
+        :param dataframe: (pd.DataFrame) Le dataframe à valider.
+        :param file: (Path) Le fichier source.
+        :param columns: (ColumnExceptions) Les noms et les exceptions de colonnes.
+        :raises ParsingDataframeLongitudeError: Erreur si la colonne de longitude est absente.
+        :raises ParsingDataframeLatitudeError: Erreur si la colonne de latitude est absente.
+        :raises ParsingDataframeDepthError: Erreur si la colonne de profondeur est absente.
+        :raises ParsingDataframeTimeError: Erreur si la colonne de temps est absente.
+        """
+        LOGGER.debug(
+            f"Validation des colonnes du dataframe : {ids.LONGITUDE_LOWRANCE}, {ids.LATITUDE_LOWRANCE}, {ids.DEPTH_LOWRANCE}."
+        )
+
+        for column_name, exception in columns:
+            if column_name not in dataframe.columns:
+                raise exception(file=file, column=column_name)  # type: ignore[arg-type]
+
     @staticmethod
     def convert_and_clean_dataframe(
         dataframe: pd.DataFrame, dtype_dict: dict[str, str], time_column: str
@@ -101,7 +125,7 @@ class DataParserABC(ABC):
         LOGGER.debug("Suppression des doublons.")
         data_geodataframe = data_geodataframe.drop_duplicates(
             subset=[
-                ids.TIME_UTC,
+                # ids.TIME_UTC, # todo valider ce qu'on fait
                 ids.LATITUDE_WGS84,
                 ids.LONGITUDE_WGS84,
                 ids.DEPTH_METER,
