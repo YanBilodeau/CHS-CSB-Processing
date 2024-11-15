@@ -10,7 +10,7 @@ from .schema import DataLoggerSchema, validate_schema
 from .parser_abc import DataParserABC
 
 
-LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.OFM")
+LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.DCDB")
 
 DTYPE_DICT: dict[str, str] = {
     "LAT": "float64",
@@ -48,16 +48,10 @@ class DataParserBCDB(DataParserABC):
         :return: (gpd.GeoDataFrame) Un GeoDataFrame.
         """
         LOGGER.debug(
-            f"Ouverture des fichiers de données brutes OFM en geodataframe : {files}"
+            f"Ouverture des fichiers de données brutes DCDB en geodataframe : {files}"
         )
 
-        geodataframe_list = []
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            futures = [executor.submit(self.read, file, DTYPE_DICT) for file in files]
-            for future in futures:
-                geodataframe_list.append(future.result())
-
-        return gpd.GeoDataFrame(pd.concat(geodataframe_list, ignore_index=True))
+        return super().read_files(files)
 
     def transform(self, data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         """
@@ -73,19 +67,3 @@ class DataParserBCDB(DataParserABC):
         validate_schema(data, DataLoggerSchema)
 
         return data
-
-    @classmethod
-    def from_files(cls, files: Collection[Path]) -> gpd.GeoDataFrame:
-        """
-        Méthode permettant de lire les fichiers brutes et retourne un geodataframe.
-
-        :param files: (Collection[Path]) Les fichiers à lire.
-        :return: (gpd.GeoDataFrame[DataLoggerSchema]) Un GeoDataFrame.
-        """
-        parser = cls()
-        data_geodataframe: gpd.GeoDataFrame = parser.read_files(files=files)
-        data_geodataframe: gpd.GeoDataFrame[DataLoggerSchema] = parser.transform(
-            data=data_geodataframe
-        )
-
-        return data_geodataframe

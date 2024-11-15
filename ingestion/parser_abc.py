@@ -1,9 +1,13 @@
 from abc import ABC, abstractmethod
+import concurrent.futures
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Collection
 
 import geopandas as gpd
+import pandas as pd
+
+from .schema import DataLoggerSchema
 
 
 @dataclass
@@ -27,7 +31,13 @@ class DataParserABC(ABC):
         :param files: (Collection[Path]) Les fichiers à lire.
         :return: (gpd.GeoDataFrame) Un GeoDataFrame.
         """
-        pass
+        geodataframe_list = []
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            futures = [executor.submit(self.read, file) for file in files]
+            for future in futures:
+                geodataframe_list.append(future.result())
+
+        return gpd.GeoDataFrame(pd.concat(geodataframe_list, ignore_index=True))
 
     @abstractmethod
     def transform(self, data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
@@ -40,12 +50,17 @@ class DataParserABC(ABC):
         pass
 
     @classmethod
-    @abstractmethod
     def from_files(cls, files: Collection[Path]) -> gpd.GeoDataFrame:
         """
         Méthode permettant de lire les fichiers brutes et retourne un geodataframe.
 
         :param files: (Collection[Path]) Les fichiers à lire.
-        :return: (gpd.GeoDataFrame) Un GeoDataFrame transformé respectant le schéma de données.
+        :return: (gpd.GeoDataFrame[DataLoggerSchema]) Un GeoDataFrame.
         """
-        pass
+        parser = cls()
+        data_geodataframe: gpd.GeoDataFrame = parser.read_files(files=files)
+        data_geodataframe: gpd.GeoDataFrame[DataLoggerSchema] = parser.transform(
+            data=data_geodataframe
+        )
+
+        return data_geodataframe
