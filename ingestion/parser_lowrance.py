@@ -13,7 +13,7 @@ from .parser_exception import (
     LowranceDataframeDepthError,
 )
 from . import parser_ids as ids
-from .schema import DataLoggerSchema, validate_schema
+from ..schema.model import DataLoggerSchema, validate_schema
 
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.Lowrance")
 

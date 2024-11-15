@@ -5,7 +5,7 @@ import geopandas as gpd
 from loguru import logger
 import pandas as pd
 
-from .schema import DataLoggerSchema, validate_schema
+from ..schema.model import DataLoggerSchema, validate_schema
 from .parser_abc import DataParserABC
 from . import parser_ids as ids
 
