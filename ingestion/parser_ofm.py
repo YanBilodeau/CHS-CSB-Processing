@@ -1,3 +1,4 @@
+import concurrent.futures
 from pathlib import Path
 from typing import Collection
 
@@ -11,10 +12,37 @@ from .parser_abc import DataParserABC
 
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.OFM")
 
+DTYPE_DICT: dict[str, str] = {
+    "LAT": "float64",
+    "LON": "float64",
+    "DEPTH": "float64",
+}
+
 
 class DataParserOFM(DataParserABC):
     @staticmethod
-    def read(files: Collection[Path]) -> gpd.GeoDataFrame:
+    def read(file: Path, dtype_dict: dict[str, str] = None) -> gpd.GeoDataFrame:
+        """
+        Méthode permettant de lire un fichier brut et retourne un geodataframe.
+
+        :param file: (Path) Le fichier à lire.
+        :param dtype_dict: (dict[str, str]) Un dictionnaire de type de données.
+        :return: (gpd.GeoDataFrame) Un GeoDataFrame.
+        """
+        if dtype_dict is None:
+            dtype_dict = DTYPE_DICT
+
+        df: pd.DataFrame = pd.read_csv(file, dtype=dtype_dict, parse_dates=["TIME"])
+        gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
+            df,
+            geometry=gpd.points_from_xy(
+                df.LON, df.LAT, crs="EPSG:4326"
+            ),  # todo valider les décimale
+        )
+
+        return gdf
+
+    def read_files(self, files: Collection[Path]) -> gpd.GeoDataFrame:
         """
         Méthode permettant de lire les fichiers brutes et retourne un geodataframe.
 
@@ -25,24 +53,15 @@ class DataParserOFM(DataParserABC):
             f"Ouverture des fichiers de données brutes OFM en geodataframe : {files}"
         )
 
-        dtype_dict: dict[str, str] = {
-            "LAT": "float64",
-            "LON": "float64",
-            "DEPTH": "float64",
-        }
+        geodataframe_list = []
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            futures = [executor.submit(self.read, file, DTYPE_DICT) for file in files]
+            for future in futures:
+                geodataframe_list.append(future.result())
 
-        geodataframe_list: list[gpd.GeoDataFrame] = []
-        for file in files:
-            df: pd.DataFrame = pd.read_csv(file, dtype=dtype_dict, parse_dates=["TIME"])
-            gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
-                df, geometry=gpd.points_from_xy(df.LON, df.LAT, crs="EPSG:4326")
-            )
-            geodataframe_list.append(gdf)
+        return gpd.GeoDataFrame(pd.concat(geodataframe_list, ignore_index=True))
 
-        return pd.concat(geodataframe_list)  # type: ignore
-
-    @staticmethod
-    def transform(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    def transform(self, data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         """
         Méthode permettant de transformer le geodataframe pour respecter le schéma de données.
 
@@ -65,8 +84,9 @@ class DataParserOFM(DataParserABC):
         :param files: (Collection[Path]) Les fichiers à lire.
         :return: (gpd.GeoDataFrame[DataLoggerSchema]) Un GeoDataFrame.
         """
-        data_geodataframe: gpd.GeoDataFrame = cls.read(files=files)
-        data_geodataframe: gpd.GeoDataFrame[DataLoggerSchema] = cls.transform(
+        parser = cls()
+        data_geodataframe: gpd.GeoDataFrame = parser.read_files(files=files)
+        data_geodataframe: gpd.GeoDataFrame[DataLoggerSchema] = parser.transform(
             data=data_geodataframe
         )
 
