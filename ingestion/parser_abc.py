@@ -3,6 +3,7 @@ import concurrent.futures
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Collection
+import warnings
 
 import geopandas as gpd
 from loguru import logger
@@ -16,6 +17,33 @@ LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser")
 
 @dataclass
 class DataParserABC(ABC):
+    @staticmethod
+    def convert_and_clean_dataframe(
+        dataframe: pd.DataFrame, dtype_dict: dict[str, str], time_column: str
+    ) -> pd.DataFrame:
+        """
+        Méthode permettant de convertir et nettoyer le dataframe.
+
+        :param dataframe: (pd.DataFrame) Le dataframe à convertir.
+        :param dtype_dict: (dict[str, str]) Un dictionnaire de type de données.
+        :param time_column: (str) Le nom de la colonne de temps.
+        :return: (pd.DataFrame) Le dataframe converti et nettoyé.
+        """
+        LOGGER.debug("Conversion du dtype des colonnes et nettoyage du dataframe.")
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", UserWarning)
+            dataframe[time_column] = pd.to_datetime(
+                dataframe[time_column], errors="coerce"
+            )
+
+            for column in dtype_dict.keys():
+                dataframe[column] = pd.to_numeric(dataframe[column], errors="coerce")
+
+        dataframe.dropna(subset=list(dtype_dict.keys()) + [time_column], inplace=True)
+
+        return dataframe
+
     @staticmethod
     @abstractmethod
     def read(file: Path, **kwargs) -> gpd.GeoDataFrame:
