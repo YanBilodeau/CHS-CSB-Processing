@@ -19,7 +19,7 @@ DTYPE_DICT: dict[str, str] = {
 }
 
 
-class DataParserOFM(DataParserABC):
+class DataParserBCDB(DataParserABC):
     @staticmethod
     def read(file: Path, dtype_dict: dict[str, str] = None) -> gpd.GeoDataFrame:
         """
@@ -35,9 +35,7 @@ class DataParserOFM(DataParserABC):
         df: pd.DataFrame = pd.read_csv(file, dtype=dtype_dict, parse_dates=["TIME"])
         gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
             df,
-            geometry=gpd.points_from_xy(
-                df.LON, df.LAT, crs="EPSG:4326"
-            ),  # todo valider les décimale
+            geometry=gpd.points_from_xy(df.LON, df.LAT, crs="EPSG:4326"),
         )
 
         return gdf
