@@ -1,0 +1,12 @@
+TIME: str = "TIME"
+DEPTH: str = "DEPTH"
+LON: str = "LON"
+LAT: str = "LAT"
+
+LONGITUDE_LOWRANCE: str = "Longitude[°WGS84]"
+LATITUDE_LOWRANCE: str = "Latitude[°WGS84]"
+DEPTH_LOWRANCE: str = "WaterDepth[Feet]"
+TIME_LOWRANCE: str = "DateTime[UTC]"
+
+FLOAT64: str = "float64"
+EPSG_WGS84: str = "EPSG:4326"
