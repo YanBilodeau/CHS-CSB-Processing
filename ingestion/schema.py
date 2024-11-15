@@ -10,10 +10,10 @@ LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.Schema")
 
 
 class DataLoggerSchema(pa.DataFrameModel):
-    LON: Series[pd.Float64Dtype()]
-    LAT: Series[pd.Float64Dtype()]
-    DEPTH: Series[pd.Float64Dtype()]
-    TIME: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
+    Longitude_WGS84: Series[pd.Float64Dtype()]
+    Latitude_WGS84: Series[pd.Float64Dtype()]
+    Depth_meter: Series[pd.Float64Dtype()]
+    Time_UTC: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
     geometry: GeoSeries
 
 
