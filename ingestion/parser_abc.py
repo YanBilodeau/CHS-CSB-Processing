@@ -9,7 +9,7 @@ from loguru import logger
 import pandas as pd
 
 from . import parser_ids as ids
-from ..schema.model import DataLoggerSchema
+from schema.model import DataLoggerSchema
 
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser")
 
