@@ -34,8 +34,8 @@ class DataParserBCDB(DataParserABC):
 
         df: pd.DataFrame = pd.read_csv(file, dtype=dtype_dict, parse_dates=[ids.TIME])
         gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
-            df,
-            geometry=gpd.points_from_xy(df.LON, df.LAT, crs=ids.EPSG_WGS84),
+            data=df,
+            geometry=gpd.points_from_xy(x=df.LON, y=df.LAT, crs=ids.EPSG_WGS84),
         )
 
         return gdf
