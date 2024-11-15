@@ -64,6 +64,15 @@ class DataParserBCDB(DataParserABC):
             "Transformation et validation du geodataframe pour respecter le schéma de données."
         )
 
+        data = data.rename(
+            columns={
+                ids.TIME: ids.TIME_UTC,
+                ids.DEPTH: ids.DEPTH_METER,
+                ids.LON: ids.LONGITUDE_WGS84,
+                ids.LAT: ids.LATITUDE_WGS84,
+            }
+        )
+
         validate_schema(data, DataLoggerSchema)
 
         return data
