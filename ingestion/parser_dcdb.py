@@ -7,6 +7,13 @@ from loguru import logger
 import pandas as pd
 
 from schema.model import DataLoggerSchema, validate_schema
+from .parser_exception import (
+    ColumnExceptions,
+    ParsingDataframeTimeError,
+    ParsingDataframeLongitudeError,
+    ParsingDataframeLatitudeError,
+    ParsingDataframeDepthError,
+)
 from .parser_abc import DataParserABC
 from . import parser_ids as ids
 
@@ -18,6 +25,13 @@ DTYPE_DICT: dict[str, str] = {
     ids.LON: ids.FLOAT64,
     ids.DEPTH: ids.FLOAT64,
 }
+
+COLUMN_EXCEPTIONS: ColumnExceptions = [
+    (ids.TIME, ParsingDataframeTimeError),
+    (ids.LON, ParsingDataframeLongitudeError),
+    (ids.LAT, ParsingDataframeLatitudeError),
+    (ids.DEPTH, ParsingDataframeDepthError),
+]
 
 
 class DataParserBCDB(DataParserABC):
@@ -33,6 +47,7 @@ class DataParserBCDB(DataParserABC):
             dtype_dict = DTYPE_DICT
 
         dataframe: pd.DataFrame = pd.read_csv(file)
+        self.validate_columns(dataframe=dataframe, file=file, columns=COLUMN_EXCEPTIONS)
         dataframe = self.convert_and_clean_dataframe(
             dataframe=dataframe, dtype_dict=dtype_dict, time_column=ids.TIME
         )
