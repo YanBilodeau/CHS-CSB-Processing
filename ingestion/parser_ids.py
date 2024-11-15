@@ -1,7 +1,12 @@
-TIME: str = "TIME"
-DEPTH: str = "DEPTH"
+TIME_UTC: str = "Time_UTC"
+DEPTH_METER: str = "Depth_meter"
+LONGITUDE_WGS84: str = "Longitude_WGS84"
+LATITUDE_WGS84: str = "Latitude_WGS84"
+
 LON: str = "LON"
 LAT: str = "LAT"
+DEPTH: str = "DEPTH"
+TIME: str = "TIME"
 
 LONGITUDE_LOWRANCE: str = "Longitude[°WGS84]"
 LATITUDE_LOWRANCE: str = "Latitude[°WGS84]"
