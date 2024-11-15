@@ -10,7 +10,17 @@ import geopandas as gpd
 class DataParserABC(ABC):
     @staticmethod
     @abstractmethod
-    def read(files: Collection[Path]) -> gpd.GeoDataFrame:
+    def read(file: Path, **kwargs) -> gpd.GeoDataFrame:
+        """
+        Méthode permettant de lire un fichier brut et retourne un geodataframe.
+
+        :param file: (Path) Le fichier à lire.
+        :return: (gpd.GeoDataFrame) Un GeoDataFrame.
+        """
+        pass
+
+    @abstractmethod
+    def read_files(self, files: Collection[Path]) -> gpd.GeoDataFrame:
         """
         Méthode permettant de lire les fichiers brutes et retourne un geodataframe.
 
@@ -19,9 +29,8 @@ class DataParserABC(ABC):
         """
         pass
 
-    @staticmethod
     @abstractmethod
-    def transform(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    def transform(self, data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         """
         Méthode permettant de transformer le geodataframe pour respecter le schéma de données.
 
