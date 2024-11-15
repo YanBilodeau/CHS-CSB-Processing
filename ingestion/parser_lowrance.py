@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Collection
+from typing import Collection, Type
 
 import geopandas as gpd
 from loguru import logger
@@ -7,10 +7,11 @@ import pandas as pd
 
 from .parser_abc import DataParserABC
 from .parser_exception import (
-    LowranceDataframeTimeError,
-    LowranceDataframeLongitudeError,
-    LowranceDataframeLatitudeError,
-    LowranceDataframeDepthError,
+    ColumnExceptions,
+    ParsingDataframeTimeError,
+    ParsingDataframeLongitudeError,
+    ParsingDataframeLatitudeError,
+    ParsingDataframeDepthError,
 )
 from . import parser_ids as ids
 from schema.model import DataLoggerSchema, validate_schema
@@ -23,32 +24,15 @@ DTYPE_DICT: dict[str, str] = {
     ids.DEPTH_LOWRANCE: ids.FLOAT64,
 }
 
+COLUMN_EXCEPTIONS: ColumnExceptions = [
+    (ids.TIME_LOWRANCE, ParsingDataframeTimeError),
+    (ids.LONGITUDE_LOWRANCE, ParsingDataframeLongitudeError),
+    (ids.LATITUDE_LOWRANCE, ParsingDataframeLatitudeError),
+    (ids.DEPTH_LOWRANCE, ParsingDataframeDepthError),
+]
+
 
 class DataParserLowrance(DataParserABC):
-    @staticmethod
-    def validate_columns(dataframe: pd.DataFrame, file: Path) -> None:
-        """
-        Méthode permettant de valider les colonnes du dataframe.
-
-        :param dataframe: (pd.DataFrame) Le dataframe à valider.
-        :param file: (Path) Le fichier source.
-        :raises LowranceDataframeLongitudeError: Erreur si la colonne de longitude est absente.
-        :raises LowranceDataframeLatitudeError: Erreur si la colonne de latitude est absente.
-        :raises LowranceDataframeDepthError: Erreur si la colonne de profondeur est absente.
-        """
-        LOGGER.debug(
-            f"Validation des colonnes du dataframe : {ids.LONGITUDE_LOWRANCE}, {ids.LATITUDE_LOWRANCE}, {ids.DEPTH_LOWRANCE}."
-        )
-
-        if ids.LONGITUDE_LOWRANCE not in dataframe.columns:
-            raise LowranceDataframeLongitudeError(file=file)
-
-        if ids.LATITUDE_LOWRANCE not in dataframe.columns:
-            raise LowranceDataframeLatitudeError(file=file)
-
-        if ids.DEPTH_LOWRANCE not in dataframe.columns:
-            raise LowranceDataframeDepthError(file=file)
-
     def read(self, file: Path, dtype_dict: dict[str, str] = None) -> gpd.GeoDataFrame:
         """
         Méthode permettant de lire un fichier brut et retourne un geodataframe.
@@ -60,21 +44,19 @@ class DataParserLowrance(DataParserABC):
         if dtype_dict is None:
             dtype_dict = DTYPE_DICT
 
-        try:
-            df: pd.DataFrame = pd.read_csv(
-                file, dtype=dtype_dict, parse_dates=[ids.TIME_LOWRANCE]
-            )
-
-        except ValueError:
-            raise LowranceDataframeTimeError(file=file)
-
-        self.validate_columns(dataframe=df, file=file)
+        dataframe: pd.DataFrame = pd.read_csv(file)
+        self.validate_columns(dataframe=dataframe, file=file, columns=COLUMN_EXCEPTIONS)
+        dataframe = self.convert_and_clean_dataframe(
+            dataframe=dataframe,
+            dtype_dict=dtype_dict,
+            time_column=ids.TIME_LOWRANCE,
+        )
 
         gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
-            data=df,
+            data=dataframe,
             geometry=gpd.points_from_xy(
-                x=df[ids.LONGITUDE_LOWRANCE],
-                y=df[ids.LATITUDE_LOWRANCE],
+                x=dataframe[ids.LONGITUDE_LOWRANCE],
+                y=dataframe[ids.LATITUDE_LOWRANCE],
                 crs=ids.EPSG_WGS84,
             ),
         )
