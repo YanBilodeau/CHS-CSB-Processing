@@ -1,33 +1,35 @@
 from dataclasses import dataclass
 from pathlib import Path
-
-from . import parser_ids as ids
+from typing import Type
 
 
 @dataclass(frozen=True)
-class LowranceError(Exception):
+class ParsingError(Exception):
     file: Path
+    column: str
+
+    def __str__(self) -> str:
+        return f"Erreur lors de la lecture du fichier : {self.file}. Le fichier n'a pas de colonne '{self.column}'."
 
 
 @dataclass(frozen=True)
-class LowranceDataframeTimeError(LowranceError):
-    def __str__(self) -> str:
-        return f"Erreur lors de la lecture du fichier : {self.file}. Le fichier n'a pas de colonne '{ids.TIME_LOWRANCE}'."
+class ParsingDataframeTimeError(ParsingError):
+    pass
 
 
 @dataclass(frozen=True)
-class LowranceDataframeDepthError(LowranceError):
-    def __str__(self) -> str:
-        return f"Erreur lors de la lecture du fichier : {self.file}. Le fichier n'a pas de colonne '{ids.DEPTH_LOWRANCE}'."
+class ParsingDataframeDepthError(ParsingError):
+    pass
 
 
 @dataclass(frozen=True)
-class LowranceDataframeLongitudeError(LowranceError):
-    def __str__(self) -> str:
-        return f"Erreur lors de la lecture du fichier : {self.file}. Le fichier n'a pas de colonne '{ids.LONGITUDE_LOWRANCE}'."
+class ParsingDataframeLongitudeError(ParsingError):
+    pass
 
 
 @dataclass(frozen=True)
-class LowranceDataframeLatitudeError(LowranceError):
-    def __str__(self) -> str:
-        return f"Erreur lors de la lecture du fichier : {self.file}. Le fichier n'a pas de colonne '{ids.LATITUDE_LOWRANCE}'."
+class ParsingDataframeLatitudeError(ParsingError):
+    pass
+
+
+ColumnExceptions = list[tuple[str, Type[ParsingError]]]
