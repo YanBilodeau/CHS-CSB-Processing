@@ -5,11 +5,13 @@ from pathlib import Path
 from typing import Collection
 
 import geopandas as gpd
+from loguru import logger
 import pandas as pd
 
-from tide.plot import LOGGER
 from . import parser_ids as ids
 from .schema import DataLoggerSchema
+
+LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser")
 
 
 @dataclass
