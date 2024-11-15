@@ -48,7 +48,7 @@ class DataParserBCDB(DataParserABC):
         :return: (gpd.GeoDataFrame) Un GeoDataFrame.
         """
         LOGGER.debug(
-            f"Ouverture des fichiers de données brutes DCDB en geodataframe : {files}"
+            f"Chargement des fichiers de données brutes DCDB en geodataframe : {files}"
         )
 
         return super().read_files(files)
@@ -60,10 +60,9 @@ class DataParserBCDB(DataParserABC):
         :param data: (gpd.GeoDataFrame) Le geodataframe à transformer.
         :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le geodataframe transformé.
         """
-        LOGGER.debug(
-            "Transformation et validation du geodataframe pour respecter le schéma de données."
-        )
+        LOGGER.debug("Transformation du geodataframe.")
 
+        LOGGER.debug(f"Renommage des colonnes du geodataframe.")
         data: gpd.GeoDataFrame[DataLoggerSchema] = data.rename(
             columns={
                 ids.TIME: ids.TIME_UTC,
