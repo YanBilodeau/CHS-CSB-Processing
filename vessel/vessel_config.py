@@ -48,7 +48,6 @@ class SoundSpeedProfile(BaseModel):
 
 class VesselConfig(BaseModel):
     id: str
-    logger_id: str
     axis_convention: AxisConvention
     navigation: list[Sensor]
     motion: list[Sensor]
@@ -67,7 +66,6 @@ def get_vessel_config_from_config_dict(config: VesselConfigDict) -> VesselConfig
     """
     return VesselConfig(
         id=config["id"],
-        logger_id=config["logger_id"],
         axis_convention=config["axis_convention"],
         navigation=[Sensor(**nav) for nav in config["nav"]],
         motion=[Sensor(**motion) for motion in config["motion"]],

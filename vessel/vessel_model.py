@@ -29,7 +29,6 @@ class AttributeDict(TypedDict):
 
 class VesselConfigDict(TypedDict):
     id: str
-    logger_id: str
     axis_convention: str
     nav: list[SensorDict]
     motion: list[SensorDict]
