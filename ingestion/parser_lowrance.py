@@ -26,7 +26,30 @@ DTYPE_DICT: dict[str, str] = {
 
 class DataParserLowrance(DataParserABC):
     @staticmethod
-    def read(file: Path, dtype_dict: dict[str, str] = None) -> gpd.GeoDataFrame:
+    def validate_columns(dataframe: pd.DataFrame, file: Path) -> None:
+        """
+        Méthode permettant de valider les colonnes du dataframe.
+
+        :param dataframe: (pd.DataFrame) Le dataframe à valider.
+        :param file: (Path) Le fichier source.
+        :raises LowranceDataframeLongitudeError: Erreur si la colonne de longitude est absente.
+        :raises LowranceDataframeLatitudeError: Erreur si la colonne de latitude est absente.
+        :raises LowranceDataframeDepthError: Erreur si la colonne de profondeur est absente.
+        """
+        LOGGER.debug(
+            f"Validation des colonnes du dataframe : {ids.LONGITUDE_LOWRANCE}, {ids.LATITUDE_LOWRANCE}, {ids.DEPTH_LOWRANCE}."
+        )
+
+        if ids.LONGITUDE_LOWRANCE not in dataframe.columns:
+            raise LowranceDataframeLongitudeError(file=file)
+
+        if ids.LATITUDE_LOWRANCE not in dataframe.columns:
+            raise LowranceDataframeLatitudeError(file=file)
+
+        if ids.DEPTH_LOWRANCE not in dataframe.columns:
+            raise LowranceDataframeDepthError(file=file)
+
+    def read(self, file: Path, dtype_dict: dict[str, str] = None) -> gpd.GeoDataFrame:
         """
         Méthode permettant de lire un fichier brut et retourne un geodataframe.
 
@@ -45,20 +68,13 @@ class DataParserLowrance(DataParserABC):
         except ValueError:
             raise LowranceDataframeTimeError(file=file)
 
-        if ids.LONGITUDE_LOWRANCE not in df.columns:
-            raise LowranceDataframeLongitudeError(file=file)
-
-        if ids.LATITUDE_LOWRANCE not in df.columns:
-            raise LowranceDataframeLatitudeError(file=file)
-
-        if ids.DEPTH_LOWRANCE not in df.columns:
-            raise LowranceDataframeDepthError(file=file)
+        self.validate_columns(dataframe=df, file=file)
 
         gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
-            df,
+            data=df,
             geometry=gpd.points_from_xy(
-                df[ids.LONGITUDE_LOWRANCE],
-                df[ids.LATITUDE_LOWRANCE],
+                x=df[ids.LONGITUDE_LOWRANCE],
+                y=df[ids.LATITUDE_LOWRANCE],
                 crs=ids.EPSG_WGS84,
             ),
         )
@@ -73,10 +89,64 @@ class DataParserLowrance(DataParserABC):
         :return: (gpd.GeoDataFrame) Un GeoDataFrame.
         """
         LOGGER.debug(
-            f"Ouverture des fichiers de données brutes Lowrance en geodataframe : {files}"
+            f"Chargement des fichiers de données brutes Lowrance en geodataframe : {files}"
         )
 
         return super().read_files(files)
+
+    @staticmethod
+    def rename_columns(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+        """
+        Méthode permettant de renommer les colonnes du geodataframe.
+
+        :param data: (gpd.GeoDataFrame) Le geodataframe à renommer.
+        :return: (gpd.GeoDataFrame) Le geodataframe renommé.
+        """
+        LOGGER.debug(f"Renommage des colonnes du geodataframe.")
+        data: gpd.GeoDataFrame[DataLoggerSchema] = data.rename(
+            columns={
+                ids.TIME_LOWRANCE: ids.TIME_UTC,
+                ids.DEPTH_LOWRANCE: ids.DEPTH_METER,
+                ids.LONGITUDE_LOWRANCE: ids.LONGITUDE_WGS84,
+                ids.LATITUDE_LOWRANCE: ids.LATITUDE_WGS84,
+            }
+        )
+
+        return data
+
+    @staticmethod
+    def remove_special_characters_from_columns(
+        data: gpd.GeoDataFrame,
+    ) -> gpd.GeoDataFrame:
+        """
+        Méthode permettant de supprimer les caractères spéciaux des noms de colonnes.
+
+        :param data: (gpd.GeoDataFrame) Le geodataframe à transformer.
+        :return: (gpd.GeoDataFrame) Le geodataframe transformé.
+        """
+        LOGGER.debug("Suppression des caractères spéciaux des noms de colonnes.")
+        data.columns = (
+            data.columns.str.replace("[", "_")
+            .str.replace("]", "")
+            .str.replace("/", "-")
+        )
+
+        return data
+
+    @staticmethod
+    def convert_depth_to_meters(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+        """
+        Méthode permettant de convertir les profondeurs en mètres.
+
+        :param data: (gpd.GeoDataFrame) Le geodataframe à transformer.
+        :return: (gpd.GeoDataFrame) Le geodataframe transformé.
+        """
+        LOGGER.debug(
+            f"Conversion des pieds en mètres de la colonne '{ids.DEPTH_METER}'."
+        )
+        data[ids.DEPTH_METER] = data[ids.DEPTH_METER] * 0.3048
+
+        return data
 
     def transform(self, data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         """
@@ -85,24 +155,11 @@ class DataParserLowrance(DataParserABC):
         :param data: (gpd.GeoDataFrame) Le geodataframe à transformer.
         :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le geodataframe transformé.
         """
-        LOGGER.debug(
-            "Transformation et validation du geodataframe pour respecter le schéma de données."
-        )
+        LOGGER.debug("Transformation du geodataframe.")
 
-        # valider si UTC, WGS84 et Feet sinon levé une exception
-
-        data = data.rename(
-            columns={
-                ids.TIME_LOWRANCE: ids.TIME,
-                ids.DEPTH_LOWRANCE: ids.DEPTH,
-                ids.LONGITUDE_LOWRANCE: ids.LON,
-                ids.LATITUDE_LOWRANCE: ids.LAT,
-            }
-        )
-
-        print(data.columns)
-
-        # tranformer feet to meters
+        data = self.rename_columns(data)
+        data = self.remove_special_characters_from_columns(data)
+        data = self.convert_depth_to_meters(data)
 
         validate_schema(data, DataLoggerSchema)
 
