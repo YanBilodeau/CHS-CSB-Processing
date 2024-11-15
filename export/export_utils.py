@@ -6,7 +6,7 @@ import geopandas as gpd
 import pandas as pd
 from loguru import logger
 
-LOGGER = logger.bind(name="CSB-Pipeline.Tide.Export")
+LOGGER = logger.bind(name="CSB-Pipeline.Export")
 WGS84 = 4326
 
 
