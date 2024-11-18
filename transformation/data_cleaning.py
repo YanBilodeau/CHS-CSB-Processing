@@ -106,6 +106,6 @@ def clean_data(
         if isinstance(func, str):
             func = globals()[func]
 
-        geodataframe = func(geodataframe)
+        geodataframe: gpd.GeoDataFrame[DataLoggerSchema] = func(geodataframe)
 
     return geodataframe
