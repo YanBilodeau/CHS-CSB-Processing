@@ -3,7 +3,6 @@ import concurrent.futures
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Collection
-import warnings
 
 import geopandas as gpd
 from loguru import logger
@@ -11,28 +10,10 @@ import pandas as pd
 
 from .parser_exception import ColumnExceptions
 from . import parser_ids as ids
+from .warning_capture import WarningCapture
 from schema.model import DataLoggerSchema
 
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser")
-
-
-class WarningCapture:
-    def __init__(self):
-        self.captured_warnings = []
-
-    def __enter__(self):
-        self._original_showwarning = warnings.showwarning
-        warnings.showwarning = self._capture_warning
-
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        warnings.showwarning = self._original_showwarning
-
-    def _capture_warning(
-        self, message, category, filename, lineno, file=None, line=None
-    ):
-        self.captured_warnings.append(str(message))
 
 
 @dataclass
