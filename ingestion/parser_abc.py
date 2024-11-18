@@ -142,9 +142,6 @@ class DataParserABC(ABC):
             data=data_geodataframe
         )
 
-        LOGGER.debug("Tri du geodataframe par datetime.")
-        data_geodataframe = data_geodataframe.sort_values(by=[ids.TIME_UTC])
-
         LOGGER.debug("Suppression des doublons.")
         data_geodataframe = data_geodataframe.drop_duplicates(
             subset=[
@@ -154,5 +151,9 @@ class DataParserABC(ABC):
                 ids.DEPTH_METER,
             ]
         )
+
+        LOGGER.debug("Tri du geodataframe par datetime.")
+        data_geodataframe = data_geodataframe.reset_index(drop=True)
+        data_geodataframe = data_geodataframe.sort_values(by=[ids.TIME_UTC])
 
         return data_geodataframe
