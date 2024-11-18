@@ -1,4 +1,4 @@
-from typing import Collection, Optional, Callable, Any, Type
+from typing import Collection, Optional, Callable, Any, Type, Protocol
 
 import geopandas as gpd
 from loguru import logger
@@ -22,6 +22,15 @@ MIN_LONGITUDE: int | float = -180
 MAX_LONGITUDE: int | float = 180
 MIN_DEPTH: int | float = 0
 MAX_DEPTH: int | float | None = None
+
+
+class DataFilterConfigProtocol(Protocol):
+    min_latitude: int | float
+    max_latitude: int | float
+    min_longitude: int | float
+    max_longitude: int | float
+    min_depth: int | float
+    max_depth: Optional[int | float]
 
 
 def clean_depth(
@@ -138,12 +147,14 @@ cleaning_function: tuple[Type[DataCleaningFunction], ...] = (
 def clean_data(
     geodataframe: gpd.GeoDataFrame,
     cleaning_func: Optional[Collection[DataCleaningFunction | str]] = None,
+    data_filter: Optional[DataFilterConfigProtocol] = None,
 ) -> gpd.GeoDataFrame:
     """
     Fonction qui nettoie les données à partir d'une collection de fonctions de nettoyage.
 
     :param geodataframe: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame.
     :param cleaning_func: (Collection[CleanerFunctionProtocol | str]) Les fonctions de nettoyage.
+    :param data_filter: (Optional[DataFilterConfigProtocol]) La configuration de nettoyage.
     :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame nettoyé.
     :raises DataCleaningFunctionError: Si la fonction de nettoyage n'existe pas.
     """
@@ -160,6 +171,14 @@ def clean_data(
 
             func = globals_[func]
 
-        geodataframe: gpd.GeoDataFrame[DataLoggerSchema] = func(geodataframe)
+        geodataframe: gpd.GeoDataFrame[DataLoggerSchema] = func(
+            geodataframe,
+            min_latitude=data_filter.min_latitude if data_filter else MIN_LATITUDE,
+            max_latitude=data_filter.max_latitude if data_filter else MAX_LATITUDE,
+            min_longitude=data_filter.min_longitude if data_filter else MIN_LONGITUDE,
+            max_longitude=data_filter.max_longitude if data_filter else MAX_LONGITUDE,
+            min_depth=data_filter.min_depth if data_filter else MIN_DEPTH,
+            max_depth=data_filter.max_depth if data_filter else MAX_DEPTH,
+        )
 
     return geodataframe
