@@ -46,7 +46,7 @@ class DataParserLowrance(DataParserABC):
 
         dataframe: pd.DataFrame = pd.read_csv(file)
         self.validate_columns(dataframe=dataframe, file=file, columns=COLUMN_EXCEPTIONS)
-        dataframe = self.convert_and_clean_dataframe(
+        dataframe = self.convert_dtype(
             dataframe=dataframe,
             dtype_dict=dtype_dict,
             time_column=ids.TIME_LOWRANCE,
