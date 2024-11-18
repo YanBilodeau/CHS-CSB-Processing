@@ -1,12 +1,10 @@
 from pathlib import Path
 from typing import Collection
 
-
 import geopandas as gpd
 from loguru import logger
 import pandas as pd
 
-from schema.model import DataLoggerSchema, validate_schema
 from .parser_exception import (
     ColumnExceptions,
     ParsingDataframeTimeError,
@@ -16,6 +14,14 @@ from .parser_exception import (
 )
 from .parser_abc import DataParserABC
 from . import parser_ids as ids
+from schema import (
+    DataLoggerSchema,
+    validate_schema,
+    TIME_UTC,
+    DEPTH_METER,
+    LONGITUDE_WGS84,
+    LATITUDE_WGS84,
+)
 
 
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.DCDB")
@@ -86,10 +92,10 @@ class DataParserBCDB(DataParserABC):
         LOGGER.debug(f"Renommage des colonnes du geodataframe.")
         data: gpd.GeoDataFrame[DataLoggerSchema] = data.rename(
             columns={
-                ids.TIME: ids.TIME_UTC,
-                ids.DEPTH: ids.DEPTH_METER,
-                ids.LON: ids.LONGITUDE_WGS84,
-                ids.LAT: ids.LATITUDE_WGS84,
+                ids.TIME: TIME_UTC,
+                ids.DEPTH: DEPTH_METER,
+                ids.LON: LONGITUDE_WGS84,
+                ids.LAT: LATITUDE_WGS84,
             }
         )
 

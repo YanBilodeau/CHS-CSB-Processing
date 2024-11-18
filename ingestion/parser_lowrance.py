@@ -14,7 +14,14 @@ from .parser_exception import (
     ParsingDataframeDepthError,
 )
 from . import parser_ids as ids
-from schema import DataLoggerSchema, validate_schema, TIME_UTC, DEPTH_METER, LONGITUDE_WGS84, LATITUDE_WGS84
+from schema import (
+    DataLoggerSchema,
+    validate_schema,
+    TIME_UTC,
+    DEPTH_METER,
+    LONGITUDE_WGS84,
+    LATITUDE_WGS84,
+)
 
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.Lowrance")
 
@@ -123,9 +130,7 @@ class DataParserLowrance(DataParserABC):
         :param data: (gpd.GeoDataFrame) Le geodataframe à transformer.
         :return: (gpd.GeoDataFrame) Le geodataframe transformé.
         """
-        LOGGER.debug(
-            f"Conversion des pieds en mètres de la colonne '{DEPTH_METER}'."
-        )
+        LOGGER.debug(f"Conversion des pieds en mètres de la colonne '{DEPTH_METER}'.")
         data[DEPTH_METER] = data[DEPTH_METER] * 0.3048
 
         return data

@@ -11,7 +11,13 @@ import pandas as pd
 from .parser_exception import ColumnExceptions
 from . import parser_ids as ids
 from .warning_capture import WarningCapture
-from schema.model import DataLoggerSchema
+from schema import (
+    DataLoggerSchema,
+    TIME_UTC,
+    DEPTH_METER,
+    LONGITUDE_WGS84,
+    LATITUDE_WGS84,
+)
 
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser")
 
@@ -126,15 +132,15 @@ class DataParserABC(ABC):
         LOGGER.debug("Suppression des doublons.")
         data_geodataframe = data_geodataframe.drop_duplicates(
             subset=[
-                ids.TIME_UTC,
-                ids.LATITUDE_WGS84,
-                ids.LONGITUDE_WGS84,
-                ids.DEPTH_METER,
+                TIME_UTC,
+                LATITUDE_WGS84,
+                LONGITUDE_WGS84,
+                DEPTH_METER,
             ]
         )
 
         LOGGER.debug("Tri du geodataframe par datetime.")
         data_geodataframe = data_geodataframe.reset_index(drop=True)
-        data_geodataframe = data_geodataframe.sort_values(by=[ids.TIME_UTC])
+        data_geodataframe = data_geodataframe.sort_values(by=[TIME_UTC])
 
         return data_geodataframe
