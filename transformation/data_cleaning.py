@@ -16,26 +16,26 @@ LOGGER = logger.bind(name="CSB-Pipeline.Transformation.DataCleaning")
 
 DataCleaningFunction = Callable[[gpd.GeoDataFrame, Any], gpd.GeoDataFrame]
 
-MIN_LATITUDE: int = -90
-MAX_LATITUDE: int = 90
-MIN_LONGITUDE: int = -180
-MAX_LONGITUDE: int = 180
-MIN_DEPTH: int = 0
-MAX_DEPTH: int | None = None
+MIN_LATITUDE: int | float = -90
+MAX_LATITUDE: int | float = 90
+MIN_LONGITUDE: int | float = -180
+MAX_LONGITUDE: int | float = 180
+MIN_DEPTH: int | float = 0
+MAX_DEPTH: int | float | None = None
 
 
 def clean_depth(
     geodataframe: gpd.GeoDataFrame,
-    min_depth: int = MIN_DEPTH,
-    max_depth: Optional[int] = MAX_DEPTH,
+    min_depth: int | float = MIN_DEPTH,
+    max_depth: Optional[int | float] = MAX_DEPTH,
     **kwargs,
 ) -> gpd.GeoDataFrame:
     """
     Fonction qui nettoie les données de profondeur.
 
     :param geodataframe: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame.
-    :param min_depth: (int) La profondeur minimale.
-    :param max_depth: (int | None) La profondeur maximale.
+    :param min_depth: (int | float) La profondeur minimale.
+    :param max_depth: (Optional[int | float]) La profondeur maximale.
     :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame nettoyé.
     """
     LOGGER.debug(
@@ -73,16 +73,16 @@ def clean_time(geodataframe: gpd.GeoDataFrame, **kwargs) -> gpd.GeoDataFrame:
 
 def clean_latitude(
     geodataframe: gpd.GeoDataFrame,
-    min_latitude: int = MIN_LATITUDE,
-    max_latitude: int = MAX_LATITUDE,
+    min_latitude: int | float = MIN_LATITUDE,
+    max_latitude: int | float = MAX_LATITUDE,
     **kwargs,
 ) -> gpd.GeoDataFrame:
     """
     Fonction qui nettoie les données de latitude.
 
     :param geodataframe: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame.
-    :param min_latitude: (int) La latitude minimale.
-    :param max_latitude: (int) La latitude maximale.
+    :param min_latitude: (int | float) La latitude minimale.
+    :param max_latitude: (int | float) La latitude maximale.
     :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame nettoyé.
     """
     LOGGER.debug(
@@ -101,16 +101,16 @@ def clean_latitude(
 
 def clean_longitude(
     geodataframe: gpd.GeoDataFrame,
-    min_longitude: int = MIN_LONGITUDE,
-    max_longitude: int = MAX_LONGITUDE,
+    min_longitude: int | float = MIN_LONGITUDE,
+    max_longitude: int | float = MAX_LONGITUDE,
     **kwargs,
 ) -> gpd.GeoDataFrame:
     """
     Fonction qui nettoie les données de longitude.
 
     :param geodataframe: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame.
-    :param min_longitude: (int) La longitude minimale.
-    :param max_longitude: (int) La longitude maximale.
+    :param min_longitude: (int | float) La longitude minimale.
+    :param max_longitude: (int | float) La longitude maximale.
     :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame nettoyé.
     """
     LOGGER.debug(
