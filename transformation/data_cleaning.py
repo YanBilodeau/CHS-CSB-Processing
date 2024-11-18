@@ -21,6 +21,8 @@ MIN_LATITUDE: int = -90
 MAX_LATITUDE: int = 90
 MIN_LONGITUDE: int = -180
 MAX_LONGITUDE: int = 180
+MIN_DEPTH: int = 0
+MAX_DEPTH: int | None = None
 
 
 @dataclass(frozen=True)
@@ -31,18 +33,33 @@ class DataCleaningFunctionError(Exception):
         return f"La fonction de nettoyage '{self.function}' n'existe pas."
 
 
-def clean_depth(geodataframe: gpd.GeoDataFrame, **kwargs) -> gpd.GeoDataFrame:
+def clean_depth(
+    geodataframe: gpd.GeoDataFrame,
+    min_depth: int = MIN_DEPTH,
+    max_depth: Optional[int] = MAX_DEPTH,
+    **kwargs,
+) -> gpd.GeoDataFrame:
     """
     Fonction qui nettoie les données de profondeur.
 
     :param geodataframe: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame.
+    :param min_depth: (int) La profondeur minimale.
+    :param max_depth: (int | None) La profondeur maximale.
     :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame nettoyé.
     """
-    LOGGER.debug(f"Nettoyage des données de profondeur {[DEPTH_METER]}.")
+    LOGGER.debug(
+        f"Nettoyage des données de profondeur {[DEPTH_METER]}. "
+        f"Profondeur minimale : {min_depth}, profondeur maximale : {max_depth}."
+    )
 
     geodataframe: gpd.GeoDataFrame[DataLoggerSchema] = geodataframe[
-        geodataframe[DEPTH_METER].notna() & (geodataframe[DEPTH_METER] > 0)
+        geodataframe[DEPTH_METER].notna() & (geodataframe[DEPTH_METER] > min_depth)
     ]
+
+    if max_depth is not None:
+        geodataframe: gpd.GeoDataFrame[DataLoggerSchema] = geodataframe[
+            geodataframe[DEPTH_METER] <= max_depth
+        ]
 
     return geodataframe
 
@@ -120,7 +137,7 @@ def clean_longitude(
 
 
 cleaning_function: tuple[Type[DataCleaningFunction], ...] = (
-    clean_depth,
+    partial(clean_depth, min_depth=MIN_DEPTH, max_depth=MAX_DEPTH),
     clean_time,
     partial(clean_latitude, min_latitude=MIN_LATITUDE, max_latitude=MAX_LATITUDE),
     partial(clean_longitude, min_longitude=MIN_LONGITUDE, max_longitude=MAX_LONGITUDE),
