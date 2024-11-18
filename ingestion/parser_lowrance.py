@@ -52,6 +52,10 @@ class DataParserLowrance(DataParserABC):
         :param dtype_dict: (dict[str, str]) Un dictionnaire de type de données.
         :return: (gpd.GeoDataFrame) Un GeoDataFrame.
         """
+        LOGGER.debug(
+            f"Chargement du fichier de données brutes de type Lowrance : {file}"
+        )
+
         if dtype_dict is None:
             dtype_dict = DTYPE_DICT
 
@@ -75,19 +79,6 @@ class DataParserLowrance(DataParserABC):
         )
 
         return gdf
-
-    def read_files(self, files: Collection[Path]) -> gpd.GeoDataFrame:
-        """
-        Méthode permettant de lire les fichiers brutes et retourne un geodataframe.
-
-        :param files: (Collection[Path]) Les fichiers à lire.
-        :return: (gpd.GeoDataFrame) Un GeoDataFrame.
-        """
-        LOGGER.debug(
-            f"Chargement des fichiers de données brutes Lowrance en geodataframe : {files}"
-        )
-
-        return super().read_files(files)
 
     @staticmethod
     def rename_columns(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
