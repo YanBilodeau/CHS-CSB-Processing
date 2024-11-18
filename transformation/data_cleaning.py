@@ -1,9 +1,10 @@
-from typing import Collection, Optional, Callable, Any, Type, Protocol
+from typing import Collection, Optional, Callable, Any, Type
 
 import geopandas as gpd
 from loguru import logger
 
 from .exception_tranformation import DataCleaningFunctionError
+from .transformation_models import DataFilterConfigProtocol
 from schema import (
     DataLoggerSchema,
     DEPTH_METER,
@@ -22,15 +23,6 @@ MIN_LONGITUDE: int | float = -180
 MAX_LONGITUDE: int | float = 180
 MIN_DEPTH: int | float = 0
 MAX_DEPTH: int | float | None = None
-
-
-class DataFilterConfigProtocol(Protocol):
-    min_latitude: int | float
-    max_latitude: int | float
-    min_longitude: int | float
-    max_longitude: int | float
-    min_depth: int | float
-    max_depth: Optional[int | float]
 
 
 def clean_depth(
