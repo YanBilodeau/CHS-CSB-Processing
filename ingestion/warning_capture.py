@@ -1,5 +1,6 @@
 import warnings
 
+
 class WarningCapture:
     def __init__(self):
         self.captured_warnings = []
