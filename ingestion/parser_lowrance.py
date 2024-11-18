@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Collection, Type
+from typing import Collection
 
 import geopandas as gpd
 from loguru import logger
@@ -14,7 +14,7 @@ from .parser_exception import (
     ParsingDataframeDepthError,
 )
 from . import parser_ids as ids
-from schema.model import DataLoggerSchema, validate_schema
+from schema import DataLoggerSchema, validate_schema, TIME_UTC, DEPTH_METER, LONGITUDE_WGS84, LATITUDE_WGS84
 
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.Lowrance")
 
@@ -87,10 +87,10 @@ class DataParserLowrance(DataParserABC):
         LOGGER.debug(f"Renommage des colonnes du geodataframe.")
         data: gpd.GeoDataFrame[DataLoggerSchema] = data.rename(
             columns={
-                ids.TIME_LOWRANCE: ids.TIME_UTC,
-                ids.DEPTH_LOWRANCE: ids.DEPTH_METER,
-                ids.LONGITUDE_LOWRANCE: ids.LONGITUDE_WGS84,
-                ids.LATITUDE_LOWRANCE: ids.LATITUDE_WGS84,
+                ids.TIME_LOWRANCE: TIME_UTC,
+                ids.DEPTH_LOWRANCE: DEPTH_METER,
+                ids.LONGITUDE_LOWRANCE: LONGITUDE_WGS84,
+                ids.LATITUDE_LOWRANCE: LATITUDE_WGS84,
             }
         )
 
@@ -124,9 +124,9 @@ class DataParserLowrance(DataParserABC):
         :return: (gpd.GeoDataFrame) Le geodataframe transformé.
         """
         LOGGER.debug(
-            f"Conversion des pieds en mètres de la colonne '{ids.DEPTH_METER}'."
+            f"Conversion des pieds en mètres de la colonne '{DEPTH_METER}'."
         )
-        data[ids.DEPTH_METER] = data[ids.DEPTH_METER] * 0.3048
+        data[DEPTH_METER] = data[DEPTH_METER] * 0.3048
 
         return data
 
