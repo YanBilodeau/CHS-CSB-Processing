@@ -17,7 +17,7 @@ buffer_time = 24
 
 [IWLS.API.PROFILE]
 # {"dev", "prod", "public"}
-active = "public"
+active = "prod"
 
 [IWLS.API.ENVIRONMENT.dev]
 name = "DEV"
@@ -38,3 +38,15 @@ name = "PUBLIC"
 endpoint = "EndpointPublic"
 calls = 15
 period = 1
+
+[Data.Transformation.Filter]
+# Valeurs minimales et maximales de latitude et longitude pour filtrer les données. {int}.
+# Commenter les lignes suivantes pour utiliser les valeurs par défaut.
+min_latitude = -90
+max_latitude = 90
+min_longitude = -180
+max_longitude = 180
+# Valeurs minimales et maximales de profondeur pour filtrer les données. {int}
+min_depth = 0
+# Ce paramètre est désactivé par défaut.
+# max_depth = 1000
