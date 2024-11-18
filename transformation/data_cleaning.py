@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from functools import partial
 from typing import Collection, Optional, Callable, Any, Type
 
@@ -14,12 +15,20 @@ from schema import (
 
 LOGGER = logger.bind(name="CSB-Pipeline.Transformation.DataCleaning")
 
-CleaningFunction = Callable[[gpd.GeoDataFrame, Any], gpd.GeoDataFrame]
+DataCleaningFunction = Callable[[gpd.GeoDataFrame, Any], gpd.GeoDataFrame]
 
 MIN_LATITUDE: int = -90
 MAX_LATITUDE: int = 90
 MIN_LONGITUDE: int = -180
 MAX_LONGITUDE: int = 180
+
+
+@dataclass(frozen=True)
+class DataCleaningFunctionError(Exception):
+    function: str
+
+    def __str__(self):
+        return f"La fonction de nettoyage '{self.function}' n'existe pas."
 
 
 def clean_depth(geodataframe: gpd.GeoDataFrame, **kwargs) -> gpd.GeoDataFrame:
@@ -110,7 +119,7 @@ def clean_longitude(
     return geodataframe
 
 
-cleaning_function: tuple[Type[CleaningFunction], ...] = (
+cleaning_function: tuple[Type[DataCleaningFunction], ...] = (
     clean_depth,
     clean_time,
     partial(clean_latitude, min_latitude=MIN_LATITUDE, max_latitude=MAX_LATITUDE),
@@ -120,7 +129,7 @@ cleaning_function: tuple[Type[CleaningFunction], ...] = (
 
 def clean_data(
     geodataframe: gpd.GeoDataFrame,
-    cleaning_func: Optional[Collection[CleaningFunction | str]] = None,
+    cleaning_func: Optional[Collection[DataCleaningFunction | str]] = None,
 ) -> gpd.GeoDataFrame:
     """
     Fonction qui nettoie les données à partir d'une collection de fonctions de nettoyage.
@@ -128,6 +137,7 @@ def clean_data(
     :param geodataframe: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame.
     :param cleaning_func: (Collection[CleanerFunctionProtocol | str]) Les fonctions de nettoyage.
     :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame nettoyé.
+    :raises DataCleaningFunctionError: Si la fonction de nettoyage n'existe pas.
     """
     LOGGER.debug("Nettoyage des données.")
 
@@ -136,7 +146,11 @@ def clean_data(
 
     for func in cleaning_func:
         if isinstance(func, str):
-            func = globals()[func]
+            globals_ = globals()
+            if func not in globals_:
+                raise DataCleaningFunctionError(func)
+
+            func = globals_[func]
 
         geodataframe: gpd.GeoDataFrame[DataLoggerSchema] = func(geodataframe)
 
