@@ -3,7 +3,7 @@ from enum import StrEnum
 
 from pydantic import BaseModel
 
-from .vessel_model import VesselConfigDict
+from .vessel_models import VesselConfigDict
 
 
 class AxisConvention(StrEnum):
