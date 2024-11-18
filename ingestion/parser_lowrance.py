@@ -7,7 +7,7 @@ import pandas as pd
 
 from .parser_abc import DataParserABC
 from .parser_exception import (
-    ColumnExceptions,
+    ColumnException,
     ParsingDataframeTimeError,
     ParsingDataframeLongitudeError,
     ParsingDataframeLatitudeError,
@@ -31,11 +31,15 @@ DTYPE_DICT: dict[str, str] = {
     ids.DEPTH_LOWRANCE: ids.FLOAT64,
 }
 
-COLUMN_EXCEPTIONS: ColumnExceptions = [
-    (ids.TIME_LOWRANCE, ParsingDataframeTimeError),
-    (ids.LONGITUDE_LOWRANCE, ParsingDataframeLongitudeError),
-    (ids.LATITUDE_LOWRANCE, ParsingDataframeLatitudeError),
-    (ids.DEPTH_LOWRANCE, ParsingDataframeDepthError),
+COLUMN_EXCEPTIONS: list[ColumnException] = [
+    ColumnException(column_name=ids.TIME_LOWRANCE, error=ParsingDataframeTimeError),
+    ColumnException(
+        column_name=ids.LONGITUDE_LOWRANCE, error=ParsingDataframeLongitudeError
+    ),
+    ColumnException(
+        column_name=ids.LATITUDE_LOWRANCE, error=ParsingDataframeLatitudeError
+    ),
+    ColumnException(column_name=ids.DEPTH_LOWRANCE, error=ParsingDataframeDepthError),
 ]
 
 
@@ -52,7 +56,9 @@ class DataParserLowrance(DataParserABC):
             dtype_dict = DTYPE_DICT
 
         dataframe: pd.DataFrame = pd.read_csv(file)
-        self.validate_columns(dataframe=dataframe, file=file, columns=COLUMN_EXCEPTIONS)
+        self.validate_columns(
+            dataframe=dataframe, file=file, column_exceptions=COLUMN_EXCEPTIONS
+        )
         dataframe = self.convert_dtype(
             dataframe=dataframe,
             dtype_dict=dtype_dict,

@@ -8,8 +8,7 @@ import geopandas as gpd
 from loguru import logger
 import pandas as pd
 
-from .parser_exception import ColumnExceptions
-from . import parser_ids as ids
+from .parser_exception import ColumnException
 from .warning_capture import WarningCapture
 from schema import (
     DataLoggerSchema,
@@ -26,26 +25,28 @@ LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser")
 class DataParserABC(ABC):
     @staticmethod
     def validate_columns(
-        dataframe: pd.DataFrame, file: Path, columns: ColumnExceptions
+        dataframe: pd.DataFrame,
+        file: Path,
+        column_exceptions: Collection[ColumnException],
     ) -> None:
         """
         Méthode permettant de valider les colonnes du dataframe.
 
         :param dataframe: (pd.DataFrame) Le dataframe à valider.
         :param file: (Path) Le fichier source.
-        :param columns: (ColumnExceptions) Les noms et les exceptions de colonnes.
+        :param column_exceptions: (Collection[ColumnException]) Les noms et les exceptions de colonnes.
         :raises ParsingDataframeLongitudeError: Erreur si la colonne de longitude est absente.
         :raises ParsingDataframeLatitudeError: Erreur si la colonne de latitude est absente.
         :raises ParsingDataframeDepthError: Erreur si la colonne de profondeur est absente.
         :raises ParsingDataframeTimeError: Erreur si la colonne de temps est absente.
         """
         LOGGER.debug(
-            f"Validation des colonnes du dataframe : {ids.LONGITUDE_LOWRANCE}, {ids.LATITUDE_LOWRANCE}, {ids.DEPTH_LOWRANCE}."
+            f"Validation des colonnes du dataframe : {[column.column_name for column in column_exceptions]}."
         )
 
-        for column_name, exception in columns:
-            if column_name not in dataframe.columns:
-                raise exception(file=file, column=column_name)  # type: ignore[arg-type]
+        for column in column_exceptions:
+            if column.column_name not in dataframe.columns:
+                raise column.error(file=file, column=column.column_name)  # type: ignore[arg-type]
 
     @staticmethod
     def convert_dtype(
