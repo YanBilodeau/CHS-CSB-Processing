@@ -66,7 +66,7 @@ class DataParserABC(ABC):
         """
         LOGGER.debug(
             f"Conversion du dtype des colonnes {[column_ for column_ in dtype_dict.keys()] + [time_column]}"
-            f" et nettoyage du dataframe : {file}."
+            f" et suppresion des données NAN du dataframe : {file}."
         )
 
         with WarningCapture() as warnings_list:
@@ -79,7 +79,7 @@ class DataParserABC(ABC):
 
         if warnings_list.captured_warnings:
             LOGGER.warning(
-                f"Des erreurs de conversion ont été détectées : {warnings_list.captured_warnings}."
+                f"Des erreurs de conversion ont été détectées dans le fichier {file} : {warnings_list.captured_warnings}."
             )
 
         dataframe.dropna(subset=list(dtype_dict.keys()) + [time_column], inplace=True)
