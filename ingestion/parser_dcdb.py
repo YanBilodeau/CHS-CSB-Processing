@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Collection
 
 import geopandas as gpd
 from loguru import logger
@@ -59,7 +58,7 @@ class DataParserBCDB(DataParserABC):
             dataframe=dataframe, file=file, column_exceptions=COLUMN_EXCEPTIONS
         )
         dataframe = self.convert_dtype(
-            dataframe=dataframe, dtype_dict=dtype_dict, time_column=ids.TIME
+            dataframe=dataframe, dtype_dict=dtype_dict, time_column=ids.TIME, file=file
         )
 
         gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(

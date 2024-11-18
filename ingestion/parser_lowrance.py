@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Collection
 
 import geopandas as gpd
 from loguru import logger
@@ -67,6 +66,7 @@ class DataParserLowrance(DataParserABC):
             dataframe=dataframe,
             dtype_dict=dtype_dict,
             time_column=ids.TIME_LOWRANCE,
+            file=file,
         )
 
         gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
