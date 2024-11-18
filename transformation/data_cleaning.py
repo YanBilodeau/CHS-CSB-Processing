@@ -1,10 +1,9 @@
-from dataclasses import dataclass
-from functools import partial
 from typing import Collection, Optional, Callable, Any, Type
 
 import geopandas as gpd
 from loguru import logger
 
+from .exception_tranformation import DataCleaningFunctionError
 from schema import (
     DataLoggerSchema,
     DEPTH_METER,
@@ -23,14 +22,6 @@ MIN_LONGITUDE: int = -180
 MAX_LONGITUDE: int = 180
 MIN_DEPTH: int = 0
 MAX_DEPTH: int | None = None
-
-
-@dataclass(frozen=True)
-class DataCleaningFunctionError(Exception):
-    function: str
-
-    def __str__(self):
-        return f"La fonction de nettoyage '{self.function}' n'existe pas."
 
 
 def clean_depth(
@@ -137,10 +128,10 @@ def clean_longitude(
 
 
 cleaning_function: tuple[Type[DataCleaningFunction], ...] = (
-    partial(clean_depth, min_depth=MIN_DEPTH, max_depth=MAX_DEPTH),
+    clean_depth,
     clean_time,
-    partial(clean_latitude, min_latitude=MIN_LATITUDE, max_latitude=MAX_LATITUDE),
-    partial(clean_longitude, min_longitude=MIN_LONGITUDE, max_longitude=MAX_LONGITUDE),
+    clean_latitude,
+    clean_longitude,
 )
 
 
