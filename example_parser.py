@@ -8,6 +8,7 @@ from export.export_utils import export_geodataframe_to_geojson
 from ingestion.parser_abc import DataParserABC
 from ingestion.parser_dcdb import DataParserBCDB
 from ingestion.parser_lowrance import DataParserLowrance
+import transformation.data_cleaning as cleaner
 
 
 LOGGER = logger.bind(name="Example.Parser")
@@ -49,11 +50,12 @@ def main() -> None:
         EXPORT.mkdir()
 
     LOGGER.info("Parser Test")
-    # iles, parser = get_ofm_files()
+    files, parser = get_ofm_files()
     # files, parser = get_dcdb_files()
-    files, parser = get_lowrance_files()
+    # files, parser = get_lowrance_files()
 
     data: gpd.GeoDataFrame = parser.from_files(files=files)
+    data = cleaner.clean_data(data)
 
     export_geodataframe_to_geojson(data, EXPORT / "ParsedData.geojson")
 
@@ -61,6 +63,7 @@ def main() -> None:
     print(data.info())
     print(data.columns)
     print(data.dtypes)
+    print()
 
     # for row in data.iterrows():
     #     print(row)
