@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Type
+from typing import Type, Collection
 
 
 @dataclass(frozen=True)
@@ -32,4 +32,7 @@ class ParsingDataframeLatitudeError(ParsingError):
     pass
 
 
-ColumnExceptions = list[tuple[str, Type[ParsingError]]]
+@dataclass(frozen=True)
+class ColumnException:
+    column_name: str
+    error: Type[ParsingError]
