@@ -33,7 +33,9 @@ DTYPE_DICT: dict[str, str] = {
 
 COLUMN_EXCEPTIONS: list[ColumnException] = [
     ColumnException(column_name=ids.TIME, error=ParsingDataframeTimeError),
-    ColumnException(column_name=ids.LONGITUDE_DCDB, error=ParsingDataframeLongitudeError),
+    ColumnException(
+        column_name=ids.LONGITUDE_DCDB, error=ParsingDataframeLongitudeError
+    ),
     ColumnException(column_name=ids.LATITUDE_DCDB, error=ParsingDataframeLatitudeError),
     ColumnException(column_name=ids.DEPTH_DCDB, error=ParsingDataframeDepthError),
 ]
