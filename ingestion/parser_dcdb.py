@@ -26,16 +26,16 @@ from schema import (
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.DCDB")
 
 DTYPE_DICT: dict[str, str] = {
-    ids.LAT: ids.FLOAT64,
-    ids.LON: ids.FLOAT64,
-    ids.DEPTH: ids.FLOAT64,
+    ids.LATITUDE_DCDB: ids.FLOAT64,
+    ids.LONGITUDE_DCDB: ids.FLOAT64,
+    ids.DEPTH_DCDB: ids.FLOAT64,
 }
 
 COLUMN_EXCEPTIONS: list[ColumnException] = [
     ColumnException(column_name=ids.TIME, error=ParsingDataframeTimeError),
-    ColumnException(column_name=ids.LON, error=ParsingDataframeLongitudeError),
-    ColumnException(column_name=ids.LAT, error=ParsingDataframeLatitudeError),
-    ColumnException(column_name=ids.DEPTH, error=ParsingDataframeDepthError),
+    ColumnException(column_name=ids.LONGITUDE_DCDB, error=ParsingDataframeLongitudeError),
+    ColumnException(column_name=ids.LATITUDE_DCDB, error=ParsingDataframeLatitudeError),
+    ColumnException(column_name=ids.DEPTH_DCDB, error=ParsingDataframeDepthError),
 ]
 
 
@@ -83,9 +83,9 @@ class DataParserBCDB(DataParserABC):
         data: gpd.GeoDataFrame[DataLoggerSchema] = data.rename(
             columns={
                 ids.TIME: TIME_UTC,
-                ids.DEPTH: DEPTH_METER,
-                ids.LON: LONGITUDE_WGS84,
-                ids.LAT: LATITUDE_WGS84,
+                ids.DEPTH_DCDB: DEPTH_METER,
+                ids.LONGITUDE_DCDB: LONGITUDE_WGS84,
+                ids.LATITUDE_DCDB: LATITUDE_WGS84,
             }
         )
 
