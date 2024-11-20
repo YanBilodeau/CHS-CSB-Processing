@@ -1,27 +1,29 @@
+from typing import LiteralString
+
 # Constantes pour VesselCongig
-ID: str = "id"
-AXIS_CONVENTION: str = "axis_convention"
-NAV: str = "nav"
-MOTION: str = "motion"
-SOUNDER: str = "sounder"
-WATERLINE: str = "waterline"
-SSP_APPLIED: str = "ssp_applied"
-ATTRIBUTE: str = "attribute"
+ID: LiteralString = "id"
+AXIS_CONVENTION: LiteralString = "axis_convention"
+NAV: LiteralString = "nav"
+MOTION: LiteralString = "motion"
+SOUNDER: LiteralString = "sounder"
+WATERLINE: LiteralString = "waterline"
+SSP_APPLIED: LiteralString = "ssp_applied"
+ATTRIBUTE: LiteralString = "attribute"
 
 # Constantes pour la convention des axes
-CARIS: str = "CARIS"
+CARIS: LiteralString = "CARIS"
 
 # Contantes pour les senseurs
-TIME_STAMP: str = "time_stamp"
-X: str = "x"
-Y: str = "y"
+TIME_STAMP: LiteralString = "time_stamp"
+X: LiteralString = "x"
+Y: LiteralString = "y"
 
 # Constante pour les attributs
-PLTFRM: str = "pltfrm"
-SDGHDW: str = "sdghdw"
-POSHDW: str = "poshdw"
-BUREAU: str = "bureau"
-RESTRN: str = "restrn"
+PLTFRM: LiteralString = "pltfrm"
+SDGHDW: LiteralString = "sdghdw"
+POSHDW: LiteralString = "poshdw"
+BUREAU: LiteralString = "bureau"
+RESTRN: LiteralString = "restrn"
 
 # Constante pour le ssp
-SSP: str = "ssp"
+SSP: LiteralString = "ssp"
