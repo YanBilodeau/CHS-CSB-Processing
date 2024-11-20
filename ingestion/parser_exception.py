@@ -36,3 +36,13 @@ class ParsingDataframeLatitudeError(ParsingError):
 class ColumnException:
     column_name: str
     error: Type[ParsingError]
+
+
+@dataclass(frozen=True)
+class ParserIdentifierError(Exception):
+    file: Path
+
+    def __str__(self) -> str:
+        return (
+            f"Erreur lors de l'idendification du parser pour le fichier : {self.file}."
+        )
