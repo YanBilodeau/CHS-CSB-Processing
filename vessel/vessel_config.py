@@ -3,6 +3,8 @@ from enum import StrEnum
 
 from pydantic import BaseModel
 
+from .exception_vessel import MissingConfigKeyError
+from . import vessel_ids as ids
 from .vessel_models import VesselConfigDict
 
 
@@ -17,7 +19,7 @@ class AxisConvention(StrEnum):
         •Z: The vertical distance of the sensor, positive into the water.
     """
 
-    CARIS: str = "CARIS"
+    CARIS: str = ids.CARIS
 
 
 class Sensor(BaseModel):
@@ -64,13 +66,28 @@ def get_vessel_config_from_config_dict(config: VesselConfigDict) -> VesselConfig
     :param config: (VesselConfigDict) Configuration du navire.
     :return: (VesselConfig) Configuration du navire.
     """
+    required_keys = [
+        ids.ID,
+        ids.AXIS_CONVENTION,
+        ids.NAV,
+        ids.MOTION,
+        ids.SOUNDER,
+        ids.WATERLINE,
+        ids.SSP_APPLIED,
+        ids.ATTRIBUTE,
+    ]
+    missing_keys = [key for key in required_keys if key not in config]
+
+    if missing_keys:
+        raise MissingConfigKeyError(missing_keys=missing_keys)
+
     return VesselConfig(
-        id=config["id"],
-        axis_convention=config["axis_convention"],
-        navigation=[Sensor(**nav) for nav in config["nav"]],
-        motion=[Sensor(**motion) for motion in config["motion"]],
-        sounder=[Sensor(**sounder) for sounder in config["sounder"]],
-        waterline=[Waterline(**waterline) for waterline in config["waterline"]],
-        ssp_applied=[SoundSpeedProfile(**ssp) for ssp in config["ssp_applied"]],
-        attribute=[BDBattribute(**attr) for attr in config["attribute"]],
+        id=config[ids.ID],
+        axis_convention=config[ids.AXIS_CONVENTION],
+        navigation=[Sensor(**nav) for nav in config[ids.NAV]],
+        motion=[Sensor(**motion) for motion in config[ids.MOTION]],
+        sounder=[Sensor(**sounder) for sounder in config[ids.SOUNDER]],
+        waterline=[Waterline(**waterline) for waterline in config[ids.WATERLINE]],
+        ssp_applied=[SoundSpeedProfile(**ssp) for ssp in config[ids.SSP_APPLIED]],
+        attribute=[BDBattribute(**attr) for attr in config[ids.ATTRIBUTE]],
     )
