@@ -27,7 +27,7 @@ class AttributeDict(TypedDict):
     restrn: str
 
 
-class VesselConfigDict(TypedDict):
+class VesselConfigDict(dict):
     id: str
     axis_convention: str
     nav: list[SensorDict]
