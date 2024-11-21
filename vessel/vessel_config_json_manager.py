@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 from pathlib import Path
 
@@ -47,6 +48,33 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
             for vessel in vessel_configs
         }
 
+    def commit_vessel_configs(self, json_config_path: Path) -> None:
+        """
+        Méthode permettant de sauvegarder la configuration des navires dans un fichier JSON.
+
+        :param json_config_path: (Path) Chemin du fichier JSON.
+        """
+
+        def default_serializer(object_):
+            if isinstance(object_, datetime):
+                return object_.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+            raise TypeError(
+                f"Les objets de type {object_.__class__.__name__} ne sont pas sérialisables."
+            )
+
+        LOGGER.debug(
+            f"Sauvegarde du fichier de configuration des navires : {json_config_path}."
+        )
+
+        with open(json_config_path, "w") as file:
+            json.dump(
+                [config.model_dump() for config in self._vessel_configs.values()],
+                file,  # type: ignore
+                indent=2,
+                default=default_serializer,
+            )
+
     def get_vessel_config(self, vessel_id: str) -> VesselConfig:
         """
         Méthode permettant de récupérer la configuration d'un navire.
@@ -71,3 +99,34 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
         LOGGER.debug("Récupération de la configuration de tous les navires.")
 
         return [config for config in self._vessel_configs.values()]
+
+    def add_veessel_config(self, vessel_config: VesselConfig) -> None:
+        """
+        Méthode permettant d'ajouter la configuration d'un navire.
+
+        :param vessel_config: (VesselConfig) Configuration du navire.
+        """
+        LOGGER.debug(f"Ajout de la configuration du navire : {vessel_config.id}.")
+
+        self._vessel_configs[vessel_config.id] = vessel_config
+
+    def update_vessel_config(self, vessel_id: str, vessel_config: VesselConfig) -> None:
+        """
+        Méthode permettant de mettre à jour la configuration d'un navire.
+
+        :param vessel_id: (str) Identifiant du navire.
+        :param vessel_config: (VesselConfig) Configuration du navire.
+        """
+        LOGGER.debug(f"Mise à jour de la configuration du navire : {vessel_id}.")
+
+        self._vessel_configs[vessel_id] = vessel_config
+
+    def delete_vessel_config(self, vessel_id: str) -> None:
+        """
+        Méthode permettant de supprimer la configuration d'un navire.
+
+        :param vessel_id: (str) Identifiant du navire.
+        """
+        LOGGER.debug(f"Suppression de la configuration du navire : {vessel_id}.")
+
+        del self._vessel_configs[vessel_id]
