@@ -69,7 +69,7 @@ def get_vessel_config_from_config_dict(config: VesselConfigDict) -> VesselConfig
     required_keys = [
         ids.ID,
         ids.AXIS_CONVENTION,
-        ids.NAV,
+        ids.NAVIGATION,
         ids.MOTION,
         ids.SOUNDER,
         ids.WATERLINE,
@@ -84,7 +84,7 @@ def get_vessel_config_from_config_dict(config: VesselConfigDict) -> VesselConfig
     return VesselConfig(
         id=config[ids.ID],
         axis_convention=config[ids.AXIS_CONVENTION],
-        navigation=[Sensor(**nav) for nav in config[ids.NAV]],
+        navigation=[Sensor(**nav) for nav in config[ids.NAVIGATION]],
         motion=[Sensor(**motion) for motion in config[ids.MOTION]],
         sounder=[Sensor(**sounder) for sounder in config[ids.SOUNDER]],
         waterline=[Waterline(**waterline) for waterline in config[ids.WATERLINE]],
