@@ -67,6 +67,7 @@ class VesselConfig(BaseModel):
         :param sensor_name: (str) Nom du capteur.
         :param timestamp: (datetime) Une date et heure.
         :return: (Sensor | Waterline | SoundSpeedProfile | BDBattribute) Données du capteur pour le moment donné.
+        :raises SensorNotFoundError: Si le capteur n'existe pas.
         """
         sensors: list[Sensor | Waterline | SoundSpeedProfile | BDBattribute] = getattr(
             self, sensor_name
@@ -146,6 +147,7 @@ def get_vessel_config_from_config_dict(config: VesselConfigDict) -> VesselConfig
 
     :param config: (VesselConfigDict) Configuration du navire.
     :return: (VesselConfig) Configuration du navire.
+    :raises MissingConfigKeyError: Si des clés de configuration sont manquantes.
     """
     required_keys = [
         ids.ID,
