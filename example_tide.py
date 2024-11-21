@@ -5,7 +5,7 @@ import pandas as pd
 from loguru import logger
 
 import iwls_api_request as iwls
-from tide.export import (
+from export.export_utils import (
     export_geodataframe_to_geojson,
     export_dataframe_to_csv,
 )
@@ -36,7 +36,7 @@ from config.iwls_api_config import (
 
 LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station")
 
-EXPORT: Path = Path(__file__).parent / "export"
+EXPORT: Path = Path(__file__).parent / "TideFileExport"
 
 
 def get_iwls_environment(config: IWLSAPIConfig) -> APIEnvironment:
@@ -210,7 +210,7 @@ def main():
     # info_stations = initialize_station_info()
     # Initialize the information of the stations for the example
     info_stations = initialize_all_station_info(
-        gdf_voronoi=gdf_voronoi, stations=slice(1000, 1500)
+        gdf_voronoi=gdf_voronoi, stations=slice(1000, 1150)
     )
 
     wl_combineds = []
@@ -316,9 +316,19 @@ if __name__ == "__main__":
     # QC Private ['5cebf1de3d0f4a073c4bba5b', '5cebf1de3d0f4a073c4bbaf3', '5cebf1df3d0f4a073c4bbb5b',
     # '5cebf1e43d0f4a073c4bc49e', '62a328b7bacf3e2d38aeb2f9']
 
-    # ATL [01569 - 5dd3064ce0fdc4b9b4be65e3] wlo rien dans le holding
+    # ATL [01569 - 5dd3064ce0fdc4b9b4be65e3, 00175 - 5cebf1df3d0f4a073c4bbc3c, 16500 - 5dd3064ce0fdc4b9b4be658f,
+    # 02002 - 5dd3064ce0fdc4b9b4be6604, 00075 - 5dd3064de0fdc4b9b4be6657, 00089 - 5dd3064de0fdc4b9b4be665a,
+    # 00096 - 5dd3064de0fdc4b9b4be665c, 00124 - 5dd3064de0fdc4b9b4be665f, 00174 - 5dd3064de0fdc4b9b4be6663,
+    # 00536 - 5dd3064de0fdc4b9b4be667d, 00652 - 5dd3064de0fdc4b9b4be6686, 01384 - 5dd3064de0fdc4b9b4be66c2,
+    # 01472 - 5dd3064de0fdc4b9b4be66c7, 00099 - 5dd3064ee0fdc4b9b4be671b, 00289 - 5dd3064ee0fdc4b9b4be672a,
+    # 00494 - 5dd3064ee0fdc4b9b4be672d, 03932 - 5dd3064ee0fdc4b9b4be6786, 05260 - 5dd3064ee0fdc4b9b4be67b7,
+    # 10100 - 5dd3064ee0fdc4b9b4be67db, 10240 - 5dd3064ee0fdc4b9b4be67dd, 11110 - 5dd3064ee0fdc4b9b4be67e4,
+    # 11150 - 5dd3064ee0fdc4b9b4be67e6, 11187 - 5dd3064ee0fdc4b9b4be67eb, 11220 - 5dd3064ee0fdc4b9b4be67ee] wlo rien dans le holding
+    # [40555 - 5cebf1e23d0f4a073c4bc053, 50550 - 5cebf1e23d0f4a073c4bc055, 08868 - 5cebf1e23d0f4a073c4bc0af]
 
     # PAC [07843 - 5cebf1de3d0f4a073c4bb956, 09511 - 5cebf1de3d0f4a073c4bba1a] wlp avant 2023
+    # [07107- 5dd3064de0fdc4b9b4be66e1] wlo rien dans le holding
+    # [07810 - 5dd3064ee0fdc4b9b4be6709]
 
     # à valider
     # CNA ['5cebf1dd3d0f4a073c4bb8c9', '5cebf1dd3d0f4a073c4bb8e3', '5cebf1de3d0f4a073c4bb9d5',
@@ -333,4 +343,9 @@ if __name__ == "__main__":
     # '5dd3064ee0fdc4b9b4be6808', '5dd3064ee0fdc4b9b4be6812', '5dd3064ee0fdc4b9b4be6818',
     # '5dd3064fe0fdc4b9b4be69f2', '5dd3064fe0fdc4b9b4be6afd', '5dd3064fe0fdc4b9b4be6b18',
     # '5dd3064fe0fdc4b9b4be6b1b', '5dd30650e0fdc4b9b4be6d36', '5dd30650e0fdc4b9b4be6d89',
-    # '5dd30650e0fdc4b9b4be6db5', '5dd30650e0fdc4b9b4be6db8']
+    # '5dd30650e0fdc4b9b4be6db5', '5dd30650e0fdc4b9b4be6db8', 5d1babeb44fdf300010bdf4d,
+    # 5dd3064ce0fdc4b9b4be65a7, 5dd3064ce0fdc4b9b4be65ad, 5dd3064ce0fdc4b9b4be65b0, 5dd3064ce0fdc4b9b4be65d4,
+    # 5dd3064ce0fdc4b9b4be65e1, 5dd3064ee0fdc4b9b4be6757, 5dd3064ee0fdc4b9b4be675f, 5dd3064ee0fdc4b9b4be6763,
+    # 5dd3064ee0fdc4b9b4be676b, 5dd3064ee0fdc4b9b4be676d, 5dd3064ee0fdc4b9b4be6778, 5dd3064ee0fdc4b9b4be677b,
+    # 5dd3064ee0fdc4b9b4be67a7, 5dd3064ee0fdc4b9b4be67aa, 5dd3064ee0fdc4b9b4be67ad, 5dd3064ee0fdc4b9b4be67b0,
+    # 5dd3064ee0fdc4b9b4be67c2]
