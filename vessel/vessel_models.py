@@ -1,24 +1,21 @@
-from typing import TypedDict
-
-
-class SensorDict(TypedDict):
+class SensorDict(dict):
     time_stamp: str
     x: float
     y: float
     z: float
 
 
-class WaterlineDict(TypedDict):
+class WaterlineDict(dict):
     time_stamp: str
     z: float
 
 
-class SoundSpeedProfileDict(TypedDict):
+class SoundSpeedProfileDict(dict):
     time_stamp: str
     ssp: str
 
 
-class AttributeDict(TypedDict):
+class AttributeDict(dict):
     time_stamp: str
     pltfrm: str
     sdghdw: str
