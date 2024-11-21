@@ -17,3 +17,11 @@ class SensorNotFoundError(Exception):
 
     def __str__(self) -> str:
         return f"Aucun capteur de type {self.sensor_name} trouvé pour le timestamp {self.timestamp}."
+
+
+@dataclass(frozen=True)
+class VesselConfigNotFoundError(Exception):
+    vessel_id: str
+
+    def __str__(self) -> str:
+        return f"La configuration du navire {self.vessel_id} n'existe pas."
