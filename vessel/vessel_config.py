@@ -1,11 +1,15 @@
 from datetime import datetime, timedelta
 from enum import StrEnum
 
+from loguru import logger
 from pydantic import BaseModel
 
 from .exception_vessel import MissingConfigKeyError, SensorNotFoundError
 from . import vessel_ids as ids
 from .vessel_models import VesselConfigDict
+
+
+LOGGER = logger.bind(name="CSB-Pipeline.VesselConfig.BaseModel")
 
 
 class AxisConvention(StrEnum):
@@ -69,6 +73,10 @@ class VesselConfig(BaseModel):
         :return: (Sensor | Waterline | SoundSpeedProfile | BDBattribute) Données du capteur pour le moment donné.
         :raises SensorNotFoundError: Si le capteur n'existe pas.
         """
+        LOGGER.debug(
+            f"Récupération des données du capteur {sensor_name} pour {timestamp}."
+        )
+
         sensors: list[Sensor | Waterline | SoundSpeedProfile | BDBattribute] = getattr(
             self, sensor_name
         )
