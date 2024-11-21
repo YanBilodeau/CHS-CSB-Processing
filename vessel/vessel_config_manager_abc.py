@@ -1,9 +1,18 @@
 from abc import ABC, abstractmethod
 
+from loguru import logger
+
 from .vessel_config import VesselConfig
+
+LOGGER = logger.bind(name="CSB-Pipeline.VesselConfigManager.ABC")
 
 
 class VesselConfigManagerABC(ABC):
+    def __init__(self, **kwargs):
+        LOGGER.debug(
+            f"Initialisation du gestionnaire de configuration des navires : {self.__class__.__name__}."
+        )
+
     @abstractmethod
     def get_vessel_config(self, vessel_id: str) -> VesselConfig:
         """
