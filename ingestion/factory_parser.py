@@ -52,7 +52,7 @@ FACTORY_PARSER: dict[tuple[str, ...] | None, Type[DataParserABC]] = {
 
 def get_header(file: Path) -> tuple[str, ...] | None:
     """
-    Méthode permettant de lire l'entête d'un fichier.
+    Fonction permettant de lire l'entête d'un fichier.
 
     :param file: (Path) Le fichier à lire.
     :return: (tuple[str, ...] | None) Un tuple contenant les noms des colonnes ou None si l'entête n'est pas trouvé.
@@ -80,7 +80,7 @@ def get_header(file: Path) -> tuple[str, ...] | None:
 
 def get_parser_factory(file: Path) -> Type[DataParserABC]:
     """
-    Méthode permettant de récupérer le parser associé à un fichier.
+    Fonction permettant de récupérer le parser associé à un fichier.
 
     :param file: (Path) Le fichier à parser.
     :return: (Type[DataParserABC]) Le parser associé.
