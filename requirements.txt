@@ -16,3 +16,4 @@ numpy
 scipy
 tenacity
 shapely
+python-dateutil
