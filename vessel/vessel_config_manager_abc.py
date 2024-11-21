@@ -31,3 +31,38 @@ class VesselConfigManagerABC(ABC):
         :return: (list[VesselConfig]) Configurations des navires.
         """
         pass
+
+    @abstractmethod
+    def add_veessel_config(self, vessel_config: VesselConfig) -> None:
+        """
+        Méthode permettant d'ajouter la configuration d'un navire.
+
+        :param vessel_config: (VesselConfig) Configuration du navire.
+        """
+        pass
+
+    @abstractmethod
+    def update_vessel_config(self, vessel_id: str, vessel_config: VesselConfig) -> None:
+        """
+        Méthode permettant de mettre à jour la configuration d'un navire.
+
+        :param vessel_id: (str) Identifiant du navire.
+        :param vessel_config: (VesselConfig) Configuration du navire.
+        """
+        pass
+
+    @abstractmethod
+    def delete_vessel_config(self, vessel_id: str) -> None:
+        """
+        Méthode permettant de supprimer la configuration d'un navire.
+
+        :param vessel_id: (str) Identifiant du navire.
+        """
+        pass
+
+    @abstractmethod
+    def commit_vessel_configs(self, **kwargs) -> None:
+        """
+        Méthode permettant de sauvegarder les configurations des navires.
+        """
+        pass
