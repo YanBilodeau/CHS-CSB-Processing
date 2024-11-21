@@ -71,18 +71,14 @@ class VesselConfig(BaseModel):
         sensors: list[Sensor | Waterline | SoundSpeedProfile | BDBattribute] = getattr(
             self, sensor_name
         )
-        closest_sensor: Sensor | Waterline | SoundSpeedProfile | BDBattribute | None = (
-            None
-        )
-        closest_time_diff: timedelta | None = None
 
-        for sensor in sensors:
-            time_diff: timedelta = timestamp - sensor.time_stamp
-            if time_diff.total_seconds() >= 0 and (
-                closest_time_diff is None or time_diff < closest_time_diff
-            ):
-                closest_sensor = sensor
-                closest_time_diff = time_diff
+        closest_sensor: Sensor | Waterline | SoundSpeedProfile | BDBattribute | None = (
+            min(
+                (sensor for sensor in sensors if timestamp >= sensor.time_stamp),
+                key=lambda sensor: timestamp - sensor.time_stamp,
+                default=None,
+            )
+        )
 
         if closest_sensor is None:
             raise SensorNotFoundError(sensor_name=sensor_name, timestamp=timestamp)
