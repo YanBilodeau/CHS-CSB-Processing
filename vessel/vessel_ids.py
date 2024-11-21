@@ -3,7 +3,7 @@ from typing import LiteralString
 # Constantes pour VesselCongig
 ID: LiteralString = "id"
 AXIS_CONVENTION: LiteralString = "axis_convention"
-NAV: LiteralString = "nav"
+NAVIGATION: LiteralString = "navigation"
 MOTION: LiteralString = "motion"
 SOUNDER: LiteralString = "sounder"
 WATERLINE: LiteralString = "waterline"
