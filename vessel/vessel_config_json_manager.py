@@ -4,6 +4,7 @@ from pathlib import Path
 
 from loguru import logger
 
+from .exception_vessel import VesselConfigNotFoundError
 from .vessel_config_manager_abc import VesselConfigManagerABC
 from .vessel_config import (
     VesselConfig,
@@ -53,6 +54,7 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
         Méthode permettant de sauvegarder la configuration des navires dans un fichier JSON.
 
         :param json_config_path: (Path) Chemin du fichier JSON.
+        :raises TypeError: Si un objet n'est pas sérialisable.
         """
 
         def default_serializer(object_):
@@ -81,12 +83,12 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
 
         :param vessel_id: (str) Identifiant du navire.
         :return: (VesselConfig) Configuration du navire.
-        :raises ValueError: Si la configuration du navire n'existe pas.
+        :raises VesselConfigNotFoundError: Si la configuration du navire n'existe pas.
         """
         LOGGER.debug(f"Récupération de la configuration du navire : {vessel_id}.")
 
         if vessel_id not in self._vessel_configs:
-            raise ValueError(f"La configuration du navire {vessel_id} n'existe pas.")
+            raise VesselConfigNotFoundError(vessel_id=vessel_id)
 
         return self._vessel_configs[vessel_id]
 
