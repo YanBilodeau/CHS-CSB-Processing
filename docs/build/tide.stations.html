@@ -1,0 +1,676 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tide.stations package &mdash; Documentation CHS-CSB-Processing 1.0.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=05dadb3a"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=e6b791cb"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Recherche" href="search.html" />
+    <link rel="next" title="tide.time_serie package" href="tide.time_serie.html" />
+    <link rel="prev" title="tide package" href="tide.html" />
+    <link href="_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CHS-CSB-Processing
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">CHS-CSB_Processing</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="config.html">config package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example_iwls_api_request.html">example_iwls_api_request module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example_parser.html">example_parser module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example_tide.html">example_tide module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example_vessel.html">example_vessel module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ingestion.html">ingestion package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iwls_api_request.html">iwls_api_request package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="schema.html">schema package</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="tide.html">tide package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="tide.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tide.stations package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tide.time_serie.html">tide.time_serie package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tide.voronoi.html">tide.voronoi package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tide.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tide.html#module-tide.plot">tide.plot module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tide.html#module-tide.schema">tide.schema module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tide.html#module-tide">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="transformation.html">transformation package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vessel.html">vessel package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CHS-CSB-Processing</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">CHS-CSB_Processing</a></li>
+          <li class="breadcrumb-item"><a href="tide.html">tide package</a></li>
+      <li class="breadcrumb-item active">tide.stations package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tide.stations.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tide-stations-package">
+<h1>tide.stations package<a class="headerlink" href="#tide-stations-package" title="Lien vers cette rubrique"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Lien vers cette rubrique"></a></h2>
+</section>
+<section id="module-tide.stations.exception_stations">
+<span id="tide-stations-exception-stations-module"></span><h2>tide.stations.exception_stations module<a class="headerlink" href="#module-tide.stations.exception_stations" title="Lien vers cette rubrique"></a></h2>
+<dl class="py exception">
+<dt class="sig sig-object py" id="tide.stations.exception_stations.StationsError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.stations.exception_stations.</span></span><span class="sig-name descname"><span class="pre">StationsError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/stations/exception_stations.html#StationsError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.exception_stations.StationsError" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.exception_stations.StationsError.error">
+<span class="sig-name descname"><span class="pre">error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#tide.stations.exception_stations.StationsError.error" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.exception_stations.StationsError.message">
+<span class="sig-name descname"><span class="pre">message</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#tide.stations.exception_stations.StationsError.message" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.exception_stations.StationsError.status_code">
+<span class="sig-name descname"><span class="pre">status_code</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tide.stations.exception_stations.StationsError.status_code" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tide.stations.factory_stations">
+<span id="tide-stations-factory-stations-module"></span><h2>tide.stations.factory_stations module<a class="headerlink" href="#module-tide.stations.factory_stations" title="Lien vers cette rubrique"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.stations.factory_stations.get_stations_factory">
+<span class="sig-prename descclassname"><span class="pre">tide.stations.factory_stations.</span></span><span class="sig-name descname"><span class="pre">get_stations_factory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enpoint_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.stations.stations_models.EndpointTypeProtocol" title="tide.stations.stations_models.EndpointTypeProtocol"><span class="pre">EndpointTypeProtocol</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tide.stations.stations_abc.StationsHandlerABC" title="tide.stations.stations_abc.StationsHandlerABC"><span class="pre">StationsHandlerABC</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tide/stations/factory_stations.html#get_stations_factory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.factory_stations.get_stations_factory" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-tide.stations.stations_abc">
+<span id="tide-stations-stations-abc-module"></span><h2>tide.stations.stations_abc module<a class="headerlink" href="#module-tide.stations.stations_abc" title="Lien vers cette rubrique"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tide.stations.stations_abc.StationsHandlerABC">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.stations.stations_abc.</span></span><span class="sig-name descname"><span class="pre">StationsHandlerABC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.stations.stations_models.IWLSapiProtocol" title="tide.stations.stations_models.IWLSapiProtocol"><span class="pre">IWLSapiProtocol</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/stations/stations_abc.html#StationsHandlerABC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.stations_abc.StationsHandlerABC" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.stations_abc.StationsHandlerABC.create_data_list">
+<span class="sig-name descname"><span class="pre">create_data_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Collection</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_serie_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.stations.stations_models.TimeSeriesProtocol" title="tide.stations.stations_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tide/stations/stations_abc.html#StationsHandlerABC.create_data_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.stations_abc.StationsHandlerABC.create_data_list" title="Lien vers cette définition"></a></dt>
+<dd><p>Crée une liste de données pour les séries temporelles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – (Collection[dict]) Données de la série temporelle.</p></li>
+<li><p><strong>time_serie_code</strong> – (TimeSeriesProtocol) Le code de la série temporelle.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(list[dict]) Liste des données.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.stations_abc.StationsHandlerABC.filter_wlo_qc_flag">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_wlo_qc_flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_serie_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.stations.stations_models.TimeSeriesProtocol" title="tide.stations.stations_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">wlo_qc_flag_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Collection</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/stations/stations_abc.html#StationsHandlerABC.filter_wlo_qc_flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.stations_abc.StationsHandlerABC.filter_wlo_qc_flag" title="Lien vers cette définition"></a></dt>
+<dd><p>Filtre les données de la série temporelle WLO en fonction des flags de qualité.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dataframe</strong> – (pd.DataFrame) Données des séries temporelles sous forme de DataFrame.</p></li>
+<li><p><strong>time_serie_code</strong> – (TimeSeriesProtocol) Le code de la série temporelle des données.</p></li>
+<li><p><strong>wlo_qc_flag_filter</strong> – (Collection[str] | None) Liste des flags de qualité à filtrer pour la
+série temporelle WLO.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame) Données des séries temporelles sous forme de DataFrame.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.stations_abc.StationsHandlerABC.get_stations_geodataframe">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_stations_geodataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_time_series</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Collection</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tide.stations.stations_models.TimeSeriesProtocol" title="tide.stations.stations_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station_name_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'officialName'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="_modules/tide/stations/stations_abc.html#StationsHandlerABC.get_stations_geodataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.stations_abc.StationsHandlerABC.get_stations_geodataframe" title="Lien vers cette définition"></a></dt>
+<dd><p>Récupère les données des stations sous forme de GeoDataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filter_time_series</strong> – (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer
+les stations. Si None, toutes les stations sont retournées.</p></li>
+<li><p><strong>station_name_key</strong> – (str) Clé du nom de la station.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(gpd.DataFrame) Données des stations sous forme de GeoDataFrame.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe">
+<span class="sig-name descname"><span class="pre">get_time_series_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_serie_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.stations.stations_models.TimeSeriesProtocol" title="tide.stations.stations_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">timedelta</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">datetime.timedelta(days=7)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime_sorted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wlo_qc_flag_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Collection</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/stations/stations_abc.html#StationsHandlerABC.get_time_series_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe" title="Lien vers cette définition"></a></dt>
+<dd><p>Récupère les séries temporelles sous forme de DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>station</strong> – (str) Code de la station.</p></li>
+<li><p><strong>from_time</strong> – (str) La date de début en format ISO 8601 (ex: 2019-11-13T19:18:00Z).</p></li>
+<li><p><strong>to_time</strong> – (str) La date de fin en format ISO 8601 (ex: 2019-11-13T19:18:00Z).</p></li>
+<li><p><strong>time_serie_code</strong> – (TimeSeriesProtocol) Le code de la série temporelle désirée.</p></li>
+<li><p><strong>time_delta</strong> – (timedelta) L’intervalle de temps maximale pour chaque requête.</p></li>
+<li><p><strong>datetime_sorted</strong> – (bool) Si les données doivent être triées par date.</p></li>
+<li><p><strong>wlo_qc_flag_filter</strong> – (Collection[str] | None) Liste des flags de qualité à filtrer pour la série temporelle WLO.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame) Données des séries temporelles sous forme de DataFrame.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tide.stations.stations_abc.StationsHandlerABC.stations">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tide.stations.stations_abc.StationsHandlerABC.stations" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tide.stations.stations_models">
+<span id="tide-stations-stations-models-module"></span><h2>tide.stations.stations_models module<a class="headerlink" href="#module-tide.stations.stations_models" title="Lien vers cette rubrique"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tide.stations.stations_models.EndpointTypeProtocol">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.stations.stations_models.</span></span><span class="sig-name descname"><span class="pre">EndpointTypeProtocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/stations/stations_models.html#EndpointTypeProtocol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.stations_models.EndpointTypeProtocol" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.stations_models.EndpointTypeProtocol.PRIVATE_DEV">
+<span class="sig-name descname"><span class="pre">PRIVATE_DEV</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'EndpointPrivateDev'</span></em><a class="headerlink" href="#tide.stations.stations_models.EndpointTypeProtocol.PRIVATE_DEV" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.stations_models.EndpointTypeProtocol.PRIVATE_PROD">
+<span class="sig-name descname"><span class="pre">PRIVATE_PROD</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'EndpointPrivateProd'</span></em><a class="headerlink" href="#tide.stations.stations_models.EndpointTypeProtocol.PRIVATE_PROD" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.stations_models.EndpointTypeProtocol.PUBLIC">
+<span class="sig-name descname"><span class="pre">PUBLIC</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'EndpointPublic'</span></em><a class="headerlink" href="#tide.stations.stations_models.EndpointTypeProtocol.PUBLIC" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tide.stations.stations_models.IWLSapiProtocol">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.stations.stations_models.</span></span><span class="sig-name descname"><span class="pre">IWLSapiProtocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/stations/stations_models.html#IWLSapiProtocol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.stations_models.IWLSapiProtocol" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.stations_models.IWLSapiProtocol.get_all_stations">
+<span class="sig-name descname"><span class="pre">get_all_stations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tide.stations.stations_models.ResponseProtocol" title="tide.stations.stations_models.ResponseProtocol"><span class="pre">ResponseProtocol</span></a></span></span><a class="reference internal" href="_modules/tide/stations/stations_models.html#IWLSapiProtocol.get_all_stations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.stations_models.IWLSapiProtocol.get_all_stations" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.stations_models.IWLSapiProtocol.get_time_serie_block_data">
+<span class="sig-name descname"><span class="pre">get_time_serie_block_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_serie_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.stations.stations_models.TimeSeriesProtocol" title="tide.stations.stations_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">timedelta</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">datetime.timedelta(days=7)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime_sorted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tide.stations.stations_models.ResponseProtocol" title="tide.stations.stations_models.ResponseProtocol"><span class="pre">ResponseProtocol</span></a></span></span><a class="reference internal" href="_modules/tide/stations/stations_models.html#IWLSapiProtocol.get_time_serie_block_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.stations_models.IWLSapiProtocol.get_time_serie_block_data" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.stations_models.IWLSapiProtocol.get_time_series_station">
+<span class="sig-name descname"><span class="pre">get_time_series_station</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tide.stations.stations_models.ResponseProtocol" title="tide.stations.stations_models.ResponseProtocol"><span class="pre">ResponseProtocol</span></a></span></span><a class="reference internal" href="_modules/tide/stations/stations_models.html#IWLSapiProtocol.get_time_series_station"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.stations_models.IWLSapiProtocol.get_time_series_station" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tide.stations.stations_models.ResponseProtocol">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.stations.stations_models.</span></span><span class="sig-name descname"><span class="pre">ResponseProtocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/stations/stations_models.html#ResponseProtocol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.stations_models.ResponseProtocol" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.stations_models.ResponseProtocol.data">
+<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tide.stations.stations_models.ResponseProtocol.data" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.stations_models.ResponseProtocol.error">
+<span class="sig-name descname"><span class="pre">error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#tide.stations.stations_models.ResponseProtocol.error" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.stations_models.ResponseProtocol.is_ok">
+<span class="sig-name descname"><span class="pre">is_ok</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#tide.stations.stations_models.ResponseProtocol.is_ok" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.stations_models.ResponseProtocol.message">
+<span class="sig-name descname"><span class="pre">message</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#tide.stations.stations_models.ResponseProtocol.message" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.stations_models.ResponseProtocol.status_code">
+<span class="sig-name descname"><span class="pre">status_code</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tide.stations.stations_models.ResponseProtocol.status_code" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tide.stations.stations_models.TimeSeriesProtocol">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.stations.stations_models.</span></span><span class="sig-name descname"><span class="pre">TimeSeriesProtocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/stations/stations_models.html#TimeSeriesProtocol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.stations_models.TimeSeriesProtocol" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.stations_models.TimeSeriesProtocol.WLF">
+<span class="sig-name descname"><span class="pre">WLF</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wlf'</span></em><a class="headerlink" href="#tide.stations.stations_models.TimeSeriesProtocol.WLF" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.stations_models.TimeSeriesProtocol.WLF_SPINE">
+<span class="sig-name descname"><span class="pre">WLF_SPINE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wlf-spine'</span></em><a class="headerlink" href="#tide.stations.stations_models.TimeSeriesProtocol.WLF_SPINE" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.stations_models.TimeSeriesProtocol.WLF_VTG">
+<span class="sig-name descname"><span class="pre">WLF_VTG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wlf-vtg'</span></em><a class="headerlink" href="#tide.stations.stations_models.TimeSeriesProtocol.WLF_VTG" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.stations_models.TimeSeriesProtocol.WLO">
+<span class="sig-name descname"><span class="pre">WLO</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wlo'</span></em><a class="headerlink" href="#tide.stations.stations_models.TimeSeriesProtocol.WLO" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.stations_models.TimeSeriesProtocol.WLP">
+<span class="sig-name descname"><span class="pre">WLP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wlp'</span></em><a class="headerlink" href="#tide.stations.stations_models.TimeSeriesProtocol.WLP" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.stations_models.TimeSeriesProtocol.from_str">
+<span class="sig-name descname"><span class="pre">from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/stations/stations_models.html#TimeSeriesProtocol.from_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.stations_models.TimeSeriesProtocol.from_str" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tide.stations.stations_private">
+<span id="tide-stations-stations-private-module"></span><h2>tide.stations.stations_private module<a class="headerlink" href="#module-tide.stations.stations_private" title="Lien vers cette rubrique"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tide.stations.stations_private.StationsHandlerPrivate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.stations.stations_private.</span></span><span class="sig-name descname"><span class="pre">StationsHandlerPrivate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.stations.stations_models.IWLSapiProtocol" title="tide.stations.stations_models.IWLSapiProtocol"><span class="pre">IWLSapiProtocol</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/stations/stations_private.html#StationsHandlerPrivate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.stations_private.StationsHandlerPrivate" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <a class="reference internal" href="#tide.stations.stations_abc.StationsHandlerABC" title="tide.stations.stations_abc.StationsHandlerABC"><code class="xref py py-class docutils literal notranslate"><span class="pre">StationsHandlerABC</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.stations_private.StationsHandlerPrivate.get_stations_geodataframe">
+<span class="sig-name descname"><span class="pre">get_stations_geodataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_time_series</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Collection</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tide.stations.stations_models.TimeSeriesProtocol" title="tide.stations.stations_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station_name_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'name'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cache</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ttl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">86400</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="_modules/tide/stations/stations_private.html#StationsHandlerPrivate.get_stations_geodataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.stations_private.StationsHandlerPrivate.get_stations_geodataframe" title="Lien vers cette définition"></a></dt>
+<dd><p>Récupère les données des stations sous forme de GeoDataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filter_time_series</strong> – (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer
+les stations. Si None, toutes les stations sont retournées.</p></li>
+<li><p><strong>station_name_key</strong> – (str) Clé du nom de la station.</p></li>
+<li><p><strong>use_cache</strong> – (bool) Utilisation du cache.</p></li>
+<li><p><strong>ttl</strong> – (int) Durée de vie du cache en secondes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(gpd.DataFrame) Données des stations sous forme de GeoDataFrame.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tide.stations.stations_public">
+<span id="tide-stations-stations-public-module"></span><h2>tide.stations.stations_public module<a class="headerlink" href="#module-tide.stations.stations_public" title="Lien vers cette rubrique"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tide.stations.stations_public.StationsHandlerPublic">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.stations.stations_public.</span></span><span class="sig-name descname"><span class="pre">StationsHandlerPublic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.stations.stations_models.IWLSapiProtocol" title="tide.stations.stations_models.IWLSapiProtocol"><span class="pre">IWLSapiProtocol</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/stations/stations_public.html#StationsHandlerPublic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.stations_public.StationsHandlerPublic" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <a class="reference internal" href="#tide.stations.stations_abc.StationsHandlerABC" title="tide.stations.stations_abc.StationsHandlerABC"><code class="xref py py-class docutils literal notranslate"><span class="pre">StationsHandlerABC</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.stations_public.StationsHandlerPublic.get_stations_geodataframe">
+<span class="sig-name descname"><span class="pre">get_stations_geodataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_time_series</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Collection</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tide.stations.stations_models.TimeSeriesProtocol" title="tide.stations.stations_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station_name_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'officialName'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="_modules/tide/stations/stations_public.html#StationsHandlerPublic.get_stations_geodataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.stations_public.StationsHandlerPublic.get_stations_geodataframe" title="Lien vers cette définition"></a></dt>
+<dd><p>Récupère les données des stations sous forme de GeoDataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filter_time_series</strong> – (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer
+les stations. Si None, toutes les stations sont retournées.</p></li>
+<li><p><strong>station_name_key</strong> – (str) Clé du nom de la station.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(gpd.DataFrame) Données des stations sous forme de GeoDataFrame.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tide.stations">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tide.stations" title="Lien vers cette rubrique"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tide.stations.EndpointTypeProtocol">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.stations.</span></span><span class="sig-name descname"><span class="pre">EndpointTypeProtocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/stations/stations_models.html#EndpointTypeProtocol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.EndpointTypeProtocol" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.EndpointTypeProtocol.PRIVATE_DEV">
+<span class="sig-name descname"><span class="pre">PRIVATE_DEV</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'EndpointPrivateDev'</span></em><a class="headerlink" href="#tide.stations.EndpointTypeProtocol.PRIVATE_DEV" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.EndpointTypeProtocol.PRIVATE_PROD">
+<span class="sig-name descname"><span class="pre">PRIVATE_PROD</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'EndpointPrivateProd'</span></em><a class="headerlink" href="#tide.stations.EndpointTypeProtocol.PRIVATE_PROD" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.EndpointTypeProtocol.PUBLIC">
+<span class="sig-name descname"><span class="pre">PUBLIC</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'EndpointPublic'</span></em><a class="headerlink" href="#tide.stations.EndpointTypeProtocol.PUBLIC" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tide.stations.IWLSapiProtocol">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.stations.</span></span><span class="sig-name descname"><span class="pre">IWLSapiProtocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/stations/stations_models.html#IWLSapiProtocol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.IWLSapiProtocol" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.IWLSapiProtocol.get_all_stations">
+<span class="sig-name descname"><span class="pre">get_all_stations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tide.stations.stations_models.ResponseProtocol" title="tide.stations.stations_models.ResponseProtocol"><span class="pre">ResponseProtocol</span></a></span></span><a class="reference internal" href="_modules/tide/stations/stations_models.html#IWLSapiProtocol.get_all_stations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.IWLSapiProtocol.get_all_stations" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.IWLSapiProtocol.get_time_serie_block_data">
+<span class="sig-name descname"><span class="pre">get_time_serie_block_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_serie_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.stations.stations_models.TimeSeriesProtocol" title="tide.stations.stations_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">timedelta</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">datetime.timedelta(days=7)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime_sorted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tide.stations.stations_models.ResponseProtocol" title="tide.stations.stations_models.ResponseProtocol"><span class="pre">ResponseProtocol</span></a></span></span><a class="reference internal" href="_modules/tide/stations/stations_models.html#IWLSapiProtocol.get_time_serie_block_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.IWLSapiProtocol.get_time_serie_block_data" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.IWLSapiProtocol.get_time_series_station">
+<span class="sig-name descname"><span class="pre">get_time_series_station</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tide.stations.stations_models.ResponseProtocol" title="tide.stations.stations_models.ResponseProtocol"><span class="pre">ResponseProtocol</span></a></span></span><a class="reference internal" href="_modules/tide/stations/stations_models.html#IWLSapiProtocol.get_time_series_station"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.IWLSapiProtocol.get_time_series_station" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tide.stations.StationsError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.stations.</span></span><span class="sig-name descname"><span class="pre">StationsError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/stations/exception_stations.html#StationsError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.StationsError" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.StationsError.error">
+<span class="sig-name descname"><span class="pre">error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#tide.stations.StationsError.error" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.StationsError.message">
+<span class="sig-name descname"><span class="pre">message</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#tide.stations.StationsError.message" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.StationsError.status_code">
+<span class="sig-name descname"><span class="pre">status_code</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#tide.stations.StationsError.status_code" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tide.stations.StationsHandlerABC">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.stations.</span></span><span class="sig-name descname"><span class="pre">StationsHandlerABC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.stations.stations_models.IWLSapiProtocol" title="tide.stations.stations_models.IWLSapiProtocol"><span class="pre">IWLSapiProtocol</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/stations/stations_abc.html#StationsHandlerABC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.StationsHandlerABC" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.StationsHandlerABC.create_data_list">
+<span class="sig-name descname"><span class="pre">create_data_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Collection</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_serie_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.stations.stations_models.TimeSeriesProtocol" title="tide.stations.stations_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tide/stations/stations_abc.html#StationsHandlerABC.create_data_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.StationsHandlerABC.create_data_list" title="Lien vers cette définition"></a></dt>
+<dd><p>Crée une liste de données pour les séries temporelles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – (Collection[dict]) Données de la série temporelle.</p></li>
+<li><p><strong>time_serie_code</strong> – (TimeSeriesProtocol) Le code de la série temporelle.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(list[dict]) Liste des données.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.StationsHandlerABC.filter_wlo_qc_flag">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_wlo_qc_flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_serie_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.stations.stations_models.TimeSeriesProtocol" title="tide.stations.stations_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">wlo_qc_flag_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Collection</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/stations/stations_abc.html#StationsHandlerABC.filter_wlo_qc_flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.StationsHandlerABC.filter_wlo_qc_flag" title="Lien vers cette définition"></a></dt>
+<dd><p>Filtre les données de la série temporelle WLO en fonction des flags de qualité.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dataframe</strong> – (pd.DataFrame) Données des séries temporelles sous forme de DataFrame.</p></li>
+<li><p><strong>time_serie_code</strong> – (TimeSeriesProtocol) Le code de la série temporelle des données.</p></li>
+<li><p><strong>wlo_qc_flag_filter</strong> – (Collection[str] | None) Liste des flags de qualité à filtrer pour la
+série temporelle WLO.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame) Données des séries temporelles sous forme de DataFrame.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.StationsHandlerABC.get_stations_geodataframe">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_stations_geodataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_time_series</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Collection</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tide.stations.stations_models.TimeSeriesProtocol" title="tide.stations.stations_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station_name_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'officialName'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="_modules/tide/stations/stations_abc.html#StationsHandlerABC.get_stations_geodataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.StationsHandlerABC.get_stations_geodataframe" title="Lien vers cette définition"></a></dt>
+<dd><p>Récupère les données des stations sous forme de GeoDataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filter_time_series</strong> – (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer
+les stations. Si None, toutes les stations sont retournées.</p></li>
+<li><p><strong>station_name_key</strong> – (str) Clé du nom de la station.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(gpd.DataFrame) Données des stations sous forme de GeoDataFrame.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.StationsHandlerABC.get_time_series_dataframe">
+<span class="sig-name descname"><span class="pre">get_time_series_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_serie_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.stations.stations_models.TimeSeriesProtocol" title="tide.stations.stations_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">timedelta</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">datetime.timedelta(days=7)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime_sorted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wlo_qc_flag_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Collection</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/stations/stations_abc.html#StationsHandlerABC.get_time_series_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.StationsHandlerABC.get_time_series_dataframe" title="Lien vers cette définition"></a></dt>
+<dd><p>Récupère les séries temporelles sous forme de DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>station</strong> – (str) Code de la station.</p></li>
+<li><p><strong>from_time</strong> – (str) La date de début en format ISO 8601 (ex: 2019-11-13T19:18:00Z).</p></li>
+<li><p><strong>to_time</strong> – (str) La date de fin en format ISO 8601 (ex: 2019-11-13T19:18:00Z).</p></li>
+<li><p><strong>time_serie_code</strong> – (TimeSeriesProtocol) Le code de la série temporelle désirée.</p></li>
+<li><p><strong>time_delta</strong> – (timedelta) L’intervalle de temps maximale pour chaque requête.</p></li>
+<li><p><strong>datetime_sorted</strong> – (bool) Si les données doivent être triées par date.</p></li>
+<li><p><strong>wlo_qc_flag_filter</strong> – (Collection[str] | None) Liste des flags de qualité à filtrer pour la série temporelle WLO.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame) Données des séries temporelles sous forme de DataFrame.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tide.stations.StationsHandlerABC.stations">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#tide.stations.StationsHandlerABC.stations" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tide.stations.StationsHandlerPrivate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.stations.</span></span><span class="sig-name descname"><span class="pre">StationsHandlerPrivate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.stations.stations_models.IWLSapiProtocol" title="tide.stations.stations_models.IWLSapiProtocol"><span class="pre">IWLSapiProtocol</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/stations/stations_private.html#StationsHandlerPrivate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.StationsHandlerPrivate" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <a class="reference internal" href="#tide.stations.stations_abc.StationsHandlerABC" title="tide.stations.stations_abc.StationsHandlerABC"><code class="xref py py-class docutils literal notranslate"><span class="pre">StationsHandlerABC</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.StationsHandlerPrivate.get_stations_geodataframe">
+<span class="sig-name descname"><span class="pre">get_stations_geodataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_time_series</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Collection</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tide.stations.stations_models.TimeSeriesProtocol" title="tide.stations.stations_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station_name_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'name'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cache</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ttl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">86400</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="_modules/tide/stations/stations_private.html#StationsHandlerPrivate.get_stations_geodataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.StationsHandlerPrivate.get_stations_geodataframe" title="Lien vers cette définition"></a></dt>
+<dd><p>Récupère les données des stations sous forme de GeoDataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filter_time_series</strong> – (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer
+les stations. Si None, toutes les stations sont retournées.</p></li>
+<li><p><strong>station_name_key</strong> – (str) Clé du nom de la station.</p></li>
+<li><p><strong>use_cache</strong> – (bool) Utilisation du cache.</p></li>
+<li><p><strong>ttl</strong> – (int) Durée de vie du cache en secondes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(gpd.DataFrame) Données des stations sous forme de GeoDataFrame.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tide.stations.StationsHandlerPublic">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.stations.</span></span><span class="sig-name descname"><span class="pre">StationsHandlerPublic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.stations.stations_models.IWLSapiProtocol" title="tide.stations.stations_models.IWLSapiProtocol"><span class="pre">IWLSapiProtocol</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/stations/stations_public.html#StationsHandlerPublic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.StationsHandlerPublic" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <a class="reference internal" href="#tide.stations.stations_abc.StationsHandlerABC" title="tide.stations.stations_abc.StationsHandlerABC"><code class="xref py py-class docutils literal notranslate"><span class="pre">StationsHandlerABC</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.StationsHandlerPublic.get_stations_geodataframe">
+<span class="sig-name descname"><span class="pre">get_stations_geodataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_time_series</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Collection</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tide.stations.stations_models.TimeSeriesProtocol" title="tide.stations.stations_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station_name_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'officialName'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="_modules/tide/stations/stations_public.html#StationsHandlerPublic.get_stations_geodataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.StationsHandlerPublic.get_stations_geodataframe" title="Lien vers cette définition"></a></dt>
+<dd><p>Récupère les données des stations sous forme de GeoDataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filter_time_series</strong> – (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer
+les stations. Si None, toutes les stations sont retournées.</p></li>
+<li><p><strong>station_name_key</strong> – (str) Clé du nom de la station.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(gpd.DataFrame) Données des stations sous forme de GeoDataFrame.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tide.stations.TimeSeriesProtocol">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.stations.</span></span><span class="sig-name descname"><span class="pre">TimeSeriesProtocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/stations/stations_models.html#TimeSeriesProtocol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.TimeSeriesProtocol" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.TimeSeriesProtocol.WLF">
+<span class="sig-name descname"><span class="pre">WLF</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wlf'</span></em><a class="headerlink" href="#tide.stations.TimeSeriesProtocol.WLF" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.TimeSeriesProtocol.WLF_SPINE">
+<span class="sig-name descname"><span class="pre">WLF_SPINE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wlf-spine'</span></em><a class="headerlink" href="#tide.stations.TimeSeriesProtocol.WLF_SPINE" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.TimeSeriesProtocol.WLF_VTG">
+<span class="sig-name descname"><span class="pre">WLF_VTG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wlf-vtg'</span></em><a class="headerlink" href="#tide.stations.TimeSeriesProtocol.WLF_VTG" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.TimeSeriesProtocol.WLO">
+<span class="sig-name descname"><span class="pre">WLO</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wlo'</span></em><a class="headerlink" href="#tide.stations.TimeSeriesProtocol.WLO" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.stations.TimeSeriesProtocol.WLP">
+<span class="sig-name descname"><span class="pre">WLP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wlp'</span></em><a class="headerlink" href="#tide.stations.TimeSeriesProtocol.WLP" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.stations.TimeSeriesProtocol.from_str">
+<span class="sig-name descname"><span class="pre">from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/stations/stations_models.html#TimeSeriesProtocol.from_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.TimeSeriesProtocol.from_str" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.stations.get_stations_factory">
+<span class="sig-prename descclassname"><span class="pre">tide.stations.</span></span><span class="sig-name descname"><span class="pre">get_stations_factory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enpoint_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.stations.stations_models.EndpointTypeProtocol" title="tide.stations.stations_models.EndpointTypeProtocol"><span class="pre">EndpointTypeProtocol</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tide.stations.stations_abc.StationsHandlerABC" title="tide.stations.stations_abc.StationsHandlerABC"><span class="pre">StationsHandlerABC</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tide/stations/factory_stations.html#get_stations_factory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.stations.get_stations_factory" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="tide.html" class="btn btn-neutral float-left" title="tide package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="tide.time_serie.html" class="btn btn-neutral float-right" title="tide.time_serie package" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2024, Yan Bilodeau.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
