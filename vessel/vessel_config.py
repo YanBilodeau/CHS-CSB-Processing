@@ -17,7 +17,7 @@ class AxisConvention(StrEnum):
     Enumération des conventions d'axes.
 
     CARIS (str): The X-Y-Z fields set the location from the Reference Point (0). The Reference Point is the point on
-    the vessel where the X, Y, and Z axes intersect. The X, Y, and Z fields are defined as follows:
+        the vessel where the X, Y, and Z axes intersect. The X, Y, and Z fields are defined as follows:
         •X: The athwart-ship distance of the sensor, positive to starboard.
         •Y: The along-ship distance of the sensor, positive to the bow.
         •Z: The vertical distance of the sensor, positive into the water.
