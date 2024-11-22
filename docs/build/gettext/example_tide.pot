@@ -1,0 +1,98 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, Yan Bilodeau
+# This file is distributed under the same license as the CHS-CSB-Processing package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: CHS-CSB-Processing \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-11-22 10:39-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/example_tide.rst:2
+msgid "example\\_tide module"
+msgstr ""
+
+#: ../../../example_tide.py:docstring of example_tide.get_api:1
+msgid "Récupère l'API IWLS à partir de l'environnement spécifié."
+msgstr ""
+
+#: ../../source/example_tide.rst:0
+msgid "Paramètres"
+msgstr ""
+
+#: ../../../example_tide.py:docstring of example_tide.get_api:3
+#: ../../../example_tide.py:docstring of example_tide.get_iwls_environment:4
+msgid "(APIEnvironment) Environnement de l'API IWLS."
+msgstr ""
+
+#: ../../source/example_tide.rst:0
+msgid "Renvoie"
+msgstr ""
+
+#: ../../../example_tide.py:docstring of example_tide.get_api:4
+msgid "(IWLSapiProtocol) API IWLS."
+msgstr ""
+
+#: ../../../example_tide.py:docstring of example_tide.get_iwls_environment:1
+msgid "Réccupère l'environnement de l'API IWLS à partir du fichier de configuration."
+msgstr ""
+
+#: ../../../example_tide.py:docstring of example_tide.get_iwls_environment:3
+msgid "(IWLSAPIConfig) Configuration de l'API IWLS."
+msgstr ""
+
+#: ../../../example_tide.py:docstring of example_tide.get_stations_handler:1
+msgid "Récupère le gestionnaire des stations."
+msgstr ""
+
+#: ../../../example_tide.py:docstring of example_tide.get_stations_handler:3
+msgid "(EndpointType) Type de l'endpoint."
+msgstr ""
+
+#: ../../../example_tide.py:docstring of example_tide.get_stations_handler:4
+msgid "(EndpointTypeProtocol) API IWLS."
+msgstr ""
+
+#: ../../../example_tide.py:docstring of example_tide.get_stations_handler:5
+msgid "(StationsHandlerABC) Gestionnaire des stations."
+msgstr ""
+
+#: ../../../example_tide.py:docstring of example_tide.get_water_level_data_retrieval_message:1
+msgid "Récupère le message de log pour la récupération des données de niveau d'eau."
+msgstr ""
+
+#: ../../../example_tide.py:docstring of example_tide.get_water_level_data_retrieval_message:3
+msgid "(str) L'identifiant de la station."
+msgstr ""
+
+#: ../../../example_tide.py:docstring of example_tide.get_water_level_data_retrieval_message:4
+msgid "(str) La date de début."
+msgstr ""
+
+#: ../../../example_tide.py:docstring of example_tide.get_water_level_data_retrieval_message:5
+msgid "(str) La date de fin."
+msgstr ""
+
+#: ../../../example_tide.py:docstring of example_tide.get_water_level_data_retrieval_message:6
+msgid "(list[TimeSeriesProtocol]) Les séries temporelles prioritaires."
+msgstr ""
+
+#: ../../../example_tide.py:docstring of example_tide.get_water_level_data_retrieval_message:7
+msgid "(str) Le message de log."
+msgstr ""
+
+#: ../../../example_tide.py:docstring of example_tide.initialize_station_info:1
+msgid "Initialize the information of the stations for the example."
+msgstr ""
+
+#: ../../../example_tide.py:docstring of example_tide.initialize_station_info:3
+msgid "(tuple) Information of the stations."
+msgstr ""

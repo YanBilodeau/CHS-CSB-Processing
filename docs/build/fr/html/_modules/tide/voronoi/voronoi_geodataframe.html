@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html lang="fr" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tide.voronoi.voronoi_geodataframe &#8212; Documentation CHS-CSB-Processing 1.0.0</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css?v=5953c5b6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    
+    <script src="../../../_static/documentation_options.js?v=05dadb3a"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/translations.js?v=e6b791cb"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Documentation CHS-CSB-Processing 1.0.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Code du module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">tide.voronoi.voronoi_geodataframe</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Code source de tide.voronoi.voronoi_geodataframe</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Collection</span>
+
+<span class="kn">import</span> <span class="nn">dask_geopandas</span> <span class="k">as</span> <span class="nn">dgpd</span>
+<span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="kn">import</span> <span class="nn">shapely</span>
+<span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">shapely</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Geometry</span><span class="p">,</span>
+    <span class="n">GeometryCollection</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">shapely.constructive</span> <span class="kn">import</span> <span class="n">concave_hull</span>
+
+<span class="kn">from</span> <span class="nn">.voronoi_algorithm</span> <span class="kn">import</span> <span class="n">create_voronoi_polygons</span>
+<span class="kn">from</span> <span class="nn">.voronoi_models</span> <span class="kn">import</span> <span class="n">TimeSeriesProtocol</span><span class="p">,</span> <span class="n">StationsHandlerProtocol</span>
+<span class="kn">from</span> <span class="nn">..schema</span> <span class="kn">import</span> <span class="n">validate_schema</span><span class="p">,</span> <span class="n">StationsSchema</span><span class="p">,</span> <span class="n">VoronoiSchema</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;CSB-Pipeline.Tide.Voronoi.Geodataframe&quot;</span><span class="p">)</span>
+<span class="n">WGS84</span> <span class="o">=</span> <span class="mi">4326</span>
+
+
+<div class="viewcode-block" id="from_shapely_object_to_geodataframe">
+<a class="viewcode-back" href="../../../tide.voronoi.html#tide.voronoi.voronoi_geodataframe.from_shapely_object_to_geodataframe">[docs]</a>
+<span class="k">def</span> <span class="nf">from_shapely_object_to_geodataframe</span><span class="p">(</span>
+    <span class="n">geometry</span><span class="p">:</span> <span class="n">shapely</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">epsg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">WGS84</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fonction qui transforme un objet Shapely en GeoDataFrame.</span>
+
+<span class="sd">    :param geometry: (Geometry) La géométrie Shapely à transformer.</span>
+<span class="sd">    :param epsg: (int) Le code EPSG du CRS à utiliser.</span>
+<span class="sd">    :return: (gpd.GeoDataFrame) Le GeoDataFrame.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Transformation de la géométrie Shapely de type </span><span class="si">{</span><span class="n">geometry</span><span class="o">.</span><span class="n">geom_type</span><span class="si">}</span><span class="s2"> en GeoDataFrame.&quot;</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">GeometryCollection</span><span class="p">):</span>
+        <span class="n">geometries</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">geoms</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">geometries</span> <span class="o">=</span> <span class="p">[</span><span class="n">geometry</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="n">geometries</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="n">epsg</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="create_voronoi_gdf">
+<a class="viewcode-back" href="../../../tide.voronoi.html#tide.voronoi.voronoi_geodataframe.create_voronoi_gdf">[docs]</a>
+<span class="k">def</span> <span class="nf">create_voronoi_gdf</span><span class="p">(</span><span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Crée un GeoDataFrame de polygone de Voronoi à partir d&#39;une geometrie Shapely.</span>
+
+<span class="sd">    :param geometry: (Geometry) La géométrie Shapely à utiliser pour créer les polygones de Voronoi.</span>
+<span class="sd">    :return: (gpd.GeoDataFrame) Le GeoDataFrame contenant les polygones de Voronoi.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">voronoi</span><span class="p">:</span> <span class="n">GeometryCollection</span> <span class="o">=</span> <span class="n">create_voronoi_polygons</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">from_shapely_object_to_geodataframe</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="n">voronoi</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="join_stations_voronoi">
+<a class="viewcode-back" href="../../../tide.voronoi.html#tide.voronoi.voronoi_geodataframe.join_stations_voronoi">[docs]</a>
+<span class="k">def</span> <span class="nf">join_stations_voronoi</span><span class="p">(</span>
+    <span class="n">gdf_stations</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">,</span> <span class="n">gdf_voronoi</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Crée une jointure spatiale entre les stations et les polygones de Voronoi.</span>
+
+<span class="sd">    :param gdf_stations: (gpd.GeoDataFrame) Le GeoDataFrame des stations.</span>
+<span class="sd">    :param gdf_voronoi: (gpd.GeoDataFrame) Le GeoDataFrame des polygones de Voronoi.</span>
+<span class="sd">    :return: (gpd.GeoDataFrame) Le GeoDataFrame joint.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Jointure spatiale entre les stations et les polygones de Voronoi.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">gpd</span><span class="o">.</span><span class="n">sjoin</span><span class="p">(</span><span class="n">gdf_stations</span><span class="p">,</span> <span class="n">gdf_voronoi</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="s2">&quot;within&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="merge_attributes">
+<a class="viewcode-back" href="../../../tide.voronoi.html#tide.voronoi.voronoi_geodataframe.merge_attributes">[docs]</a>
+<span class="k">def</span> <span class="nf">merge_attributes</span><span class="p">(</span>
+    <span class="n">gdf_voronoi</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">,</span> <span class="n">gdf_joined</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fusionne les attributs des stations avec les polygones de Voronoi.</span>
+
+<span class="sd">    :param gdf_voronoi: (gpd.GeoDataFrame) Le GeoDataFrame des polygones de Voronoi.</span>
+<span class="sd">    :param gdf_joined: (gpd.GeoDataFrame) Le GeoDataFrame avec le geodataframe des stations et des polygones de Voronoi joins.</span>
+<span class="sd">    :return: (gpd.GeoDataFrame) Le GeoDataFrame avec les attributs fusionnés.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Fusion des attributs des stations avec les polygones de Voronoi.&quot;</span><span class="p">)</span>
+
+    <span class="n">gdf_voronoi</span> <span class="o">=</span> <span class="n">gdf_voronoi</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+        <span class="n">gdf_joined</span><span class="p">[[</span><span class="s2">&quot;index_right&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;code&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;time_series&quot;</span><span class="p">]],</span>
+        <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">right_on</span><span class="o">=</span><span class="s2">&quot;index_right&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">gdf_voronoi</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;index_right&quot;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">gdf_voronoi</span></div>
+
+
+
+<div class="viewcode-block" id="get_voronoi_geodataframe">
+<a class="viewcode-back" href="../../../tide.voronoi.html#tide.voronoi.voronoi_geodataframe.get_voronoi_geodataframe">[docs]</a>
+<span class="k">def</span> <span class="nf">get_voronoi_geodataframe</span><span class="p">(</span>
+    <span class="n">stations_handler</span><span class="p">:</span> <span class="n">StationsHandlerProtocol</span><span class="p">,</span>
+    <span class="n">time_series</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Collection</span><span class="p">[</span><span class="n">TimeSeriesProtocol</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Récupère le GeoDataFrame des polygones de Voronoi.</span>
+
+<span class="sd">    :param stations_handler: (StationsHandlerABC) Gestionnaire des stations.</span>
+<span class="sd">    :param time_series: (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer</span>
+<span class="sd">                                        les stations. Si None, toutes les stations sont retournées.</span>
+<span class="sd">    :return: (gpd.GeoDataFrame[VoronoiSchema]) Le GeoDataFrame des polygones de Voronoi.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gdf_stations</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">[</span><span class="n">StationsSchema</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">stations_handler</span><span class="o">.</span><span class="n">get_stations_geodataframe</span><span class="p">(</span>
+            <span class="n">filter_time_series</span><span class="o">=</span><span class="n">time_series</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">gdf_voronoi</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span> <span class="o">=</span> <span class="n">create_voronoi_gdf</span><span class="p">(</span>
+        <span class="n">geometry</span><span class="o">=</span><span class="n">gdf_stations</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">unary_union</span>
+    <span class="p">)</span>
+
+    <span class="n">gdf_joined</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span> <span class="o">=</span> <span class="n">join_stations_voronoi</span><span class="p">(</span>
+        <span class="n">gdf_stations</span><span class="o">=</span><span class="n">gdf_stations</span><span class="p">,</span> <span class="n">gdf_voronoi</span><span class="o">=</span><span class="n">gdf_voronoi</span>
+    <span class="p">)</span>
+
+    <span class="n">gdf_voronoi</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">[</span><span class="n">VoronoiSchema</span><span class="p">]</span> <span class="o">=</span> <span class="n">merge_attributes</span><span class="p">(</span>
+        <span class="n">gdf_voronoi</span><span class="o">=</span><span class="n">gdf_voronoi</span><span class="p">,</span> <span class="n">gdf_joined</span><span class="o">=</span><span class="n">gdf_joined</span>
+    <span class="p">)</span>
+    <span class="n">validate_schema</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">gdf_voronoi</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">VoronoiSchema</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">gdf_voronoi</span></div>
+
+
+
+<div class="viewcode-block" id="get_polygon_by_station_id">
+<a class="viewcode-back" href="../../../tide.voronoi.html#tide.voronoi.voronoi_geodataframe.get_polygon_by_station_id">[docs]</a>
+<span class="k">def</span> <span class="nf">get_polygon_by_station_id</span><span class="p">(</span>
+    <span class="n">gdf_voronoi</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">,</span> <span class="n">station_id</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Récupère le polygone de Voronoi pour une station donnée.</span>
+
+<span class="sd">    :param gdf_voronoi: (gpd.GeoDataFrame[VoronoiSchema]) Le GeoDataFrame des polygones de Voronoi.</span>
+<span class="sd">    :param station_id: (str) L&#39;identifiant de la station.</span>
+<span class="sd">    :return: (gpd.GeoDataFrame) Le polygone de Voronoi de la station.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Récupération du polygone de Voronoi de la station &#39;</span><span class="si">{</span><span class="n">station_id</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">gdf_voronoi</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">gdf_voronoi</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">station_id</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="get_time_series_by_station_id">
+<a class="viewcode-back" href="../../../tide.voronoi.html#tide.voronoi.voronoi_geodataframe.get_time_series_by_station_id">[docs]</a>
+<span class="k">def</span> <span class="nf">get_time_series_by_station_id</span><span class="p">(</span>
+    <span class="n">gdf_voronoi</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">,</span> <span class="n">station_id</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Récupère les séries temporelles pour une station donnée.</span>
+
+<span class="sd">    :param gdf_voronoi: (gpd.GeoDataFrame[VoronoiSchema]) Le GeoDataFrame des polygones de Voronoi.</span>
+<span class="sd">    :param station_id: (str) L&#39;identifiant de la station.</span>
+<span class="sd">    :return: (list[str]) Les séries temporelles de la station.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Récupération des séries temporelles de la station &#39;</span><span class="si">{</span><span class="n">station_id</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">gdf_voronoi</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">gdf_voronoi</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">station_id</span><span class="p">][</span><span class="s2">&quot;time_series&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="get_code_by_station_id">
+<a class="viewcode-back" href="../../../tide.voronoi.html#tide.voronoi.voronoi_geodataframe.get_code_by_station_id">[docs]</a>
+<span class="k">def</span> <span class="nf">get_code_by_station_id</span><span class="p">(</span><span class="n">gdf_voronoi</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">,</span> <span class="n">station_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Récupère le code de la station.</span>
+
+<span class="sd">    :param gdf_voronoi: (gpd.GeoDataFrame[VoronoiSchema]) Le GeoDataFrame des polygones de Voronoi.</span>
+<span class="sd">    :param station_id: (str) L&#39;identifiant de la station.</span>
+<span class="sd">    :return: (str) Le code de la station.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Récupération du code de la station &#39;</span><span class="si">{</span><span class="n">station_id</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">gdf_voronoi</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">gdf_voronoi</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">station_id</span><span class="p">][</span><span class="s2">&quot;code&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="get_name_by_station_id">
+<a class="viewcode-back" href="../../../tide.voronoi.html#tide.voronoi.voronoi_geodataframe.get_name_by_station_id">[docs]</a>
+<span class="k">def</span> <span class="nf">get_name_by_station_id</span><span class="p">(</span><span class="n">gdf_voronoi</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">,</span> <span class="n">station_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Récupère le nom de la station.</span>
+
+<span class="sd">    :param gdf_voronoi: (gpd.GeoDataFrame[VoronoiSchema]) Le GeoDataFrame des polygones de Voronoi.</span>
+<span class="sd">    :param station_id: (str) L&#39;identifiant de la station.</span>
+<span class="sd">    :return: (str) Le nom de la station.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Récupération du nom de la station &#39;</span><span class="si">{</span><span class="n">station_id</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">gdf_voronoi</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">gdf_voronoi</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">station_id</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="get_polygon_by_geometry">
+<a class="viewcode-back" href="../../../tide.voronoi.html#tide.voronoi.voronoi_geodataframe.get_polygon_by_geometry">[docs]</a>
+<span class="k">def</span> <span class="nf">get_polygon_by_geometry</span><span class="p">(</span>
+    <span class="n">gdf_voronoi</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Récupère les polygones de Voronoi qui intersectent les géométries données.</span>
+
+<span class="sd">    :param gdf_voronoi: (gpd.GeoDataFrame[VoronoiSchema]) Le GeoDataFrame des polygones de Voronoi.</span>
+<span class="sd">    :param geometry: (Geometry) La géométrie a utilisé pour l&#39;intersection.</span>
+<span class="sd">    :return: (gpd.GeoDataFrame[VoronoiSchema]) Le GeoDataFrame des polygones de Voronoi qui intersectent les géométries.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s2">&quot;Récupération des polygones de Voronoi qui intersectent les géométries.&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">dask_gdf_voronoi</span><span class="p">:</span> <span class="n">dgpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">[</span><span class="n">VoronoiSchema</span><span class="p">]</span> <span class="o">=</span> <span class="n">dgpd</span><span class="o">.</span><span class="n">from_geopandas</span><span class="p">(</span>
+        <span class="n">gdf_voronoi</span><span class="p">,</span> <span class="n">npartitions</span><span class="o">=</span><span class="mi">12</span>
+    <span class="p">)</span>
+    <span class="n">dask_geometry</span><span class="p">:</span> <span class="n">dgpd</span><span class="o">.</span><span class="n">GeoDataFrame</span> <span class="o">=</span> <span class="n">dgpd</span><span class="o">.</span><span class="n">from_geopandas</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">npartitions</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+
+    <span class="n">result</span><span class="p">:</span> <span class="n">dgpd</span><span class="o">.</span><span class="n">GeoDataFrame</span> <span class="o">=</span> <span class="n">dgpd</span><span class="o">.</span><span class="n">sjoin</span><span class="p">(</span>
+        <span class="n">dask_gdf_voronoi</span><span class="p">,</span> <span class="n">dask_geometry</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="s2">&quot;intersects&quot;</span>
+    <span class="p">)</span>
+    <span class="n">result_computed</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+    <span class="n">result_unique</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">[</span><span class="n">VoronoiSchema</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_computed</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span>
+        <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result_unique</span><span class="p">[</span><span class="n">gdf_voronoi</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="get_concave_hull">
+<a class="viewcode-back" href="../../../tide.voronoi.html#tide.voronoi.voronoi_geodataframe.get_concave_hull">[docs]</a>
+<span class="k">def</span> <span class="nf">get_concave_hull</span><span class="p">(</span>
+    <span class="n">geometry</span><span class="p">:</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">allow_holes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Récupère l&#39;enveloppe concave des polygones de Voronoi.</span>
+
+<span class="sd">    :param geometry: (Geometry) La géométrie a utilisé pour l&#39;enveloppe concave.</span>
+<span class="sd">    :param ratio: (float) Le ratio de l&#39;enveloppe concave.</span>
+<span class="sd">    :param allow_holes: (bool) Autorise les trous dans l&#39;enveloppe concave.</span>
+<span class="sd">    :return: (Geometry) L&#39;enveloppe concave des polygones.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Création de l&#39;enveloppe concave avec un ratio de </span><span class="si">{</span><span class="n">ratio</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">concave_hull</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="n">ratio</span><span class="p">,</span> <span class="n">allow_holes</span><span class="o">=</span><span class="n">allow_holes</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Recherche rapide</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="Index général"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Documentation CHS-CSB-Processing 1.0.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Code du module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">tide.voronoi.voronoi_geodataframe</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Yan Bilodeau.
+      Créé en utilisant <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+
+<html lang="fr" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>example_tide module &#8212; Documentation CHS-CSB-Processing 1.0.0</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=5953c5b6" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    
+    <script src="_static/documentation_options.js?v=05dadb3a"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=e6b791cb"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Recherche" href="search.html" />
+    <link rel="next" title="example_vessel module" href="example_vessel.html" />
+    <link rel="prev" title="example_parser module" href="example_parser.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="example_vessel.html" title="example_vessel module"
+             accesskey="N">suivant</a> |</li>
+        <li class="right" >
+          <a href="example_parser.html" title="example_parser module"
+             accesskey="P">précédent</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Documentation CHS-CSB-Processing 1.0.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">CHS-CSB_Processing</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">example_tide module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-example_tide">
+<span id="example-tide-module"></span><h1>example_tide module<a class="headerlink" href="#module-example_tide" title="Lien vers cette rubrique">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="example_tide.create_random_points_geodataframe">
+<span class="sig-prename descclassname"><span class="pre">example_tide.</span></span><span class="sig-name descname"><span class="pre">create_random_points_geodataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numbers_points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="_modules/example_tide.html#create_random_points_geodataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#example_tide.create_random_points_geodataframe" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="example_tide.get_api">
+<span class="sig-prename descclassname"><span class="pre">example_tide.</span></span><span class="sig-name descname"><span class="pre">get_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="iwls_api_request.html#iwls_api_request.api_config.APIEnvironment" title="iwls_api_request.api_config.APIEnvironment"><span class="pre">APIEnvironment</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tide.stations.html#tide.stations.stations_models.IWLSapiProtocol" title="tide.stations.stations_models.IWLSapiProtocol"><span class="pre">IWLSapiProtocol</span></a></span></span><a class="reference internal" href="_modules/example_tide.html#get_api"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#example_tide.get_api" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Récupère l’API IWLS à partir de l’environnement spécifié.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>environment</strong> – (APIEnvironment) Environnement de l’API IWLS.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(IWLSapiProtocol) API IWLS.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="example_tide.get_iwls_environment">
+<span class="sig-prename descclassname"><span class="pre">example_tide.</span></span><span class="sig-name descname"><span class="pre">get_iwls_environment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="config.html#config.iwls_api_config.IWLSAPIConfig" title="config.iwls_api_config.IWLSAPIConfig"><span class="pre">IWLSAPIConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="iwls_api_request.html#iwls_api_request.api_config.APIEnvironment" title="iwls_api_request.api_config.APIEnvironment"><span class="pre">APIEnvironment</span></a></span></span><a class="reference internal" href="_modules/example_tide.html#get_iwls_environment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#example_tide.get_iwls_environment" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Réccupère l’environnement de l’API IWLS à partir du fichier de configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> – (IWLSAPIConfig) Configuration de l’API IWLS.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(APIEnvironment) Environnement de l’API IWLS.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="example_tide.get_stations_handler">
+<span class="sig-prename descclassname"><span class="pre">example_tide.</span></span><span class="sig-name descname"><span class="pre">get_stations_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tide.stations.html#tide.stations.stations_models.EndpointTypeProtocol" title="tide.stations.stations_models.EndpointTypeProtocol"><span class="pre">EndpointTypeProtocol</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tide.stations.html#tide.stations.stations_models.IWLSapiProtocol" title="tide.stations.stations_models.IWLSapiProtocol"><span class="pre">IWLSapiProtocol</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="tide.stations.html#tide.stations.stations_abc.StationsHandlerABC" title="tide.stations.stations_abc.StationsHandlerABC"><span class="pre">StationsHandlerABC</span></a></span></span><a class="reference internal" href="_modules/example_tide.html#get_stations_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#example_tide.get_stations_handler" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Récupère le gestionnaire des stations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>endpoint_type</strong> – (EndpointType) Type de l’endpoint.</p></li>
+<li><p><strong>api</strong> – (EndpointTypeProtocol) API IWLS.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(StationsHandlerABC) Gestionnaire des stations.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="example_tide.get_water_level_data_retrieval_message">
+<span class="sig-prename descclassname"><span class="pre">example_tide.</span></span><span class="sig-name descname"><span class="pre">get_water_level_data_retrieval_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_serie_priority</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tide.stations.html#tide.stations.stations_models.TimeSeriesProtocol" title="tide.stations.stations_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/example_tide.html#get_water_level_data_retrieval_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#example_tide.get_water_level_data_retrieval_message" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Récupère le message de log pour la récupération des données de niveau d’eau.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>station_id</strong> – (str) L’identifiant de la station.</p></li>
+<li><p><strong>from_time</strong> – (str) La date de début.</p></li>
+<li><p><strong>to_time</strong> – (str) La date de fin.</p></li>
+<li><p><strong>time_serie_priority</strong> – (list[TimeSeriesProtocol]) Les séries temporelles prioritaires.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(str) Le message de log.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="example_tide.initialize_all_station_info">
+<span class="sig-prename descclassname"><span class="pre">example_tide.</span></span><span class="sig-name descname"><span class="pre">initialize_all_station_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf_voronoi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">slice</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">slice(0,</span> <span class="pre">10,</span> <span class="pre">None)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/example_tide.html#initialize_all_station_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#example_tide.initialize_all_station_info" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="example_tide.initialize_station_info">
+<span class="sig-prename descclassname"><span class="pre">example_tide.</span></span><span class="sig-name descname"><span class="pre">initialize_station_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="reference internal" href="_modules/example_tide.html#initialize_station_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#example_tide.initialize_station_info" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Initialize the information of the stations for the example.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Renvoie<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(tuple) Information of the stations.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="example_tide.main">
+<span class="sig-prename descclassname"><span class="pre">example_tide.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/example_tide.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#example_tide.main" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table des matières</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">example_tide module</a><ul>
+<li><a class="reference internal" href="#example_tide.create_random_points_geodataframe"><code class="docutils literal notranslate"><span class="pre">create_random_points_geodataframe()</span></code></a></li>
+<li><a class="reference internal" href="#example_tide.get_api"><code class="docutils literal notranslate"><span class="pre">get_api()</span></code></a></li>
+<li><a class="reference internal" href="#example_tide.get_iwls_environment"><code class="docutils literal notranslate"><span class="pre">get_iwls_environment()</span></code></a></li>
+<li><a class="reference internal" href="#example_tide.get_stations_handler"><code class="docutils literal notranslate"><span class="pre">get_stations_handler()</span></code></a></li>
+<li><a class="reference internal" href="#example_tide.get_water_level_data_retrieval_message"><code class="docutils literal notranslate"><span class="pre">get_water_level_data_retrieval_message()</span></code></a></li>
+<li><a class="reference internal" href="#example_tide.initialize_all_station_info"><code class="docutils literal notranslate"><span class="pre">initialize_all_station_info()</span></code></a></li>
+<li><a class="reference internal" href="#example_tide.initialize_station_info"><code class="docutils literal notranslate"><span class="pre">initialize_station_info()</span></code></a></li>
+<li><a class="reference internal" href="#example_tide.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Sujet précédent</h4>
+    <p class="topless"><a href="example_parser.html"
+                          title="Chapitre précédent">example_parser module</a></p>
+  </div>
+  <div>
+    <h4>Sujet suivant</h4>
+    <p class="topless"><a href="example_vessel.html"
+                          title="Chapitre suivant">example_vessel module</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>Cette page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/example_tide.rst.txt"
+            rel="nofollow">Montrer le code source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Recherche rapide</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="example_vessel.html" title="example_vessel module"
+             >suivant</a> |</li>
+        <li class="right" >
+          <a href="example_parser.html" title="example_parser module"
+             >précédent</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Documentation CHS-CSB-Processing 1.0.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >CHS-CSB_Processing</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">example_tide module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Yan Bilodeau.
+      Créé en utilisant <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>

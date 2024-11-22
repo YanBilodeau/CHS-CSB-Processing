@@ -1,0 +1,176 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, Yan Bilodeau
+# This file is distributed under the same license as the CHS-CSB-Processing package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: CHS-CSB-Processing \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-11-22 10:39-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/tide.stations.rst:2
+msgid "tide.stations package"
+msgstr ""
+
+#: ../../source/tide.stations.rst:5
+msgid "Submodules"
+msgstr ""
+
+#: ../../source/tide.stations.rst:8
+msgid "tide.stations.exception\\_stations module"
+msgstr ""
+
+#: ../../../tide/stations/exception_stations.py:docstring of tide.stations.exception_stations.StationsError:1
+msgid "Bases : :py:class:`Exception`"
+msgstr ""
+
+#: ../../source/tide.stations.rst:16
+msgid "tide.stations.factory\\_stations module"
+msgstr ""
+
+#: ../../source/tide.stations.rst:24
+msgid "tide.stations.stations\\_abc module"
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC:1
+msgid "Bases : :py:class:`~abc.ABC`"
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.create_data_list:1
+msgid "Crée une liste de données pour les séries temporelles."
+msgstr ""
+
+#: ../../source/tide.stations.rst:0
+msgid "Paramètres"
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.create_data_list:3
+msgid "(Collection[dict]) Données de la série temporelle."
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.create_data_list:4
+msgid "(TimeSeriesProtocol) Le code de la série temporelle."
+msgstr ""
+
+#: ../../source/tide.stations.rst:0
+msgid "Renvoie"
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.create_data_list:5
+msgid "(list[dict]) Liste des données."
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.filter_wlo_qc_flag:1
+msgid "Filtre les données de la série temporelle WLO en fonction des flags de qualité."
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.filter_wlo_qc_flag:3
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.filter_wlo_qc_flag:7
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe:10
+msgid "(pd.DataFrame) Données des séries temporelles sous forme de DataFrame."
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.filter_wlo_qc_flag:4
+msgid "(TimeSeriesProtocol) Le code de la série temporelle des données."
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.filter_wlo_qc_flag:5
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe:9
+msgid "(Collection[str] | None) Liste des flags de qualité à filtrer pour la série temporelle WLO."
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.get_stations_geodataframe:1
+#: ../../../tide/stations/stations_private.py:docstring of tide.stations.stations_private.StationsHandlerPrivate.get_stations_geodataframe:1
+#: ../../../tide/stations/stations_public.py:docstring of tide.stations.stations_public.StationsHandlerPublic.get_stations_geodataframe:1
+msgid "Récupère les données des stations sous forme de GeoDataFrame."
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.get_stations_geodataframe:3
+#: ../../../tide/stations/stations_private.py:docstring of tide.stations.stations_private.StationsHandlerPrivate.get_stations_geodataframe:3
+#: ../../../tide/stations/stations_public.py:docstring of tide.stations.stations_public.StationsHandlerPublic.get_stations_geodataframe:3
+msgid "(Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer les stations. Si None, toutes les stations sont retournées."
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.get_stations_geodataframe:5
+#: ../../../tide/stations/stations_private.py:docstring of tide.stations.stations_private.StationsHandlerPrivate.get_stations_geodataframe:5
+#: ../../../tide/stations/stations_public.py:docstring of tide.stations.stations_public.StationsHandlerPublic.get_stations_geodataframe:5
+msgid "(str) Clé du nom de la station."
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.get_stations_geodataframe:6
+#: ../../../tide/stations/stations_private.py:docstring of tide.stations.stations_private.StationsHandlerPrivate.get_stations_geodataframe:8
+#: ../../../tide/stations/stations_public.py:docstring of tide.stations.stations_public.StationsHandlerPublic.get_stations_geodataframe:6
+msgid "(gpd.DataFrame) Données des stations sous forme de GeoDataFrame."
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe:1
+msgid "Récupère les séries temporelles sous forme de DataFrame."
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe:3
+msgid "(str) Code de la station."
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe:4
+msgid "(str) La date de début en format ISO 8601 (ex: 2019-11-13T19:18:00Z)."
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe:5
+msgid "(str) La date de fin en format ISO 8601 (ex: 2019-11-13T19:18:00Z)."
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe:6
+msgid "(TimeSeriesProtocol) Le code de la série temporelle désirée."
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe:7
+msgid "(timedelta) L'intervalle de temps maximale pour chaque requête."
+msgstr ""
+
+#: ../../../tide/stations/stations_abc.py:docstring of tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe:8
+msgid "(bool) Si les données doivent être triées par date."
+msgstr ""
+
+#: ../../source/tide.stations.rst:32
+msgid "tide.stations.stations\\_models module"
+msgstr ""
+
+#: ../../../tide/stations/stations_models.py:docstring of tide.stations.stations_models.EndpointTypeProtocol:1
+#: ../../../tide/stations/stations_models.py:docstring of tide.stations.stations_models.IWLSapiProtocol:1
+#: ../../../tide/stations/stations_models.py:docstring of tide.stations.stations_models.ResponseProtocol:1
+#: ../../../tide/stations/stations_models.py:docstring of tide.stations.stations_models.TimeSeriesProtocol:1
+msgid "Bases : :py:class:`~typing.Protocol`"
+msgstr ""
+
+#: ../../source/tide.stations.rst:40
+msgid "tide.stations.stations\\_private module"
+msgstr ""
+
+#: ../../../tide/stations/stations_private.py:docstring of tide.stations.stations_private.StationsHandlerPrivate:1
+#: ../../../tide/stations/stations_public.py:docstring of tide.stations.stations_public.StationsHandlerPublic:1
+msgid "Bases : :py:class:`~tide.stations.stations_abc.StationsHandlerABC`"
+msgstr ""
+
+#: ../../../tide/stations/stations_private.py:docstring of tide.stations.stations_private.StationsHandlerPrivate.get_stations_geodataframe:6
+msgid "(bool) Utilisation du cache."
+msgstr ""
+
+#: ../../../tide/stations/stations_private.py:docstring of tide.stations.stations_private.StationsHandlerPrivate.get_stations_geodataframe:7
+msgid "(int) Durée de vie du cache en secondes."
+msgstr ""
+
+#: ../../source/tide.stations.rst:48
+msgid "tide.stations.stations\\_public module"
+msgstr ""
+
+#: ../../source/tide.stations.rst:56
+msgid "Module contents"
+msgstr ""

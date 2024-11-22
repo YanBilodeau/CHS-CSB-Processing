@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html lang="fr" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>iwls_api_request.api_config &#8212; Documentation CHS-CSB-Processing 1.0.0</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=5953c5b6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    
+    <script src="../../_static/documentation_options.js?v=05dadb3a"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=e6b791cb"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Documentation CHS-CSB-Processing 1.0.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Code du module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">iwls_api_request.api_config</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Code source de iwls_api_request.api_config</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">toml</span>
+<span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">field_validator</span>
+
+<span class="kn">from</span> <span class="nn">.api</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Endpoint</span><span class="p">,</span>
+    <span class="n">EndpointPrivateProd</span><span class="p">,</span>
+    <span class="n">EndpointPrivateDev</span><span class="p">,</span>
+    <span class="n">EndpointPublic</span><span class="p">,</span>
+    <span class="n">EndpointType</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.api_facade</span> <span class="kn">import</span> <span class="n">EnvironmentType</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;IWLS.Config.IWLSAPIConfig&quot;</span><span class="p">)</span>
+
+<span class="n">CONFIG_FILE</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;config&quot;</span> <span class="o">/</span> <span class="s2">&quot;config_API.toml&quot;</span>
+
+<span class="n">ENDPOINTS_FACTORY</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">EndpointType</span><span class="p">,</span> <span class="nb">type</span><span class="p">[</span><span class="n">Endpoint</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">EndpointType</span><span class="o">.</span><span class="n">PRIVATE_PROD</span><span class="p">:</span> <span class="n">EndpointPrivateProd</span><span class="p">,</span>
+    <span class="n">EndpointType</span><span class="o">.</span><span class="n">PRIVATE_DEV</span><span class="p">:</span> <span class="n">EndpointPrivateDev</span><span class="p">,</span>
+    <span class="n">EndpointType</span><span class="o">.</span><span class="n">PUBLIC</span><span class="p">:</span> <span class="n">EndpointPublic</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">EnvironmentDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]]</span>
+<span class="n">ProfileDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+<span class="n">IWLSapiDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">EnvironmentDict</span> <span class="o">|</span> <span class="n">ProfileDict</span><span class="p">]]</span>
+
+
+<div class="viewcode-block" id="APIEnvironment">
+<a class="viewcode-back" href="../../iwls_api_request.html#iwls_api_request.api_config.APIEnvironment">[docs]</a>
+<span class="k">class</span> <span class="nc">APIEnvironment</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">endpoint</span><span class="p">:</span> <span class="n">Endpoint</span>
+    <span class="n">calls</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">period</span><span class="p">:</span> <span class="nb">int</span>
+
+<div class="viewcode-block" id="APIEnvironment.Config">
+<a class="viewcode-back" href="../../iwls_api_request.html#iwls_api_request.api_config.APIEnvironment.Config">[docs]</a>
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">arbitrary_types_allowed</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="APIEnvironment.must_be_positive">
+<a class="viewcode-back" href="../../iwls_api_request.html#iwls_api_request.api_config.APIEnvironment.must_be_positive">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;calls&quot;</span><span class="p">,</span> <span class="s2">&quot;period&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">must_be_positive</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;La valeur doit être positive pour l&#39;attribut calls et period.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">value</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="APIProfile">
+<a class="viewcode-back" href="../../iwls_api_request.html#iwls_api_request.api_config.APIProfile">[docs]</a>
+<span class="k">class</span> <span class="nc">APIProfile</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">active</span><span class="p">:</span> <span class="n">EnvironmentType</span></div>
+
+
+
+<div class="viewcode-block" id="IWLSAPIConfig">
+<a class="viewcode-back" href="../../iwls_api_request.html#iwls_api_request.api_config.IWLSAPIConfig">[docs]</a>
+<span class="k">class</span> <span class="nc">IWLSAPIConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">dev</span><span class="p">:</span> <span class="n">APIEnvironment</span>
+    <span class="n">prod</span><span class="p">:</span> <span class="n">APIEnvironment</span>
+    <span class="n">profile</span><span class="p">:</span> <span class="n">APIProfile</span></div>
+
+
+
+<div class="viewcode-block" id="load_config">
+<a class="viewcode-back" href="../../iwls_api_request.html#iwls_api_request.api_config.load_config">[docs]</a>
+<span class="k">def</span> <span class="nf">load_config</span><span class="p">(</span><span class="n">config_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="n">CONFIG_FILE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IWLSapiDict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retournes la configuration de l&#39;API IWLS</span>
+
+<span class="sd">    :param config_file: Le fichier de configuration.</span>
+<span class="sd">    :type config_file: Path</span>
+<span class="sd">    :return: La configuration de l&#39;API IWLS.</span>
+<span class="sd">    :rtype: IWLSapiDict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Chargement du fichier de configuration : &#39;</span><span class="si">{</span><span class="n">config_file</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">toml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+
+<div class="viewcode-block" id="get_environment_config">
+<a class="viewcode-back" href="../../iwls_api_request.html#iwls_api_request.api_config.get_environment_config">[docs]</a>
+<span class="k">def</span> <span class="nf">get_environment_config</span><span class="p">(</span>
+    <span class="n">api_config_dict</span><span class="p">:</span> <span class="n">EnvironmentDict</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">APIEnvironment</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retournes les configurations des environnements de l&#39;API IWLS</span>
+
+<span class="sd">    :param api_config_dict: La configuration de l&#39;API IWLS.</span>
+<span class="sd">    :type api_config_dict: IWLSapiDict</span>
+<span class="sd">    :return: Les configurations des environnements de l&#39;API IWLS.</span>
+<span class="sd">    :rtype: dict[str, APIEnvironment]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initialisation des configurations des environnements de l&#39;API IWLS.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="n">env</span><span class="p">:</span> <span class="n">APIEnvironment</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">api_config_dict</span><span class="p">[</span><span class="n">env</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+            <span class="n">endpoint</span><span class="o">=</span><span class="n">ENDPOINTS_FACTORY</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">EndpointType</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="n">api_config_dict</span><span class="p">[</span><span class="n">env</span><span class="p">][</span><span class="s2">&quot;endpoint&quot;</span><span class="p">])</span>
+            <span class="p">)(),</span>
+            <span class="n">calls</span><span class="o">=</span><span class="n">api_config_dict</span><span class="p">[</span><span class="n">env</span><span class="p">][</span><span class="s2">&quot;calls&quot;</span><span class="p">],</span>
+            <span class="n">period</span><span class="o">=</span><span class="n">api_config_dict</span><span class="p">[</span><span class="n">env</span><span class="p">][</span><span class="s2">&quot;period&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">env</span> <span class="ow">in</span> <span class="n">api_config_dict</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="get_api_config">
+<a class="viewcode-back" href="../../iwls_api_request.html#iwls_api_request.api_config.get_api_config">[docs]</a>
+<span class="k">def</span> <span class="nf">get_api_config</span><span class="p">(</span><span class="n">config_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="n">CONFIG_FILE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IWLSAPIConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retournes la configuration de l&#39;API IWLS</span>
+
+<span class="sd">    :param config_file: Le fichier de configuration.</span>
+<span class="sd">    :type config_file: Path</span>
+<span class="sd">    :return: Un objet APIConfig.</span>
+<span class="sd">    :rtype: IWLSAPIConfig</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">api_config</span><span class="p">:</span> <span class="n">IWLSapiDict</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="n">config_file</span><span class="o">=</span><span class="n">config_file</span><span class="p">)</span>
+    <span class="n">environments</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">APIEnvironment</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_environment_config</span><span class="p">(</span>
+        <span class="n">api_config_dict</span><span class="o">=</span><span class="n">api_config</span><span class="p">[</span><span class="s2">&quot;ENVIRONMENT&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initialisation de la configuration de l&#39;API IWLS.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">IWLSAPIConfig</span><span class="p">(</span>
+        <span class="n">dev</span><span class="o">=</span><span class="n">environments</span><span class="p">[</span><span class="s2">&quot;dev&quot;</span><span class="p">],</span>
+        <span class="n">prod</span><span class="o">=</span><span class="n">environments</span><span class="p">[</span><span class="s2">&quot;prod&quot;</span><span class="p">],</span>
+        <span class="n">profile</span><span class="o">=</span><span class="n">APIProfile</span><span class="p">(</span><span class="o">**</span><span class="n">api_config</span><span class="p">[</span><span class="s2">&quot;PROFILE&quot;</span><span class="p">]),</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Recherche rapide</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Index général"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Documentation CHS-CSB-Processing 1.0.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Code du module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">iwls_api_request.api_config</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Yan Bilodeau.
+      Créé en utilisant <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>

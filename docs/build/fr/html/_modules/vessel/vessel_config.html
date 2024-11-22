@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html lang="fr" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vessel.vessel_config &#8212; Documentation CHS-CSB-Processing 1.0.0</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=5953c5b6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    
+    <script src="../../_static/documentation_options.js?v=05dadb3a"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=e6b791cb"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Documentation CHS-CSB-Processing 1.0.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Code du module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">vessel.vessel_config</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Code source de vessel.vessel_config</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">StrEnum</span>
+
+<span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+
+<span class="kn">from</span> <span class="nn">.exception_vessel</span> <span class="kn">import</span> <span class="n">MissingConfigKeyError</span><span class="p">,</span> <span class="n">SensorNotFoundError</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">vessel_ids</span> <span class="k">as</span> <span class="n">ids</span>
+<span class="kn">from</span> <span class="nn">.vessel_models</span> <span class="kn">import</span> <span class="n">VesselConfigDict</span>
+
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;CSB-Pipeline.VesselConfig.BaseModel&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="AxisConvention">
+<a class="viewcode-back" href="../../vessel.html#vessel.vessel_config.AxisConvention">[docs]</a>
+<span class="k">class</span> <span class="nc">AxisConvention</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Enumération des conventions d&#39;axes.</span>
+
+<span class="sd">    CARIS (str): The X-Y-Z fields set the location from the Reference Point (0). The Reference Point is the point on</span>
+<span class="sd">        the vessel where the X, Y, and Z axes intersect. The X, Y, and Z fields are defined as follows:</span>
+<span class="sd">        •X: The athwart-ship distance of the sensor, positive to starboard.</span>
+<span class="sd">        •Y: The along-ship distance of the sensor, positive to the bow.</span>
+<span class="sd">        •Z: The vertical distance of the sensor, positive into the water.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">CARIS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">ids</span><span class="o">.</span><span class="n">CARIS</span></div>
+
+
+
+<div class="viewcode-block" id="Sensor">
+<a class="viewcode-back" href="../../vessel.html#vessel.vessel_config.Sensor">[docs]</a>
+<span class="k">class</span> <span class="nc">Sensor</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">time_stamp</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">x</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">y</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">z</span><span class="p">:</span> <span class="nb">float</span></div>
+
+
+
+<div class="viewcode-block" id="BDBattribute">
+<a class="viewcode-back" href="../../vessel.html#vessel.vessel_config.BDBattribute">[docs]</a>
+<span class="k">class</span> <span class="nc">BDBattribute</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">time_stamp</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">pltfrm</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">sdghdw</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">poshdw</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">bureau</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">restrn</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+
+<div class="viewcode-block" id="Waterline">
+<a class="viewcode-back" href="../../vessel.html#vessel.vessel_config.Waterline">[docs]</a>
+<span class="k">class</span> <span class="nc">Waterline</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">time_stamp</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">z</span><span class="p">:</span> <span class="nb">float</span></div>
+
+
+
+<div class="viewcode-block" id="SoundSpeedProfile">
+<a class="viewcode-back" href="../../vessel.html#vessel.vessel_config.SoundSpeedProfile">[docs]</a>
+<span class="k">class</span> <span class="nc">SoundSpeedProfile</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">time_stamp</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">ssp</span><span class="p">:</span> <span class="nb">bool</span></div>
+
+
+
+<div class="viewcode-block" id="VesselConfig">
+<a class="viewcode-back" href="../../vessel.html#vessel.vessel_config.VesselConfig">[docs]</a>
+<span class="k">class</span> <span class="nc">VesselConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">axis_convention</span><span class="p">:</span> <span class="n">AxisConvention</span>
+    <span class="n">navigation</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Sensor</span><span class="p">]</span>
+    <span class="n">motion</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Sensor</span><span class="p">]</span>
+    <span class="n">sounder</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Sensor</span><span class="p">]</span>
+    <span class="n">waterline</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Waterline</span><span class="p">]</span>
+    <span class="n">ssp_applied</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">SoundSpeedProfile</span><span class="p">]</span>
+    <span class="n">attribute</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BDBattribute</span><span class="p">]</span>
+
+<div class="viewcode-block" id="VesselConfig.get_sensor">
+<a class="viewcode-back" href="../../vessel.html#vessel.vessel_config.VesselConfig.get_sensor">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_sensor</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sensor_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sensor</span> <span class="o">|</span> <span class="n">Waterline</span> <span class="o">|</span> <span class="n">SoundSpeedProfile</span> <span class="o">|</span> <span class="n">BDBattribute</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Récupère les données d&#39;un type de capteur à un instant donné.</span>
+
+<span class="sd">        :param sensor_name: (str) Nom du capteur.</span>
+<span class="sd">        :param timestamp: (datetime) Une date et heure.</span>
+<span class="sd">        :return: (Sensor | Waterline | SoundSpeedProfile | BDBattribute) Données du capteur pour le moment donné.</span>
+<span class="sd">        :raises SensorNotFoundError: Si le capteur n&#39;existe pas.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Récupération des données du capteur </span><span class="si">{</span><span class="n">sensor_name</span><span class="si">}</span><span class="s2"> pour </span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">sensors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Sensor</span> <span class="o">|</span> <span class="n">Waterline</span> <span class="o">|</span> <span class="n">SoundSpeedProfile</span> <span class="o">|</span> <span class="n">BDBattribute</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">sensor_name</span>
+        <span class="p">)</span>
+
+        <span class="n">closest_sensor</span><span class="p">:</span> <span class="n">Sensor</span> <span class="o">|</span> <span class="n">Waterline</span> <span class="o">|</span> <span class="n">SoundSpeedProfile</span> <span class="o">|</span> <span class="n">BDBattribute</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">min</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">sensor</span> <span class="k">for</span> <span class="n">sensor</span> <span class="ow">in</span> <span class="n">sensors</span> <span class="k">if</span> <span class="n">timestamp</span> <span class="o">&gt;=</span> <span class="n">sensor</span><span class="o">.</span><span class="n">time_stamp</span><span class="p">),</span>
+                <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">sensor</span><span class="p">:</span> <span class="n">timestamp</span> <span class="o">-</span> <span class="n">sensor</span><span class="o">.</span><span class="n">time_stamp</span><span class="p">,</span>
+                <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">closest_sensor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SensorNotFoundError</span><span class="p">(</span><span class="n">sensor_name</span><span class="o">=</span><span class="n">sensor_name</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">closest_sensor</span></div>
+
+
+<div class="viewcode-block" id="VesselConfig.get_navigation">
+<a class="viewcode-back" href="../../vessel.html#vessel.vessel_config.VesselConfig.get_navigation">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_navigation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode pour récupérer les données de navigation à un instant donné.</span>
+
+<span class="sd">        :param timestamp: (datetime) Une date et heure.</span>
+<span class="sd">        :return: (Sensor) Données de navigation pour le moment donné.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sensor</span><span class="p">(</span><span class="n">sensor_name</span><span class="o">=</span><span class="n">ids</span><span class="o">.</span><span class="n">NAVIGATION</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VesselConfig.get_motion">
+<a class="viewcode-back" href="../../vessel.html#vessel.vessel_config.VesselConfig.get_motion">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_motion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode pour récupérer les données de mouvement à un instant donné.</span>
+
+<span class="sd">        :param timestamp: (datetime) Une date et heure.</span>
+<span class="sd">        :return: (Sensor) Données de mouvement pour le moment donné.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sensor</span><span class="p">(</span><span class="n">sensor_name</span><span class="o">=</span><span class="n">ids</span><span class="o">.</span><span class="n">MOTION</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VesselConfig.get_sounder">
+<a class="viewcode-back" href="../../vessel.html#vessel.vessel_config.VesselConfig.get_sounder">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_sounder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode pour récupérer les données du sondeur à un instant donné.</span>
+
+<span class="sd">        :param timestamp: (datetime) Une date et heure.</span>
+<span class="sd">        :return: (Sensor) Données du sondeur pour le moment donné.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sensor</span><span class="p">(</span><span class="n">sensor_name</span><span class="o">=</span><span class="n">ids</span><span class="o">.</span><span class="n">SOUNDER</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VesselConfig.get_waterline">
+<a class="viewcode-back" href="../../vessel.html#vessel.vessel_config.VesselConfig.get_waterline">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_waterline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Waterline</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode pour récupérer les données de ligne d&#39;eau à un instant donné.</span>
+
+<span class="sd">        :param timestamp: (datetime) Une date et heure.</span>
+<span class="sd">        :return: (Waterline) Données de ligne d&#39;eau pour le moment donné.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sensor</span><span class="p">(</span><span class="n">sensor_name</span><span class="o">=</span><span class="n">ids</span><span class="o">.</span><span class="n">WATERLINE</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VesselConfig.get_ssp_applied">
+<a class="viewcode-back" href="../../vessel.html#vessel.vessel_config.VesselConfig.get_ssp_applied">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_ssp_applied</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SoundSpeedProfile</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode pour récupérer les données de profil de vitesse du son appliqué à un instant donné.</span>
+
+<span class="sd">        :param timestamp: (datetime) Une date et heure.</span>
+<span class="sd">        :return: (SoundSpeedProfile) Données de profil de vitesse du son appliqué pour le moment donné.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sensor</span><span class="p">(</span><span class="n">sensor_name</span><span class="o">=</span><span class="n">ids</span><span class="o">.</span><span class="n">SSP_APPLIED</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VesselConfig.get_attribute">
+<a class="viewcode-back" href="../../vessel.html#vessel.vessel_config.VesselConfig.get_attribute">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BDBattribute</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode pour récupérer les données d&#39;attribut à un instant donné.</span>
+
+<span class="sd">        :param timestamp: (datetime) Une date et heure.</span>
+<span class="sd">        :return: (BDBattribute) Données d&#39;attribut pour le moment donné.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sensor</span><span class="p">(</span><span class="n">sensor_name</span><span class="o">=</span><span class="n">ids</span><span class="o">.</span><span class="n">ATTRIBUTE</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="get_vessel_config_from_config_dict">
+<a class="viewcode-back" href="../../vessel.html#vessel.vessel_config.get_vessel_config_from_config_dict">[docs]</a>
+<span class="k">def</span> <span class="nf">get_vessel_config_from_config_dict</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">VesselConfigDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VesselConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Récupère la configuration du navire.</span>
+
+<span class="sd">    :param config: (VesselConfigDict) Configuration du navire.</span>
+<span class="sd">    :return: (VesselConfig) Configuration du navire.</span>
+<span class="sd">    :raises MissingConfigKeyError: Si des clés de configuration sont manquantes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">required_keys</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">ids</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span>
+        <span class="n">ids</span><span class="o">.</span><span class="n">AXIS_CONVENTION</span><span class="p">,</span>
+        <span class="n">ids</span><span class="o">.</span><span class="n">NAVIGATION</span><span class="p">,</span>
+        <span class="n">ids</span><span class="o">.</span><span class="n">MOTION</span><span class="p">,</span>
+        <span class="n">ids</span><span class="o">.</span><span class="n">SOUNDER</span><span class="p">,</span>
+        <span class="n">ids</span><span class="o">.</span><span class="n">WATERLINE</span><span class="p">,</span>
+        <span class="n">ids</span><span class="o">.</span><span class="n">SSP_APPLIED</span><span class="p">,</span>
+        <span class="n">ids</span><span class="o">.</span><span class="n">ATTRIBUTE</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">missing_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">required_keys</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">config</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">missing_keys</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">MissingConfigKeyError</span><span class="p">(</span><span class="n">missing_keys</span><span class="o">=</span><span class="n">missing_keys</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">VesselConfig</span><span class="p">(</span>
+        <span class="nb">id</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="n">ids</span><span class="o">.</span><span class="n">ID</span><span class="p">],</span>
+        <span class="n">axis_convention</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="n">ids</span><span class="o">.</span><span class="n">AXIS_CONVENTION</span><span class="p">],</span>
+        <span class="n">navigation</span><span class="o">=</span><span class="p">[</span><span class="n">Sensor</span><span class="p">(</span><span class="o">**</span><span class="n">nav</span><span class="p">)</span> <span class="k">for</span> <span class="n">nav</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="n">ids</span><span class="o">.</span><span class="n">NAVIGATION</span><span class="p">]],</span>
+        <span class="n">motion</span><span class="o">=</span><span class="p">[</span><span class="n">Sensor</span><span class="p">(</span><span class="o">**</span><span class="n">motion</span><span class="p">)</span> <span class="k">for</span> <span class="n">motion</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="n">ids</span><span class="o">.</span><span class="n">MOTION</span><span class="p">]],</span>
+        <span class="n">sounder</span><span class="o">=</span><span class="p">[</span><span class="n">Sensor</span><span class="p">(</span><span class="o">**</span><span class="n">sounder</span><span class="p">)</span> <span class="k">for</span> <span class="n">sounder</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="n">ids</span><span class="o">.</span><span class="n">SOUNDER</span><span class="p">]],</span>
+        <span class="n">waterline</span><span class="o">=</span><span class="p">[</span><span class="n">Waterline</span><span class="p">(</span><span class="o">**</span><span class="n">waterline</span><span class="p">)</span> <span class="k">for</span> <span class="n">waterline</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="n">ids</span><span class="o">.</span><span class="n">WATERLINE</span><span class="p">]],</span>
+        <span class="n">ssp_applied</span><span class="o">=</span><span class="p">[</span><span class="n">SoundSpeedProfile</span><span class="p">(</span><span class="o">**</span><span class="n">ssp</span><span class="p">)</span> <span class="k">for</span> <span class="n">ssp</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="n">ids</span><span class="o">.</span><span class="n">SSP_APPLIED</span><span class="p">]],</span>
+        <span class="n">attribute</span><span class="o">=</span><span class="p">[</span><span class="n">BDBattribute</span><span class="p">(</span><span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="n">ids</span><span class="o">.</span><span class="n">ATTRIBUTE</span><span class="p">]],</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Recherche rapide</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Index général"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Documentation CHS-CSB-Processing 1.0.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Code du module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">vessel.vessel_config</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Yan Bilodeau.
+      Créé en utilisant <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html lang="fr" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>schema.model &#8212; Documentation CHS-CSB-Processing 1.0.0</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=5953c5b6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    
+    <script src="../../_static/documentation_options.js?v=05dadb3a"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=e6b791cb"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Documentation CHS-CSB-Processing 1.0.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Code du module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">schema.model</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Code source de schema.model</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pandera</span> <span class="k">as</span> <span class="nn">pa</span>
+<span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span>
+<span class="kn">from</span> <span class="nn">pandera.typing</span> <span class="kn">import</span> <span class="n">Series</span>
+<span class="kn">from</span> <span class="nn">pandera.typing.geopandas</span> <span class="kn">import</span> <span class="n">GeoSeries</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;CSB-Pipeline.Ingestion.Parser.Schema&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DataLoggerSchema">
+<a class="viewcode-back" href="../../schema.html#schema.model.DataLoggerSchema">[docs]</a>
+<span class="k">class</span> <span class="nc">DataLoggerSchema</span><span class="p">(</span><span class="n">pa</span><span class="o">.</span><span class="n">DataFrameModel</span><span class="p">):</span>
+    <span class="n">Longitude_WGS84</span><span class="p">:</span> <span class="n">Series</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Float64Dtype</span><span class="p">()]</span>
+    <span class="n">Latitude_WGS84</span><span class="p">:</span> <span class="n">Series</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Float64Dtype</span><span class="p">()]</span>
+    <span class="n">Depth_meter</span><span class="p">:</span> <span class="n">Series</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Float64Dtype</span><span class="p">()]</span>
+    <span class="n">Time_UTC</span><span class="p">:</span> <span class="n">Series</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DatetimeTZDtype</span><span class="p">(</span><span class="s2">&quot;ns&quot;</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="s2">&quot;UTC&quot;</span><span class="p">)]</span>
+    <span class="n">geometry</span><span class="p">:</span> <span class="n">GeoSeries</span></div>
+
+
+
+<div class="viewcode-block" id="validate_schema">
+<a class="viewcode-back" href="../../schema.html#schema.model.validate_schema">[docs]</a>
+<span class="k">def</span> <span class="nf">validate_schema</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span> <span class="o">|</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">pa</span><span class="o">.</span><span class="n">DataFrameModel</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Valide le schéma des stations.</span>
+
+<span class="sd">    :param df: (gpd.GeoDataFrame | DataFrame) Les stations.</span>
+<span class="sd">    :param schema: (GeoDataFrameSchema) Le schéma.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation du schéma </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="n">schema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="n">pa</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">SchemaError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Erreur de validation du schéma </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attributs attendus : </span><span class="si">{</span><span class="n">schema</span><span class="o">.</span><span class="vm">__annotations__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">raise</span> <span class="n">error</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Recherche rapide</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="Index général"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Documentation CHS-CSB-Processing 1.0.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Code du module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">schema.model</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Yan Bilodeau.
+      Créé en utilisant <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+
+<html lang="fr" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>vessel package &#8212; Documentation CHS-CSB-Processing 1.0.0</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=5953c5b6" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    
+    <script src="_static/documentation_options.js?v=05dadb3a"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=e6b791cb"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Recherche" href="search.html" />
+    <link rel="prev" title="transformation package" href="transformation.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="transformation.html" title="transformation package"
+             accesskey="P">précédent</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Documentation CHS-CSB-Processing 1.0.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">CHS-CSB_Processing</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">vessel package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="vessel-package">
+<h1>vessel package<a class="headerlink" href="#vessel-package" title="Lien vers cette rubrique">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Lien vers cette rubrique">¶</a></h2>
+</section>
+<section id="module-vessel.exception_vessel">
+<span id="vessel-exception-vessel-module"></span><h2>vessel.exception_vessel module<a class="headerlink" href="#module-vessel.exception_vessel" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py exception">
+<dt class="sig sig-object py" id="vessel.exception_vessel.MissingConfigKeyError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vessel.exception_vessel.</span></span><span class="sig-name descname"><span class="pre">MissingConfigKeyError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">missing_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vessel/exception_vessel.html#MissingConfigKeyError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.exception_vessel.MissingConfigKeyError" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.exception_vessel.MissingConfigKeyError.missing_keys">
+<span class="sig-name descname"><span class="pre">missing_keys</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#vessel.exception_vessel.MissingConfigKeyError.missing_keys" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="vessel.exception_vessel.SensorNotFoundError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vessel.exception_vessel.</span></span><span class="sig-name descname"><span class="pre">SensorNotFoundError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sensor_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vessel/exception_vessel.html#SensorNotFoundError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.exception_vessel.SensorNotFoundError" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.exception_vessel.SensorNotFoundError.sensor_name">
+<span class="sig-name descname"><span class="pre">sensor_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.exception_vessel.SensorNotFoundError.sensor_name" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.exception_vessel.SensorNotFoundError.timestamp">
+<span class="sig-name descname"><span class="pre">timestamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span></em><a class="headerlink" href="#vessel.exception_vessel.SensorNotFoundError.timestamp" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="vessel.exception_vessel.VesselConfigNotFoundError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vessel.exception_vessel.</span></span><span class="sig-name descname"><span class="pre">VesselConfigNotFoundError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vessel_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vessel/exception_vessel.html#VesselConfigNotFoundError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.exception_vessel.VesselConfigNotFoundError" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.exception_vessel.VesselConfigNotFoundError.vessel_id">
+<span class="sig-name descname"><span class="pre">vessel_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.exception_vessel.VesselConfigNotFoundError.vessel_id" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-vessel.vessel_config">
+<span id="vessel-vessel-config-module"></span><h2>vessel.vessel_config module<a class="headerlink" href="#module-vessel.vessel_config" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="vessel.vessel_config.AxisConvention">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vessel.vessel_config.</span></span><span class="sig-name descname"><span class="pre">AxisConvention</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vessel/vessel_config.html#AxisConvention"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config.AxisConvention" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code></p>
+<p>Enumération des conventions d’axes.</p>
+<dl class="simple">
+<dt>CARIS (str): The X-Y-Z fields set the location from the Reference Point (0). The Reference Point is the point on</dt><dd><p>the vessel where the X, Y, and Z axes intersect. The X, Y, and Z fields are defined as follows:
+•X: The athwart-ship distance of the sensor, positive to starboard.
+•Y: The along-ship distance of the sensor, positive to the bow.
+•Z: The vertical distance of the sensor, positive into the water.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.AxisConvention.CARIS">
+<span class="sig-name descname"><span class="pre">CARIS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CARIS'</span></em><a class="headerlink" href="#vessel.vessel_config.AxisConvention.CARIS" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="vessel.vessel_config.BDBattribute">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vessel.vessel_config.</span></span><span class="sig-name descname"><span class="pre">BDBattribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pltfrm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sdghdw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poshdw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bureau</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restrn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vessel/vessel_config.html#BDBattribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config.BDBattribute" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.BDBattribute.bureau">
+<span class="sig-name descname"><span class="pre">bureau</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.vessel_config.BDBattribute.bureau" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.BDBattribute.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#vessel.vessel_config.BDBattribute.model_computed_fields" title="Lien vers cette définition">¶</a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.BDBattribute.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#vessel.vessel_config.BDBattribute.model_config" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.BDBattribute.model_fields">
+<span class="sig-name descname"><span class="pre">model_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'bureau':</span> <span class="pre">FieldInfo(annotation=str,</span> <span class="pre">required=True),</span> <span class="pre">'pltfrm':</span> <span class="pre">FieldInfo(annotation=str,</span> <span class="pre">required=True),</span> <span class="pre">'poshdw':</span> <span class="pre">FieldInfo(annotation=str,</span> <span class="pre">required=True),</span> <span class="pre">'restrn':</span> <span class="pre">FieldInfo(annotation=str,</span> <span class="pre">required=True),</span> <span class="pre">'sdghdw':</span> <span class="pre">FieldInfo(annotation=str,</span> <span class="pre">required=True),</span> <span class="pre">'time_stamp':</span> <span class="pre">FieldInfo(annotation=datetime,</span> <span class="pre">required=True)}</span></em><a class="headerlink" href="#vessel.vessel_config.BDBattribute.model_fields" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Metadata about the fields defined on the model,
+mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo] objects.</p>
+<p>This replaces <cite>Model.__fields__</cite> from Pydantic V1.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.BDBattribute.pltfrm">
+<span class="sig-name descname"><span class="pre">pltfrm</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.vessel_config.BDBattribute.pltfrm" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.BDBattribute.poshdw">
+<span class="sig-name descname"><span class="pre">poshdw</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.vessel_config.BDBattribute.poshdw" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.BDBattribute.restrn">
+<span class="sig-name descname"><span class="pre">restrn</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.vessel_config.BDBattribute.restrn" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.BDBattribute.sdghdw">
+<span class="sig-name descname"><span class="pre">sdghdw</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.vessel_config.BDBattribute.sdghdw" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.BDBattribute.time_stamp">
+<span class="sig-name descname"><span class="pre">time_stamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span></em><a class="headerlink" href="#vessel.vessel_config.BDBattribute.time_stamp" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="vessel.vessel_config.Sensor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vessel.vessel_config.</span></span><span class="sig-name descname"><span class="pre">Sensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vessel/vessel_config.html#Sensor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config.Sensor" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.Sensor.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#vessel.vessel_config.Sensor.model_computed_fields" title="Lien vers cette définition">¶</a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.Sensor.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#vessel.vessel_config.Sensor.model_config" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.Sensor.model_fields">
+<span class="sig-name descname"><span class="pre">model_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'time_stamp':</span> <span class="pre">FieldInfo(annotation=datetime,</span> <span class="pre">required=True),</span> <span class="pre">'x':</span> <span class="pre">FieldInfo(annotation=float,</span> <span class="pre">required=True),</span> <span class="pre">'y':</span> <span class="pre">FieldInfo(annotation=float,</span> <span class="pre">required=True),</span> <span class="pre">'z':</span> <span class="pre">FieldInfo(annotation=float,</span> <span class="pre">required=True)}</span></em><a class="headerlink" href="#vessel.vessel_config.Sensor.model_fields" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Metadata about the fields defined on the model,
+mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo] objects.</p>
+<p>This replaces <cite>Model.__fields__</cite> from Pydantic V1.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.Sensor.time_stamp">
+<span class="sig-name descname"><span class="pre">time_stamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span></em><a class="headerlink" href="#vessel.vessel_config.Sensor.time_stamp" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.Sensor.x">
+<span class="sig-name descname"><span class="pre">x</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#vessel.vessel_config.Sensor.x" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.Sensor.y">
+<span class="sig-name descname"><span class="pre">y</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#vessel.vessel_config.Sensor.y" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.Sensor.z">
+<span class="sig-name descname"><span class="pre">z</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#vessel.vessel_config.Sensor.z" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="vessel.vessel_config.SoundSpeedProfile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vessel.vessel_config.</span></span><span class="sig-name descname"><span class="pre">SoundSpeedProfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vessel/vessel_config.html#SoundSpeedProfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config.SoundSpeedProfile" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.SoundSpeedProfile.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#vessel.vessel_config.SoundSpeedProfile.model_computed_fields" title="Lien vers cette définition">¶</a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.SoundSpeedProfile.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#vessel.vessel_config.SoundSpeedProfile.model_config" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.SoundSpeedProfile.model_fields">
+<span class="sig-name descname"><span class="pre">model_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'ssp':</span> <span class="pre">FieldInfo(annotation=bool,</span> <span class="pre">required=True),</span> <span class="pre">'time_stamp':</span> <span class="pre">FieldInfo(annotation=datetime,</span> <span class="pre">required=True)}</span></em><a class="headerlink" href="#vessel.vessel_config.SoundSpeedProfile.model_fields" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Metadata about the fields defined on the model,
+mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo] objects.</p>
+<p>This replaces <cite>Model.__fields__</cite> from Pydantic V1.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.SoundSpeedProfile.ssp">
+<span class="sig-name descname"><span class="pre">ssp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#vessel.vessel_config.SoundSpeedProfile.ssp" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.SoundSpeedProfile.time_stamp">
+<span class="sig-name descname"><span class="pre">time_stamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span></em><a class="headerlink" href="#vessel.vessel_config.SoundSpeedProfile.time_stamp" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="vessel.vessel_config.VesselConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vessel.vessel_config.</span></span><span class="sig-name descname"><span class="pre">VesselConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_convention</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vessel.vessel_config.AxisConvention" title="vessel.vessel_config.AxisConvention"><span class="pre">AxisConvention</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">navigation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_config.Sensor" title="vessel.vessel_config.Sensor"><span class="pre">Sensor</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">motion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_config.Sensor" title="vessel.vessel_config.Sensor"><span class="pre">Sensor</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sounder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_config.Sensor" title="vessel.vessel_config.Sensor"><span class="pre">Sensor</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">waterline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_config.Waterline" title="vessel.vessel_config.Waterline"><span class="pre">Waterline</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssp_applied</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_config.SoundSpeedProfile" title="vessel.vessel_config.SoundSpeedProfile"><span class="pre">SoundSpeedProfile</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_config.BDBattribute" title="vessel.vessel_config.BDBattribute"><span class="pre">BDBattribute</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vessel/vessel_config.html#VesselConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config.VesselConfig" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.VesselConfig.attribute">
+<span class="sig-name descname"><span class="pre">attribute</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_config.BDBattribute" title="vessel.vessel_config.BDBattribute"><span class="pre">BDBattribute</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#vessel.vessel_config.VesselConfig.attribute" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.VesselConfig.axis_convention">
+<span class="sig-name descname"><span class="pre">axis_convention</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#vessel.vessel_config.AxisConvention" title="vessel.vessel_config.AxisConvention"><span class="pre">AxisConvention</span></a></em><a class="headerlink" href="#vessel.vessel_config.VesselConfig.axis_convention" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vessel.vessel_config.VesselConfig.get_attribute">
+<span class="sig-name descname"><span class="pre">get_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#vessel.vessel_config.BDBattribute" title="vessel.vessel_config.BDBattribute"><span class="pre">BDBattribute</span></a></span></span><a class="reference internal" href="_modules/vessel/vessel_config.html#VesselConfig.get_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config.VesselConfig.get_attribute" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode pour récupérer les données d’attribut à un instant donné.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timestamp</strong> – (datetime) Une date et heure.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(BDBattribute) Données d’attribut pour le moment donné.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vessel.vessel_config.VesselConfig.get_motion">
+<span class="sig-name descname"><span class="pre">get_motion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#vessel.vessel_config.Sensor" title="vessel.vessel_config.Sensor"><span class="pre">Sensor</span></a></span></span><a class="reference internal" href="_modules/vessel/vessel_config.html#VesselConfig.get_motion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config.VesselConfig.get_motion" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode pour récupérer les données de mouvement à un instant donné.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timestamp</strong> – (datetime) Une date et heure.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(Sensor) Données de mouvement pour le moment donné.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vessel.vessel_config.VesselConfig.get_navigation">
+<span class="sig-name descname"><span class="pre">get_navigation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#vessel.vessel_config.Sensor" title="vessel.vessel_config.Sensor"><span class="pre">Sensor</span></a></span></span><a class="reference internal" href="_modules/vessel/vessel_config.html#VesselConfig.get_navigation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config.VesselConfig.get_navigation" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode pour récupérer les données de navigation à un instant donné.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timestamp</strong> – (datetime) Une date et heure.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(Sensor) Données de navigation pour le moment donné.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vessel.vessel_config.VesselConfig.get_sensor">
+<span class="sig-name descname"><span class="pre">get_sensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sensor_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#vessel.vessel_config.Sensor" title="vessel.vessel_config.Sensor"><span class="pre">Sensor</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#vessel.vessel_config.Waterline" title="vessel.vessel_config.Waterline"><span class="pre">Waterline</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#vessel.vessel_config.SoundSpeedProfile" title="vessel.vessel_config.SoundSpeedProfile"><span class="pre">SoundSpeedProfile</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#vessel.vessel_config.BDBattribute" title="vessel.vessel_config.BDBattribute"><span class="pre">BDBattribute</span></a></span></span><a class="reference internal" href="_modules/vessel/vessel_config.html#VesselConfig.get_sensor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config.VesselConfig.get_sensor" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Récupère les données d’un type de capteur à un instant donné.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sensor_name</strong> – (str) Nom du capteur.</p></li>
+<li><p><strong>timestamp</strong> – (datetime) Une date et heure.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(Sensor | Waterline | SoundSpeedProfile | BDBattribute) Données du capteur pour le moment donné.</p>
+</dd>
+<dt class="field-odd">Lève<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#vessel.exception_vessel.SensorNotFoundError" title="vessel.exception_vessel.SensorNotFoundError"><strong>SensorNotFoundError</strong></a> – Si le capteur n’existe pas.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vessel.vessel_config.VesselConfig.get_sounder">
+<span class="sig-name descname"><span class="pre">get_sounder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#vessel.vessel_config.Sensor" title="vessel.vessel_config.Sensor"><span class="pre">Sensor</span></a></span></span><a class="reference internal" href="_modules/vessel/vessel_config.html#VesselConfig.get_sounder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config.VesselConfig.get_sounder" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode pour récupérer les données du sondeur à un instant donné.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timestamp</strong> – (datetime) Une date et heure.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(Sensor) Données du sondeur pour le moment donné.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vessel.vessel_config.VesselConfig.get_ssp_applied">
+<span class="sig-name descname"><span class="pre">get_ssp_applied</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#vessel.vessel_config.SoundSpeedProfile" title="vessel.vessel_config.SoundSpeedProfile"><span class="pre">SoundSpeedProfile</span></a></span></span><a class="reference internal" href="_modules/vessel/vessel_config.html#VesselConfig.get_ssp_applied"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config.VesselConfig.get_ssp_applied" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode pour récupérer les données de profil de vitesse du son appliqué à un instant donné.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timestamp</strong> – (datetime) Une date et heure.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(SoundSpeedProfile) Données de profil de vitesse du son appliqué pour le moment donné.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vessel.vessel_config.VesselConfig.get_waterline">
+<span class="sig-name descname"><span class="pre">get_waterline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#vessel.vessel_config.Waterline" title="vessel.vessel_config.Waterline"><span class="pre">Waterline</span></a></span></span><a class="reference internal" href="_modules/vessel/vessel_config.html#VesselConfig.get_waterline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config.VesselConfig.get_waterline" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode pour récupérer les données de ligne d’eau à un instant donné.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timestamp</strong> – (datetime) Une date et heure.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(Waterline) Données de ligne d’eau pour le moment donné.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.VesselConfig.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.vessel_config.VesselConfig.id" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.VesselConfig.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#vessel.vessel_config.VesselConfig.model_computed_fields" title="Lien vers cette définition">¶</a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.VesselConfig.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#vessel.vessel_config.VesselConfig.model_config" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.VesselConfig.model_fields">
+<span class="sig-name descname"><span class="pre">model_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'attribute':</span> <span class="pre">FieldInfo(annotation=list[BDBattribute],</span> <span class="pre">required=True),</span> <span class="pre">'axis_convention':</span> <span class="pre">FieldInfo(annotation=AxisConvention,</span> <span class="pre">required=True),</span> <span class="pre">'id':</span> <span class="pre">FieldInfo(annotation=str,</span> <span class="pre">required=True),</span> <span class="pre">'motion':</span> <span class="pre">FieldInfo(annotation=list[Sensor],</span> <span class="pre">required=True),</span> <span class="pre">'navigation':</span> <span class="pre">FieldInfo(annotation=list[Sensor],</span> <span class="pre">required=True),</span> <span class="pre">'sounder':</span> <span class="pre">FieldInfo(annotation=list[Sensor],</span> <span class="pre">required=True),</span> <span class="pre">'ssp_applied':</span> <span class="pre">FieldInfo(annotation=list[SoundSpeedProfile],</span> <span class="pre">required=True),</span> <span class="pre">'waterline':</span> <span class="pre">FieldInfo(annotation=list[Waterline],</span> <span class="pre">required=True)}</span></em><a class="headerlink" href="#vessel.vessel_config.VesselConfig.model_fields" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Metadata about the fields defined on the model,
+mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo] objects.</p>
+<p>This replaces <cite>Model.__fields__</cite> from Pydantic V1.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.VesselConfig.motion">
+<span class="sig-name descname"><span class="pre">motion</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_config.Sensor" title="vessel.vessel_config.Sensor"><span class="pre">Sensor</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#vessel.vessel_config.VesselConfig.motion" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.VesselConfig.navigation">
+<span class="sig-name descname"><span class="pre">navigation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_config.Sensor" title="vessel.vessel_config.Sensor"><span class="pre">Sensor</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#vessel.vessel_config.VesselConfig.navigation" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.VesselConfig.sounder">
+<span class="sig-name descname"><span class="pre">sounder</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_config.Sensor" title="vessel.vessel_config.Sensor"><span class="pre">Sensor</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#vessel.vessel_config.VesselConfig.sounder" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.VesselConfig.ssp_applied">
+<span class="sig-name descname"><span class="pre">ssp_applied</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_config.SoundSpeedProfile" title="vessel.vessel_config.SoundSpeedProfile"><span class="pre">SoundSpeedProfile</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#vessel.vessel_config.VesselConfig.ssp_applied" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.VesselConfig.waterline">
+<span class="sig-name descname"><span class="pre">waterline</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_config.Waterline" title="vessel.vessel_config.Waterline"><span class="pre">Waterline</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#vessel.vessel_config.VesselConfig.waterline" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="vessel.vessel_config.Waterline">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vessel.vessel_config.</span></span><span class="sig-name descname"><span class="pre">Waterline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_stamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vessel/vessel_config.html#Waterline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config.Waterline" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.Waterline.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#vessel.vessel_config.Waterline.model_computed_fields" title="Lien vers cette définition">¶</a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.Waterline.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#vessel.vessel_config.Waterline.model_config" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.Waterline.model_fields">
+<span class="sig-name descname"><span class="pre">model_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'time_stamp':</span> <span class="pre">FieldInfo(annotation=datetime,</span> <span class="pre">required=True),</span> <span class="pre">'z':</span> <span class="pre">FieldInfo(annotation=float,</span> <span class="pre">required=True)}</span></em><a class="headerlink" href="#vessel.vessel_config.Waterline.model_fields" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Metadata about the fields defined on the model,
+mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo] objects.</p>
+<p>This replaces <cite>Model.__fields__</cite> from Pydantic V1.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.Waterline.time_stamp">
+<span class="sig-name descname"><span class="pre">time_stamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span></em><a class="headerlink" href="#vessel.vessel_config.Waterline.time_stamp" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_config.Waterline.z">
+<span class="sig-name descname"><span class="pre">z</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#vessel.vessel_config.Waterline.z" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vessel.vessel_config.get_vessel_config_from_config_dict">
+<span class="sig-prename descclassname"><span class="pre">vessel.vessel_config.</span></span><span class="sig-name descname"><span class="pre">get_vessel_config_from_config_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vessel.vessel_models.VesselConfigDict" title="vessel.vessel_models.VesselConfigDict"><span class="pre">VesselConfigDict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#vessel.vessel_config.VesselConfig" title="vessel.vessel_config.VesselConfig"><span class="pre">VesselConfig</span></a></span></span><a class="reference internal" href="_modules/vessel/vessel_config.html#get_vessel_config_from_config_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config.get_vessel_config_from_config_dict" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Récupère la configuration du navire.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> – (VesselConfigDict) Configuration du navire.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(VesselConfig) Configuration du navire.</p>
+</dd>
+<dt class="field-odd">Lève<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#vessel.exception_vessel.MissingConfigKeyError" title="vessel.exception_vessel.MissingConfigKeyError"><strong>MissingConfigKeyError</strong></a> – Si des clés de configuration sont manquantes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-vessel.vessel_config_json_manager">
+<span id="vessel-vessel-config-json-manager-module"></span><h2>vessel.vessel_config_json_manager module<a class="headerlink" href="#module-vessel.vessel_config_json_manager" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="vessel.vessel_config_json_manager.VesselConfigJsonManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vessel.vessel_config_json_manager.</span></span><span class="sig-name descname"><span class="pre">VesselConfigJsonManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_config_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vessel/vessel_config_json_manager.html#VesselConfigJsonManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config_json_manager.VesselConfigJsonManager" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <a class="reference internal" href="#vessel.vessel_config_manager_abc.VesselConfigManagerABC" title="vessel.vessel_config_manager_abc.VesselConfigManagerABC"><code class="xref py py-class docutils literal notranslate"><span class="pre">VesselConfigManagerABC</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="vessel.vessel_config_json_manager.VesselConfigJsonManager.add_veessel_config">
+<span class="sig-name descname"><span class="pre">add_veessel_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vessel_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vessel.vessel_config.VesselConfig" title="vessel.vessel_config.VesselConfig"><span class="pre">VesselConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/vessel/vessel_config_json_manager.html#VesselConfigJsonManager.add_veessel_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config_json_manager.VesselConfigJsonManager.add_veessel_config" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode permettant d’ajouter la configuration d’un navire.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vessel_config</strong> – (VesselConfig) Configuration du navire.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vessel.vessel_config_json_manager.VesselConfigJsonManager.commit_vessel_configs">
+<span class="sig-name descname"><span class="pre">commit_vessel_configs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_config_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/vessel/vessel_config_json_manager.html#VesselConfigJsonManager.commit_vessel_configs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config_json_manager.VesselConfigJsonManager.commit_vessel_configs" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode permettant de sauvegarder la configuration des navires dans un fichier JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>json_config_path</strong> – (Path) Chemin du fichier JSON.</p>
+</dd>
+<dt class="field-even">Lève<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Si un objet n’est pas sérialisable.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vessel.vessel_config_json_manager.VesselConfigJsonManager.delete_vessel_config">
+<span class="sig-name descname"><span class="pre">delete_vessel_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vessel_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/vessel/vessel_config_json_manager.html#VesselConfigJsonManager.delete_vessel_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config_json_manager.VesselConfigJsonManager.delete_vessel_config" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode permettant de supprimer la configuration d’un navire.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vessel_id</strong> – (str) Identifiant du navire.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vessel.vessel_config_json_manager.VesselConfigJsonManager.get_vessel_config">
+<span class="sig-name descname"><span class="pre">get_vessel_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vessel_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#vessel.vessel_config.VesselConfig" title="vessel.vessel_config.VesselConfig"><span class="pre">VesselConfig</span></a></span></span><a class="reference internal" href="_modules/vessel/vessel_config_json_manager.html#VesselConfigJsonManager.get_vessel_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config_json_manager.VesselConfigJsonManager.get_vessel_config" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode permettant de récupérer la configuration d’un navire.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vessel_id</strong> – (str) Identifiant du navire.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(VesselConfig) Configuration du navire.</p>
+</dd>
+<dt class="field-odd">Lève<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#vessel.exception_vessel.VesselConfigNotFoundError" title="vessel.exception_vessel.VesselConfigNotFoundError"><strong>VesselConfigNotFoundError</strong></a> – Si la configuration du navire n’existe pas.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vessel.vessel_config_json_manager.VesselConfigJsonManager.get_vessel_configs">
+<span class="sig-name descname"><span class="pre">get_vessel_configs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_config.VesselConfig" title="vessel.vessel_config.VesselConfig"><span class="pre">VesselConfig</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/vessel/vessel_config_json_manager.html#VesselConfigJsonManager.get_vessel_configs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config_json_manager.VesselConfigJsonManager.get_vessel_configs" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode permettant de récupérer la configuration de tous les navires.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Renvoie<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(list[VesselConfig]) Configurations des navires.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vessel.vessel_config_json_manager.VesselConfigJsonManager.update_vessel_config">
+<span class="sig-name descname"><span class="pre">update_vessel_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vessel_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vessel_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vessel.vessel_config.VesselConfig" title="vessel.vessel_config.VesselConfig"><span class="pre">VesselConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/vessel/vessel_config_json_manager.html#VesselConfigJsonManager.update_vessel_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config_json_manager.VesselConfigJsonManager.update_vessel_config" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode permettant de mettre à jour la configuration d’un navire.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vessel_id</strong> – (str) Identifiant du navire.</p></li>
+<li><p><strong>vessel_config</strong> – (VesselConfig) Configuration du navire.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-vessel.vessel_config_manager_abc">
+<span id="vessel-vessel-config-manager-abc-module"></span><h2>vessel.vessel_config_manager_abc module<a class="headerlink" href="#module-vessel.vessel_config_manager_abc" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="vessel.vessel_config_manager_abc.VesselConfigManagerABC">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vessel.vessel_config_manager_abc.</span></span><span class="sig-name descname"><span class="pre">VesselConfigManagerABC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vessel/vessel_config_manager_abc.html#VesselConfigManagerABC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config_manager_abc.VesselConfigManagerABC" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="vessel.vessel_config_manager_abc.VesselConfigManagerABC.add_veessel_config">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_veessel_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vessel_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vessel.vessel_config.VesselConfig" title="vessel.vessel_config.VesselConfig"><span class="pre">VesselConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/vessel/vessel_config_manager_abc.html#VesselConfigManagerABC.add_veessel_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config_manager_abc.VesselConfigManagerABC.add_veessel_config" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode permettant d’ajouter la configuration d’un navire.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vessel_config</strong> – (VesselConfig) Configuration du navire.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vessel.vessel_config_manager_abc.VesselConfigManagerABC.commit_vessel_configs">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">commit_vessel_configs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/vessel/vessel_config_manager_abc.html#VesselConfigManagerABC.commit_vessel_configs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config_manager_abc.VesselConfigManagerABC.commit_vessel_configs" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode permettant de sauvegarder les configurations des navires.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vessel.vessel_config_manager_abc.VesselConfigManagerABC.delete_vessel_config">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_vessel_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vessel_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/vessel/vessel_config_manager_abc.html#VesselConfigManagerABC.delete_vessel_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config_manager_abc.VesselConfigManagerABC.delete_vessel_config" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode permettant de supprimer la configuration d’un navire.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vessel_id</strong> – (str) Identifiant du navire.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vessel.vessel_config_manager_abc.VesselConfigManagerABC.get_vessel_config">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_vessel_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vessel_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#vessel.vessel_config.VesselConfig" title="vessel.vessel_config.VesselConfig"><span class="pre">VesselConfig</span></a></span></span><a class="reference internal" href="_modules/vessel/vessel_config_manager_abc.html#VesselConfigManagerABC.get_vessel_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config_manager_abc.VesselConfigManagerABC.get_vessel_config" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode permettant de récupérer la configuration d’un navire.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vessel_id</strong> – (str) Identifiant du navire.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(VesselConfig) Configuration du navire.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vessel.vessel_config_manager_abc.VesselConfigManagerABC.get_vessel_configs">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_vessel_configs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_config.VesselConfig" title="vessel.vessel_config.VesselConfig"><span class="pre">VesselConfig</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/vessel/vessel_config_manager_abc.html#VesselConfigManagerABC.get_vessel_configs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config_manager_abc.VesselConfigManagerABC.get_vessel_configs" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode permettant de récupérer la configuration de tous les navires.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Renvoie<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(list[VesselConfig]) Configurations des navires.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vessel.vessel_config_manager_abc.VesselConfigManagerABC.update_vessel_config">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_vessel_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vessel_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vessel_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#vessel.vessel_config.VesselConfig" title="vessel.vessel_config.VesselConfig"><span class="pre">VesselConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/vessel/vessel_config_manager_abc.html#VesselConfigManagerABC.update_vessel_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_config_manager_abc.VesselConfigManagerABC.update_vessel_config" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Méthode permettant de mettre à jour la configuration d’un navire.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vessel_id</strong> – (str) Identifiant du navire.</p></li>
+<li><p><strong>vessel_config</strong> – (VesselConfig) Configuration du navire.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-vessel.vessel_ids">
+<span id="vessel-vessel-ids-module"></span><h2>vessel.vessel_ids module<a class="headerlink" href="#module-vessel.vessel_ids" title="Lien vers cette rubrique">¶</a></h2>
+</section>
+<section id="module-vessel.vessel_models">
+<span id="vessel-vessel-models-module"></span><h2>vessel.vessel_models module<a class="headerlink" href="#module-vessel.vessel_models" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="vessel.vessel_models.AttributeDict">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vessel.vessel_models.</span></span><span class="sig-name descname"><span class="pre">AttributeDict</span></span><a class="reference internal" href="_modules/vessel/vessel_models.html#AttributeDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_models.AttributeDict" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.AttributeDict.bureau">
+<span class="sig-name descname"><span class="pre">bureau</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.vessel_models.AttributeDict.bureau" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.AttributeDict.pltfrm">
+<span class="sig-name descname"><span class="pre">pltfrm</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.vessel_models.AttributeDict.pltfrm" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.AttributeDict.poshdw">
+<span class="sig-name descname"><span class="pre">poshdw</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.vessel_models.AttributeDict.poshdw" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.AttributeDict.restrn">
+<span class="sig-name descname"><span class="pre">restrn</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.vessel_models.AttributeDict.restrn" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.AttributeDict.sdghdw">
+<span class="sig-name descname"><span class="pre">sdghdw</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.vessel_models.AttributeDict.sdghdw" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.AttributeDict.time_stamp">
+<span class="sig-name descname"><span class="pre">time_stamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.vessel_models.AttributeDict.time_stamp" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="vessel.vessel_models.SensorDict">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vessel.vessel_models.</span></span><span class="sig-name descname"><span class="pre">SensorDict</span></span><a class="reference internal" href="_modules/vessel/vessel_models.html#SensorDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_models.SensorDict" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.SensorDict.time_stamp">
+<span class="sig-name descname"><span class="pre">time_stamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.vessel_models.SensorDict.time_stamp" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.SensorDict.x">
+<span class="sig-name descname"><span class="pre">x</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#vessel.vessel_models.SensorDict.x" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.SensorDict.y">
+<span class="sig-name descname"><span class="pre">y</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#vessel.vessel_models.SensorDict.y" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.SensorDict.z">
+<span class="sig-name descname"><span class="pre">z</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#vessel.vessel_models.SensorDict.z" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="vessel.vessel_models.SoundSpeedProfileDict">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vessel.vessel_models.</span></span><span class="sig-name descname"><span class="pre">SoundSpeedProfileDict</span></span><a class="reference internal" href="_modules/vessel/vessel_models.html#SoundSpeedProfileDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_models.SoundSpeedProfileDict" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.SoundSpeedProfileDict.ssp">
+<span class="sig-name descname"><span class="pre">ssp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.vessel_models.SoundSpeedProfileDict.ssp" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.SoundSpeedProfileDict.time_stamp">
+<span class="sig-name descname"><span class="pre">time_stamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.vessel_models.SoundSpeedProfileDict.time_stamp" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="vessel.vessel_models.VesselConfigDict">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vessel.vessel_models.</span></span><span class="sig-name descname"><span class="pre">VesselConfigDict</span></span><a class="reference internal" href="_modules/vessel/vessel_models.html#VesselConfigDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_models.VesselConfigDict" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.VesselConfigDict.attribute">
+<span class="sig-name descname"><span class="pre">attribute</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_models.AttributeDict" title="vessel.vessel_models.AttributeDict"><span class="pre">AttributeDict</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#vessel.vessel_models.VesselConfigDict.attribute" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.VesselConfigDict.axis_convention">
+<span class="sig-name descname"><span class="pre">axis_convention</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.vessel_models.VesselConfigDict.axis_convention" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.VesselConfigDict.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.vessel_models.VesselConfigDict.id" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.VesselConfigDict.motion">
+<span class="sig-name descname"><span class="pre">motion</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_models.SensorDict" title="vessel.vessel_models.SensorDict"><span class="pre">SensorDict</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#vessel.vessel_models.VesselConfigDict.motion" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.VesselConfigDict.nav">
+<span class="sig-name descname"><span class="pre">nav</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_models.SensorDict" title="vessel.vessel_models.SensorDict"><span class="pre">SensorDict</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#vessel.vessel_models.VesselConfigDict.nav" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.VesselConfigDict.sounder">
+<span class="sig-name descname"><span class="pre">sounder</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_models.SensorDict" title="vessel.vessel_models.SensorDict"><span class="pre">SensorDict</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#vessel.vessel_models.VesselConfigDict.sounder" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.VesselConfigDict.ssp_applied">
+<span class="sig-name descname"><span class="pre">ssp_applied</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_models.SoundSpeedProfileDict" title="vessel.vessel_models.SoundSpeedProfileDict"><span class="pre">SoundSpeedProfileDict</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#vessel.vessel_models.VesselConfigDict.ssp_applied" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.VesselConfigDict.waterline">
+<span class="sig-name descname"><span class="pre">waterline</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#vessel.vessel_models.WaterlineDict" title="vessel.vessel_models.WaterlineDict"><span class="pre">WaterlineDict</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#vessel.vessel_models.VesselConfigDict.waterline" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="vessel.vessel_models.WaterlineDict">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vessel.vessel_models.</span></span><span class="sig-name descname"><span class="pre">WaterlineDict</span></span><a class="reference internal" href="_modules/vessel/vessel_models.html#WaterlineDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#vessel.vessel_models.WaterlineDict" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.WaterlineDict.time_stamp">
+<span class="sig-name descname"><span class="pre">time_stamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#vessel.vessel_models.WaterlineDict.time_stamp" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="vessel.vessel_models.WaterlineDict.z">
+<span class="sig-name descname"><span class="pre">z</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#vessel.vessel_models.WaterlineDict.z" title="Lien vers cette définition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-vessel">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-vessel" title="Lien vers cette rubrique">¶</a></h2>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table des matières</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">vessel package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-vessel.exception_vessel">vessel.exception_vessel module</a><ul>
+<li><a class="reference internal" href="#vessel.exception_vessel.MissingConfigKeyError"><code class="docutils literal notranslate"><span class="pre">MissingConfigKeyError</span></code></a><ul>
+<li><a class="reference internal" href="#vessel.exception_vessel.MissingConfigKeyError.missing_keys"><code class="docutils literal notranslate"><span class="pre">MissingConfigKeyError.missing_keys</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#vessel.exception_vessel.SensorNotFoundError"><code class="docutils literal notranslate"><span class="pre">SensorNotFoundError</span></code></a><ul>
+<li><a class="reference internal" href="#vessel.exception_vessel.SensorNotFoundError.sensor_name"><code class="docutils literal notranslate"><span class="pre">SensorNotFoundError.sensor_name</span></code></a></li>
+<li><a class="reference internal" href="#vessel.exception_vessel.SensorNotFoundError.timestamp"><code class="docutils literal notranslate"><span class="pre">SensorNotFoundError.timestamp</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#vessel.exception_vessel.VesselConfigNotFoundError"><code class="docutils literal notranslate"><span class="pre">VesselConfigNotFoundError</span></code></a><ul>
+<li><a class="reference internal" href="#vessel.exception_vessel.VesselConfigNotFoundError.vessel_id"><code class="docutils literal notranslate"><span class="pre">VesselConfigNotFoundError.vessel_id</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-vessel.vessel_config">vessel.vessel_config module</a><ul>
+<li><a class="reference internal" href="#vessel.vessel_config.AxisConvention"><code class="docutils literal notranslate"><span class="pre">AxisConvention</span></code></a><ul>
+<li><a class="reference internal" href="#vessel.vessel_config.AxisConvention.CARIS"><code class="docutils literal notranslate"><span class="pre">AxisConvention.CARIS</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#vessel.vessel_config.BDBattribute"><code class="docutils literal notranslate"><span class="pre">BDBattribute</span></code></a><ul>
+<li><a class="reference internal" href="#vessel.vessel_config.BDBattribute.bureau"><code class="docutils literal notranslate"><span class="pre">BDBattribute.bureau</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.BDBattribute.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">BDBattribute.model_computed_fields</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.BDBattribute.model_config"><code class="docutils literal notranslate"><span class="pre">BDBattribute.model_config</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.BDBattribute.model_fields"><code class="docutils literal notranslate"><span class="pre">BDBattribute.model_fields</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.BDBattribute.pltfrm"><code class="docutils literal notranslate"><span class="pre">BDBattribute.pltfrm</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.BDBattribute.poshdw"><code class="docutils literal notranslate"><span class="pre">BDBattribute.poshdw</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.BDBattribute.restrn"><code class="docutils literal notranslate"><span class="pre">BDBattribute.restrn</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.BDBattribute.sdghdw"><code class="docutils literal notranslate"><span class="pre">BDBattribute.sdghdw</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.BDBattribute.time_stamp"><code class="docutils literal notranslate"><span class="pre">BDBattribute.time_stamp</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#vessel.vessel_config.Sensor"><code class="docutils literal notranslate"><span class="pre">Sensor</span></code></a><ul>
+<li><a class="reference internal" href="#vessel.vessel_config.Sensor.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">Sensor.model_computed_fields</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.Sensor.model_config"><code class="docutils literal notranslate"><span class="pre">Sensor.model_config</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.Sensor.model_fields"><code class="docutils literal notranslate"><span class="pre">Sensor.model_fields</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.Sensor.time_stamp"><code class="docutils literal notranslate"><span class="pre">Sensor.time_stamp</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.Sensor.x"><code class="docutils literal notranslate"><span class="pre">Sensor.x</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.Sensor.y"><code class="docutils literal notranslate"><span class="pre">Sensor.y</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.Sensor.z"><code class="docutils literal notranslate"><span class="pre">Sensor.z</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#vessel.vessel_config.SoundSpeedProfile"><code class="docutils literal notranslate"><span class="pre">SoundSpeedProfile</span></code></a><ul>
+<li><a class="reference internal" href="#vessel.vessel_config.SoundSpeedProfile.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">SoundSpeedProfile.model_computed_fields</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.SoundSpeedProfile.model_config"><code class="docutils literal notranslate"><span class="pre">SoundSpeedProfile.model_config</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.SoundSpeedProfile.model_fields"><code class="docutils literal notranslate"><span class="pre">SoundSpeedProfile.model_fields</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.SoundSpeedProfile.ssp"><code class="docutils literal notranslate"><span class="pre">SoundSpeedProfile.ssp</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.SoundSpeedProfile.time_stamp"><code class="docutils literal notranslate"><span class="pre">SoundSpeedProfile.time_stamp</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#vessel.vessel_config.VesselConfig"><code class="docutils literal notranslate"><span class="pre">VesselConfig</span></code></a><ul>
+<li><a class="reference internal" href="#vessel.vessel_config.VesselConfig.attribute"><code class="docutils literal notranslate"><span class="pre">VesselConfig.attribute</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.VesselConfig.axis_convention"><code class="docutils literal notranslate"><span class="pre">VesselConfig.axis_convention</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.VesselConfig.get_attribute"><code class="docutils literal notranslate"><span class="pre">VesselConfig.get_attribute()</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.VesselConfig.get_motion"><code class="docutils literal notranslate"><span class="pre">VesselConfig.get_motion()</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.VesselConfig.get_navigation"><code class="docutils literal notranslate"><span class="pre">VesselConfig.get_navigation()</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.VesselConfig.get_sensor"><code class="docutils literal notranslate"><span class="pre">VesselConfig.get_sensor()</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.VesselConfig.get_sounder"><code class="docutils literal notranslate"><span class="pre">VesselConfig.get_sounder()</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.VesselConfig.get_ssp_applied"><code class="docutils literal notranslate"><span class="pre">VesselConfig.get_ssp_applied()</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.VesselConfig.get_waterline"><code class="docutils literal notranslate"><span class="pre">VesselConfig.get_waterline()</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.VesselConfig.id"><code class="docutils literal notranslate"><span class="pre">VesselConfig.id</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.VesselConfig.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">VesselConfig.model_computed_fields</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.VesselConfig.model_config"><code class="docutils literal notranslate"><span class="pre">VesselConfig.model_config</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.VesselConfig.model_fields"><code class="docutils literal notranslate"><span class="pre">VesselConfig.model_fields</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.VesselConfig.motion"><code class="docutils literal notranslate"><span class="pre">VesselConfig.motion</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.VesselConfig.navigation"><code class="docutils literal notranslate"><span class="pre">VesselConfig.navigation</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.VesselConfig.sounder"><code class="docutils literal notranslate"><span class="pre">VesselConfig.sounder</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.VesselConfig.ssp_applied"><code class="docutils literal notranslate"><span class="pre">VesselConfig.ssp_applied</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.VesselConfig.waterline"><code class="docutils literal notranslate"><span class="pre">VesselConfig.waterline</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#vessel.vessel_config.Waterline"><code class="docutils literal notranslate"><span class="pre">Waterline</span></code></a><ul>
+<li><a class="reference internal" href="#vessel.vessel_config.Waterline.model_computed_fields"><code class="docutils literal notranslate"><span class="pre">Waterline.model_computed_fields</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.Waterline.model_config"><code class="docutils literal notranslate"><span class="pre">Waterline.model_config</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.Waterline.model_fields"><code class="docutils literal notranslate"><span class="pre">Waterline.model_fields</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.Waterline.time_stamp"><code class="docutils literal notranslate"><span class="pre">Waterline.time_stamp</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config.Waterline.z"><code class="docutils literal notranslate"><span class="pre">Waterline.z</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#vessel.vessel_config.get_vessel_config_from_config_dict"><code class="docutils literal notranslate"><span class="pre">get_vessel_config_from_config_dict()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-vessel.vessel_config_json_manager">vessel.vessel_config_json_manager module</a><ul>
+<li><a class="reference internal" href="#vessel.vessel_config_json_manager.VesselConfigJsonManager"><code class="docutils literal notranslate"><span class="pre">VesselConfigJsonManager</span></code></a><ul>
+<li><a class="reference internal" href="#vessel.vessel_config_json_manager.VesselConfigJsonManager.add_veessel_config"><code class="docutils literal notranslate"><span class="pre">VesselConfigJsonManager.add_veessel_config()</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config_json_manager.VesselConfigJsonManager.commit_vessel_configs"><code class="docutils literal notranslate"><span class="pre">VesselConfigJsonManager.commit_vessel_configs()</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config_json_manager.VesselConfigJsonManager.delete_vessel_config"><code class="docutils literal notranslate"><span class="pre">VesselConfigJsonManager.delete_vessel_config()</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config_json_manager.VesselConfigJsonManager.get_vessel_config"><code class="docutils literal notranslate"><span class="pre">VesselConfigJsonManager.get_vessel_config()</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config_json_manager.VesselConfigJsonManager.get_vessel_configs"><code class="docutils literal notranslate"><span class="pre">VesselConfigJsonManager.get_vessel_configs()</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config_json_manager.VesselConfigJsonManager.update_vessel_config"><code class="docutils literal notranslate"><span class="pre">VesselConfigJsonManager.update_vessel_config()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-vessel.vessel_config_manager_abc">vessel.vessel_config_manager_abc module</a><ul>
+<li><a class="reference internal" href="#vessel.vessel_config_manager_abc.VesselConfigManagerABC"><code class="docutils literal notranslate"><span class="pre">VesselConfigManagerABC</span></code></a><ul>
+<li><a class="reference internal" href="#vessel.vessel_config_manager_abc.VesselConfigManagerABC.add_veessel_config"><code class="docutils literal notranslate"><span class="pre">VesselConfigManagerABC.add_veessel_config()</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config_manager_abc.VesselConfigManagerABC.commit_vessel_configs"><code class="docutils literal notranslate"><span class="pre">VesselConfigManagerABC.commit_vessel_configs()</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config_manager_abc.VesselConfigManagerABC.delete_vessel_config"><code class="docutils literal notranslate"><span class="pre">VesselConfigManagerABC.delete_vessel_config()</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config_manager_abc.VesselConfigManagerABC.get_vessel_config"><code class="docutils literal notranslate"><span class="pre">VesselConfigManagerABC.get_vessel_config()</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config_manager_abc.VesselConfigManagerABC.get_vessel_configs"><code class="docutils literal notranslate"><span class="pre">VesselConfigManagerABC.get_vessel_configs()</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_config_manager_abc.VesselConfigManagerABC.update_vessel_config"><code class="docutils literal notranslate"><span class="pre">VesselConfigManagerABC.update_vessel_config()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-vessel.vessel_ids">vessel.vessel_ids module</a></li>
+<li><a class="reference internal" href="#module-vessel.vessel_models">vessel.vessel_models module</a><ul>
+<li><a class="reference internal" href="#vessel.vessel_models.AttributeDict"><code class="docutils literal notranslate"><span class="pre">AttributeDict</span></code></a><ul>
+<li><a class="reference internal" href="#vessel.vessel_models.AttributeDict.bureau"><code class="docutils literal notranslate"><span class="pre">AttributeDict.bureau</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_models.AttributeDict.pltfrm"><code class="docutils literal notranslate"><span class="pre">AttributeDict.pltfrm</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_models.AttributeDict.poshdw"><code class="docutils literal notranslate"><span class="pre">AttributeDict.poshdw</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_models.AttributeDict.restrn"><code class="docutils literal notranslate"><span class="pre">AttributeDict.restrn</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_models.AttributeDict.sdghdw"><code class="docutils literal notranslate"><span class="pre">AttributeDict.sdghdw</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_models.AttributeDict.time_stamp"><code class="docutils literal notranslate"><span class="pre">AttributeDict.time_stamp</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#vessel.vessel_models.SensorDict"><code class="docutils literal notranslate"><span class="pre">SensorDict</span></code></a><ul>
+<li><a class="reference internal" href="#vessel.vessel_models.SensorDict.time_stamp"><code class="docutils literal notranslate"><span class="pre">SensorDict.time_stamp</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_models.SensorDict.x"><code class="docutils literal notranslate"><span class="pre">SensorDict.x</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_models.SensorDict.y"><code class="docutils literal notranslate"><span class="pre">SensorDict.y</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_models.SensorDict.z"><code class="docutils literal notranslate"><span class="pre">SensorDict.z</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#vessel.vessel_models.SoundSpeedProfileDict"><code class="docutils literal notranslate"><span class="pre">SoundSpeedProfileDict</span></code></a><ul>
+<li><a class="reference internal" href="#vessel.vessel_models.SoundSpeedProfileDict.ssp"><code class="docutils literal notranslate"><span class="pre">SoundSpeedProfileDict.ssp</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_models.SoundSpeedProfileDict.time_stamp"><code class="docutils literal notranslate"><span class="pre">SoundSpeedProfileDict.time_stamp</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#vessel.vessel_models.VesselConfigDict"><code class="docutils literal notranslate"><span class="pre">VesselConfigDict</span></code></a><ul>
+<li><a class="reference internal" href="#vessel.vessel_models.VesselConfigDict.attribute"><code class="docutils literal notranslate"><span class="pre">VesselConfigDict.attribute</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_models.VesselConfigDict.axis_convention"><code class="docutils literal notranslate"><span class="pre">VesselConfigDict.axis_convention</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_models.VesselConfigDict.id"><code class="docutils literal notranslate"><span class="pre">VesselConfigDict.id</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_models.VesselConfigDict.motion"><code class="docutils literal notranslate"><span class="pre">VesselConfigDict.motion</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_models.VesselConfigDict.nav"><code class="docutils literal notranslate"><span class="pre">VesselConfigDict.nav</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_models.VesselConfigDict.sounder"><code class="docutils literal notranslate"><span class="pre">VesselConfigDict.sounder</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_models.VesselConfigDict.ssp_applied"><code class="docutils literal notranslate"><span class="pre">VesselConfigDict.ssp_applied</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_models.VesselConfigDict.waterline"><code class="docutils literal notranslate"><span class="pre">VesselConfigDict.waterline</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#vessel.vessel_models.WaterlineDict"><code class="docutils literal notranslate"><span class="pre">WaterlineDict</span></code></a><ul>
+<li><a class="reference internal" href="#vessel.vessel_models.WaterlineDict.time_stamp"><code class="docutils literal notranslate"><span class="pre">WaterlineDict.time_stamp</span></code></a></li>
+<li><a class="reference internal" href="#vessel.vessel_models.WaterlineDict.z"><code class="docutils literal notranslate"><span class="pre">WaterlineDict.z</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-vessel">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Sujet précédent</h4>
+    <p class="topless"><a href="transformation.html"
+                          title="Chapitre précédent">transformation package</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>Cette page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/vessel.rst.txt"
+            rel="nofollow">Montrer le code source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Recherche rapide</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="transformation.html" title="transformation package"
+             >précédent</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Documentation CHS-CSB-Processing 1.0.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >CHS-CSB_Processing</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">vessel package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Yan Bilodeau.
+      Créé en utilisant <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>

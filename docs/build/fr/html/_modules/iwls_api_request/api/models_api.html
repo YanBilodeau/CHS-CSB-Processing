@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html lang="fr" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>iwls_api_request.api.models_api &#8212; Documentation CHS-CSB-Processing 1.0.0</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css?v=5953c5b6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    
+    <script src="../../../_static/documentation_options.js?v=05dadb3a"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/translations.js?v=e6b791cb"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Documentation CHS-CSB-Processing 1.0.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Code du module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">iwls_api_request.api.models_api</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Code source de iwls_api_request.api.models_api</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">StrEnum</span>
+
+
+<div class="viewcode-block" id="Regions">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.Regions">[docs]</a>
+<span class="k">class</span> <span class="nc">Regions</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+    <span class="n">PAC</span> <span class="o">=</span> <span class="s2">&quot;PAC&quot;</span>
+    <span class="n">CNA</span> <span class="o">=</span> <span class="s2">&quot;CNA&quot;</span>
+    <span class="n">ATL</span> <span class="o">=</span> <span class="s2">&quot;ATL&quot;</span>
+    <span class="n">QUE</span> <span class="o">=</span> <span class="s2">&quot;QUE&quot;</span>
+
+<div class="viewcode-block" id="Regions.get_values">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.Regions.get_values">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_values</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">region</span> <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">Regions</span><span class="p">]</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TimeResolution">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.TimeResolution">[docs]</a>
+<span class="k">class</span> <span class="nc">TimeResolution</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+    <span class="n">ONE_MINUTE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ONE_MINUTE&quot;</span>
+    <span class="n">THREE_MINUTES</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;THREE_MINUTES&quot;</span>
+    <span class="n">FIVE_MINUTES</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;FIVE_MINUTES&quot;</span>
+    <span class="n">FIFTEEN_MINUTES</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;FIFTEEN_MINUTES&quot;</span>
+    <span class="n">SIXTY_MINUTES</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;SIXTY_MINUTES&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="TimeSeries">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.TimeSeries">[docs]</a>
+<span class="k">class</span> <span class="nc">TimeSeries</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+    <span class="n">WLO</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wlo&quot;</span>
+    <span class="n">WL1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wl1&quot;</span>
+    <span class="n">WL2</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wl2&quot;</span>
+    <span class="n">WL3</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wl3&quot;</span>
+    <span class="n">WS1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ws1&quot;</span>
+    <span class="n">WS2</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ws2&quot;</span>
+    <span class="n">WT1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wt1&quot;</span>
+    <span class="n">WT2</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wt2&quot;</span>
+    <span class="n">WT3</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wt3&quot;</span>
+    <span class="n">AP1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ap1&quot;</span>
+    <span class="n">AP2</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ap2&quot;</span>
+    <span class="n">V1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;v1&quot;</span>
+    <span class="n">V2</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;v2&quot;</span>
+    <span class="n">WLF</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wlf&quot;</span>
+    <span class="n">WLF_SPINE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wlf-spine&quot;</span>
+    <span class="n">WLF_VTG</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wlf-vtg&quot;</span>
+    <span class="n">WLP</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wlp&quot;</span>
+    <span class="n">WLP_HILO</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wlp-hilo&quot;</span>
+    <span class="n">WLP_BORES</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wlp-bores&quot;</span>
+    <span class="n">WCP_SLACK</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wcp-slack&quot;</span>
+    <span class="n">WCSP</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wcsp&quot;</span>
+    <span class="n">WCSP_EXTREMA</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wcsp-extrema&quot;</span>
+    <span class="n">WCDP</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wcdp&quot;</span>
+    <span class="n">WCDP_EXTREMA</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wcdp-extrema&quot;</span>
+    <span class="n">DVCF</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;dvcf&quot;</span>
+    <span class="n">DVCF_SPINE1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;dvcf-spine1&quot;</span>
+
+<div class="viewcode-block" id="TimeSeries.get_values">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.TimeSeries.get_values">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_values</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">time_series</span> <span class="k">for</span> <span class="n">time_series</span> <span class="ow">in</span> <span class="n">TimeSeries</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="TimeSeries.from_str">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.TimeSeries.from_str">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_str</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">cls</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">member</span>
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39; n&#39;est pas valide. Vous devez choisir parmi les valeurs suivantes : </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">_value2member_map_</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TimeZone">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.TimeZone">[docs]</a>
+<span class="k">class</span> <span class="nc">TimeZone</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+    <span class="n">UTC</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;UTC&quot;</span>
+    <span class="n">LOCAL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;LOCAL&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="TypeTideTable">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.TypeTideTable">[docs]</a>
+<span class="k">class</span> <span class="nc">TypeTideTable</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+    <span class="n">VOLUME</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;VOLUME&quot;</span>
+    <span class="n">AREA</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;AREA&quot;</span>
+    <span class="n">SUB_AREA</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;SUB_AREA&quot;</span></div>
+
+
+
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">StrEnum</span>
+
+
+<div class="viewcode-block" id="EndpointType">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.EndpointType">[docs]</a>
+<span class="k">class</span> <span class="nc">EndpointType</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+    <span class="n">PRIVATE_PROD</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;EndpointPrivateProd&quot;</span>
+    <span class="n">PRIVATE_DEV</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;EndpointPrivateDev&quot;</span>
+    <span class="n">PUBLIC</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;EndpointPublic&quot;</span>
+
+<div class="viewcode-block" id="EndpointType.from_str">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.EndpointType.from_str">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_str</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">cls</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">member</span>
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39; n&#39;est pas valide. Vous devez choisir parmi les valeurs suivantes : </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">_value2member_map_</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Recherche rapide</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="Index général"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Documentation CHS-CSB-Processing 1.0.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Code du module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">iwls_api_request.api.models_api</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Yan Bilodeau.
+      Créé en utilisant <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>

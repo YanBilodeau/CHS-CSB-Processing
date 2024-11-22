@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+
+<html lang="fr" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tide.stations.stations_private &#8212; Documentation CHS-CSB-Processing 1.0.0</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css?v=5953c5b6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    
+    <script src="../../../_static/documentation_options.js?v=05dadb3a"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/translations.js?v=e6b791cb"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Documentation CHS-CSB-Processing 1.0.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Code du module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">tide.stations.stations_private</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Code source de tide.stations.stations_private</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ThreadPoolExecutor</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">UTC</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Collection</span>
+
+<span class="kn">from</span> <span class="nn">diskcache</span> <span class="kn">import</span> <span class="n">Cache</span>
+<span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+
+<span class="kn">from</span> <span class="nn">.stations_abc</span> <span class="kn">import</span> <span class="n">StationsHandlerABC</span>
+<span class="kn">from</span> <span class="nn">.stations_models</span> <span class="kn">import</span> <span class="n">TimeSeriesProtocol</span><span class="p">,</span> <span class="n">IWLSapiProtocol</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;CSB-Pipeline.Tide.Station.Private&quot;</span><span class="p">)</span>
+<span class="n">CACHE</span><span class="p">:</span> <span class="n">Cache</span> <span class="o">=</span> <span class="n">Cache</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;cache&quot;</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="StationsHandlerPrivate">
+<a class="viewcode-back" href="../../../tide.stations.html#tide.stations.stations_private.StationsHandlerPrivate">[docs]</a>
+<span class="k">class</span> <span class="nc">StationsHandlerPrivate</span><span class="p">(</span><span class="n">StationsHandlerABC</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">:</span> <span class="n">IWLSapiProtocol</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">api</span><span class="o">=</span><span class="n">api</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_filter_stations</span><span class="p">(</span>
+        <span class="n">stations</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">filter_time_series</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">TimeSeriesProtocol</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Filtre les stations en fonction des séries temporelles.</span>
+
+<span class="sd">        :param stations: (Collection[dict]) Liste des stations.</span>
+<span class="sd">        :param filter_time_series: (Collection[TimeSeriesProtocol]) Liste des séries temporelles pour filtrer les stations.</span>
+<span class="sd">        :return: (list[dict]) Liste des stations filtrées.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Filtrage des stations en fonction des séries temporelles : </span><span class="si">{</span><span class="n">filter_time_series</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">station</span>
+            <span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">stations</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
+                <span class="n">ts</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">filter_time_series</span> <span class="ow">and</span> <span class="n">ts</span><span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">station</span><span class="p">[</span><span class="s2">&quot;timeSeries&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_time_series</span><span class="p">(</span>
+        <span class="n">station</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">index_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">TimeSeriesProtocol</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Récupère les séries temporelles de la station.</span>
+
+<span class="sd">        :param station: (dict) Données de la station.</span>
+<span class="sd">        :param index_map: (dict[str, int] | None) Carte d&#39;index pour les séries temporelles.</span>
+<span class="sd">        :return: (list[str]) Liste des séries temporelles.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">ts</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">station</span><span class="p">[</span><span class="s2">&quot;timeSeries&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">ts</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">index_map</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">ts</span><span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">]</span>
+        <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_fetch_time_series</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">station</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">station</span><span class="p">[</span><span class="s2">&quot;timeSeries&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">get_time_series_station</span><span class="p">(</span>
+            <span class="n">station</span><span class="o">=</span><span class="n">station</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="k">return</span> <span class="n">station</span>
+
+    <span class="k">def</span> <span class="nf">_get_stations_with_time_series</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Récupère les données des stations avec les séries temporelles.</span>
+
+<span class="sd">        :return: (list[dict]) Données des stations avec les séries temporelles.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Récupération des séries temporelles des stations.&quot;</span><span class="p">)</span>
+
+        <span class="n">stations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stations</span>
+        <span class="k">with</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+            <span class="n">stations</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">executor</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fetch_time_series</span><span class="p">,</span> <span class="n">stations</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">stations</span>
+
+<div class="viewcode-block" id="StationsHandlerPrivate.get_stations_geodataframe">
+<a class="viewcode-back" href="../../../tide.stations.html#tide.stations.stations_private.StationsHandlerPrivate.get_stations_geodataframe">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_stations_geodataframe</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">filter_time_series</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">TimeSeriesProtocol</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">station_name_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+        <span class="n">use_cache</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">ttl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">86400</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Récupère les données des stations sous forme de GeoDataFrame.</span>
+
+<span class="sd">        :param filter_time_series: (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer</span>
+<span class="sd">                                        les stations. Si None, toutes les stations sont retournées.</span>
+<span class="sd">        :param station_name_key: (str) Clé du nom de la station.</span>
+<span class="sd">        :param use_cache: (bool) Utilisation du cache.</span>
+<span class="sd">        :param ttl: (int) Durée de vie du cache en secondes.</span>
+<span class="sd">        :return: (gpd.DataFrame) Données des stations sous forme de GeoDataFrame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cache_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;stations_</span><span class="si">{</span><span class="n">filter_time_series</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">if</span> <span class="n">use_cache</span> <span class="ow">and</span> <span class="n">cache_key</span> <span class="ow">in</span> <span class="n">CACHE</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Récupération des données des stations depuis le cache : &#39;</span><span class="si">{</span><span class="n">cache_key</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">CACHE</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span>
+
+        <span class="n">gdf_stations</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_stations_geodataframe</span><span class="p">(</span>
+            <span class="n">stations</span><span class="o">=</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_get_stations_with_time_series</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">filter_time_series</span>
+                <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">stations</span>
+            <span class="p">),</span>
+            <span class="n">filter_time_series</span><span class="o">=</span><span class="n">filter_time_series</span><span class="p">,</span>
+            <span class="n">station_name_key</span><span class="o">=</span><span class="n">station_name_key</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Sauvegarde des données des stations dans la cache avec un tll de </span><span class="si">{</span><span class="n">ttl</span><span class="si">}</span><span class="s2"> secondes.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">CACHE</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">cache_key</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">gdf_stations</span><span class="p">,</span> <span class="n">expire</span><span class="o">=</span><span class="n">ttl</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">gdf_stations</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_event_date</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Récupère la date de l&#39;événement.</span>
+
+<span class="sd">        :param event: (dict) Données de l&#39;événement.</span>
+<span class="sd">        :return: (datetime) Date de l&#39;événement.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s2">&quot;eventDateEpoch&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">UTC</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_qc_flag</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Récupère le type du flag de qualité.</span>
+
+<span class="sd">        :param event: (dict) Données de l&#39;événement.</span>
+<span class="sd">        :return: (str) Type du flag de qualité.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;qcFlag&quot;</span><span class="p">]</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Recherche rapide</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="Index général"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Documentation CHS-CSB-Processing 1.0.0</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Code du module</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">tide.stations.stations_private</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2024, Yan Bilodeau.
+      Créé en utilisant <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>
