@@ -8,7 +8,7 @@ import toml
 
 LOGGER = logger.bind(name="CSB-Pipeline.Config.DataConfig")
 
-CONFIG_FILE: Path = Path(__file__).parent.parent / "data_config.toml"
+CONFIG_FILE: Path = Path(__file__).parent.parent / "CONFIG_data_transformation.toml"
 
 DataFilterDict = dict[str, int | float]
 DataConfigDict = dict[str, dict[str, dict[str, DataFilterDict]]]

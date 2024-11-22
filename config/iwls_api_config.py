@@ -18,7 +18,7 @@ from iwls_api_request.api_config import (
 
 LOGGER = logger.bind(name="CSB-Pipeline.Config.IWLSAPIConfig")
 
-CONFIG_FILE: Path = Path(__file__).parent.parent / "iwls_API_config.toml"
+CONFIG_FILE: Path = Path(__file__).parent.parent / "CONFIG_iwls_API.toml"
 
 TimeSeriesDict = dict[str, list[str]]
 IWLSapiDict = dict[str, dict[str, TimeSeriesDict | EnvironmentDict | ProfileDict]]
