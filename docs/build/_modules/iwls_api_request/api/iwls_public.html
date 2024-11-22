@@ -1,0 +1,643 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iwls_api_request.api.iwls_public &mdash; Documentation CHS-CSB-Processing 1.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=05dadb3a"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/translations.js?v=e6b791cb"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            CHS-CSB-Processing
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">CHS-CSB_Processing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">CHS-CSB-Processing</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">iwls_api_request.api.iwls_public</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de iwls_api_request.api.iwls_public</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ThreadPoolExecutor</span><span class="p">,</span> <span class="n">as_completed</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Callable</span>
+
+<span class="kn">from</span> <span class="nn">cachetools.func</span> <span class="kn">import</span> <span class="n">ttl_cache</span>
+<span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">ids_iwls</span> <span class="k">as</span> <span class="n">ids</span>
+<span class="kn">from</span> <span class="nn">.endpoint</span> <span class="kn">import</span> <span class="n">EndpointPublic</span>
+<span class="kn">from</span> <span class="nn">.iwls_api_abc</span> <span class="kn">import</span> <span class="n">IWLSapiABC</span>
+<span class="kn">from</span> <span class="nn">.models_api</span> <span class="kn">import</span> <span class="n">Regions</span><span class="p">,</span> <span class="n">TimeSeries</span><span class="p">,</span> <span class="n">TypeTideTable</span><span class="p">,</span> <span class="n">TimeZone</span><span class="p">,</span> <span class="n">TimeResolution</span>
+<span class="kn">from</span> <span class="nn">..handler.http_query_handler</span> <span class="kn">import</span> <span class="n">Response</span><span class="p">,</span> <span class="n">HTTPQueryHandler</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;IWLS.API&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="IWLSapiPublic">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic">[docs]</a>
+<span class="k">class</span> <span class="nc">IWLSapiPublic</span><span class="p">(</span><span class="n">IWLSapiABC</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">query_handler</span><span class="p">:</span> <span class="n">HTTPQueryHandler</span><span class="p">,</span>
+        <span class="n">endpoint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">EndpointPublic</span><span class="p">]</span> <span class="o">=</span> <span class="n">EndpointPublic</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">query_handler</span><span class="o">=</span><span class="n">query_handler</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">endpoint</span><span class="p">)</span>
+
+<div class="viewcode-block" id="IWLSapiPublic.get_time_serie_data">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic.get_time_serie_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_time_serie_data</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">station</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">from_time</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">to_time</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">time_serie_code</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TimeSeries</span><span class="p">]</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="o">.</span><span class="n">WLO</span><span class="p">,</span>
+        <span class="n">time_resolution</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TimeResolution</span><span class="p">]</span> <span class="o">=</span> <span class="n">TimeResolution</span><span class="o">.</span><span class="n">ONE_MINUTE</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permttant de récupérer des données à partir de l&#39;API de iWLS.</span>
+
+<span class="sd">            /api/v1/stations/{stationId}/data</span>
+
+<span class="sd">        :param station: (str) Le stationId de la station.</span>
+<span class="sd">        :param time_serie_code: (TimeSeries) Le code de la série temporelle désirée.</span>
+<span class="sd">                                    wlo : Official quality controlled water level observation</span>
+<span class="sd">                                    wlp: Water level prediction for the next years</span>
+<span class="sd">                                    wlp-hilo: Tide tables prediction for the next years</span>
+<span class="sd">                                    wlp-bores : Bores arrival and intensity</span>
+<span class="sd">                                    wcp-slack : Reversing falls</span>
+<span class="sd">                                    wlf : Water level forecast for the next 48 hours</span>
+<span class="sd">                                    wlf-spine</span>
+<span class="sd">                                    dvcf-spine : Dynamic vertical clearance forecast under infrastructure like bridges</span>
+<span class="sd">        :param from_time: (str) La date de début en format ISO 8601 (ex: 2019-11-13T19:18:00Z).</span>
+<span class="sd">        :param to_time: (str) La date de fin en format ISO 8601 (ex: 2019-11-13T19:18:00Z). La durée maximale est de</span>
+<span class="sd">                            7 jours pour la majorité des TimeSeries.</span>
+<span class="sd">        :param time_resolution: (TimeResolution) La résolution temporelle désirée.</span>
+<span class="sd">        :return: (Response) Un objet Response contenant les données reçues de l&#39;API de iWLS.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_query_parameters</span><span class="p">(</span>
+            <span class="o">**</span><span class="p">{</span>
+                <span class="n">ids</span><span class="o">.</span><span class="n">STATION</span><span class="p">:</span> <span class="n">station</span><span class="p">,</span>
+                <span class="n">ids</span><span class="o">.</span><span class="n">TIME_SERIES_CODE</span><span class="p">:</span> <span class="n">time_serie_code</span><span class="p">,</span>
+                <span class="n">ids</span><span class="o">.</span><span class="n">FROM</span><span class="p">:</span> <span class="n">from_time</span><span class="p">,</span>
+                <span class="n">ids</span><span class="o">.</span><span class="n">TO</span><span class="p">:</span> <span class="n">to_time</span><span class="p">,</span>
+                <span class="n">ids</span><span class="o">.</span><span class="n">RESOLUTION</span><span class="p">:</span> <span class="n">time_resolution</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">STATION_DATA</span><span class="p">,</span>
+            <span class="n">stationId</span><span class="o">=</span><span class="n">query_params</span><span class="p">[</span><span class="n">ids</span><span class="o">.</span><span class="n">STATION</span><span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">query_params</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IWLSapiPublic.get_wlo_latest_data">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic.get_wlo_latest_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_wlo_latest_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de récupérer les 20 dernières minutes de données de la série temporelle WLO pour toutes</span>
+<span class="sd">        les stations.</span>
+
+<span class="sd">            /api/v1/stations/data/latest</span>
+
+<span class="sd">        :return: (Response) Un objet Response contenant les 20 dernières minutes de données de la série temporelle WLO.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">STATION_DATA_LATEST</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IWLSapiPublic.get_info_station">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic.get_info_station">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_info_station</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">station</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de récupérer les informations concernant une station.</span>
+
+<span class="sd">            /api/v1/stations/{stationId}</span>
+
+<span class="sd">        :param station: (str) L&#39;identifiant de la station.</span>
+<span class="sd">        :return: (Response) Un objet Response contenant les informations de la station.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">STATION</span><span class="p">,</span> <span class="n">stationId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_validate_station_id</span><span class="p">(</span><span class="n">station</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IWLSapiPublic.get_metadata_station">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic.get_metadata_station">[docs]</a>
+    <span class="nd">@ttl_cache</span><span class="p">(</span><span class="n">ttl</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">maxsize</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_metadata_station</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">station</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de récupérer les métadonnées concernant une station.</span>
+
+<span class="sd">            /api/v1/stations/{stationId}/metadata</span>
+
+<span class="sd">        :param station: (str) Le stationId de la station.</span>
+<span class="sd">        :return: (Response) Un objet Response contenant les métadonnées de la station.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">STATION_METADATA</span><span class="p">,</span>
+            <span class="n">stationId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_validate_station_id</span><span class="p">(</span><span class="n">station</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IWLSapiPublic.get_all_stations">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic.get_all_stations">[docs]</a>
+    <span class="nd">@ttl_cache</span><span class="p">(</span><span class="n">ttl</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">maxsize</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_all_stations</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">code</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">chs_region_code</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Regions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">time_serie_code</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TimeSeries</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de récupérer une liste de stations ainsi que les informations les concernant.</span>
+
+<span class="sd">            /api/v1/stations</span>
+
+<span class="sd">        :param code: (str) Le code d&#39;une station. Écrase les autres paramètres.</span>
+<span class="sd">        :param chs_region_code: (Regions) Le code d&#39;une région (PAC, CNA, ATL, QUE).</span>
+<span class="sd">        :param time_serie_code: (TimeSeries) Le code de la série temporelle désirée.</span>
+<span class="sd">                                    wlo : Official quality controlled water level observation</span>
+<span class="sd">                                    wlp: Water level prediction for the next years</span>
+<span class="sd">                                    wlp-hilo: Tide tables prediction for the next years</span>
+<span class="sd">                                    wlp-bores : Bores arrival and intensity</span>
+<span class="sd">                                    wcp-slack : Reversing falls</span>
+<span class="sd">                                    wlf : Water level forecast for the next 48 hours</span>
+<span class="sd">                                    wlf-spine</span>
+<span class="sd">                                    dvcf-spine : Dynamic vertical clearance forecast under infrastructure like bridges</span>
+<span class="sd">        :return: (Response) Un objet Response contenant les stations ainsi que les informations les concernant</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_query_parameters</span><span class="p">(</span>
+            <span class="o">**</span><span class="p">{</span>
+                <span class="n">ids</span><span class="o">.</span><span class="n">CODE</span><span class="p">:</span> <span class="n">code</span><span class="p">,</span>
+                <span class="n">ids</span><span class="o">.</span><span class="n">CHS_REGION_CODE</span><span class="p">:</span> <span class="n">chs_region_code</span><span class="p">,</span>
+                <span class="n">ids</span><span class="o">.</span><span class="n">TIME_SERIES_CODE</span><span class="p">:</span> <span class="n">time_serie_code</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">STATIONS</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">query_params</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IWLSapiPublic.get_height_types">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic.get_height_types">[docs]</a>
+    <span class="nd">@ttl_cache</span><span class="p">(</span><span class="n">ttl</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">maxsize</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_height_types</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de récupérer les types de hauteur.</span>
+
+<span class="sd">            /api/v1/height-types</span>
+
+<span class="sd">        :return: (Response) Un objet Response contenant les différents types de hauteur.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">HEIGHT_TYPES</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IWLSapiPublic.get_height">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic.get_height">[docs]</a>
+    <span class="nd">@ttl_cache</span><span class="p">(</span><span class="n">ttl</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">maxsize</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_height</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de récupérer un type de hauteur.</span>
+
+<span class="sd">            /api/v1/height-types/{heightTypeId}</span>
+
+<span class="sd">        :param height: (str) L&#39;identifiant de la hauteur.</span>
+<span class="sd">        :return: (Response) Un objet Response contenant les informations concernant ce type de hauteur.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">HEIGHT_TYPE</span><span class="p">,</span> <span class="n">heightTypeId</span><span class="o">=</span><span class="n">height</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IWLSapiPublic.get_station_montly_mean">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic.get_station_montly_mean">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_station_montly_mean</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">station</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">year</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">month</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">time_zone</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TimeZone</span><span class="p">]</span> <span class="o">=</span> <span class="n">TimeZone</span><span class="o">.</span><span class="n">UTC</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant d&#39;obtenir la moyenne mensuelle pour une station.</span>
+
+<span class="sd">            /api/v1/stations/{stationId}/stats/calculate-monthly-mean</span>
+
+<span class="sd">        :param station: (str) Le stationId de la station.</span>
+<span class="sd">        :param year: (str) L&#39;année désirée.</span>
+<span class="sd">        :param month: (str) Le mois désiré.</span>
+<span class="sd">        :param time_zone: (TimeZone) Le fuseau horaire désiré.</span>
+<span class="sd">        :return: (Response) Un objet Response contenant la moyenne mensuelle de la station.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_query_parameters</span><span class="p">(</span>
+            <span class="o">**</span><span class="p">{</span>
+                <span class="n">ids</span><span class="o">.</span><span class="n">STATION</span><span class="p">:</span> <span class="n">station</span><span class="p">,</span>
+                <span class="n">ids</span><span class="o">.</span><span class="n">YEAR</span><span class="p">:</span> <span class="n">year</span><span class="p">,</span>
+                <span class="n">ids</span><span class="o">.</span><span class="n">MONTH</span><span class="p">:</span> <span class="n">month</span><span class="p">,</span>
+                <span class="n">ids</span><span class="o">.</span><span class="n">TIME_ZONE</span><span class="p">:</span> <span class="n">time_zone</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">STATION_STATS_MONTHLY</span><span class="p">,</span> <span class="n">stationId</span><span class="o">=</span><span class="n">query_params</span><span class="p">[</span><span class="n">ids</span><span class="o">.</span><span class="n">STATION</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">query_params</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IWLSapiPublic.get_station_daily_mean">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic.get_station_daily_mean">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_station_daily_mean</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">station</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">from_time</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">to_time</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">time_zone</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TimeZone</span><span class="p">]</span> <span class="o">=</span> <span class="n">TimeZone</span><span class="o">.</span><span class="n">UTC</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant d&#39;obtenir les moyennes journalières pour une station.</span>
+
+<span class="sd">            /api/v1/stations/{stationId}/stats/calculate-daily-means</span>
+
+<span class="sd">        :param station: (str) Le stationId de la station.</span>
+<span class="sd">        :param from_time: (str) La date de début en format (ex: 2019-11-13).</span>
+<span class="sd">        :param to_time: (str) La date de fin en format (ex: 2019-11-13).</span>
+<span class="sd">        :param time_zone: (TimeZone) Le fuseau horaire désiré.</span>
+<span class="sd">        :return: (Response) Un objet Response contenant les moyenne journalières de la station.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_query_parameters</span><span class="p">(</span>
+            <span class="o">**</span><span class="p">{</span><span class="n">ids</span><span class="o">.</span><span class="n">STATION</span><span class="p">:</span> <span class="n">station</span><span class="p">,</span> <span class="n">ids</span><span class="o">.</span><span class="n">TIME_ZONE</span><span class="p">:</span> <span class="n">time_zone</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">query_params</span><span class="p">[</span><span class="n">ids</span><span class="o">.</span><span class="n">FROM</span><span class="p">]</span> <span class="o">=</span> <span class="n">from_time</span>
+        <span class="n">query_params</span><span class="p">[</span><span class="n">ids</span><span class="o">.</span><span class="n">TO</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_time</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">STATION_STATS_DAILY</span><span class="p">,</span> <span class="n">stationId</span><span class="o">=</span><span class="n">query_params</span><span class="p">[</span><span class="n">ids</span><span class="o">.</span><span class="n">STATION</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">query_params</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IWLSapiPublic.get_phenomena">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic.get_phenomena">[docs]</a>
+    <span class="nd">@ttl_cache</span><span class="p">(</span><span class="n">ttl</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">maxsize</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_phenomena</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de récupérer les phénomènes.</span>
+
+<span class="sd">            /api/v1/phenomena</span>
+
+<span class="sd">        :return: (Response) Un objet Response contenant les différents phénomènes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">PHENOMENA</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IWLSapiPublic.get_phenomenon">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic.get_phenomenon">[docs]</a>
+    <span class="nd">@ttl_cache</span><span class="p">(</span><span class="n">ttl</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">maxsize</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_phenomenon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phenomenon</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de récupérer les informations d&#39;un phénomène.</span>
+
+<span class="sd">            /api/v1/phenomena/{phenomenonId}</span>
+
+<span class="sd">        :return: (Response) Un objet Response contenant les informations concernant un phénomène.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">PHENOMENON</span><span class="p">,</span>
+            <span class="n">phenomenonId</span><span class="o">=</span><span class="n">phenomenon</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IWLSapiPublic.get_tide_tables">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic.get_tide_tables">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_tide_tables</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">type_table</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TypeTideTable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">parent_tide_table</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de recupérer la liste des tables de marées.</span>
+
+<span class="sd">            /api/v1/tide-tables</span>
+
+<span class="sd">        :param type_table: (TypeTideTable) Un type de table. {VOLUME, AREA, SUB_AREA}</span>
+<span class="sd">        :param parent_tide_table: (str) L&#39;identifiant d&#39;une table.</span>
+<span class="sd">        :return: (Response) Un objet Response contenant l&#39;ensemble des tables de marées correspondant</span>
+<span class="sd">                            aux critères de la recherche.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_query_parameters</span><span class="p">(</span>
+            <span class="o">**</span><span class="p">{</span><span class="n">ids</span><span class="o">.</span><span class="n">TYPE</span><span class="p">:</span> <span class="n">type_table</span><span class="p">,</span> <span class="n">ids</span><span class="o">.</span><span class="n">PARENT_TIDE_TABLE</span><span class="p">:</span> <span class="n">parent_tide_table</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">TIDE_TABLES</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">query_params</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IWLSapiPublic.get_tide_table">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic.get_tide_table">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_tide_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tide_table</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de recupérer une table de marées.</span>
+
+<span class="sd">            /api/v1/tide-tables/{tideTableId}</span>
+
+<span class="sd">        :param tide_table: (str) L&#39;identifiant d&#39;une table de marées.</span>
+<span class="sd">        :return: (Response) Un objet Response contenant les informations d&#39;une table de marées.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">TIDE_TABLE</span><span class="p">,</span>
+            <span class="n">tideTableId</span><span class="o">=</span><span class="n">tide_table</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IWLSapiPublic.get_time_series_definitions">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic.get_time_series_definitions">[docs]</a>
+    <span class="nd">@ttl_cache</span><span class="p">(</span><span class="n">ttl</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">maxsize</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_time_series_definitions</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">time_serie</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TimeSeries</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de récupérer les définitions des séries temporelles.</span>
+
+<span class="sd">            /api/v1/time-series-definitions</span>
+
+<span class="sd">        :param time_serie: (TimeSeries) Le code de la série temporelle désirée.</span>
+<span class="sd">        :return: (Response) Un objet Response contenant les définitions des séries temporelles.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_query_parameters</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">ids</span><span class="o">.</span><span class="n">CODE</span><span class="p">:</span> <span class="n">time_serie</span><span class="p">})</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">TIME_SERIES_DEFINITION</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">query_params</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IWLSapiPublic.get_time_serie_definition">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic.get_time_serie_definition">[docs]</a>
+    <span class="nd">@ttl_cache</span><span class="p">(</span><span class="n">ttl</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">maxsize</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_time_serie_definition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_serie_definition_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de récupérer la définition d&#39;une série temporelle.</span>
+
+<span class="sd">            /api/v1/time-series-definitions/{timeSeriesDefinitionId}</span>
+
+<span class="sd">        :param time_serie_definition_id: (str) L&#39;identifiant de la série temporelle.</span>
+<span class="sd">        :return: (Response) Un objet Response contenant la définition de la série temporelle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">TIME_SERIES_DEFINITION</span><span class="p">,</span>
+            <span class="n">timeSeriesDefinitionId</span><span class="o">=</span><span class="n">time_serie_definition_id</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_get_benchmarks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">station_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de récupérer les repères d&#39;une station.</span>
+
+<span class="sd">            /api/v1/benchmarks</span>
+
+<span class="sd">        :param station_id: (str) L&#39;identifiant d&#39;une station.</span>
+<span class="sd">        :return: (Response) Un objet Response contenant les informations sur les repères.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_query_parameters</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">ids</span><span class="o">.</span><span class="n">STATION</span><span class="p">:</span> <span class="n">station_id</span><span class="p">})</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">BENCHMARKS</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">query_params</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_aggregate_benchmarks</span><span class="p">(</span><span class="n">futures</span><span class="p">:</span> <span class="n">Collection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant d&#39;agréger les données des repères des stations.</span>
+
+<span class="sd">        :param futures: (Collection) Une collection de futures.</span>
+<span class="sd">        :return: (tuple) Une liste contenant les données agrégées et une liste contenant les erreurs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data_aggregated</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">as_completed</span><span class="p">(</span><span class="n">futures</span><span class="p">):</span>
+            <span class="n">station_id</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">is_ok</span><span class="p">:</span>
+                <span class="n">data_aggregated</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">error</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2"> MISSING BENCHMARKS FOR STATION </span><span class="si">{</span><span class="n">station_id</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Impossible de récupérer les données : </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data_aggregated</span><span class="p">,</span> <span class="n">errors</span>
+
+    <span class="k">def</span> <span class="nf">_fetch_and_aggregate_benchmarks</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">station_ids</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de récupérer et d&#39;agréger les données des repères des stations.</span>
+
+<span class="sd">        :param function: (Callable) Une fonction permettant de récupérer les données des repères.</span>
+<span class="sd">        :param station_ids: (Collection[str]) Une liste contenant les identifiants des stations.</span>
+<span class="sd">        :return: (Response) Un objet Response contenant les informations sur les repères.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">ThreadPoolExecutor</span><span class="p">()</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+            <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">station_id</span><span class="p">)</span> <span class="k">for</span> <span class="n">station_id</span> <span class="ow">in</span> <span class="n">station_ids</span>
+            <span class="p">]</span>
+            <span class="n">data_aggregated</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aggregate_benchmarks</span><span class="p">(</span><span class="n">futures</span><span class="o">=</span><span class="n">futures</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">data_aggregated</span><span class="p">:</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data_aggregated</span>
+
+        <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">400</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">errors</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;MISSING DATA&quot;</span>
+
+        <span class="k">return</span> <span class="n">response</span>
+
+<div class="viewcode-block" id="IWLSapiPublic.get_benchmarks">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic.get_benchmarks">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_benchmarks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">station_ids</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de récupérer les repères des stations.</span>
+
+<span class="sd">            /api/v1/benchmarks</span>
+
+<span class="sd">        :param station_ids: (Collection[str]) Une liste contenant les identifiants des stations.</span>
+<span class="sd">        :return: (Response) Un objet Response contenant les informations sur les repères.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">fetch_data</span><span class="p">(</span><span class="n">station_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Response</span><span class="p">]:</span>
+            <span class="n">data</span><span class="p">:</span> <span class="n">Response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_benchmarks</span><span class="p">(</span><span class="n">station_id</span><span class="o">=</span><span class="n">station_id</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">station_id</span><span class="p">,</span> <span class="n">data</span>
+
+        <span class="k">if</span> <span class="n">station_ids</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_and_aggregate_benchmarks</span><span class="p">(</span>
+                <span class="n">function</span><span class="o">=</span><span class="n">fetch_data</span><span class="p">,</span> <span class="n">station_ids</span><span class="o">=</span><span class="n">station_ids</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_benchmarks</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="IWLSapiPublic.get_benchmark">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic.get_benchmark">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_benchmark</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">benchmark_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de récupérer les informations d&#39;un repère.</span>
+
+<span class="sd">                /api/v1/benchmarks/{benchmarkId}</span>
+
+<span class="sd">        :param benchmark_id: (str) L&#39;identifiant du repère.</span>
+<span class="sd">        :return: (Response) Un objet Response contenant les informations du repère.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">BENCHMARK</span><span class="p">,</span>
+            <span class="n">benchmarkId</span><span class="o">=</span><span class="n">benchmark_id</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IWLSapiPublic.get_benchmark_metadata">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic.get_benchmark_metadata">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_benchmark_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">benchmark_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de récupérer les métadonnées d&#39;un repère.</span>
+
+<span class="sd">                /api/v1/benchmarks/{benchmarkId}/metadata</span>
+
+<span class="sd">        :param benchmark_id: (str) L&#39;identifiant du repère.</span>
+<span class="sd">        :return: (Response) Un objet Response contenant les métadonnées du repère.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">BENCHMARK_METADATA</span><span class="p">,</span>
+            <span class="n">benchmarkId</span><span class="o">=</span><span class="n">benchmark_id</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IWLSapiPublic.get_elevations">
+<a class="viewcode-back" href="../../../iwls_api_request.api.html#iwls_api_request.IWLSapiPublic.get_elevations">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_elevations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">benchmark_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de récupérer les métadonnées d&#39;un repère.</span>
+
+<span class="sd">                /api/v1/benchmarks/{benchmarkId}/elevations</span>
+
+<span class="sd">        :param benchmark_id: (str) L&#39;identifiant du repère.</span>
+<span class="sd">        :return: (Response) Un objet Response contenant les métadonnées sur le repère.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_url</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="n">ELEVVATIONS</span><span class="p">,</span>
+            <span class="n">benchmarkId</span><span class="o">=</span><span class="n">benchmark_id</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2024, Yan Bilodeau.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

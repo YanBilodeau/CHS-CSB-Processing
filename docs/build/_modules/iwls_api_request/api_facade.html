@@ -1,0 +1,276 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iwls_api_request.api_facade &mdash; Documentation CHS-CSB-Processing 1.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=05dadb3a"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/translations.js?v=e6b791cb"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../search.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            CHS-CSB-Processing
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">CHS-CSB_Processing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CHS-CSB-Processing</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">iwls_api_request.api_facade</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de iwls_api_request.api_facade</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">StrEnum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+
+<span class="kn">from</span> <span class="nn">.api.endpoint</span> <span class="kn">import</span> <span class="n">Endpoint</span><span class="p">,</span> <span class="n">EndpointType</span>
+<span class="kn">from</span> <span class="nn">.api.iwls_api_abc</span> <span class="kn">import</span> <span class="n">IWLSapiABC</span>
+<span class="kn">from</span> <span class="nn">.api.iwls_private</span> <span class="kn">import</span> <span class="n">IWLSapiPrivate</span>
+<span class="kn">from</span> <span class="nn">.api.iwls_public</span> <span class="kn">import</span> <span class="n">IWLSapiPublic</span>
+<span class="kn">from</span> <span class="nn">.handler.http_query_handler</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">RateLimiterHandler</span><span class="p">,</span>
+    <span class="n">get_retry_adapter</span><span class="p">,</span>
+    <span class="n">RequestsHandler</span><span class="p">,</span>
+    <span class="n">CachedSessionConfig</span><span class="p">,</span>
+    <span class="n">SessionType</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.handler.models_handler</span> <span class="kn">import</span> <span class="n">RetryAdapterConfig</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;IWLS.API.APIFacade&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="EnvironmentType">
+<a class="viewcode-back" href="../../iwls_api_request.html#iwls_api_request.api_facade.EnvironmentType">[docs]</a>
+<span class="k">class</span> <span class="nc">EnvironmentType</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+    <span class="n">DEV</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;dev&quot;</span>
+    <span class="n">PROD</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;prod&quot;</span>
+    <span class="n">PUBLIC</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;public&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="HandlerType">
+<a class="viewcode-back" href="../../iwls_api_request.html#iwls_api_request.api_facade.HandlerType">[docs]</a>
+<span class="k">class</span> <span class="nc">HandlerType</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+    <span class="n">RATE_LIMITER</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rate_limiter&quot;</span>
+    <span class="n">REQUESTS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;request&quot;</span></div>
+
+
+
+<span class="n">API_FACTORY</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">EndpointType</span><span class="p">,</span> <span class="nb">type</span><span class="p">[</span><span class="n">IWLSapiABC</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">EndpointType</span><span class="o">.</span><span class="n">PRIVATE_DEV</span><span class="p">:</span> <span class="n">IWLSapiPrivate</span><span class="p">,</span>
+    <span class="n">EndpointType</span><span class="o">.</span><span class="n">PRIVATE_PROD</span><span class="p">:</span> <span class="n">IWLSapiPrivate</span><span class="p">,</span>
+    <span class="n">EndpointType</span><span class="o">.</span><span class="n">PUBLIC</span><span class="p">:</span> <span class="n">IWLSapiPublic</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="get_api_factory">
+<a class="viewcode-back" href="../../iwls_api_request.html#iwls_api_request.api_facade.get_api_factory">[docs]</a>
+<span class="k">def</span> <span class="nf">get_api_factory</span><span class="p">(</span><span class="n">endpoint</span><span class="p">:</span> <span class="n">EndpointType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">[</span><span class="n">IWLSapiABC</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retournes la classe de l&#39;API IWLS en fonction du profil.</span>
+
+<span class="sd">    :param endpoint: (Endpoint) L&#39;endpoint de l&#39;API IWLS.</span>
+<span class="sd">    :return: (type[IWLSapi]) La classe de l&#39;API IWLS.</span>
+<span class="sd">    :return: La classe de l&#39;API IWLS.</span>
+<span class="sd">    :rtype: type[IWLSapiABC]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initialisation de l&#39;API IWLS pour le l&#39;endpoint : &#39;</span><span class="si">{</span><span class="n">endpoint</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">API_FACTORY</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_configure_session_type</span><span class="p">(</span>
+    <span class="n">session_type_config</span><span class="p">:</span> <span class="n">SessionType</span> <span class="o">|</span> <span class="n">CachedSessionConfig</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">SessionType</span><span class="p">,</span> <span class="n">CachedSessionConfig</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fonction qui configure le type de session en fonction de la configuration.</span>
+
+<span class="sd">    :param session_type_config: (SessionType | CachedSessionConfig) Le type de session ou la configuration pour la cache.</span>
+<span class="sd">    :return: (tuple[SessionType, CachedSessionConfig | None]) Le type de session et la configuration pour la cache.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">session_type_config</span><span class="p">,</span> <span class="n">CachedSessionConfig</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">SessionType</span><span class="o">.</span><span class="n">CACHE</span><span class="p">,</span> <span class="n">session_type_config</span>
+
+    <span class="k">return</span> <span class="n">session_type_config</span><span class="p">,</span> <span class="kc">None</span>
+
+
+<span class="k">def</span> <span class="nf">_get_handler</span><span class="p">(</span>
+    <span class="n">handler_type</span><span class="p">:</span> <span class="n">HandlerType</span><span class="p">,</span>
+    <span class="n">calls</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">period</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">session_type_config</span><span class="p">:</span> <span class="n">SessionType</span> <span class="o">|</span> <span class="n">CachedSessionConfig</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RequestsHandler</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fonction qui retourne un gestionnaire de requêtes en fonction du type de gestionnaire.</span>
+
+<span class="sd">    :param handler_type: (HandlerType) Le type de gestionnaire de requêtes.</span>
+<span class="sd">    :param calls: (int) Le nombre de requêtes autorisées (nécessaire pour &#39;HandlerType.RATE_LIMITER).</span>
+<span class="sd">    :param period: (int) La période de temps pour les requêtes autorisées (nécessaire pour HandlerType.RATE_LIMITER).</span>
+<span class="sd">    :param session_type_config: (SessionType | CachedSessionConfig) Le type de session ou la configuration pour la cache.</span>
+<span class="sd">    :return: (RequestsHandler) Le gestionnaire de requêtes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">session_type</span><span class="p">,</span> <span class="n">cache_config</span> <span class="o">=</span> <span class="n">_configure_session_type</span><span class="p">(</span>
+        <span class="n">session_type_config</span><span class="o">=</span><span class="n">session_type_config</span>
+    <span class="p">)</span>
+
+    <span class="n">handler_factory</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">HandlerType</span><span class="o">.</span><span class="n">RATE_LIMITER</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">RateLimiterHandler</span><span class="p">(</span>
+            <span class="n">session_type</span><span class="o">=</span><span class="n">session_type</span><span class="p">,</span>
+            <span class="n">calls</span><span class="o">=</span><span class="n">calls</span><span class="p">,</span>
+            <span class="n">period</span><span class="o">=</span><span class="n">period</span><span class="p">,</span>
+            <span class="n">cache_config</span><span class="o">=</span><span class="n">cache_config</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">HandlerType</span><span class="o">.</span><span class="n">REQUESTS</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">RequestsHandler</span><span class="p">(</span>
+            <span class="n">session_type</span><span class="o">=</span><span class="n">session_type</span><span class="p">,</span> <span class="n">cache_config</span><span class="o">=</span><span class="n">cache_config</span>
+        <span class="p">),</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">handler_factory</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">handler_type</span><span class="p">)()</span>
+
+
+<span class="k">def</span> <span class="nf">_mount_retry_adapter</span><span class="p">(</span>
+    <span class="n">handler</span><span class="p">:</span> <span class="n">RequestsHandler</span><span class="p">,</span> <span class="n">retry_adapter_config</span><span class="p">:</span> <span class="n">RetryAdapterConfig</span> <span class="o">|</span> <span class="nb">bool</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fonction qui monte un adaptateur de réessai sur le gestionnaire de requêtes.</span>
+
+<span class="sd">    :param handler: (RequestsHandler) Le gestionnaire de requêtes.</span>
+<span class="sd">    :param retry_adapter_config: (RetryAdapterConfig | bool) La configuration pour l&#39;adaptateur de réessai ou un booléen.</span>
+<span class="sd">                                            Si True, une configuration par défaut est utilisé, si False, aucun</span>
+<span class="sd">                                            adaptateur est utilisé.</span>
+<span class="sd">    :return: (None)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">retry_adapter_config</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">retry_adapter_config</span><span class="o">.</span><span class="vm">__dict__</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">retry_adapter_config</span><span class="p">,</span> <span class="n">RetryAdapterConfig</span><span class="p">)</span>
+            <span class="k">else</span> <span class="p">{}</span>
+        <span class="p">)</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">mount_adapter</span><span class="p">(</span><span class="n">get_retry_adapter</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="get_iwls_api">
+<a class="viewcode-back" href="../../iwls_api_request.html#iwls_api_request.api_facade.get_iwls_api">[docs]</a>
+<span class="k">def</span> <span class="nf">get_iwls_api</span><span class="p">(</span>
+    <span class="n">endpoint</span><span class="p">:</span> <span class="n">Endpoint</span><span class="p">,</span>
+    <span class="n">handler_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">HandlerType</span><span class="p">]</span> <span class="o">=</span> <span class="n">HandlerType</span><span class="o">.</span><span class="n">RATE_LIMITER</span><span class="p">,</span>
+    <span class="n">calls</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">period</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">session_type_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+        <span class="n">SessionType</span> <span class="o">|</span> <span class="n">CachedSessionConfig</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="n">SessionType</span><span class="o">.</span><span class="n">REQUESTS</span><span class="p">,</span>
+    <span class="n">retry_adapter_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RetryAdapterConfig</span> <span class="o">|</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IWLSapiABC</span> <span class="o">|</span> <span class="n">IWLSapiPrivate</span> <span class="o">|</span> <span class="n">IWLSapiPublic</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fonction qui retourne l&#39;API IWLS.</span>
+
+<span class="sd">    :param endpoint: (Endpoint) L&#39;endpoint de l&#39;API IWLS.</span>
+<span class="sd">    :param handler_type: (HandlerType) Le type de gestionnaire de requêtes.</span>
+<span class="sd">    :param calls: (int) Le nombre de requêtes autorisées (nécessaire pour &#39;HandlerType.RATE_LIMITER).</span>
+<span class="sd">    :param period: (int) La période de temps pour les requêtes autorisées (nécessaire pour HandlerType.RATE_LIMITER).</span>
+<span class="sd">    :param session_type_config: (SessionType) Le type de session ou la configuration pour la cache. Si une configuration</span>
+<span class="sd">                                            est fourni, le session_type est alors automatiquement SessionType.CACHE.</span>
+<span class="sd">    :param retry_adapter_config: (RetryAdapterConfig | bool) La configuration pour l&#39;adaptateur de réessai ou un booléen.</span>
+<span class="sd">                                            Si True, une configuration par défaut est utilisé, si False, aucun</span>
+<span class="sd">                                            adaptateur est utilisé.</span>
+<span class="sd">    :return: (IWLSapi) L&#39;API IWLS.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">_get_handler</span><span class="p">(</span>
+        <span class="n">handler_type</span><span class="o">=</span><span class="n">handler_type</span><span class="p">,</span>
+        <span class="n">calls</span><span class="o">=</span><span class="n">calls</span><span class="p">,</span>
+        <span class="n">period</span><span class="o">=</span><span class="n">period</span><span class="p">,</span>
+        <span class="n">session_type_config</span><span class="o">=</span><span class="n">session_type_config</span><span class="p">,</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">handler</span><span class="p">:</span>
+        <span class="n">_mount_retry_adapter</span><span class="p">(</span>
+            <span class="n">handler</span><span class="o">=</span><span class="n">handler</span><span class="p">,</span> <span class="n">retry_adapter_config</span><span class="o">=</span><span class="n">retry_adapter_config</span>
+        <span class="p">)</span>  <span class="c1"># Seulement si un RequestsHandler</span>
+
+        <span class="k">return</span> <span class="n">get_api_factory</span><span class="p">(</span><span class="n">endpoint</span><span class="o">=</span><span class="n">endpoint</span><span class="o">.</span><span class="n">TYPE</span><span class="p">)(</span>
+            <span class="n">query_handler</span><span class="o">=</span><span class="n">handler</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">endpoint</span>
+        <span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2024, Yan Bilodeau.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
