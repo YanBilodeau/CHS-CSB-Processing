@@ -79,7 +79,7 @@ def merge_attributes(
     LOGGER.debug("Fusion des attributs des stations avec les polygones de Voronoi.")
 
     gdf_voronoi = gdf_voronoi.merge(
-        gdf_joined[["index_right", "id", "code", "name", "time_series"]],
+        gdf_joined[["index_right", "id", "code", "name", "time_series", "is_tidal"]],
         left_index=True,
         right_on="index_right",
     )
