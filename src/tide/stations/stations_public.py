@@ -17,23 +17,31 @@ class StationsHandlerPublic(StationsHandlerABC):
 
     @staticmethod
     def _filter_stations(
-        stations: Collection[dict], filter_time_series: Collection[TimeSeriesProtocol]
+        stations: Collection[dict],
+        filter_time_series: Collection[TimeSeriesProtocol] | None,
+        excluded_stations: Collection[str] | None,
     ) -> list[dict]:
         """
         Filtre les stations en fonction des séries temporelles.
 
         :param stations: (Collection[dict]) Liste des stations.
-        :param filter_time_series: (Collection[TimeSeriesProtocol]) Liste des séries temporelles pour filtrer les stations.
+        :param filter_time_series: (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer les stations.
+        :param excluded_stations: (Collection[str] | None) Liste des stations à exclure.
         :return: (list[dict]) Liste des stations filtrées.
         """
         LOGGER.debug(
-            f"Filtrage des stations en fonction des séries temporelles : {filter_time_series}."
+            f"Filtrage des stations en fonction des séries temporelles [{filter_time_series}] "
+            f"et des stations exclues [{excluded_stations}]."
         )
 
         return [
             station
             for station in stations
-            if any(ts["code"] in filter_time_series for ts in station["timeSeries"])
+            if (not excluded_stations or station["id"] not in excluded_stations)
+            and (
+                not filter_time_series
+                or any(ts["code"] in filter_time_series for ts in station["timeSeries"])
+            )
         ]
 
     @staticmethod
@@ -79,6 +87,7 @@ class StationsHandlerPublic(StationsHandlerABC):
     def get_stations_geodataframe(
         self,
         filter_time_series: Collection[TimeSeriesProtocol] | None,
+        excluded_stations: Collection[str] | None = None,
         station_name_key: Optional[str] = "officialName",
         ttl: Optional[int] = 86400,
     ) -> gpd.GeoDataFrame:
@@ -87,6 +96,7 @@ class StationsHandlerPublic(StationsHandlerABC):
 
         :param filter_time_series: (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer
                                         les stations. Si None, toutes les stations sont retournées.
+        :param excluded_stations: (Collection[str] | None) Liste des stations à exclure.
         :param station_name_key: (str) Clé du nom de la station.
         :param ttl: (int) Durée de vie du cache en secondes.
         :return: (gpd.DataFrame) Données des stations sous forme de GeoDataFrame.
@@ -94,6 +104,7 @@ class StationsHandlerPublic(StationsHandlerABC):
         return self._get_stations_geodataframe(
             stations=self._get_stations_with_metadata(ttl=ttl),
             filter_time_series=filter_time_series,
+            excluded_stations=excluded_stations,
             station_name_key=station_name_key,
         )
 
