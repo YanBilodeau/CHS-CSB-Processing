@@ -51,11 +51,35 @@ class StationsHandlerPublic(StationsHandlerABC):
             ts["code"] for ts in station["timeSeries"] if ts["code"] in index_map.keys()
         ]
 
+    def _get_stations_with_metadata(
+        self, ttl: int, api: str = "public", column_name_tidal: str = "isTidal"
+    ) -> list[dict]:
+        """
+        Récupère les données des stations avec les séries temporelles.
+
+        :param ttl: (int) Durée de vie du cache en secondes.
+        :param api: (str) Nom de l'API.
+        :param column_name_tidal: (str) Nom de la colonne pour les informations sur les marées.
+        :return: (list[dict]) Données des stations avec les séries temporelles.
+        """
+        LOGGER.debug("Récupération des métadonnées des stations.")
+
+        stations: list[dict] = [station["id"] for station in self.stations]
+
+        tidal_info_list: list[bool | None] = self._get_stations_tidal_info(
+            stations=stations, ttl=ttl, api=api, column_name=column_name_tidal
+        )
+
+        for station, is_tidal in zip(stations, tidal_info_list):
+            station["isTidal"] = is_tidal
+
+        return stations
+
     def get_stations_geodataframe(
         self,
         filter_time_series: Collection[TimeSeriesProtocol] | None,
         station_name_key: Optional[str] = "officialName",
-        **kwargs,
+        ttl: Optional[int] = 86400,
     ) -> gpd.GeoDataFrame:
         """
         Récupère les données des stations sous forme de GeoDataFrame.
@@ -63,10 +87,11 @@ class StationsHandlerPublic(StationsHandlerABC):
         :param filter_time_series: (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer
                                         les stations. Si None, toutes les stations sont retournées.
         :param station_name_key: (str) Clé du nom de la station.
+        :param ttl: (int) Durée de vie du cache en secondes.
         :return: (gpd.DataFrame) Données des stations sous forme de GeoDataFrame.
         """
         return self._get_stations_geodataframe(
-            stations=self.stations,
+            stations=self._get_stations_with_metadata(ttl=ttl),
             filter_time_series=filter_time_series,
             station_name_key=station_name_key,
         )
