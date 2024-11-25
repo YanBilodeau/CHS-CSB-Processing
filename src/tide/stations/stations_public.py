@@ -64,10 +64,11 @@ class StationsHandlerPublic(StationsHandlerABC):
         """
         LOGGER.debug("Récupération des métadonnées des stations.")
 
-        stations: list[dict] = [station["id"] for station in self.stations]
+        stations: list[dict] = self.stations
+        stations_id: list[dict] = [station["id"] for station in stations]
 
         tidal_info_list: list[bool | None] = self._get_stations_tidal_info(
-            stations=stations, ttl=ttl, api=api, column_name=column_name_tidal
+            stations=stations_id, ttl=ttl, api=api, column_name=column_name_tidal
         )
 
         for station, is_tidal in zip(stations, tidal_info_list):
