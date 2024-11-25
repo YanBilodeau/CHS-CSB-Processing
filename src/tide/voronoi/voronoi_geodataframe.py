@@ -105,7 +105,7 @@ def get_voronoi_geodataframe(
     """
     gdf_stations: gpd.GeoDataFrame[StationsSchema] = (
         stations_handler.get_stations_geodataframe(
-            filter_time_series=time_series,exclude_stations=exclude_stations, **kwargs
+            filter_time_series=time_series, exclude_stations=exclude_stations, **kwargs
         )
     )
 
