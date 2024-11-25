@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
+from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta, datetime
+from itertools import repeat
 from typing import Optional, Collection
 
 import geopandas as gpd
@@ -151,6 +153,31 @@ class StationsHandlerABC(ABC):
 
         return _is_tidal_station(station_id_=sation_id, api=api)
 
+    def _get_stations_tidal_info(
+        self, stations: list[dict], ttl: int, api: str, column_name: str
+    ) -> list[bool | None]:
+        """
+        Récupère les informations sur les stations de marée.
+
+        :param stations: (list[dict]) Liste des stations.
+        :param ttl: (int) Durée de vie du cache en secondes.
+        :param api: (str) Type de l'API.
+        :param column_name: (str) Nom de la colonne.
+        :return: (list[bool | None]) Liste des informations sur les stations de marée.
+        """
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            tidal_info_list = list(
+                executor.map(
+                    self._fetch_is_tidal_station,
+                    stations,
+                    repeat(ttl),
+                    repeat(api),
+                    repeat(column_name),
+                )
+            )
+
+        return tidal_info_list
+
     def _fetch_time_series(self, station_id: str, ttl: int, api: str) -> dict:
         """
         Récupère les séries temporelles de la station.
@@ -166,6 +193,29 @@ class StationsHandlerABC(ABC):
             return self.api.get_time_series_station(station=station_id_).data
 
         return _get_time_series_station(station_id_=station_id, api=api)  # type: ignore[arg-type]
+
+    def _get_stations_time_series(
+        self, stations: list[dict], ttl: int, api: str
+    ) -> list[dict]:
+        """
+        Récupère les séries temporelles des stations.
+
+        :param stations: (list[dict]) Liste des stations.
+        :param ttl: (int) Durée de vie du cache en secondes.
+        :param api: (str) Type d'API.
+        :return: (list[dict]) Liste des stations avec les séries temporelles.
+        """
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            time_series_list = list(
+                executor.map(
+                    self._fetch_time_series,
+                    stations,
+                    repeat(ttl),
+                    repeat(api),
+                )
+            )
+
+        return time_series_list
 
     def _get_stations_geodataframe(
         self,
