@@ -31,3 +31,11 @@ def cache_result(ttl: int = 86400):
         return wrapper
 
     return decorator
+
+
+def clear_cache():
+    """
+    Vide le cache.
+    """
+    CACHE.clear()
+    LOGGER.debug("Le cache a été vidé.")
