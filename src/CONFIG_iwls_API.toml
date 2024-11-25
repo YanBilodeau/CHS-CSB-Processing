@@ -1,0 +1,40 @@
+[IWLS.API.TimeSeries]
+# Liste des séries temporelles à récupérer selon leur priorité d'utilisation. {"wlo", "wlp"}
+priority = ["wlo", "wlp"]
+# Intervalle de temps maximale sans données avant de déclencher le remplissage de données manquantes
+# avec des valeurs de la série temporelle suivante. Laisser vide "" pour désactiver.
+# {format str "<number> <min|h>"}
+max_time_gap = "1 min"
+# Seuil en dessous duquel les données manquantes sont interpolées et au dessus desquelles elles sont remplies par
+# la time serie suivante. {format str "<number> <min|h>"}
+threshold_interpolation-filling = "4 h"
+# Liste des valeurs de qualité à filtrer pour wlo.
+# Flag de l'API privée {"GOOD", "NOT_EVAL", "QUESTIONABLE", "BAD", "MISSING"}.
+# Flag de l'API publique {"1", "2", "3"}.  1 = Good, 2 = Not evaluated, 3 = Questionable
+wlo_qc_flag_filter = ["NOT_EVAL", "QUESTIONABLE", "BAD", "MISSING", "2", "3"]
+# Temps tampon en heures pour les données de la série temporelle à récupérer pour les interpolations {int}.
+buffer_time = 24
+
+[IWLS.API.PROFILE]
+# {"dev", "prod", "public"}
+active = "prod"
+
+[IWLS.API.ENVIRONMENT.dev]
+name = "DEV"
+endpoint = "EndpointPrivateDev"
+# Nombre maximal d'appels par période de temps {int}.
+calls = 15
+# Période de temps en secondes {int}.
+period = 1
+
+[IWLS.API.ENVIRONMENT.prod]
+name = "PROD"
+endpoint = "EndpointPrivateProd"
+calls = 10
+period = 1
+
+[IWLS.API.ENVIRONMENT.public]
+name = "PUBLIC"
+endpoint = "EndpointPublic"
+calls = 15
+period = 1
