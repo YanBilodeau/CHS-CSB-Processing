@@ -1,6 +1,4 @@
-from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, UTC
-from itertools import repeat
 from typing import Optional, Collection
 
 import geopandas as gpd
