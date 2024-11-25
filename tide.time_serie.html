@@ -1,0 +1,874 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tide.time_serie package &mdash; Documentation CHS-CSB-Processing 1.0.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=05dadb3a"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=e6b791cb"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Recherche" href="search.html" />
+    <link rel="next" title="tide.voronoi package" href="tide.voronoi.html" />
+    <link rel="prev" title="tide.stations package" href="tide.stations.html" />
+    <link href="_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CHS-CSB-Processing
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">CHS-CSB_Processing</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="config.html">config package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example_iwls_api_request.html">example_iwls_api_request module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example_parser.html">example_parser module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example_tide.html">example_tide module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example_vessel.html">example_vessel module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ingestion.html">ingestion package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iwls_api_request.html">iwls_api_request package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="schema.html">schema package</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="tide.html">tide package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="tide.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="tide.stations.html">tide.stations package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tide.time_serie package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tide.voronoi.html">tide.voronoi package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tide.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tide.html#module-tide.plot">tide.plot module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tide.html#module-tide.schema">tide.schema module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tide.html#module-tide">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="transformation.html">transformation package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vessel.html">vessel package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CHS-CSB-Processing</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">CHS-CSB_Processing</a></li>
+          <li class="breadcrumb-item"><a href="tide.html">tide package</a></li>
+      <li class="breadcrumb-item active">tide.time_serie package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tide.time_serie.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tide-time-serie-package">
+<h1>tide.time_serie package<a class="headerlink" href="#tide-time-serie-package" title="Lien vers cette rubrique"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Lien vers cette rubrique"></a></h2>
+</section>
+<section id="module-tide.time_serie.exception_time_serie">
+<span id="tide-time-serie-exception-time-serie-module"></span><h2>tide.time_serie.exception_time_serie module<a class="headerlink" href="#module-tide.time_serie.exception_time_serie" title="Lien vers cette rubrique"></a></h2>
+<dl class="py exception">
+<dt class="sig sig-object py" id="tide.time_serie.exception_time_serie.InterpolationValueError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.time_serie.exception_time_serie.</span></span><span class="sig-name descname"><span class="pre">InterpolationValueError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas._libs.tslibs.timestamps.Timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas._libs.tslibs.timestamps.Timestamp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/time_serie/exception_time_serie.html#InterpolationValueError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.exception_time_serie.InterpolationValueError" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.exception_time_serie.InterpolationValueError.from_time">
+<span class="sig-name descname"><span class="pre">from_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Timestamp</span></em><a class="headerlink" href="#tide.time_serie.exception_time_serie.InterpolationValueError.from_time" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.exception_time_serie.InterpolationValueError.to_time">
+<span class="sig-name descname"><span class="pre">to_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Timestamp</span></em><a class="headerlink" href="#tide.time_serie.exception_time_serie.InterpolationValueError.to_time" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tide.time_serie.exception_time_serie.WaterLevelDataError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.time_serie.exception_time_serie.</span></span><span class="sig-name descname"><span class="pre">WaterLevelDataError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/time_serie/exception_time_serie.html#WaterLevelDataError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.exception_time_serie.WaterLevelDataError" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.exception_time_serie.WaterLevelDataError.from_time">
+<span class="sig-name descname"><span class="pre">from_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#tide.time_serie.exception_time_serie.WaterLevelDataError.from_time" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.exception_time_serie.WaterLevelDataError.station_id">
+<span class="sig-name descname"><span class="pre">station_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#tide.time_serie.exception_time_serie.WaterLevelDataError.station_id" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.exception_time_serie.WaterLevelDataError.to_time">
+<span class="sig-name descname"><span class="pre">to_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#tide.time_serie.exception_time_serie.WaterLevelDataError.to_time" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tide.time_serie.exception_time_serie.WaterLevelDataGapError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.time_serie.exception_time_serie.</span></span><span class="sig-name descname"><span class="pre">WaterLevelDataGapError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_time_gap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/time_serie/exception_time_serie.html#WaterLevelDataGapError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.exception_time_serie.WaterLevelDataGapError" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.exception_time_serie.WaterLevelDataGapError.gaps">
+<span class="sig-name descname"><span class="pre">gaps</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DataFrame</span></em><a class="headerlink" href="#tide.time_serie.exception_time_serie.WaterLevelDataGapError.gaps" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.exception_time_serie.WaterLevelDataGapError.max_time_gap">
+<span class="sig-name descname"><span class="pre">max_time_gap</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#tide.time_serie.exception_time_serie.WaterLevelDataGapError.max_time_gap" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.exception_time_serie.WaterLevelDataGapError.station_id">
+<span class="sig-name descname"><span class="pre">station_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#tide.time_serie.exception_time_serie.WaterLevelDataGapError.station_id" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.exception_time_serie.get_data_gap_periods">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.exception_time_serie.</span></span><span class="sig-name descname"><span class="pre">get_data_gap_periods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gaps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tide.time_serie.time_serie_models.DataGapPeriod" title="tide.time_serie.time_serie_models.DataGapPeriod"><span class="pre">DataGapPeriod</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tide/time_serie/exception_time_serie.html#get_data_gap_periods"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.exception_time_serie.get_data_gap_periods" title="Lien vers cette définition"></a></dt>
+<dd><p>Récupère les périodes de données manquantes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gaps</strong> – (pd.DataFrame) DataFrame contenant les périodes de données manquantes.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(list[DataGap]) Périodes de données manquantes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.exception_time_serie.get_data_gaps_message">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.exception_time_serie.</span></span><span class="sig-name descname"><span class="pre">get_data_gaps_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gaps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/tide/time_serie/exception_time_serie.html#get_data_gaps_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.exception_time_serie.get_data_gaps_message" title="Lien vers cette définition"></a></dt>
+<dd><p>Journalise les périodes de données manquantes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gaps</strong> – (pd.DataFrame) Périodes de données manquantes.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(str) Journalisation des périodes de données manquantes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-tide.time_serie.time_serie_dataframe">
+<span id="tide-time-serie-time-serie-dataframe-module"></span><h2>tide.time_serie.time_serie_dataframe module<a class="headerlink" href="#module-tide.time_serie.time_serie_dataframe" title="Lien vers cette rubrique"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.add_nan_date_row">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">add_nan_date_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wl_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#add_nan_date_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.add_nan_date_row" title="Lien vers cette définition"></a></dt>
+<dd><p>Ajoute une ligne de données avec une valeur de NaN à partir d’une date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wl_dataframe</strong> – (pd.DataFrame) DataFrame contenant les données.</p></li>
+<li><p><strong>time</strong> – (str) Date.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame) DataFrame contenant la ligne ajouter aux autres données.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.clean_time_series_data">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">clean_time_series_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wl_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#clean_time_series_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.clean_time_series_data" title="Lien vers cette définition"></a></dt>
+<dd><p>Nettoie les données de la série temporelle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wl_dataframe</strong> – (pd.DataFrame[TimeSerieDataSchema]) Données de la série temporelle.</p></li>
+<li><p><strong>from_time</strong> – (str) Date de début.</p></li>
+<li><p><strong>to_time</strong> – (str) Date de fin.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame[TimeSerieDataSchema]) Données de la série temporelle nettoyées.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.combine_water_level_data">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">combine_water_level_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wl_combined_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wl_data_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaps_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#combine_water_level_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.combine_water_level_data" title="Lien vers cette définition"></a></dt>
+<dd><p>Combine les données de niveau d’eau.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wl_combined_dataframe</strong> – (pd.DataFrame) DataFrame contenant les données de niveau d’eau combinées.</p></li>
+<li><p><strong>wl_data_dataframe</strong> – (pd.DataFrame) DataFrame contenant les données de niveau d’eau.</p></li>
+<li><p><strong>gaps_dataframe</strong> – (pd.DataFrame) DataFrame contenant les périodes de données manquantes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame) DataFrame contenant les données de niveau d’eau combinées.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.create_nan_date_row">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">create_nan_date_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#create_nan_date_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.create_nan_date_row" title="Lien vers cette définition"></a></dt>
+<dd><p>Crée une ligne de données avec une valeur de NaN pour une date donnée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>date_time</strong> – (str) Date.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(NanDateRow) Ligne de données.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.cubic_spline_interpolation">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">cubic_spline_interpolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wl_resampled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#cubic_spline_interpolation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.cubic_spline_interpolation" title="Lien vers cette définition"></a></dt>
+<dd><p>Interpole les données manquantes avec une spline cubique.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index_time</strong> – (pd.Index) Index des données.</p></li>
+<li><p><strong>values</strong> – (pd.Series) Valeurs des données.</p></li>
+<li><p><strong>wl_resampled</strong> – (pd.DataFrame) DataFrame contenant les données rééchantillonnées.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame) DataFrame contenant les données interpolées.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.extend_non_nan_dataframe">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">extend_non_nan_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">non_nan_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#extend_non_nan_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.extend_non_nan_dataframe" title="Lien vers cette définition"></a></dt>
+<dd><p>Étend les lignes du DataFrame pour ajouter la première et la dernière date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>non_nan_dataframe</strong> – (pd.DataFrame) DataFrame contenant les données non NaN.</p></li>
+<li><p><strong>first_row</strong> – (pd.DataFrame) Première ligne du DataFrame.</p></li>
+<li><p><strong>last_row</strong> – (pd.DataFrame) Dernière ligne du DataFrame.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame) DataFrame contenant les données étendues.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.extend_rows_to_deltatime">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">extend_rows_to_deltatime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">non_nan_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#extend_rows_to_deltatime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.extend_rows_to_deltatime" title="Lien vers cette définition"></a></dt>
+<dd><p>Étend les lignes du DataFrame pour ajouter la première et la dernière date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>non_nan_dataframe</strong> – (pd.DataFrame) DataFrame contenant les données non NaN.</p></li>
+<li><p><strong>first_row</strong> – (pd.DataFrame) Première ligne du DataFrame.</p></li>
+<li><p><strong>last_row</strong> – (pd.DataFrame) Dernière ligne du DataFrame.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame) DataFrame contenant les données étendues.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.fill_data_gaps">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">fill_data_gaps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gaps_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wl_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wl_combined_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#fill_data_gaps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.fill_data_gaps" title="Lien vers cette définition"></a></dt>
+<dd><p>Permet de remplir les périodes de données manquantes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gaps_dataframe</strong> – (pd.DataFrame[TimeSerieDataSchema]) DataFrame contenant les périodes de données manquantes.</p></li>
+<li><p><strong>wl_dataframe</strong> – (pd.DataFrame[TimeSerieDataSchema]) DataFrame contenant les données à ajouter.</p></li>
+<li><p><strong>wl_combined_dataframe</strong> – (pd.DataFrame[TimeSerieDataSchema]) DataFrame contenant les données combinées.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame[TimeSerieDataSchema]) DataFrame contenant les données ajoutées au données combinées.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.get_datetime_from_iso8601">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">get_datetime_from_iso8601</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#get_datetime_from_iso8601"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.get_datetime_from_iso8601" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.get_empty_dataframe">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">get_empty_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#get_empty_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.get_empty_dataframe" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.get_first_and_last_rows">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">get_first_and_last_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wl_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#get_first_and_last_rows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.get_first_and_last_rows" title="Lien vers cette définition"></a></dt>
+<dd><p>Récupère la première et la dernière ligne du DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>wl_dataframe</strong> – (pd.DataFrame) DataFrame contenant les données.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(tuple[pd.DataFrame, pd.DataFrame]) Première et dernière ligne du DataFrame.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.get_gaps_dataframe_list">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">get_gaps_dataframe_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gaps_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wl_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#get_gaps_dataframe_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.get_gaps_dataframe_list" title="Lien vers cette définition"></a></dt>
+<dd><p>Récupère les périodes de données manquantes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gaps_dataframe</strong> – (pd.DataFrame) DataFrame contenant les périodes de données manquantes.</p></li>
+<li><p><strong>wl_dataframe</strong> – (pd.DataFrame) DataFrame contenant les données.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(list[pd.DataFrame]) Une liste de DataFrame contenant les périodes de données manquantes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.get_iso8601_from_datetime">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">get_iso8601_from_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#get_iso8601_from_datetime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.get_iso8601_from_datetime" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.get_row_by_index">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">get_row_by_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wl_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#get_row_by_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.get_row_by_index" title="Lien vers cette définition"></a></dt>
+<dd><p>Récupère une ligne du DataFrame par son index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wl_dataframe</strong> – (pd.DataFrame) DataFrame contenant les données.</p></li>
+<li><p><strong>index</strong> – (int) Index de la ligne à récupérer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame) Ligne du DataFrame.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.get_time_series_data">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">get_time_series_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stations_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.time_serie.time_serie_models.StationsHandlerProtocol" title="tide.time_serie.time_serie_models.StationsHandlerProtocol"><span class="pre">StationsHandlerProtocol</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">station_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_serie_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.time_serie.time_serie_models.TimeSeriesProtocol" title="tide.time_serie.time_serie_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">timedelta</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wlo_qc_flag_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#get_time_series_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.get_time_series_data" title="Lien vers cette définition"></a></dt>
+<dd><p>Récupère les données de la série temporelle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stations_handler</strong> – (StationsHandlerProtocol) Gestionnaire des stations.</p></li>
+<li><p><strong>station_id</strong> – (str) Identifiant de la station.</p></li>
+<li><p><strong>from_time</strong> – (str) Date de début.</p></li>
+<li><p><strong>to_time</strong> – (str) Date de fin.</p></li>
+<li><p><strong>time_serie_code</strong> – (TimeSeriesProtocol) Série temporelle.</p></li>
+<li><p><strong>buffer_time</strong> – (Optional[timedelta]) Temps tampon à ajouter au début et à la fin de la période de données.</p></li>
+<li><p><strong>wlo_qc_flag_filter</strong> – (Optional[list[str] | None]) Filtre de qualité des données wlo.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame[TimeSerieDataSchema] | None) Données de la série temporelle.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.get_water_level_data">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">get_water_level_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stations_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.time_serie.time_serie_models.StationsHandlerProtocol" title="tide.time_serie.time_serie_models.StationsHandlerProtocol"><span class="pre">StationsHandlerProtocol</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">station_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_priority</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Collection</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tide.time_serie.time_serie_models.TimeSeriesProtocol" title="tide.time_serie.time_serie_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">timedelta</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_time_gap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_interpolation_filling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wlo_qc_flag_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#get_water_level_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.get_water_level_data" title="Lien vers cette définition"></a></dt>
+<dd><p>Récupère et traite les séries temporelles de niveau d’eau pour une station donnée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stations_handler</strong> – (StationsHandlerProtocol) Gestionnaire des stations.</p></li>
+<li><p><strong>station_id</strong> – (str) Identifiant de la station.</p></li>
+<li><p><strong>from_time</strong> – (str) Date de début.</p></li>
+<li><p><strong>to_time</strong> – (str) Date de fin.</p></li>
+<li><p><strong>time_series_priority</strong> – (Collection[TimeSeriesProtocol]) Liste des séries temporelles à récupérer en ordre de priorité.</p></li>
+<li><p><strong>buffer_time</strong> – (Optional[timedelta | None]) Temps tampon à ajouter au début et à la fin de la période de données.</p></li>
+<li><p><strong>max_time_gap</strong> – (Optional[str | None]) Intervalle de temps maximal permis. Si None, l’interpolation et le remplissage
+des données manquantes est désactivée.</p></li>
+<li><p><strong>threshold_interpolation_filling</strong> – (Optional[str | None]) Seuil de temps en dessous duquel les données manquantes
+sont interpolées ou remplies. Si None, les données manquantes sont
+seulement remplies par la time série suivante.</p></li>
+<li><p><strong>wlo_qc_flag_filter</strong> – (Optional[list[str] | None]) Filtre de qualité des données wlo.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame[TimeSerieDataSchema]) Données de niveau d’eau combinées.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.identify_data_gaps">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">identify_data_gaps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wl_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_time_gap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_interpolation_filling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#identify_data_gaps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.identify_data_gaps" title="Lien vers cette définition"></a></dt>
+<dd><p>Identifie les périodes de données manquantes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wl_dataframe</strong> – (pd.DataFrame[TimeSerieDataSchema]) DataFrame contenant les données.</p></li>
+<li><p><strong>max_time_gap</strong> – (str) Intervalle de temps maximale permise avant de  combler les données manquantes.</p></li>
+<li><p><strong>threshold_interpolation_filling</strong> – (Optional[str | None]) Seuil de temps en dessous duquel les données
+manquantes sont interpolées ou remplies. Si None, les données manquantes
+sont seulement remplies par la time série suivante.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(tuple[pd.DataFrame[TimeSerieDataSchema], pd.DataFrame[TimeSerieDataSchema], pd.DataFrame[TimeSerieDataSchema]])
+Un tuple contenant toutes les périodes de données manquantes, les périodes de données manquantes
+à interpoler et les périodes de données manquantes à remplir.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.identify_interpolation_and_fill_gaps">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">identify_interpolation_and_fill_gaps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gaps_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_interpolation_filling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#identify_interpolation_and_fill_gaps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.identify_interpolation_and_fill_gaps" title="Lien vers cette définition"></a></dt>
+<dd><p>Identifie les périodes de données manquantes à interpoler et à remplir.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gaps_dataframe</strong> – (pd.DataFrame[TimeSerieDataSchema]) DataFrame contenant les périodes de données manquantes.</p></li>
+<li><p><strong>threshold_interpolation_filling</strong> – (str) Seuil de temps en dessous duquel les données manquantes sont interpolées
+ou remplies.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(tuple[pd.DataFrame[TimeSerieDataSchema], pd.DataFrame[TimeSerieDataSchema]]) Périodes de données manquantes
+à interpoler et à remplir.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.interpolate_data_gaps">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">interpolate_data_gaps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wl_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaps_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_time_gap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#interpolate_data_gaps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.interpolate_data_gaps" title="Lien vers cette définition"></a></dt>
+<dd><p>Interpole les données manquantes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wl_dataframe</strong> – (pd.DataFrame) DataFrame contenant les données.</p></li>
+<li><p><strong>gaps_dataframe</strong> – (pd.DataFrame) DataFrame contenant les périodes de données manquantes à interpoler.</p></li>
+<li><p><strong>max_time_gap</strong> – (str) Intervalle de temps maximale permise avant de combler les données manquantes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame) DataFrame contenant les données interpolées.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.merge_dataframes">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">merge_dataframes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wl_combined_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wl_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#merge_dataframes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.merge_dataframes" title="Lien vers cette définition"></a></dt>
+<dd><p>Fusionne les DataFrames.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wl_combined_dataframe</strong> – (pd.DataFrame) DataFrame contenant les données combinées.</p></li>
+<li><p><strong>wl_dataframe</strong> – (pd.DataFrame) DataFrame contenant les données à ajouter.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame) DataFrame contenant les données à ajouter et celles combinées.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.process_gaps_to_fill">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">process_gaps_to_fill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wl_combined_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaps_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wl_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#process_gaps_to_fill"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.process_gaps_to_fill" title="Lien vers cette définition"></a></dt>
+<dd><p>Identifie et comble les données manquantes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wl_combined_dataframe</strong> – (pd.DataFrame) DataFrame contenant les données combinées.</p></li>
+<li><p><strong>gaps_dataframe</strong> – (pd.DataFrame) DataFrame contenant les périodes de données manquantes.</p></li>
+<li><p><strong>wl_dataframe</strong> – (pd.DataFrame) DataFrame contenant les données à ajouter aux données combinées.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame[TimeSerieDataSchema]]) Données de niveau d’eau combinées.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.process_gaps_to_interpolate">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">process_gaps_to_interpolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wl_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_time_gap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_interpolation_filling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#process_gaps_to_interpolate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.process_gaps_to_interpolate" title="Lien vers cette définition"></a></dt>
+<dd><p>Identifie et comble les données manquantes avec une interpolation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wl_dataframe</strong> – (pd.DataFrame) DataFrame contenant les données.
+:param max_time_gap: (str) Intervalle de temps maximale permise avant de  combler les données manquantes.</p></li>
+<li><p><strong>threshold_interpolation_filling</strong> – (Optional[str | None]) Seuil de temps en dessous duquel les données
+manquantes sont interpolées ou remplies. Si None, les données manquantes
+sont seulement remplies par la time série suivante.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame[TimeSerieDataSchema]]) Données de niveau d’eau combinées.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.resample_data">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">resample_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wl_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#resample_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.resample_data" title="Lien vers cette définition"></a></dt>
+<dd><p>Rééchantillonne les données.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wl_dataframe</strong> – (pd.DataFrame) DataFrame contenant les données.</p></li>
+<li><p><strong>time</strong> – (str) Intervalle de temps.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame) DataFrame contenant les données rééchantillonnées.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_dataframe.reset_and_sort_index">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_dataframe.</span></span><span class="sig-name descname"><span class="pre">reset_and_sort_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wl_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#reset_and_sort_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_dataframe.reset_and_sort_index" title="Lien vers cette définition"></a></dt>
+<dd><p>Réinitialise et trie l’index du DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>drop</strong> – (bool) Si True, supprime l’ancien index.</p></li>
+<li><p><strong>inplace</strong> – (bool) Si True, modifie le DataFrame en place.</p></li>
+<li><p><strong>wl_dataframe</strong> – (pd.DataFrame) DataFrame contenant les données.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-tide.time_serie.time_serie_models">
+<span id="tide-time-serie-time-serie-models-module"></span><h2>tide.time_serie.time_serie_models module<a class="headerlink" href="#module-tide.time_serie.time_serie_models" title="Lien vers cette rubrique"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_models.DataGapPeriod">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_models.</span></span><span class="sig-name descname"><span class="pre">DataGapPeriod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/time_serie/time_serie_models.html#DataGapPeriod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_models.DataGapPeriod" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_models.DataGapPeriod.duration">
+<span class="sig-name descname"><span class="pre">duration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">timedelta</span></em><a class="headerlink" href="#tide.time_serie.time_serie_models.DataGapPeriod.duration" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_models.DataGapPeriod.end">
+<span class="sig-name descname"><span class="pre">end</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span></em><a class="headerlink" href="#tide.time_serie.time_serie_models.DataGapPeriod.end" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_models.DataGapPeriod.start">
+<span class="sig-name descname"><span class="pre">start</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span></em><a class="headerlink" href="#tide.time_serie.time_serie_models.DataGapPeriod.start" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_models.StationsHandlerProtocol">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_models.</span></span><span class="sig-name descname"><span class="pre">StationsHandlerProtocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/time_serie/time_serie_models.html#StationsHandlerProtocol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_models.StationsHandlerProtocol" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_models.StationsHandlerProtocol.get_time_series_dataframe">
+<span class="sig-name descname"><span class="pre">get_time_series_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_serie_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.time_serie.time_serie_models.TimeSeriesProtocol" title="tide.time_serie.time_serie_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wlo_qc_flag_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_models.html#StationsHandlerProtocol.get_time_series_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_models.StationsHandlerProtocol.get_time_series_dataframe" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_models.TimeSeriesProtocol">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_models.</span></span><span class="sig-name descname"><span class="pre">TimeSeriesProtocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/time_serie/time_serie_models.html#TimeSeriesProtocol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_models.TimeSeriesProtocol" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_models.TimeSeriesProtocol.WLF">
+<span class="sig-name descname"><span class="pre">WLF</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wlf'</span></em><a class="headerlink" href="#tide.time_serie.time_serie_models.TimeSeriesProtocol.WLF" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_models.TimeSeriesProtocol.WLF_SPINE">
+<span class="sig-name descname"><span class="pre">WLF_SPINE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wlf-spine'</span></em><a class="headerlink" href="#tide.time_serie.time_serie_models.TimeSeriesProtocol.WLF_SPINE" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_models.TimeSeriesProtocol.WLF_VTG">
+<span class="sig-name descname"><span class="pre">WLF_VTG</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wlf-vtg'</span></em><a class="headerlink" href="#tide.time_serie.time_serie_models.TimeSeriesProtocol.WLF_VTG" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_models.TimeSeriesProtocol.WLO">
+<span class="sig-name descname"><span class="pre">WLO</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wlo'</span></em><a class="headerlink" href="#tide.time_serie.time_serie_models.TimeSeriesProtocol.WLO" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_models.TimeSeriesProtocol.WLP">
+<span class="sig-name descname"><span class="pre">WLP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wlp'</span></em><a class="headerlink" href="#tide.time_serie.time_serie_models.TimeSeriesProtocol.WLP" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_models.TimeSeriesProtocol.from_str">
+<span class="sig-name descname"><span class="pre">from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/time_serie/time_serie_models.html#TimeSeriesProtocol.from_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_models.TimeSeriesProtocol.from_str" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tide.time_serie.time_serie_retry">
+<span id="tide-time-serie-time-serie-retry-module"></span><h2>tide.time_serie.time_serie_retry module<a class="headerlink" href="#module-tide.time_serie.time_serie_retry" title="Lien vers cette rubrique"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.time_serie_retry.double_buffer_time">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.time_serie_retry.</span></span><span class="sig-name descname"><span class="pre">double_buffer_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retry_state</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_retry.html#double_buffer_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.time_serie_retry.double_buffer_time" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-tide.time_serie">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tide.time_serie" title="Lien vers cette rubrique"></a></h2>
+<dl class="py exception">
+<dt class="sig sig-object py" id="tide.time_serie.InterpolationValueError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.time_serie.</span></span><span class="sig-name descname"><span class="pre">InterpolationValueError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas._libs.tslibs.timestamps.Timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas._libs.tslibs.timestamps.Timestamp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/time_serie/exception_time_serie.html#InterpolationValueError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.InterpolationValueError" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.InterpolationValueError.from_time">
+<span class="sig-name descname"><span class="pre">from_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Timestamp</span></em><a class="headerlink" href="#tide.time_serie.InterpolationValueError.from_time" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.InterpolationValueError.to_time">
+<span class="sig-name descname"><span class="pre">to_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Timestamp</span></em><a class="headerlink" href="#tide.time_serie.InterpolationValueError.to_time" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tide.time_serie.WaterLevelDataError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.time_serie.</span></span><span class="sig-name descname"><span class="pre">WaterLevelDataError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/time_serie/exception_time_serie.html#WaterLevelDataError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.WaterLevelDataError" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.WaterLevelDataError.from_time">
+<span class="sig-name descname"><span class="pre">from_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#tide.time_serie.WaterLevelDataError.from_time" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.WaterLevelDataError.station_id">
+<span class="sig-name descname"><span class="pre">station_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#tide.time_serie.WaterLevelDataError.station_id" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.WaterLevelDataError.to_time">
+<span class="sig-name descname"><span class="pre">to_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#tide.time_serie.WaterLevelDataError.to_time" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="tide.time_serie.WaterLevelDataGapError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tide.time_serie.</span></span><span class="sig-name descname"><span class="pre">WaterLevelDataGapError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">station_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_time_gap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tide/time_serie/exception_time_serie.html#WaterLevelDataGapError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.WaterLevelDataGapError" title="Lien vers cette définition"></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.WaterLevelDataGapError.gaps">
+<span class="sig-name descname"><span class="pre">gaps</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DataFrame</span></em><a class="headerlink" href="#tide.time_serie.WaterLevelDataGapError.gaps" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.WaterLevelDataGapError.max_time_gap">
+<span class="sig-name descname"><span class="pre">max_time_gap</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#tide.time_serie.WaterLevelDataGapError.max_time_gap" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tide.time_serie.WaterLevelDataGapError.station_id">
+<span class="sig-name descname"><span class="pre">station_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#tide.time_serie.WaterLevelDataGapError.station_id" title="Lien vers cette définition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.get_data_gaps_message">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.</span></span><span class="sig-name descname"><span class="pre">get_data_gaps_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gaps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/tide/time_serie/exception_time_serie.html#get_data_gaps_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.get_data_gaps_message" title="Lien vers cette définition"></a></dt>
+<dd><p>Journalise les périodes de données manquantes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gaps</strong> – (pd.DataFrame) Périodes de données manquantes.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(str) Journalisation des périodes de données manquantes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.get_time_series_data">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.</span></span><span class="sig-name descname"><span class="pre">get_time_series_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stations_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.time_serie.time_serie_models.StationsHandlerProtocol" title="tide.time_serie.time_serie_models.StationsHandlerProtocol"><span class="pre">StationsHandlerProtocol</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">station_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_serie_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.time_serie.time_serie_models.TimeSeriesProtocol" title="tide.time_serie.time_serie_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">timedelta</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wlo_qc_flag_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#get_time_series_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.get_time_series_data" title="Lien vers cette définition"></a></dt>
+<dd><p>Récupère les données de la série temporelle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stations_handler</strong> – (StationsHandlerProtocol) Gestionnaire des stations.</p></li>
+<li><p><strong>station_id</strong> – (str) Identifiant de la station.</p></li>
+<li><p><strong>from_time</strong> – (str) Date de début.</p></li>
+<li><p><strong>to_time</strong> – (str) Date de fin.</p></li>
+<li><p><strong>time_serie_code</strong> – (TimeSeriesProtocol) Série temporelle.</p></li>
+<li><p><strong>buffer_time</strong> – (Optional[timedelta]) Temps tampon à ajouter au début et à la fin de la période de données.</p></li>
+<li><p><strong>wlo_qc_flag_filter</strong> – (Optional[list[str] | None]) Filtre de qualité des données wlo.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame[TimeSerieDataSchema] | None) Données de la série temporelle.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.get_water_level_data">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.</span></span><span class="sig-name descname"><span class="pre">get_water_level_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stations_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tide.time_serie.time_serie_models.StationsHandlerProtocol" title="tide.time_serie.time_serie_models.StationsHandlerProtocol"><span class="pre">StationsHandlerProtocol</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">station_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_series_priority</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Collection</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tide.time_serie.time_serie_models.TimeSeriesProtocol" title="tide.time_serie.time_serie_models.TimeSeriesProtocol"><span class="pre">TimeSeriesProtocol</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">timedelta</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_time_gap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_interpolation_filling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wlo_qc_flag_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#get_water_level_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.get_water_level_data" title="Lien vers cette définition"></a></dt>
+<dd><p>Récupère et traite les séries temporelles de niveau d’eau pour une station donnée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stations_handler</strong> – (StationsHandlerProtocol) Gestionnaire des stations.</p></li>
+<li><p><strong>station_id</strong> – (str) Identifiant de la station.</p></li>
+<li><p><strong>from_time</strong> – (str) Date de début.</p></li>
+<li><p><strong>to_time</strong> – (str) Date de fin.</p></li>
+<li><p><strong>time_series_priority</strong> – (Collection[TimeSeriesProtocol]) Liste des séries temporelles à récupérer en ordre de priorité.</p></li>
+<li><p><strong>buffer_time</strong> – (Optional[timedelta | None]) Temps tampon à ajouter au début et à la fin de la période de données.</p></li>
+<li><p><strong>max_time_gap</strong> – (Optional[str | None]) Intervalle de temps maximal permis. Si None, l’interpolation et le remplissage
+des données manquantes est désactivée.</p></li>
+<li><p><strong>threshold_interpolation_filling</strong> – (Optional[str | None]) Seuil de temps en dessous duquel les données manquantes
+sont interpolées ou remplies. Si None, les données manquantes sont
+seulement remplies par la time série suivante.</p></li>
+<li><p><strong>wlo_qc_flag_filter</strong> – (Optional[list[str] | None]) Filtre de qualité des données wlo.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame[TimeSerieDataSchema]) Données de niveau d’eau combinées.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.identify_data_gaps">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.</span></span><span class="sig-name descname"><span class="pre">identify_data_gaps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wl_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_time_gap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_interpolation_filling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#identify_data_gaps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.identify_data_gaps" title="Lien vers cette définition"></a></dt>
+<dd><p>Identifie les périodes de données manquantes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wl_dataframe</strong> – (pd.DataFrame[TimeSerieDataSchema]) DataFrame contenant les données.</p></li>
+<li><p><strong>max_time_gap</strong> – (str) Intervalle de temps maximale permise avant de  combler les données manquantes.</p></li>
+<li><p><strong>threshold_interpolation_filling</strong> – (Optional[str | None]) Seuil de temps en dessous duquel les données
+manquantes sont interpolées ou remplies. Si None, les données manquantes
+sont seulement remplies par la time série suivante.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(tuple[pd.DataFrame[TimeSerieDataSchema], pd.DataFrame[TimeSerieDataSchema], pd.DataFrame[TimeSerieDataSchema]])
+Un tuple contenant toutes les périodes de données manquantes, les périodes de données manquantes
+à interpoler et les périodes de données manquantes à remplir.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tide.time_serie.process_gaps_to_fill">
+<span class="sig-prename descclassname"><span class="pre">tide.time_serie.</span></span><span class="sig-name descname"><span class="pre">process_gaps_to_fill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wl_combined_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaps_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wl_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/tide/time_serie/time_serie_dataframe.html#process_gaps_to_fill"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tide.time_serie.process_gaps_to_fill" title="Lien vers cette définition"></a></dt>
+<dd><p>Identifie et comble les données manquantes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wl_combined_dataframe</strong> – (pd.DataFrame) DataFrame contenant les données combinées.</p></li>
+<li><p><strong>gaps_dataframe</strong> – (pd.DataFrame) DataFrame contenant les périodes de données manquantes.</p></li>
+<li><p><strong>wl_dataframe</strong> – (pd.DataFrame) DataFrame contenant les données à ajouter aux données combinées.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pd.DataFrame[TimeSerieDataSchema]]) Données de niveau d’eau combinées.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="tide.stations.html" class="btn btn-neutral float-left" title="tide.stations package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="tide.voronoi.html" class="btn btn-neutral float-right" title="tide.voronoi package" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2024, Yan Bilodeau.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
