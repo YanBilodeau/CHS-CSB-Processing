@@ -6,6 +6,7 @@ from pandas import DataFrame
 from pandera.typing import Series
 from pandera.typing.geopandas import GeoSeries
 
+
 LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station.Schema")
 
 
@@ -14,6 +15,7 @@ class StationsSchema(pa.DataFrameModel):
     code: Series[str]
     name: Series[str]
     time_series: Series[list]
+    is_tidal: Series[object] = pa.Field(nullable=True)
     geometry: GeoSeries
 
 
