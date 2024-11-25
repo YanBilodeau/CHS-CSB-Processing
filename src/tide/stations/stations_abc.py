@@ -178,45 +178,6 @@ class StationsHandlerABC(ABC):
 
         return tidal_info_list
 
-    def _fetch_time_series(self, station_id: str, ttl: int, api: str) -> dict:
-        """
-        Récupère les séries temporelles de la station.
-
-        :param station_id: (str) Identifiant de la station.
-        :param ttl: (int) Durée de vie du cache en secondes.
-        :param api: (str) Type d'API.
-        :return: (dict) Données de la station avec les séries temporelles.
-        """
-
-        @cache_result(ttl=ttl)
-        def _get_time_series_station(station_id_: str, **kwargs) -> list[dict]:
-            return self.api.get_time_series_station(station=station_id_).data
-
-        return _get_time_series_station(station_id_=station_id, api=api)  # type: ignore[arg-type]
-
-    def _get_stations_time_series(
-        self, stations: list[dict], ttl: int, api: str
-    ) -> list[dict]:
-        """
-        Récupère les séries temporelles des stations.
-
-        :param stations: (list[dict]) Liste des stations.
-        :param ttl: (int) Durée de vie du cache en secondes.
-        :param api: (str) Type d'API.
-        :return: (list[dict]) Liste des stations avec les séries temporelles.
-        """
-        with ThreadPoolExecutor(max_workers=10) as executor:
-            time_series_list = list(
-                executor.map(
-                    self._fetch_time_series,
-                    stations,
-                    repeat(ttl),
-                    repeat(api),
-                )
-            )
-
-        return time_series_list
-
     def _get_stations_geodataframe(
         self,
         stations: Collection[dict],

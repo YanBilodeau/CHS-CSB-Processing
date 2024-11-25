@@ -1,9 +1,12 @@
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, UTC
+from itertools import repeat
 from typing import Optional, Collection
 
 import geopandas as gpd
 from loguru import logger
 
+from .cache_wrapper import cache_result
 from .stations_abc import StationsHandlerABC
 from .stations_models import TimeSeriesProtocol, IWLSapiProtocol
 
@@ -55,6 +58,45 @@ class StationsHandlerPrivate(StationsHandlerABC):
             if ts["code"] in index_map.keys() and ts["active"]
         ]
 
+    def _fetch_time_series(self, station_id: str, ttl: int, api: str) -> dict:
+        """
+        Récupère les séries temporelles de la station.
+
+        :param station_id: (str) Identifiant de la station.
+        :param ttl: (int) Durée de vie du cache en secondes.
+        :param api: (str) Type d'API.
+        :return: (dict) Données de la station avec les séries temporelles.
+        """
+
+        @cache_result(ttl=ttl)
+        def _get_time_series_station(station_id_: str, **kwargs) -> list[dict]:
+            return self.api.get_time_series_station(station=station_id_).data
+
+        return _get_time_series_station(station_id_=station_id, api=api)  # type: ignore[arg-type]
+
+    def _get_stations_time_series(
+        self, stations: list[dict], ttl: int, api: str
+    ) -> list[dict]:
+        """
+        Récupère les séries temporelles des stations.
+
+        :param stations: (list[dict]) Liste des stations.
+        :param ttl: (int) Durée de vie du cache en secondes.
+        :param api: (str) Type d'API.
+        :return: (list[dict]) Liste des stations avec les séries temporelles.
+        """
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            time_series_list = list(
+                executor.map(
+                    self._fetch_time_series,
+                    stations,
+                    repeat(ttl),
+                    repeat(api),
+                )
+            )
+
+        return time_series_list
+
     def _get_stations_with_metadata(
         self, ttl: int, api: str = "private", column_name_tidal: str = "tidal"
     ) -> list[dict]:
@@ -70,14 +112,15 @@ class StationsHandlerPrivate(StationsHandlerABC):
             "Récupération des métadonnées et des séries temporelles des stations."
         )
 
-        stations: list[dict] = [station["id"] for station in self.stations]
+        stations: list[dict] = self.stations
+        stations_id: list[dict] = [station["id"] for station in self.stations]
 
         time_series_list: list[dict] = self._get_stations_time_series(
-            stations=stations, ttl=ttl, api=api
+            stations=stations_id, ttl=ttl, api=api
         )
 
         tidal_info_list: list[bool | None] = self._get_stations_tidal_info(
-            stations=stations, ttl=ttl, api=api, column_name=column_name_tidal
+            stations=stations_id, ttl=ttl, api=api, column_name=column_name_tidal
         )
 
         for station, ts, is_tidal in zip(stations, time_series_list, tidal_info_list):
