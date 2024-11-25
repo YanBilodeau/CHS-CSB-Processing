@@ -7,6 +7,7 @@ import pandas as pd
 from loguru import logger
 from shapely.geometry import Point
 
+from .cache_wrapper import cache_result
 from .exception_stations import StationsError
 from .stations_models import TimeSeriesProtocol, ResponseProtocol, IWLSapiProtocol
 from ..schema import StationsSchema, validate_schema, TimeSerieDataSchema
@@ -119,9 +120,52 @@ class StationsHandlerABC(ABC):
                         key=lambda code: index_map.get(code, float("inf")),
                     )
                 ),
+                "is_tidal": station["isTidal"],
             }
             for station in stations
         ]
+
+    def _fetch_is_tidal_station(
+        self, sation_id: str, ttl: int, api: str, column_name: str
+    ) -> bool | None:
+        """
+        Récupère l'information si la station est une station de marée.
+
+        :param sation_id: (str) Identifiant de la station.
+        :param ttl: (int) Durée de vie du cache en secondes.
+        :param api: (str) Type de l'API.
+        :param column_name: (str) Nom de la colonne.
+        :return: (bool | None) True si la station est une station de marée, False sinon.
+        """
+
+        @cache_result(ttl=ttl)
+        def _is_tidal_station(station_id_: str, **kwargs) -> bool | None:
+            metadata: dict = self.api.get_metadata_station(  # type: ignore[arg-type]
+                station=station_id_
+            ).data
+
+            if metadata is None:
+                return None
+
+            return metadata.get(column_name)
+
+        return _is_tidal_station(station_id_=sation_id, api=api)
+
+    def _fetch_time_series(self, station_id: str, ttl: int, api: str) -> dict:
+        """
+        Récupère les séries temporelles de la station.
+
+        :param station_id: (str) Identifiant de la station.
+        :param ttl: (int) Durée de vie du cache en secondes.
+        :param api: (str) Type d'API.
+        :return: (dict) Données de la station avec les séries temporelles.
+        """
+
+        @cache_result(ttl=ttl)
+        def _get_time_series_station(station_id_: str, **kwargs) -> list[dict]:
+            return self.api.get_time_series_station(station=station_id_).data
+
+        return _get_time_series_station(station_id_=station_id, api=api)  # type: ignore[arg-type]
 
     def _get_stations_geodataframe(
         self,
@@ -171,7 +215,7 @@ class StationsHandlerABC(ABC):
         self,
         filter_time_series: Collection[TimeSeriesProtocol] | None,
         station_name_key: Optional[str] = "officialName",
-        **kwargs,
+        ttl: Optional[int] = 86400,
     ) -> gpd.GeoDataFrame:
         """
         Récupère les données des stations sous forme de GeoDataFrame.
@@ -179,6 +223,7 @@ class StationsHandlerABC(ABC):
         :param filter_time_series: (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer
                                         les stations. Si None, toutes les stations sont retournées.
         :param station_name_key: (str) Clé du nom de la station.
+        :param ttl: (int) Durée de vie du cache en secondes.
         :return: (gpd.DataFrame) Données des stations sous forme de GeoDataFrame.
         """
         ...
