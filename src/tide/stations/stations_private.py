@@ -1,9 +1,8 @@
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, UTC
-from pathlib import Path
+from itertools import repeat
 from typing import Optional, Collection
 
-from diskcache import Cache
 import geopandas as gpd
 from loguru import logger
 
@@ -11,7 +10,6 @@ from .stations_abc import StationsHandlerABC
 from .stations_models import TimeSeriesProtocol, IWLSapiProtocol
 
 LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station.Private")
-CACHE: Cache = Cache(str(Path(__file__).parent / "cache"))
 
 
 class StationsHandlerPrivate(StationsHandlerABC):
@@ -59,24 +57,34 @@ class StationsHandlerPrivate(StationsHandlerABC):
             if ts["code"] in index_map.keys() and ts["active"]
         ]
 
-    def _fetch_time_series(self, station: dict) -> dict:
-        station["timeSeries"] = self.api.get_time_series_station(
-            station=station["id"]
-        ).data
-
-        return station
-
-    def _get_stations_with_time_series(self) -> list[dict]:
+    def _get_stations_with_metadata(
+        self, ttl: int, api: str = "private", column_name_tidal: str = "tidal"
+    ) -> list[dict]:
         """
         Récupère les données des stations avec les séries temporelles.
 
+        :param ttl: (int) Durée de vie du cache en secondes.
+        :param api: (str) Nom de l'API.
+        :param column_name_tidal: (str) Nom de la colonne pour les informations de marée.
         :return: (list[dict]) Données des stations avec les séries temporelles.
         """
-        LOGGER.debug("Récupération des séries temporelles des stations.")
+        LOGGER.debug(
+            "Récupération des métadonnées et des séries temporelles des stations."
+        )
 
-        stations: list[dict] = self.stations
-        with ThreadPoolExecutor(max_workers=10) as executor:
-            stations = list(executor.map(self._fetch_time_series, stations))
+        stations: list[dict] = [station["id"] for station in self.stations]
+
+        time_series_list: list[dict] = self._get_stations_time_series(
+            stations=stations, ttl=ttl, api=api
+        )
+
+        tidal_info_list: list[bool | None] = self._get_stations_tidal_info(
+            stations=stations, ttl=ttl, api=api, column_name=column_name_tidal
+        )
+
+        for station, ts, is_tidal in zip(stations, time_series_list, tidal_info_list):
+            station["timeSeries"] = ts
+            station["isTidal"] = is_tidal
 
         return stations
 
@@ -84,7 +92,6 @@ class StationsHandlerPrivate(StationsHandlerABC):
         self,
         filter_time_series: Collection[TimeSeriesProtocol] | None,
         station_name_key: str = "name",
-        use_cache: Optional[bool] = True,
         ttl: Optional[int] = 86400,
     ) -> gpd.GeoDataFrame:
         """
@@ -93,32 +100,14 @@ class StationsHandlerPrivate(StationsHandlerABC):
         :param filter_time_series: (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer
                                         les stations. Si None, toutes les stations sont retournées.
         :param station_name_key: (str) Clé du nom de la station.
-        :param use_cache: (bool) Utilisation du cache.
         :param ttl: (int) Durée de vie du cache en secondes.
         :return: (gpd.DataFrame) Données des stations sous forme de GeoDataFrame.
         """
-        cache_key: str = f"stations_{filter_time_series}"
-
-        if use_cache and cache_key in CACHE:
-            LOGGER.debug(
-                f"Récupération des données des stations depuis le cache : '{cache_key}'."
-            )
-            return CACHE[cache_key]
-
         gdf_stations: gpd.GeoDataFrame = self._get_stations_geodataframe(
-            stations=(
-                self._get_stations_with_time_series()
-                if filter_time_series
-                else self.stations
-            ),
+            stations=self._get_stations_with_metadata(ttl=ttl),
             filter_time_series=filter_time_series,
             station_name_key=station_name_key,
         )
-
-        LOGGER.debug(
-            f"Sauvegarde des données des stations dans la cache avec un tll de {ttl} secondes."
-        )
-        CACHE.set(key=cache_key, value=gdf_stations, expire=ttl)
 
         return gdf_stations
 
