@@ -1,0 +1,306 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ingestion.parser_abc &mdash; Documentation CHS-CSB-Processing 1.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=05dadb3a"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/translations.js?v=e6b791cb"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../search.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            CHS-CSB-Processing
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">CHS-CSB_Processing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CHS-CSB-Processing</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">ingestion.parser_abc</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de ingestion.parser_abc</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">import</span> <span class="nn">concurrent.futures</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Collection</span>
+
+<span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">.parser_exception</span> <span class="kn">import</span> <span class="n">ColumnException</span>
+<span class="kn">from</span> <span class="nn">.warning_capture</span> <span class="kn">import</span> <span class="n">WarningCapture</span>
+<span class="kn">from</span> <span class="nn">schema</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DataLoggerSchema</span><span class="p">,</span>
+    <span class="n">TIME_UTC</span><span class="p">,</span>
+    <span class="n">DEPTH_METER</span><span class="p">,</span>
+    <span class="n">LONGITUDE_WGS84</span><span class="p">,</span>
+    <span class="n">LATITUDE_WGS84</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;CSB-Pipeline.Ingestion.Parser.ABC&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DataParserABC">
+<a class="viewcode-back" href="../../ingestion.html#ingestion.parser_abc.DataParserABC">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">DataParserABC</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="DataParserABC.validate_columns">
+<a class="viewcode-back" href="../../ingestion.html#ingestion.parser_abc.DataParserABC.validate_columns">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">validate_columns</span><span class="p">(</span>
+        <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+        <span class="n">column_exceptions</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">ColumnException</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de valider les colonnes du dataframe.</span>
+
+<span class="sd">        :param dataframe: (pd.DataFrame) Le dataframe à valider.</span>
+<span class="sd">        :param file: (Path) Le fichier source.</span>
+<span class="sd">        :param column_exceptions: (Collection[ColumnException]) Les noms et les exceptions de colonnes.</span>
+<span class="sd">        :raises ParsingDataframeLongitudeError: Erreur si la colonne de longitude est absente.</span>
+<span class="sd">        :raises ParsingDataframeLatitudeError: Erreur si la colonne de latitude est absente.</span>
+<span class="sd">        :raises ParsingDataframeDepthError: Erreur si la colonne de profondeur est absente.</span>
+<span class="sd">        :raises ParsingDataframeTimeError: Erreur si la colonne de temps est absente.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Validation des colonnes </span><span class="si">{</span><span class="p">[</span><span class="n">column_</span><span class="o">.</span><span class="n">column_name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">column_</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">column_exceptions</span><span class="p">]</span><span class="si">}</span><span class="s2"> du dataframe : </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">column_</span> <span class="ow">in</span> <span class="n">column_exceptions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">column_</span><span class="o">.</span><span class="n">column_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">column_</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">column_</span><span class="o">.</span><span class="n">column_name</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span></div>
+
+
+<div class="viewcode-block" id="DataParserABC.convert_dtype">
+<a class="viewcode-back" href="../../ingestion.html#ingestion.parser_abc.DataParserABC.convert_dtype">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">convert_dtype</span><span class="p">(</span>
+        <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">dtype_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+        <span class="n">time_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de convertir et nettoyer le dataframe.</span>
+
+<span class="sd">        :param dataframe: (pd.DataFrame) Le dataframe à convertir.</span>
+<span class="sd">        :param dtype_dict: (dict[str, str]) Un dictionnaire de type de données.</span>
+<span class="sd">        :param time_column: (str) Le nom de la colonne de temps.</span>
+<span class="sd">        :param file: (Path) Le fichier source.</span>
+<span class="sd">        :return: (pd.DataFrame) Le dataframe converti et nettoyé.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Conversion du dtype des colonnes </span><span class="si">{</span><span class="p">[</span><span class="n">column_</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">column_</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">dtype_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">[</span><span class="n">time_column</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; et suppresion des données NAN du dataframe : </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">WarningCapture</span><span class="p">()</span> <span class="k">as</span> <span class="n">warnings_list</span><span class="p">:</span>
+            <span class="n">dataframe</span><span class="p">[</span><span class="n">time_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span>
+                <span class="n">dataframe</span><span class="p">[</span><span class="n">time_column</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;coerce&quot;</span>
+            <span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">column_</span> <span class="ow">in</span> <span class="n">dtype_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">dataframe</span><span class="p">[</span><span class="n">column_</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column_</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;coerce&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">warnings_list</span><span class="o">.</span><span class="n">captured_warnings</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Des erreurs de conversion ont été détectées dans le fichier </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="n">warnings_list</span><span class="o">.</span><span class="n">captured_warnings</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">dataframe</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">dtype_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="p">[</span><span class="n">time_column</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">dataframe</span></div>
+
+
+<div class="viewcode-block" id="DataParserABC.read">
+<a class="viewcode-back" href="../../ingestion.html#ingestion.parser_abc.DataParserABC.read">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de lire un fichier brut et retourne un geodataframe.</span>
+
+<span class="sd">        :param file: (Path) Le fichier à lire.</span>
+<span class="sd">        :return: (gpd.GeoDataFrame) Un GeoDataFrame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="DataParserABC.read_files">
+<a class="viewcode-back" href="../../ingestion.html#ingestion.parser_abc.DataParserABC.read_files">[docs]</a>
+    <span class="k">def</span> <span class="nf">read_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de lire les fichiers brutes et retourne un geodataframe.</span>
+
+<span class="sd">        :param files: (Collection[Path]) Les fichiers à lire.</span>
+<span class="sd">        :return: (gpd.GeoDataFrame) Un GeoDataFrame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Conversion des fichiers de données brutes en geodataframe : </span><span class="si">{</span><span class="n">files</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">geodataframe_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ThreadPoolExecutor</span><span class="p">()</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+            <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">futures</span><span class="p">:</span>
+                <span class="n">geodataframe_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">geodataframe_list</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="DataParserABC.transform">
+<a class="viewcode-back" href="../../ingestion.html#ingestion.parser_abc.DataParserABC.transform">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de transformer le geodataframe pour respecter le schéma de données.</span>
+
+<span class="sd">        :param data: (gpd.GeoDataFrame) Le geodataframe à transformer.</span>
+<span class="sd">        :return: (gpd.GeoDataFrame) Le geodataframe transformé.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="DataParserABC.remove_duplicates">
+<a class="viewcode-back" href="../../ingestion.html#ingestion.parser_abc.DataParserABC.remove_duplicates">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">remove_duplicates</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de supprimer les doublons du geodataframe.</span>
+
+<span class="sd">        :param data: (gpd.GeoDataFrame) Le geodataframe à nettoyer.</span>
+<span class="sd">        :return: (gpd.GeoDataFrame) Le geodataframe nettoyé.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Suppression des doublons.&quot;</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span>
+            <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="n">TIME_UTC</span><span class="p">,</span> <span class="n">LATITUDE_WGS84</span><span class="p">,</span> <span class="n">LONGITUDE_WGS84</span><span class="p">,</span> <span class="n">DEPTH_METER</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="DataParserABC.sort_geodataframe_by_datetime">
+<a class="viewcode-back" href="../../ingestion.html#ingestion.parser_abc.DataParserABC.sort_geodataframe_by_datetime">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">sort_geodataframe_by_datetime</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de trier le geodataframe par datetime.</span>
+
+<span class="sd">        :param data: (gpd.GeoDataFrame) Le geodataframe à trier.</span>
+<span class="sd">        :return: (gpd.GeoDataFrame) Le geodataframe trié.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Tri du geodataframe par datetime.&quot;</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="n">TIME_UTC</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="DataParserABC.from_files">
+<a class="viewcode-back" href="../../ingestion.html#ingestion.parser_abc.DataParserABC.from_files">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_files</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Méthode permettant de lire les fichiers brutes et retourne un geodataframe.</span>
+
+<span class="sd">        :param files: (Collection[Path]) Les fichiers à lire.</span>
+<span class="sd">        :return: (gpd.GeoDataFrame[DataLoggerSchema]) Un GeoDataFrame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">data_geodataframe</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">read_files</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">)</span>
+        <span class="n">data_geodataframe</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">[</span><span class="n">DataLoggerSchema</span><span class="p">]</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">data_geodataframe</span>
+        <span class="p">)</span>
+        <span class="n">data_geodataframe</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">remove_duplicates</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_geodataframe</span><span class="p">)</span>
+        <span class="n">data_geodataframe</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">sort_geodataframe_by_datetime</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_geodataframe</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data_geodataframe</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2024, Yan Bilodeau.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

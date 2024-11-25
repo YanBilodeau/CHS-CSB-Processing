@@ -1,0 +1,440 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tide.stations.stations_abc &mdash; Documentation CHS-CSB-Processing 1.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=05dadb3a"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/translations.js?v=e6b791cb"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            CHS-CSB-Processing
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" aria-label="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">CHS-CSB_Processing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">CHS-CSB-Processing</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Code du module</a></li>
+      <li class="breadcrumb-item active">tide.stations.stations_abc</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de tide.stations.stations_abc</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Collection</span>
+
+<span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Point</span>
+
+<span class="kn">from</span> <span class="nn">.exception_stations</span> <span class="kn">import</span> <span class="n">StationsError</span>
+<span class="kn">from</span> <span class="nn">.stations_models</span> <span class="kn">import</span> <span class="n">TimeSeriesProtocol</span><span class="p">,</span> <span class="n">ResponseProtocol</span><span class="p">,</span> <span class="n">IWLSapiProtocol</span>
+<span class="kn">from</span> <span class="nn">..schema</span> <span class="kn">import</span> <span class="n">StationsSchema</span><span class="p">,</span> <span class="n">validate_schema</span><span class="p">,</span> <span class="n">TimeSerieDataSchema</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;CSB-Pipeline.Tide.Station.ABC&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="StationsHandlerABC">
+<a class="viewcode-back" href="../../../tide.stations.html#tide.stations.stations_abc.StationsHandlerABC">[docs]</a>
+<span class="k">class</span> <span class="nc">StationsHandlerABC</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">:</span> <span class="n">IWLSapiProtocol</span><span class="p">):</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initialisation d&#39;un objet </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="p">:</span> <span class="n">IWLSapiProtocol</span> <span class="o">=</span> <span class="n">api</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">stations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+        <span class="n">stations</span><span class="p">:</span> <span class="n">ResponseProtocol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">get_all_stations</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">stations</span><span class="o">.</span><span class="n">is_ok</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Erreur lors de la récupération des stations: </span><span class="si">{</span><span class="n">stations</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">stations</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="n">StationsError</span><span class="p">(</span>
+                <span class="n">message</span><span class="o">=</span><span class="n">stations</span><span class="o">.</span><span class="n">message</span><span class="p">,</span>
+                <span class="n">error</span><span class="o">=</span><span class="n">stations</span><span class="o">.</span><span class="n">error</span><span class="p">,</span>
+                <span class="n">status_code</span><span class="o">=</span><span class="n">stations</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">stations</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_create_index_map</span><span class="p">(</span>
+        <span class="n">filter_time_series</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">TimeSeriesProtocol</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">TimeSeriesProtocol</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Crée une carte d&#39;index pour les séries temporelles.</span>
+
+<span class="sd">        :param filter_time_series: (Collection[TimeSeriesProtocol]) Liste des séries temporelles en ordre de priorité.</span>
+<span class="sd">        :return: (dict[TimeSeriesProtocol, int]) Carte d&#39;index pour les séries temporelles.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">code</span><span class="p">:</span> <span class="n">index</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">code</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">filter_time_series</span><span class="p">)}</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_filter_stations</span><span class="p">(</span>
+        <span class="n">stations</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">filter_time_series</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">TimeSeriesProtocol</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Filtre les stations en fonction des séries temporelles.</span>
+
+<span class="sd">        :param stations: (Collection[dict]) Liste des stations.</span>
+<span class="sd">        :param filter_time_series: (Collection[TimeSeriesProtocol]) Liste des séries temporelles pour filtrer les stations.</span>
+<span class="sd">        :return: (list[dict]) Liste des stations filtrées.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_create_geometry</span><span class="p">(</span><span class="n">stations</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Point</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Crée une liste de points à partir des données des stations.</span>
+
+<span class="sd">        :param stations: (Collection[dict]) Liste des stations.</span>
+<span class="sd">        :return: (list[Point]) Liste des points.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Création des géométries des stations.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">Point</span><span class="p">(</span><span class="n">station</span><span class="p">[</span><span class="s2">&quot;longitude&quot;</span><span class="p">],</span> <span class="n">station</span><span class="p">[</span><span class="s2">&quot;latitude&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">stations</span>
+        <span class="p">]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_get_time_series</span><span class="p">(</span>
+        <span class="n">station</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">index_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">TimeSeriesProtocol</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Récupère les séries temporelles de la station.</span>
+
+<span class="sd">        :param station: (dict) Données de la station.</span>
+<span class="sd">        :param index_map: (dict[str, int] | None) Carte d&#39;index pour les séries temporelles.</span>
+<span class="sd">        :return: (list[str]) Liste des séries temporelles.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">_create_attributes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">stations</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+        <span class="n">index_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">TimeSeriesProtocol</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">station_name_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Crée une liste d&#39;attributs pour les stations.</span>
+
+<span class="sd">        :param stations: (Collection[dict]) Liste des stations.</span>
+<span class="sd">        :param index_map: (dict[str, int] | None) Carte d&#39;index pour les séries temporelles.</span>
+<span class="sd">        :param station_name_key: (str) Clé du nom de la station.</span>
+<span class="sd">        :return: (list[dict]) Liste des attributs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Création des attributs des stations.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">station</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="n">station</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">station</span><span class="p">[</span><span class="n">station_name_key</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;time_series&quot;</span><span class="p">:</span> <span class="p">(</span>
+                    <span class="p">[</span><span class="s2">&quot;Unknown&quot;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">index_map</span> <span class="ow">is</span> <span class="kc">None</span>
+                    <span class="k">else</span> <span class="nb">sorted</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_get_time_series</span><span class="p">(</span><span class="n">station</span><span class="o">=</span><span class="n">station</span><span class="p">,</span> <span class="n">index_map</span><span class="o">=</span><span class="n">index_map</span><span class="p">),</span>
+                        <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">code</span><span class="p">:</span> <span class="n">index_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)),</span>
+                    <span class="p">)</span>
+                <span class="p">),</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">stations</span>
+        <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_get_stations_geodataframe</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">stations</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+        <span class="n">filter_time_series</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">TimeSeriesProtocol</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">station_name_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Récupère les données des stations sous forme de GeoDataFrame.</span>
+
+<span class="sd">        :param stations: (Collection[dict]) Liste des stations.</span>
+<span class="sd">        :param filter_time_series: (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer</span>
+<span class="sd">                                        les stations. Si None, toutes les stations sont retournées.</span>
+<span class="sd">        :param station_name_key: (str) Clé du nom de la station.</span>
+<span class="sd">        :return: (gpd.DataFrame) Données des stations sous forme de GeoDataFrame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Création du GeoDataFrame des stations.&quot;</span><span class="p">)</span>
+
+        <span class="n">filtered_stations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_filter_stations</span><span class="p">(</span>
+                <span class="n">stations</span><span class="o">=</span><span class="n">stations</span><span class="p">,</span> <span class="n">filter_time_series</span><span class="o">=</span><span class="n">filter_time_series</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">filter_time_series</span>
+            <span class="k">else</span> <span class="n">stations</span>
+        <span class="p">)</span>
+
+        <span class="n">geometry</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Point</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_geometry</span><span class="p">(</span><span class="n">stations</span><span class="o">=</span><span class="n">filtered_stations</span><span class="p">)</span>
+        <span class="n">attributes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_attributes</span><span class="p">(</span>
+            <span class="n">stations</span><span class="o">=</span><span class="n">filtered_stations</span><span class="p">,</span>
+            <span class="n">index_map</span><span class="o">=</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_create_index_map</span><span class="p">(</span><span class="n">filter_time_series</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">filter_time_series</span>
+                <span class="k">else</span> <span class="kc">None</span>
+            <span class="p">),</span>
+            <span class="n">station_name_key</span><span class="o">=</span><span class="n">station_name_key</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">gdf_stations</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">[</span><span class="n">StationsSchema</span><span class="p">]</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span>
+            <span class="n">attributes</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="s2">&quot;EPSG:4326&quot;</span>
+        <span class="p">)</span>
+        <span class="n">validate_schema</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">gdf_stations</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">StationsSchema</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">gdf_stations</span>
+
+<div class="viewcode-block" id="StationsHandlerABC.get_stations_geodataframe">
+<a class="viewcode-back" href="../../../tide.stations.html#tide.stations.stations_abc.StationsHandlerABC.get_stations_geodataframe">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_stations_geodataframe</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">filter_time_series</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">TimeSeriesProtocol</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">station_name_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;officialName&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Récupère les données des stations sous forme de GeoDataFrame.</span>
+
+<span class="sd">        :param filter_time_series: (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer</span>
+<span class="sd">                                        les stations. Si None, toutes les stations sont retournées.</span>
+<span class="sd">        :param station_name_key: (str) Clé du nom de la station.</span>
+<span class="sd">        :return: (gpd.DataFrame) Données des stations sous forme de GeoDataFrame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_get_event_date</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Récupère la date de l&#39;événement.</span>
+
+<span class="sd">        :param event: (dict) Données de l&#39;événement.</span>
+<span class="sd">        :return: (datetime) Date de l&#39;événement.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_get_qc_flag</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Récupère le type du flag de qualité.</span>
+
+<span class="sd">        :param event: (dict) Données de l&#39;événement.</span>
+<span class="sd">        :return: (str) Type du flag de qualité.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span>
+
+<div class="viewcode-block" id="StationsHandlerABC.create_data_list">
+<a class="viewcode-back" href="../../../tide.stations.html#tide.stations.stations_abc.StationsHandlerABC.create_data_list">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_data_list</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">time_serie_code</span><span class="p">:</span> <span class="n">TimeSeriesProtocol</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Crée une liste de données pour les séries temporelles.</span>
+
+<span class="sd">        :param data: (Collection[dict]) Données de la série temporelle.</span>
+<span class="sd">        :param time_serie_code: (TimeSeriesProtocol) Le code de la série temporelle.</span>
+<span class="sd">        :return: (list[dict]) Liste des données.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;event_date&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_event_date</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">),</span>
+                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;time_serie_code&quot;</span><span class="p">:</span> <span class="n">time_serie_code</span><span class="p">,</span>
+                <span class="s2">&quot;qc_flag&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_qc_flag</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">),</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">data</span>
+        <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="StationsHandlerABC.filter_wlo_qc_flag">
+<a class="viewcode-back" href="../../../tide.stations.html#tide.stations.stations_abc.StationsHandlerABC.filter_wlo_qc_flag">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">filter_wlo_qc_flag</span><span class="p">(</span>
+        <span class="n">data_dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">time_serie_code</span><span class="p">:</span> <span class="n">TimeSeriesProtocol</span><span class="p">,</span>
+        <span class="n">wlo_qc_flag_filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Collection</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Filtre les données de la série temporelle WLO en fonction des flags de qualité.</span>
+
+<span class="sd">        :param data_dataframe: (pd.DataFrame) Données des séries temporelles sous forme de DataFrame.</span>
+<span class="sd">        :param time_serie_code: (TimeSeriesProtocol) Le code de la série temporelle des données.</span>
+<span class="sd">        :param wlo_qc_flag_filter: (Collection[str] | None) Liste des flags de qualité à filtrer pour la</span>
+<span class="sd">                                        série temporelle WLO.</span>
+<span class="sd">        :return: (pd.DataFrame) Données des séries temporelles sous forme de DataFrame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">time_serie_code</span> <span class="o">==</span> <span class="n">TimeSeriesProtocol</span><span class="o">.</span><span class="n">WLO</span><span class="p">:</span>
+            <span class="n">data_dataframe</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">data_dataframe</span><span class="p">[</span><span class="o">~</span><span class="n">data_dataframe</span><span class="p">[</span><span class="s2">&quot;qc_flag&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">wlo_qc_flag_filter</span><span class="p">)]</span>
+                <span class="k">if</span> <span class="n">wlo_qc_flag_filter</span>
+                <span class="k">else</span> <span class="n">data_dataframe</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data_dataframe</span></div>
+
+
+<div class="viewcode-block" id="StationsHandlerABC.get_time_series_dataframe">
+<a class="viewcode-back" href="../../../tide.stations.html#tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_time_series_dataframe</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">station</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">from_time</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">to_time</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">time_serie_code</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TimeSeriesProtocol</span><span class="p">],</span>
+        <span class="n">time_delta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">),</span>
+        <span class="n">datetime_sorted</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">wlo_qc_flag_filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Collection</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Récupère les séries temporelles sous forme de DataFrame.</span>
+
+<span class="sd">        :param station: (str) Code de la station.</span>
+<span class="sd">        :param from_time: (str) La date de début en format ISO 8601 (ex: 2019-11-13T19:18:00Z).</span>
+<span class="sd">        :param to_time: (str) La date de fin en format ISO 8601 (ex: 2019-11-13T19:18:00Z).</span>
+<span class="sd">        :param time_serie_code: (TimeSeriesProtocol) Le code de la série temporelle désirée.</span>
+<span class="sd">        :param time_delta: (timedelta) L&#39;intervalle de temps maximale pour chaque requête.</span>
+<span class="sd">        :param datetime_sorted: (bool) Si les données doivent être triées par date.</span>
+<span class="sd">        :param wlo_qc_flag_filter: (Collection[str] | None) Liste des flags de qualité à filtrer pour la série temporelle WLO.</span>
+<span class="sd">        :return: (pd.DataFrame) Données des séries temporelles sous forme de DataFrame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Récupération des données </span><span class="si">{</span><span class="n">time_serie_code</span><span class="si">}</span><span class="s2"> pour la station &#39;</span><span class="si">{</span><span class="n">station</span><span class="si">}</span><span class="s2">&#39; du </span><span class="si">{</span><span class="n">from_time</span><span class="si">}</span><span class="s2"> au </span><span class="si">{</span><span class="n">to_time</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;par block de </span><span class="si">{</span><span class="n">time_delta</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">data</span><span class="p">:</span> <span class="n">ResponseProtocol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">get_time_serie_block_data</span><span class="p">(</span>
+            <span class="n">station</span><span class="o">=</span><span class="n">station</span><span class="p">,</span>
+            <span class="n">from_time</span><span class="o">=</span><span class="n">from_time</span><span class="p">,</span>
+            <span class="n">to_time</span><span class="o">=</span><span class="n">to_time</span><span class="p">,</span>
+            <span class="n">time_serie_code</span><span class="o">=</span><span class="n">time_serie_code</span><span class="p">,</span>
+            <span class="n">time_delta</span><span class="o">=</span><span class="n">time_delta</span><span class="p">,</span>
+            <span class="n">datetime_sorted</span><span class="o">=</span><span class="n">datetime_sorted</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">is_ok</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Status code </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> : Erreur lors de la récupération des données pour la station &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">station</span><span class="si">}</span><span class="s2">&#39; et la série temporelle &#39;</span><span class="si">{</span><span class="n">time_serie_code</span><span class="si">}</span><span class="s2">&#39; entre le </span><span class="si">{</span><span class="n">from_time</span><span class="si">}</span><span class="s2"> et le </span><span class="si">{</span><span class="n">to_time</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Aucune donnée pour la station &#39;</span><span class="si">{</span><span class="n">station</span><span class="si">}</span><span class="s2">&#39; et la série temporelle &#39;</span><span class="si">{</span><span class="n">time_serie_code</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;entre le </span><span class="si">{</span><span class="n">from_time</span><span class="si">}</span><span class="s2"> et le </span><span class="si">{</span><span class="n">to_time</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+        <span class="n">data_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_data_list</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">time_serie_code</span><span class="o">=</span><span class="n">time_serie_code</span>  <span class="c1"># type: ignore</span>
+        <span class="p">)</span>
+
+        <span class="n">data_dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">[</span><span class="n">TimeSerieDataSchema</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data_list</span><span class="p">)</span>
+
+        <span class="n">data_dataframe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_wlo_qc_flag</span><span class="p">(</span>
+            <span class="n">data_dataframe</span><span class="o">=</span><span class="n">data_dataframe</span><span class="p">,</span>
+            <span class="n">time_serie_code</span><span class="o">=</span><span class="n">time_serie_code</span><span class="p">,</span>
+            <span class="n">wlo_qc_flag_filter</span><span class="o">=</span><span class="n">wlo_qc_flag_filter</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">data_dataframe</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;qc_flag&quot;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">validate_schema</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">data_dataframe</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">TimeSerieDataSchema</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data_dataframe</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Droits d'auteur 2024, Yan Bilodeau.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
