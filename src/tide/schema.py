@@ -30,6 +30,7 @@ class VoronoiSchema(pa.DataFrameModel):
     code: Series[str]
     name: Series[str]
     time_series: Series[list]
+    is_tidal: Series[object] = pa.Field(nullable=True)
     geometry: GeoSeries
 
 
