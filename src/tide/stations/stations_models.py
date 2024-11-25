@@ -34,6 +34,9 @@ class IWLSapiProtocol(Protocol):
     def get_time_series_station(self, station: str) -> ResponseProtocol:
         pass
 
+    def get_metadata_station(self, station: str) -> ResponseProtocol:
+        pass
+
     def get_time_serie_block_data(
         self,
         station: str,
