@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing import Protocol, Collection
 
 import geopandas as gpd
 
@@ -16,7 +16,8 @@ class TimeSeriesProtocol(Protocol):
 class StationsHandlerProtocol(Protocol):
     def get_stations_geodataframe(
         self,
-        filter_time_series: list[TimeSeriesProtocol] | None,
+        filter_time_series: Collection[TimeSeriesProtocol] | None,
+        exclude_stations: Collection[str] | None,
         **kwargs,
     ) -> gpd.GeoDataFrame:
         pass
