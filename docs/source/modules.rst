@@ -9,6 +9,7 @@ CHS-CSB-Processing
    example_parser
    example_tide
    example_vessel
+   export
    ingestion
    iwls_api_request
    schema
