@@ -125,7 +125,7 @@ class StationsHandlerABC(ABC):
                         key=lambda code: index_map.get(code, float("inf")),
                     )
                 ),
-                "is_tidal": station["isTidal"],
+                "is_tidal": str(station["isTidal"]),
             }
             for station in stations
         ]
