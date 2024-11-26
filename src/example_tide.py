@@ -197,7 +197,9 @@ def main():
     # Get the Voronoi diagram of the stations. The stations are selected based on the priority of the time series.
     # The time series priority is defined in the configuration file.
     gdf_voronoi: gpd.GeoDataFrame[VoronoiSchema] = get_voronoi_geodataframe(
-        stations_handler=stations_handler, time_series=iwls_config.time_series.priority
+        stations_handler=stations_handler,
+        time_series=iwls_config.time_series.priority,
+        # excluded_stations=("5cebf1df3d0f4a073c4bbced", "5cebf1e23d0f4a073c4bc021"),
     )
 
     # Export the Voronoi diagram to a GeoJSON file
@@ -210,7 +212,7 @@ def main():
     # info_stations = initialize_station_info()
     # Initialize the information of the stations for the example
     info_stations = initialize_all_station_info(
-        gdf_voronoi=gdf_voronoi, stations=slice(1000, 1150)
+        gdf_voronoi=gdf_voronoi, stations=slice(0, 10)  #  1000, 1150)
     )
 
     wl_combineds = []

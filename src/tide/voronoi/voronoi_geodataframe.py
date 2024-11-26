@@ -91,7 +91,7 @@ def merge_attributes(
 def get_voronoi_geodataframe(
     stations_handler: StationsHandlerProtocol,
     time_series: Optional[Collection[TimeSeriesProtocol] | None] = None,
-    exclude_stations: Optional[Collection[str] | None] = None,
+    excluded_stations: Optional[Collection[str] | None] = None,
     **kwargs,
 ) -> gpd.GeoDataFrame:
     """
@@ -100,12 +100,14 @@ def get_voronoi_geodataframe(
     :param stations_handler: (StationsHandlerABC) Gestionnaire des stations.
     :param time_series: (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer
                                         les stations. Si None, toutes les stations sont retournées.
-    :param exclude_stations: (Collection[str] | None) Liste des stations à exclure.
+    :param excluded_stations: (Collection[str] | None) Liste des stations à exclure.
     :return: (gpd.GeoDataFrame[VoronoiSchema]) Le GeoDataFrame des polygones de Voronoi.
     """
     gdf_stations: gpd.GeoDataFrame[StationsSchema] = (
         stations_handler.get_stations_geodataframe(
-            filter_time_series=time_series, exclude_stations=exclude_stations, **kwargs
+            filter_time_series=time_series,
+            excluded_stations=excluded_stations,
+            **kwargs,
         )
     )
 
