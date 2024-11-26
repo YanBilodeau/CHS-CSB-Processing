@@ -13,14 +13,13 @@ destinée à vous aider à comprendre le fonctionnement de CHS-CSB-Processing et
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents
+   :caption: Sommaire
 
    modules
 
 .. toctree::
    :maxdepth: 2
-   :caption: Indices and tables
+   :caption: Indices et tableaux
 
    genindex
    modindex
-   search
