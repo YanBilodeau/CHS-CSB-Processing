@@ -10,6 +10,7 @@ class EndpointPublic(Endpoint):
     """
     Classe pour les points d'entrés de l'API publique.
     """
+
     API: str = r"https://api-iwls.dfo-mpo.gc.ca/api/v1/"
     TYPE: EndpointType = EndpointType.PUBLIC
     BENCHMARK: str = f"benchmarks/{{{ids.BENCHMARK}}}"
