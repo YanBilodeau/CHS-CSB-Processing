@@ -23,6 +23,7 @@ class DataLoggerSchema(pa.DataFrameModel):
     :param Time_UTC: (Series[pd.DatetimeTZDtype("ns", tz="UTC")]) Le temps en UTC.
     :param geometry: (GeoSeries) La géométrie.
     """
+
     Longitude_WGS84: Series[pd.Float64Dtype()]
     Latitude_WGS84: Series[pd.Float64Dtype()]
     Depth_meter: Series[pd.Float64Dtype()]
