@@ -29,18 +29,28 @@ class TimeSeriesConfig(BaseModel):
     """
     Classe de configuration pour les séries temporelles.
 
-    :param priority: (list[iwls.TimeSeries]) La liste des séries temporelles à garder par ordre de priorité.
-    :param max_time_gap: (str | None) Le temps maximal permit entre deux points.
-    :param threshold_interpolation_filling: (str | None) Le seuil de remplissage ou d'interpolation.
-    :param wlo_qc_flag_filter: (list[str] | None) Les filtres de qualité à filtrer.
-    :param buffer_time: (timedelta | None) Le temps de buffer à ajouter s'il manque des données pour l'interpolation.
+    :param priority: La liste des séries temporelles à garder par ordre de priorité.
+    :type priority: list[iwls.TimeSeries]
+    :param max_time_gap: Le temps maximal permit entre deux points.
+    :type max_time_gap: str | None
+    :param threshold_interpolation_filling: Le seuil de remplissage ou d'interpolation.
+    :type threshold_interpolation_filling: str | None
+    :param wlo_qc_flag_filter: Les filtres de qualité à filtrer.
+    :type wlo_qc_flag_filter: list[str] | None
+    :param buffer_time: Le temps de buffer à ajouter s'il manque des données pour l'interpolation.
+    :type buffer_time: timedelta | None
     """
 
     priority: list[iwls.TimeSeries]
+    """La liste des séries temporelles à garder par ordre de priorité."""
     max_time_gap: str | None
+    """Le temps maximal permit entre deux points."""
     threshold_interpolation_filling: str | None
+    """Le seuil de remplissage ou d'interpolation."""
     wlo_qc_flag_filter: list[str] | None
+    """Les filtres de qualité à filtrer."""
     buffer_time: timedelta | None
+    """Le temps de buffer à ajouter s'il manque des données pour l'interpolation."""
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -52,8 +62,10 @@ class TimeSeriesConfig(BaseModel):
         """
         Valide le time gap.
 
-        :param value: (str) Le time gap.
-        :return: (str) Le time gap.
+        :param value: Le time gap.
+        :type value: str | None
+        :return: Le time gap.
+        :rtype: str | None
         :raises ValueError: Si le time gap n'est pas au bon format.
         """
         if value == "":
@@ -73,18 +85,28 @@ class IWLSAPIConfig(BaseModel):
     """
     Classe de configuration pour l'API IWLS.
 
-    :param dev: (iwls.APIEnvironment | None) L'environnement de développement.
-    :param prod: (iwls.APIEnvironment | None) L'environnement de production.
-    :param public: (iwls.APIEnvironment | None) L'environnement public.
-    :param time_series: (TimeSeriesConfig) La configuration des séries temporelles.
-    :param profile: (iwls.APIProfile) Le profil actif de l'API.
+    :param dev: L'environnement de développement.
+    :type dev: iwls.APIEnvironment | None
+    :param prod: L'environnement de production.
+    :type prod: iwls.APIEnvironment | None
+    :param public: L'environnement public.
+    :type public: iwls.APIEnvironment | None
+    :param time_series: La configuration des séries temporelles.
+    :type time_series: TimeSeriesConfig
+    :param profile: Le profil actif de l'API.
+    :type profile: iwls.APIProfile
     """
 
     dev: Optional[iwls.APIEnvironment]
+    """Environnement de développement."""
     prod: Optional[iwls.APIEnvironment]
+    """Environnement de production."""
     public: Optional[iwls.APIEnvironment]
+    """Environnement public."""
     time_series: TimeSeriesConfig
+    """Configuration des séries temporelles."""
     profile: iwls.APIProfile
+    """Profil actif de l'API."""
 
 
 def get_api_config(config_file: Optional[Path] = CONFIG_FILE) -> IWLSAPIConfig:

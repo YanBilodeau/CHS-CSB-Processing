@@ -17,7 +17,9 @@ class ParsingError(Exception):
     """
 
     file: Path
+    """Le ficher en erreur."""
     column: str
+    """Le nom de la colonne en erreur."""
 
     def __str__(self) -> str:
         return f"Erreur lors de la lecture du fichier : {self.file}. Le fichier n'a pas de colonne '{self.column}'."
@@ -69,7 +71,9 @@ class ColumnException:
     """
 
     column_name: str
+    """Le nom de la colonne."""
     error: Type[ParsingError]
+    """L'erreur de parsing associée."""
 
 
 @dataclass(frozen=True)
@@ -81,6 +85,7 @@ class ParserIdentifierError(Exception):
     """
 
     file: Path
+    """Le fichier en erreur."""
 
     def __str__(self) -> str:
         return (

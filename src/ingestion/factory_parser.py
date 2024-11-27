@@ -58,8 +58,10 @@ def get_header(file: Path) -> tuple[str, ...] | None:
     """
     Fonction permettant de lire l'entête d'un fichier.
 
-    :param file: (Path) Le fichier à lire.
-    :return: (tuple[str, ...] | None) Un tuple contenant les noms des colonnes ou None si l'entête n'est pas trouvé.
+    :param file: Le fichier à lire.
+    :type file: Path
+    :return: Un tuple contenant les noms des colonnes ou None si l'entête n'est pas trouvé.
+    :rtype: tuple[str, ...] | None
     """
     LOGGER.debug(f"Lecture de l'entête du fichier : {file}.")
 
@@ -86,8 +88,10 @@ def get_parser_factory(file: Path) -> Type[DataParserABC]:
     """
     Fonction permettant de récupérer le parser associé à un fichier.
 
-    :param file: (Path) Le fichier à parser.
-    :return: (Type[DataParserABC]) Le parser associé.
+    :param file: Le fichier à parser.
+    :type file: Path
+    :return: Le parser associé.
+    :rtype: Type[DataParserABC]
     :raises ParserIdentifierError: Si le parser n'est pas trouvé.
     """
     LOGGER.debug(f"Récupération du parser associé au fichier : {file}.")

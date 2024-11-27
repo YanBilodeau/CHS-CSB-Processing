@@ -48,9 +48,12 @@ class DataParserLowrance(DataParserABC):
         """
         Méthode permettant de lire un fichier brut et retourne un geodataframe.
 
-        :param file: (Path) Le fichier à lire.
-        :param dtype_dict: (dict[str, str]) Un dictionnaire de type de données.
-        :return: (gpd.GeoDataFrame) Un GeoDataFrame.
+        :param file: Le fichier à lire.
+        :type file: Path
+        :param dtype_dict: Un dictionnaire de type de données.
+        :type dtype_dict: dict[str, str]
+        :return: Un GeoDataFrame.
+        :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(
             f"Chargement du fichier de données brutes de type Lowrance : {file}"
@@ -86,8 +89,10 @@ class DataParserLowrance(DataParserABC):
         """
         Méthode permettant de renommer les colonnes du geodataframe.
 
-        :param data: (gpd.GeoDataFrame) Le geodataframe à renommer.
-        :return: (gpd.GeoDataFrame) Le geodataframe renommé.
+        :param data: Le geodataframe à renommer.
+        :type data: gpd.GeoDataFrame
+        :return: Le geodataframe renommé.
+        :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(f"Renommage des colonnes du geodataframe.")
         data: gpd.GeoDataFrame[schema.DataLoggerSchema] = data.rename(
@@ -108,8 +113,10 @@ class DataParserLowrance(DataParserABC):
         """
         Méthode permettant de supprimer les caractères spéciaux des noms de colonnes.
 
-        :param data: (gpd.GeoDataFrame) Le geodataframe à transformer.
-        :return: (gpd.GeoDataFrame) Le geodataframe transformé.
+        :param data: Le geodataframe à transformer.
+        :type data: gpd.GeoDataFrame
+        :return: Le geodataframe transformé.
+        :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug("Suppression des caractères spéciaux des noms de colonnes.")
         data.columns = (
@@ -125,8 +132,10 @@ class DataParserLowrance(DataParserABC):
         """
         Méthode permettant de convertir les profondeurs en mètres.
 
-        :param data: (gpd.GeoDataFrame) Le geodataframe à transformer.
-        :return: (gpd.GeoDataFrame) Le geodataframe transformé.
+        :param data: Le geodataframe à transformer.
+        :type data: gpd.GeoDataFrame
+        :return: Le geodataframe transformé.
+        :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(
             f"Conversion des pieds en mètres de la colonne '{schema.DEPTH_METER}'."
@@ -139,8 +148,10 @@ class DataParserLowrance(DataParserABC):
         """
         Méthode permettant de transformer le geodataframe pour respecter le schéma de données.
 
-        :param data: (gpd.GeoDataFrame) Le geodataframe à transformer.
-        :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le geodataframe transformé.
+        :param data: Le geodataframe à transformer.
+        :type data: gpd.GeoDataFrame
+        :return: Le geodataframe transformé respectant le schéma de données DataLoggerSchema.
+        :rtype: gpd.GeoDataFrame[DataLoggerSchema]
         """
         LOGGER.debug("Transformation du geodataframe.")
 

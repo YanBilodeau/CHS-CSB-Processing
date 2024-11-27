@@ -32,28 +32,42 @@ class DataFilterConfig(BaseModel):
     """
     Classe de configuration pour le filtrage des données.
 
-    :param min_latitude: (int | float) La latitude minimale.
-    :param max_latitude: (int | float) La latitude maximale.
-    :param min_longitude: (int | float) La longitude minimale.
-    :param max_longitude: (int | float) La longitude maximale.
-    :param min_depth: (int | float) La profondeur minimale.
-    :param max_depth: (int | float | None) La profondeur maximale.
+    :param min_latitude: La latitude minimale.
+    :type min_latitude: int | float
+    :param max_latitude: La latitude maximale.
+    :type max_latitude: int | float
+    :param min_longitude: La longitude minimale.
+    :type min_longitude: int | float
+    :param max_longitude: La longitude maximale.
+    :type max_longitude: int | float
+    :param min_depth: La profondeur minimale.
+    :type min_depth: int | float
+    :param max_depth: La profondeur maximale.
+    :type max_depth: int | float | None
     """
 
     min_latitude: int | float = MIN_LATITUDE
+    """La latitude minimale."""
     max_latitude: int | float = MAX_LATITUDE
+    """La latitude maximale."""
     min_longitude: int | float = MIN_LONGITUDE
+    """La longitude minimale."""
     max_longitude: int | float = MAX_LONGITUDE
+    """La longitude maximale."""
     min_depth: int | float = MIN_DEPTH
+    """La profondeur minimale."""
     max_depth: Optional[int | float] = MAX_DEPTH
+    """La profondeur maximale."""
 
     @field_validator("min_latitude", "max_latitude")
     def validate_latitude(cls, value: int | float) -> int | float:
         """
         Valide la latitude.
 
-        :param value: (int | float) La valeur de la latitude.
-        :return: (int | float) La valeur de la latitude.
+        :param value: La valeur de la latitude.
+        :type value: int | float
+        :return: La valeur de la latitude.
+        :rtype: int | float
         :raises ValueError: Si la latitude n'est pas comprise entre MIN_LATITUDE et MAX_LATITUDE.
         """
         if value < MIN_LATITUDE or value > MAX_LATITUDE:
@@ -68,8 +82,10 @@ class DataFilterConfig(BaseModel):
         """
         Valide la longitude.
 
-        :param value: (int | float) La valeur de la longitude.
-        :return: (int | float) La valeur de la longitude.
+        :param value: La valeur de la longitude.
+        :type value: int | float
+        :return: La valeur de la longitude.
+        :rtype: int | float
         :raises ValueError: Si la longitude n'est pas comprise entre MIN_LONGITUDE et MAX_LONGITUDE.
         """
         if value < MIN_LONGITUDE or value > MAX_LONGITUDE:
@@ -84,8 +100,10 @@ class DataFilterConfig(BaseModel):
         """
         Valide la profondeur.
 
-        :param value: (int | float) La valeur de la profondeur.
-        :return: (int | float) La valeur de la profondeur.
+        :param value: La valeur de la profondeur.
+        :type value: int | float | None
+        :return: La valeur de la profondeur.
+        :rtype: int | float | None
         :raises ValueError: Si la profondeur est inférieure à MIN_DEPTH.
         """
         if value is not None and value < 0:
@@ -100,8 +118,10 @@ def load_config(config_file: Optional[Path] = CONFIG_FILE) -> DataConfigDict:
     """
     Retournes les données de configuration du fichier TOML.
 
-    :param config_file: (Optional[Path]) Le chemin du fichier de configuration.
-    :return: (DataConfigDict) Les données de configuration.
+    :param config_file: Le chemin du fichier de configuration.
+    :type config_file: Optional[Path]
+    :return: Les données de configuration.
+    :rtype: DataConfigDict
     """
     LOGGER.debug(f"Chargement du fichier de configuration : '{config_file}'.")
 
@@ -115,8 +135,10 @@ def get_data_config(config_file: Optional[Path] = CONFIG_FILE) -> DataFilterConf
     """
     Retournes la configuration pour la transformation des données.
 
-    :param config_file: (Optional[Path]) Le chemin du fichier de configuration.
-    :return: (DataFilterConfig) La configuration de transformation des données.
+    :param config_file: Le chemin du fichier de configuration.
+    :type config_file: Optional[Path]
+    :return: La configuration de transformation des données.
+    :rtype: DataFilterConfig
     """
     config_data: DataConfigDict = load_config(config_file=config_file)
 

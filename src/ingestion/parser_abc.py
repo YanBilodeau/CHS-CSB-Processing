@@ -34,9 +34,12 @@ class DataParserABC(ABC):
         """
         Méthode permettant de valider les colonnes du dataframe.
 
-        :param dataframe: (pd.DataFrame) Le dataframe à valider.
-        :param file: (Path) Le fichier source.
-        :param column_exceptions: (Collection[ColumnException]) Les noms et les exceptions de colonnes.
+        :param dataframe: Le dataframe à valider.
+        :type dataframe: pd.DataFrame
+        :param file: Le fichier source.
+        :type file: Path
+        :param column_exceptions: Les noms et les exceptions de colonnes.
+        :type column_exceptions: Collection[ColumnException]
         :raises ParsingDataframeLongitudeError: Erreur si la colonne de longitude est absente.
         :raises ParsingDataframeLatitudeError: Erreur si la colonne de latitude est absente.
         :raises ParsingDataframeDepthError: Erreur si la colonne de profondeur est absente.
@@ -60,11 +63,16 @@ class DataParserABC(ABC):
         """
         Méthode permettant de convertir et nettoyer le dataframe.
 
-        :param dataframe: (pd.DataFrame) Le dataframe à convertir.
-        :param dtype_dict: (dict[str, str]) Un dictionnaire de type de données.
-        :param time_column: (str) Le nom de la colonne de temps.
-        :param file: (Path) Le fichier source.
-        :return: (pd.DataFrame) Le dataframe converti et nettoyé.
+        :param dataframe: Le dataframe à convertir.
+        :type dataframe: pd.DataFrame
+        :param dtype_dict: Un dictionnaire de type de données.
+        :type dtype_dict: dict[str, str]
+        :param time_column: Le nom de la colonne de temps.
+        :type time_column: str
+        :param file: Le fichier source.
+        :type file: Path
+        :return: Le dataframe converti et nettoyé.
+        :rtype: pd.DataFrame
         """
         LOGGER.debug(
             f"Conversion du dtype des colonnes {[column_ for column_ in dtype_dict.keys()] + [time_column]}"
@@ -93,8 +101,10 @@ class DataParserABC(ABC):
         """
         Méthode permettant de lire un fichier brut et retourne un geodataframe.
 
-        :param file: (Path) Le fichier à lire.
-        :return: (gpd.GeoDataFrame) Un GeoDataFrame.
+        :param file: Le fichier à lire.
+        :type file: Path
+        :return: Un GeoDataFrame.
+        :rtype: gpd.GeoDataFrame
         """
         pass
 
@@ -102,8 +112,10 @@ class DataParserABC(ABC):
         """
         Méthode permettant de lire les fichiers brutes et retourne un geodataframe.
 
-        :param files: (Collection[Path]) Les fichiers à lire.
-        :return: (gpd.GeoDataFrame) Un GeoDataFrame.
+        :param files: Les fichiers à lire.
+        :type files: Collection[Path]
+        :return:Un GeoDataFrame.
+        :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(
             f"Conversion des fichiers de données brutes en geodataframe : {files}"
@@ -122,8 +134,10 @@ class DataParserABC(ABC):
         """
         Méthode permettant de transformer le geodataframe pour respecter le schéma de données.
 
-        :param data: (gpd.GeoDataFrame) Le geodataframe à transformer.
-        :return: (gpd.GeoDataFrame) Le geodataframe transformé.
+        :param data: Le geodataframe à transformer.
+        :type data: gpd.GeoDataFrame
+        :return: Le geodataframe transformé.
+        :rtype: gpd.GeoDataFrame
         """
         pass
 
@@ -132,8 +146,10 @@ class DataParserABC(ABC):
         """
         Méthode permettant de supprimer les doublons du geodataframe.
 
-        :param data: (gpd.GeoDataFrame) Le geodataframe à nettoyer.
-        :return: (gpd.GeoDataFrame) Le geodataframe nettoyé.
+        :param data: Le geodataframe à nettoyer.
+        :type data: gpd.GeoDataFrame
+        :return: Le geodataframe nettoyé.
+        :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug("Suppression des doublons.")
 
@@ -153,8 +169,10 @@ class DataParserABC(ABC):
         """
         Méthode permettant de trier le geodataframe par datetime.
 
-        :param data: (gpd.GeoDataFrame) Le geodataframe à trier.
-        :return: (gpd.GeoDataFrame) Le geodataframe trié.
+        :param data: Le geodataframe à trier.
+        :type data: gpd.GeoDataFrame
+        :return: Le geodataframe trié.
+        :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug("Tri du geodataframe par datetime.")
 
@@ -168,8 +186,10 @@ class DataParserABC(ABC):
         """
         Méthode permettant de lire les fichiers brutes et retourne un geodataframe.
 
-        :param files: (Collection[Path]) Les fichiers à lire.
-        :return: (gpd.GeoDataFrame[DataLoggerSchema]) Un GeoDataFrame.
+        :param files: Les fichiers à lire.
+        :type files: Collection[Path]
+        :return: Un GeoDataFrame respectant le schéma de données DataLoggerSchema.
+        :rtype: gpd.GeoDataFrame[DataloggerSchema]
         """
         parser = cls()
         data_geodataframe: gpd.GeoDataFrame = parser.read_files(files=files)

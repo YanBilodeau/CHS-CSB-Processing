@@ -21,8 +21,10 @@ def transform_geodataframe_crs(geodataframe: gpd.GeoDataFrame, to_epsg: int) -> 
     """
     Fonction qui transforme le système de coordonnées d'un GeoDataFrame.
 
-    :param geodataframe: (gpd.GeoDataFrame) Le GeoDataFrame.
-    :param to_epsg: (int) Le code EPSG de la projection.
+    :param geodataframe: Le GeoDataFrame.
+    :type geodataframe: gpd.GeoDataFrame
+    :param to_epsg: Le code EPSG de la projection.
+    :type to_epsg: int
     """
     epsg_input: int = geodataframe.crs.to_epsg()
     if to_epsg is not None and epsg_input != to_epsg:
@@ -38,9 +40,12 @@ def export_geodataframe_to_geojson(
     """
     Sauvegarde le GeoDataFrame dans un fichier GeoJSON.
 
-    :param geodataframe: (gpd.GeoDataFrame) Le GeoDataFrame.
-    :param output_path: (Path) Le chemin du fichier de sortie.
-    :param to_epsg: (int) Le code EPSG de la projection.
+    :param geodataframe: Le GeoDataFrame.
+    :type geodataframe: gpd.GeoDataFrame
+    :param output_path: Le chemin du fichier de sortie.
+    :type output_path: Path
+    :param to_epsg: Le code EPSG de la projection.
+    :type to_epsg: Optional[int]
     """
     LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier GeoJSON : '{output_path}'.")
 
@@ -54,8 +59,10 @@ def export_dataframe_to_csv(dataframe: pd.DataFrame, output_path: Path) -> None:
     """
     Sauvegarde le DataFrame dans un fichier CSV.
 
-    :param dataframe: (pd.DataFrame) Le DataFrame.
-    :param output_path: (Path) Le chemin du fichier de sortie.
+    :param dataframe: Le DataFrame.
+    :type dataframe: pd.DataFrame
+    :param output_path: Le chemin du fichier de sortie.
+    :type output_path: Path
     """
     LOGGER.debug(f"Sauvegarde du DataFrame en fichier CSV : '{output_path}'.")
 
@@ -66,8 +73,10 @@ def sanitize_path_name(path: Path) -> Path:
     """
     Fonction qui remplace les caractères invalides dans le nom d'un fichier.
 
-    :param path: (Path) Le chemin du fichier.
-    :return: (Path) Le chemin du fichier avec un nom sans caractères invalides.
+    :param path: Le chemin du fichier.
+    :type path: Path
+    :return: Le chemin du fichier avec un nom sans caractères invalides.
+    :rtype: Path
     """
     LOGGER.debug(f"Validation du nom du fichier : '{path.name}'.")
 

@@ -47,9 +47,12 @@ class DataParserBCDB(DataParserABC):
         """
         Méthode permettant de lire un fichier brut et retourne un geodataframe.
 
-        :param file: (Path) Le fichier à lire.
-        :param dtype_dict: (dict[str, str]) Un dictionnaire de type de données.
-        :return: (gpd.GeoDataFrame) Un GeoDataFrame.
+        :param file: Le fichier à lire.
+        :type file: Path
+        :param dtype_dict: Un dictionnaire de type de données.
+        :type dtype_dict: dict[str, str]
+        :return: Un GeoDataFrame.
+        :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(f"Chargement d'un fichier de données brutes de type DCDB : {file}")
 
@@ -77,8 +80,10 @@ class DataParserBCDB(DataParserABC):
         """
         Méthode permettant de transformer le geodataframe pour respecter le schéma de données.
 
-        :param data: (gpd.GeoDataFrame) Le geodataframe à transformer.
-        :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le geodataframe transformé.
+        :param data: Le geodataframe à transformer.
+        :type data: gpd.GeoDataFrame
+        :return: e geodataframe transformé et respectant le schéma de données DataLoggerSchema.
+        :rtype: gpd.GeoDataFrame[DataLoggerSchema]
         """
         LOGGER.debug("Transformation du geodataframe.")
 
