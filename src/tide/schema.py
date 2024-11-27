@@ -33,6 +33,7 @@ class TimeSerieDataSchema(pa.DataFrameModel):
     """
     Schéma des séries temporelles.
     """
+
     event_date: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
     value: Series[pd.Float64Dtype()]
     time_serie_code: Series[str]
@@ -42,6 +43,7 @@ class VoronoiSchema(pa.DataFrameModel):
     """
     Schéma des Voronoïs.
     """
+
     id: Series[str]
     code: Series[str]
     name: Series[str]

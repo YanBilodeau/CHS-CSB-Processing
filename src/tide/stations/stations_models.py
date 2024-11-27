@@ -12,9 +12,9 @@ class EndpointTypeProtocol(Protocol):
     """
     Protocole pour définir les types des endpoints.
 
-    PUBLIC: Endpoint public.
-    PRIVATE_PROD: Endpoint privé de production.
-    PRIVATE_DEV: Endpoint privé de développement
+    :param PUBLIC: Endpoint public.
+    :param PRIVATE_PROD: Endpoint privé de production.
+    :param PRIVATE_DEV: Endpoint privé de développement
     """
 
     PUBLIC: str = "EndpointPublic"
@@ -26,11 +26,11 @@ class TimeSeriesProtocol(Protocol):
     """
     Protocole pour définir les types des séries temporelles.
 
-    WLO: Water Level Observed.
-    WLF_SPINE: Water Level Forecast Spine.
-    WLF_VTG: Water Level Forecast VTG.
-    WLF: Water Level Forecast.
-    WLP: Water Level Prediction.
+    :param WLO: Water Level Observed.
+    :param WLF_SPINE: Water Level Forecast Spine.
+    :param WLF_VTG: Water Level Forecast VTG.
+    :param WLF: Water Level Forecast.
+    :param WLP: Water Level Prediction.
     """
 
     WLO: str = "wlo"
