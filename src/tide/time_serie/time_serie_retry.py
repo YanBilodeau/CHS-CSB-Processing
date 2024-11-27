@@ -1,3 +1,9 @@
+"""
+Module pour la gestion des tentatives d'interpolation de séries temporelles.
+
+Ce module contient les fonctions pour gérer les tentatives d'interpolation de séries temporelles.
+"""
+
 from datetime import timedelta
 from functools import partial
 
@@ -16,6 +22,11 @@ LOGGER = logger.bind(name="CSB-Pipeline.TimeSerie.Retry")
 
 
 def double_buffer_time(retry_state) -> None:
+    """
+    Fonction pour doubler le temps tampon pour la prochaine tentative d'interpolation.
+
+    :param retry_state: (RetryState) État de la tentative.
+    """
     buffer_time = retry_state.kwargs.get("buffer_time")
 
     if buffer_time is None:

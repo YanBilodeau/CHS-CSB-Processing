@@ -1,3 +1,9 @@
+"""
+Module contenant les exceptions pour les séries temporelles de données de marée.
+
+Les exceptions sont utilisées pour gérer les erreurs lors de la récupération des données de marée.
+"""
+
 from dataclasses import dataclass
 from datetime import timedelta
 
@@ -8,6 +14,13 @@ from .time_serie_models import DataGapPeriod
 
 @dataclass(frozen=True)
 class WaterLevelDataError(Exception):
+    """
+    Exception pour les erreurs de données de marée.
+
+    :param station_id: (str) Code de la station.
+    :param from_time: (str) Date de début.
+    :param to_time: (str) Date de fin.
+    """
     station_id: str
     from_time: str
     to_time: str
@@ -18,6 +31,13 @@ class WaterLevelDataError(Exception):
 
 @dataclass(frozen=True)
 class WaterLevelDataGapError(Exception):
+    """
+    Exception pour les périodes de données manquantes.
+
+    :param station_id: (str) Code de la station.
+    :param gaps: (pd.DataFrame) Périodes de données manquantes.
+    :param max_time_gap: (str) Limite permise pour les données
+    """
     station_id: str
     gaps: pd.DataFrame
     max_time_gap: str
@@ -63,6 +83,12 @@ def get_data_gaps_message(gaps: pd.DataFrame) -> str:
 
 @dataclass(frozen=True)
 class InterpolationValueError(Exception):
+    """
+    Exception pour les valeurs impossibles à interpoler.
+
+    :param from_time: (pd.Timestamp) Date de début.
+    :param to_time: (pd.Timestamp) Date de fin.
+    """
     from_time: pd.Timestamp
     to_time: pd.Timestamp
 

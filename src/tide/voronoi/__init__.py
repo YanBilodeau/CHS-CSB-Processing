@@ -1,3 +1,7 @@
+"""
+Ce package contient les fonctions permettant de générer des polygones de Voronoi à partir de données de stations de mesures.
+"""
+
 from .voronoi_geodataframe import (
     get_voronoi_geodataframe,
     from_shapely_object_to_geodataframe,

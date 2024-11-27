@@ -1,3 +1,9 @@
+"""
+Module pour la gestion des données de séries temporelles de marée.
+
+Ce module contient les fonctions pour gérer les données de séries temporelles de marée.
+"""
+
 from datetime import timedelta, datetime
 from typing import Optional, Any, Collection
 

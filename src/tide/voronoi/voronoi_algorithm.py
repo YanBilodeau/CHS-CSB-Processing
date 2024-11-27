@@ -1,3 +1,7 @@
+"""
+Module qui contient l'algorithme de création des polygones de Voronoi.
+"""
+
 from typing import Optional
 
 from loguru import logger

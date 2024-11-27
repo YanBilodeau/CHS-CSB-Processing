@@ -1,3 +1,9 @@
+"""
+Module qui contient les fonctions pour manipuler les GeoDataFrame des polygones de Voronoi.
+
+Les fonctions permettent de créer les polygones de Voronoi, de les joindre avec les stations et de fusionner les attributs.
+"""
+
 from typing import Optional, Collection
 
 import dask_geopandas as dgpd

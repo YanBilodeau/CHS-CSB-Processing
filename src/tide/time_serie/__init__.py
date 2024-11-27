@@ -1,3 +1,7 @@
+"""
+Ce package contient les fonctions et les classes nécessaires pour traiter les séries temporelles.
+"""
+
 from .exception_time_serie import (
     WaterLevelDataGapError,
     WaterLevelDataError,
