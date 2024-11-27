@@ -93,6 +93,7 @@ def create_buttons(
 
     :param fig: La figure Plotly.
     :type fig: go.Figure
+
     :param dataframes:La collection de DataFrames.
     :type dataframes: Collection[pd.DataFrame]
     :param titles: Les titres des graphiques.
