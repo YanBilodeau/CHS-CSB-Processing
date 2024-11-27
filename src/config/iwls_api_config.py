@@ -1,3 +1,10 @@
+"""
+Module de configuration de l'API IWLS.
+
+Ce module contient les classes et fonctions nécessaires pour charger et valider
+la configuration de l'API IWLS.
+"""
+
 import re
 from datetime import timedelta
 from pathlib import Path
@@ -19,6 +26,15 @@ IWLSapiDict = dict[
 
 
 class TimeSeriesConfig(BaseModel):
+    """
+    Classe de configuration pour les séries temporelles.
+
+    :param priority: (list[iwls.TimeSeries]) La liste des séries temporelles à garder par ordre de priorité.
+    :param max_time_gap: (str | None) Le temps maximal permit entre deux points.
+    :param threshold_interpolation_filling: (str | None) Le seuil de remplissage ou d'interpolation.
+    :param wlo_qc_flag_filter: (list[str] | None) Les filtres de qualité à filtrer.
+    :param buffer_time: (timedelta | None) Le temps de buffer à ajouter s'il manque des données pour l'interpolation.
+    """
     priority: list[iwls.TimeSeries]
     max_time_gap: str | None
     threshold_interpolation_filling: str | None
@@ -31,7 +47,14 @@ class TimeSeriesConfig(BaseModel):
             self.buffer_time = timedelta(hours=data["buffer_time"])
 
     @field_validator("max_time_gap", "threshold_interpolation_filling")
-    def validate_time_gap(cls, value):
+    def validate_time_gap(cls, value: str | None) -> str | None:
+        """
+        Valide le time gap.
+
+        :param value: (str) Le time gap.
+        :return: (str) Le time gap.
+        :raises ValueError: Si le time gap n'est pas au bon format.
+        """
         if value == "":
             return None
 
@@ -46,6 +69,15 @@ class TimeSeriesConfig(BaseModel):
 
 
 class IWLSAPIConfig(BaseModel):
+    """
+    Classe de configuration pour l'API IWLS.
+
+    :param dev: (iwls.APIEnvironment | None) L'environnement de développement.
+    :param prod: (iwls.APIEnvironment | None) L'environnement de production.
+    :param public: (iwls.APIEnvironment | None) L'environnement public.
+    :param time_series: (TimeSeriesConfig) La configuration des séries temporelles.
+    :param profile: (iwls.APIProfile) Le profil actif de l'API.
+    """
     dev: Optional[iwls.APIEnvironment]
     prod: Optional[iwls.APIEnvironment]
     public: Optional[iwls.APIEnvironment]

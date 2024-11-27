@@ -1,3 +1,10 @@
+"""
+Module de configuration des données.
+
+Ce module contient les classes et fonctions nécessaires pour charger et valider
+les configurations de filtrage des données.
+"""
+
 from pathlib import Path
 from pydantic import BaseModel, field_validator
 from typing import Optional
@@ -22,6 +29,17 @@ MAX_DEPTH: int | float | None = None
 
 
 class DataFilterConfig(BaseModel):
+    """
+    Classe de configuration pour le filtrage des données.
+
+    :param min_latitude: (int | float) La latitude minimale.
+    :param max_latitude: (int | float) La latitude maximale.
+    :param min_longitude: (int | float) La longitude minimale.
+    :param max_longitude: (int | float) La longitude maximale.
+    :param min_depth: (int | float) La profondeur minimale.
+    :param max_depth: (int | float | None) La profondeur maximale.
+    """
+
     min_latitude: int | float = MIN_LATITUDE
     max_latitude: int | float = MAX_LATITUDE
     min_longitude: int | float = MIN_LONGITUDE
@@ -30,7 +48,14 @@ class DataFilterConfig(BaseModel):
     max_depth: Optional[int | float] = MAX_DEPTH
 
     @field_validator("min_latitude", "max_latitude")
-    def validate_latitude(cls, value):
+    def validate_latitude(cls, value: int | float) -> int | float:
+        """
+        Valide la latitude.
+
+        :param value: (int | float) La valeur de la latitude.
+        :return: (int | float) La valeur de la latitude.
+        :raises ValueError: Si la latitude n'est pas comprise entre MIN_LATITUDE et MAX_LATITUDE.
+        """
         if value < MIN_LATITUDE or value > MAX_LATITUDE:
             raise ValueError(
                 f"La latitude doit être comprise entre {MIN_LATITUDE} et {MAX_LATITUDE}."
@@ -39,7 +64,14 @@ class DataFilterConfig(BaseModel):
         return value
 
     @field_validator("min_longitude", "max_longitude")
-    def validate_longitude(cls, value):
+    def validate_longitude(cls, value: int | float) -> int | float:
+        """
+        Valide la longitude.
+
+        :param value: (int | float) La valeur de la longitude.
+        :return: (int | float) La valeur de la longitude.
+        :raises ValueError: Si la longitude n'est pas comprise entre MIN_LONGITUDE et MAX_LONGITUDE.
+        """
         if value < MIN_LONGITUDE or value > MAX_LONGITUDE:
             raise ValueError(
                 f"La longitude doit être comprise entre {MIN_LONGITUDE} et {MAX_LONGITUDE}."
@@ -48,7 +80,14 @@ class DataFilterConfig(BaseModel):
         return value
 
     @field_validator("min_depth", "max_depth")
-    def validate_depth(cls, value):
+    def validate_depth(cls, value: int | float | None) -> int | float | None:
+        """
+        Valide la profondeur.
+
+        :param value: (int | float) La valeur de la profondeur.
+        :return: (int | float) La valeur de la profondeur.
+        :raises ValueError: Si la profondeur est inférieure à MIN_DEPTH.
+        """
         if value is not None and value < 0:
             raise ValueError(
                 f"La profondeur doit être supérieure ou égale à {MIN_DEPTH}."
