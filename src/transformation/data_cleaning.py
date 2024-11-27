@@ -34,10 +34,14 @@ def clean_depth(
     """
     Fonction qui nettoie les données de profondeur.
 
-    :param geodataframe: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame.
-    :param min_depth: (int | float) La profondeur minimale.
-    :param max_depth: (Optional[int | float]) La profondeur maximale.
-    :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame nettoyé.
+    :param geodataframe: Le GeoDataFrame.
+    :type geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :param min_depth:La profondeur minimale.
+    :type min_depth: int | float
+    :param max_depth: La profondeur maximale.
+    :type max_depth: int | float | None
+    :return: Le GeoDataFrame nettoyé.
+    :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
     LOGGER.debug(
         f"Nettoyage des données de profondeur {[schema.DEPTH_METER]}. "
@@ -61,8 +65,10 @@ def clean_time(geodataframe: gpd.GeoDataFrame, **kwargs) -> gpd.GeoDataFrame:
     """
     Fonction qui nettoie les données de temps.
 
-    :param geodataframe: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame.
-    :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame nettoyé.
+    :param geodataframe: Le GeoDataFrame à nettoyer.
+    :type geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :return: Le GeoDataFrame nettoyé.
+    :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
     LOGGER.debug(f"Nettoyage des données de temps {[schema.TIME_UTC]}.")
 
@@ -82,10 +88,14 @@ def clean_latitude(
     """
     Fonction qui nettoie les données de latitude.
 
-    :param geodataframe: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame.
-    :param min_latitude: (int | float) La latitude minimale.
-    :param max_latitude: (int | float) La latitude maximale.
-    :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame nettoyé.
+    :param geodataframe: Le GeoDataFrame à nettoyer.
+    :type geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :param min_latitude: La latitude minimale.
+    :type min_latitude: int | float
+    :param max_latitude: La latitude maximale.
+    :type max_latitude: int | float
+    :return: Le GeoDataFrame nettoyé.
+    :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
     LOGGER.debug(
         f"Nettoyage des données de latitude {[schema.LATITUDE_WGS84]}. "
@@ -110,10 +120,14 @@ def clean_longitude(
     """
     Fonction qui nettoie les données de longitude.
 
-    :param geodataframe: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame.
-    :param min_longitude: (int | float) La longitude minimale.
-    :param max_longitude: (int | float) La longitude maximale.
-    :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame nettoyé.
+    :param geodataframe: Le GeoDataFrame à nettoyer.
+    :type geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :param min_longitude: La longitude minimale.
+    :type min_longitude: int | float
+    :param max_longitude: a longitude maximale.
+    :type max_longitude: int | float
+    :return: Le GeoDataFrame nettoyé.
+    :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
     LOGGER.debug(
         f"Nettoyage des données de longitude {[schema.LONGITUDE_WGS84]}. "
@@ -145,10 +159,14 @@ def clean_data(
     """
     Fonction qui nettoie les données à partir d'une collection de fonctions de nettoyage.
 
-    :param geodataframe: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame.
-    :param cleaning_func: (Collection[CleanerFunctionProtocol | str]) Les fonctions de nettoyage.
-    :param data_filter: (Optional[DataFilterConfigProtocol]) La configuration de nettoyage.
-    :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame nettoyé.
+    :param geodataframe: Le GeoDataFrame à nettoyer.
+    :type geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :param cleaning_func: Les fonctions de nettoyage.
+    :type cleaning_func: Collection[DataCleaningFunction | str]
+    :param data_filter: La configuration de nettoyage.
+    :type data_filter: DataFilterConfigProtocol
+    :return: Le GeoDataFrame nettoyé.
+    :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     :raises DataCleaningFunctionError: Si la fonction de nettoyage n'existe pas.
     """
     LOGGER.debug("Nettoyage des données.")
