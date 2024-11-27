@@ -1,3 +1,7 @@
+"""
+Ce module contient la fonction permettant de récupérer le parser associé à un formtat de fichier.
+"""
+
 from pathlib import Path
 from typing import Type
 

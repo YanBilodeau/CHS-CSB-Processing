@@ -1,3 +1,7 @@
+"""
+Module permettant de parser les données de type DCDB.
+"""
+
 from pathlib import Path
 
 import geopandas as gpd
@@ -13,14 +17,7 @@ from .parser_exception import (
 )
 from .parser_abc import DataParserABC
 from . import parser_ids as ids
-from schema import (
-    DataLoggerSchema,
-    validate_schema,
-    TIME_UTC,
-    DEPTH_METER,
-    LONGITUDE_WGS84,
-    LATITUDE_WGS84,
-)
+import schema
 
 
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.DCDB")
@@ -42,6 +39,9 @@ COLUMN_EXCEPTIONS: list[ColumnException] = [
 
 
 class DataParserBCDB(DataParserABC):
+    """
+    Classe permettant de parser les données de type DCDB.
+    """
     def read(self, file: Path, dtype_dict: dict[str, str] = None) -> gpd.GeoDataFrame:
         """
         Méthode permettant de lire un fichier brut et retourne un geodataframe.
@@ -82,15 +82,15 @@ class DataParserBCDB(DataParserABC):
         LOGGER.debug("Transformation du geodataframe.")
 
         LOGGER.debug(f"Renommage des colonnes du geodataframe.")
-        data: gpd.GeoDataFrame[DataLoggerSchema] = data.rename(
+        data: gpd.GeoDataFrame[schema.DataLoggerSchema] = data.rename(
             columns={
-                ids.TIME: TIME_UTC,
-                ids.DEPTH_DCDB: DEPTH_METER,
-                ids.LONGITUDE_DCDB: LONGITUDE_WGS84,
-                ids.LATITUDE_DCDB: LATITUDE_WGS84,
+                ids.TIME: schema.TIME_UTC,
+                ids.DEPTH_DCDB: schema.DEPTH_METER,
+                ids.LONGITUDE_DCDB: schema.LONGITUDE_WGS84,
+                ids.LATITUDE_DCDB: schema.LATITUDE_WGS84,
             }
         )
 
-        validate_schema(data, DataLoggerSchema)
+        schema.validate_schema(data, schema.DataLoggerSchema)
 
         return data

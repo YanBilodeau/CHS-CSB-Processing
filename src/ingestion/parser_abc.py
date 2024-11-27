@@ -1,3 +1,7 @@
+"""
+Module permettant de définir une classe abstraite pour les parsers de données.
+"""
+
 from abc import ABC, abstractmethod
 import concurrent.futures
 from dataclasses import dataclass
@@ -10,19 +14,17 @@ import pandas as pd
 
 from .parser_exception import ColumnException
 from .warning_capture import WarningCapture
-from schema import (
-    DataLoggerSchema,
-    TIME_UTC,
-    DEPTH_METER,
-    LONGITUDE_WGS84,
-    LATITUDE_WGS84,
-)
+import schema
 
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.ABC")
 
 
 @dataclass
 class DataParserABC(ABC):
+    """
+    Classe abstraite pour les parsers de données.
+    """
+
     @staticmethod
     def validate_columns(
         dataframe: pd.DataFrame,
@@ -136,7 +138,12 @@ class DataParserABC(ABC):
         LOGGER.debug("Suppression des doublons.")
 
         data = data.drop_duplicates(
-            subset=[TIME_UTC, LATITUDE_WGS84, LONGITUDE_WGS84, DEPTH_METER]
+            subset=[
+                schema.TIME_UTC,
+                schema.LATITUDE_WGS84,
+                schema.LONGITUDE_WGS84,
+                schema.DEPTH_METER,
+            ]
         )
 
         return data
@@ -152,7 +159,7 @@ class DataParserABC(ABC):
         LOGGER.debug("Tri du geodataframe par datetime.")
 
         data = data.reset_index(drop=True)
-        data = data.sort_values(by=[TIME_UTC])
+        data = data.sort_values(by=[schema.TIME_UTC])
 
         return data
 
@@ -166,7 +173,7 @@ class DataParserABC(ABC):
         """
         parser = cls()
         data_geodataframe: gpd.GeoDataFrame = parser.read_files(files=files)
-        data_geodataframe: gpd.GeoDataFrame[DataLoggerSchema] = parser.transform(
+        data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = parser.transform(
             data=data_geodataframe
         )
         data_geodataframe = parser.remove_duplicates(data=data_geodataframe)

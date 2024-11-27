@@ -1,3 +1,7 @@
+"""
+Module permettant de définir un parser pour les données de type Lowrance.
+"""
+
 from pathlib import Path
 
 import geopandas as gpd
@@ -13,14 +17,7 @@ from .parser_exception import (
     ParsingDataframeDepthError,
 )
 from . import parser_ids as ids
-from schema import (
-    DataLoggerSchema,
-    validate_schema,
-    TIME_UTC,
-    DEPTH_METER,
-    LONGITUDE_WGS84,
-    LATITUDE_WGS84,
-)
+import schema
 
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.Lowrance")
 
@@ -43,6 +40,9 @@ COLUMN_EXCEPTIONS: list[ColumnException] = [
 
 
 class DataParserLowrance(DataParserABC):
+    """
+    Classe permettant de parser les données de type Lowrance.
+    """
     def read(self, file: Path, dtype_dict: dict[str, str] = None) -> gpd.GeoDataFrame:
         """
         Méthode permettant de lire un fichier brut et retourne un geodataframe.
@@ -89,12 +89,12 @@ class DataParserLowrance(DataParserABC):
         :return: (gpd.GeoDataFrame) Le geodataframe renommé.
         """
         LOGGER.debug(f"Renommage des colonnes du geodataframe.")
-        data: gpd.GeoDataFrame[DataLoggerSchema] = data.rename(
+        data: gpd.GeoDataFrame[schema.DataLoggerSchema] = data.rename(
             columns={
-                ids.TIME_LOWRANCE: TIME_UTC,
-                ids.DEPTH_LOWRANCE: DEPTH_METER,
-                ids.LONGITUDE_LOWRANCE: LONGITUDE_WGS84,
-                ids.LATITUDE_LOWRANCE: LATITUDE_WGS84,
+                ids.TIME_LOWRANCE: schema.TIME_UTC,
+                ids.DEPTH_LOWRANCE: schema.DEPTH_METER,
+                ids.LONGITUDE_LOWRANCE: schema.LONGITUDE_WGS84,
+                ids.LATITUDE_LOWRANCE: schema.LATITUDE_WGS84,
             }
         )
 
@@ -127,8 +127,8 @@ class DataParserLowrance(DataParserABC):
         :param data: (gpd.GeoDataFrame) Le geodataframe à transformer.
         :return: (gpd.GeoDataFrame) Le geodataframe transformé.
         """
-        LOGGER.debug(f"Conversion des pieds en mètres de la colonne '{DEPTH_METER}'.")
-        data[DEPTH_METER] = data[DEPTH_METER] * 0.3048
+        LOGGER.debug(f"Conversion des pieds en mètres de la colonne '{schema.DEPTH_METER}'.")
+        data[schema.DEPTH_METER] = data[schema.DEPTH_METER] * 0.3048
 
         return data
 
@@ -145,6 +145,6 @@ class DataParserLowrance(DataParserABC):
         data = self.remove_special_characters_from_columns(data)
         data = self.convert_depth_to_meters(data)
 
-        validate_schema(data, DataLoggerSchema)
+        schema.validate_schema(data, schema.DataLoggerSchema)
 
         return data

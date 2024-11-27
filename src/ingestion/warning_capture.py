@@ -1,7 +1,14 @@
+"""
+Module permettant d'attraper les warnings.
+"""
+
 import warnings
 
 
 class WarningCapture:
+    """
+    Classe permettant d'attraper les warnings.
+    """
     def __init__(self):
         self.captured_warnings = []
 
