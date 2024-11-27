@@ -26,6 +26,7 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
     """
     Classe permettant de gérer la configuration des navires à partir d'un fichier JSON.
     """
+
     def __init__(self, json_config_path: Path):
         """
         Initialisation du gestionnaire de configuration des navires à partir d'un fichier JSON.

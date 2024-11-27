@@ -75,6 +75,7 @@ class Waterline(BaseModel):
     :param time_stamp: (datetime) Date et heure.
     :param z: (float) Bras de levier Z.
     """
+
     time_stamp: datetime
     z: float
 
@@ -86,6 +87,7 @@ class SoundSpeedProfile(BaseModel):
     :param time_stamp: (datetime) Date et heure.
     :param ssp: (bool) True si le profil de vitesse du son est appliqué.
     """
+
     time_stamp: datetime
     ssp: bool
 
@@ -103,6 +105,7 @@ class VesselConfig(BaseModel):
     :param ssp_applied: (list[SoundSpeedProfile]) Liste des données de profil de vitesse du son appliqué.
     :param attribute: (list[BDBattribute]) Liste des données d'attribut.
     """
+
     id: str
     axis_convention: AxisConvention
     navigation: list[Sensor]

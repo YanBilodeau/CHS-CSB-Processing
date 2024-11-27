@@ -17,6 +17,7 @@ class VesselConfigManagerABC(ABC):
     """
     Classe abstraite définissant les méthodes pour gérer la configuration des navires.
     """
+
     def __init__(self, **kwargs):
         """
         Initialisation du gestionnaire de configuration des navires.

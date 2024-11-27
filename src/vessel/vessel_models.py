@@ -3,6 +3,8 @@ Module qui contient les modèles de données pour les navires.
 
 Ce module contient les classes qui définissent les modèles de données pour les navires.
 """
+
+
 class SensorDict(dict):
     """
     Dictionnaire de données pour un capteur.
@@ -12,6 +14,7 @@ class SensorDict(dict):
     :param y: (float) Bras de levier Y.
     :param z: (float) Bras de levier Z.
     """
+
     time_stamp: str
     x: float
     y: float
@@ -25,6 +28,7 @@ class WaterlineDict(dict):
     :param time_stamp: (str) Date et heure.
     :param z: (float) Bras de levier Z.
     """
+
     time_stamp: str
     z: float
 
@@ -36,6 +40,7 @@ class SoundSpeedProfileDict(dict):
     :param time_stamp: (str) Date et heure.
     :param ssp: (str) True si le profil de vitesse du son est appliqué.
     """
+
     time_stamp: str
     ssp: str
 
@@ -51,6 +56,7 @@ class AttributeDict(dict):
     :param bureau: (str) Bureau du fournisseur de données.
     :param restrn: (str) Restrictions de données.
     """
+
     time_stamp: str
     pltfrm: str
     sdghdw: str
@@ -72,6 +78,7 @@ class VesselConfigDict(dict):
     :param ssp_applied: (list[SoundSpeedProfileDict]) Profils de vitesse du son appliqués.
     :param attribute: (list[AttributeDict]) Attributs BDB.
     """
+
     id: str
     axis_convention: str
     nav: list[SensorDict]
