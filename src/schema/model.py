@@ -18,12 +18,6 @@ LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.Schema")
 class DataLoggerSchema(pa.DataFrameModel):
     """
     Schéma des données des DataLoggers.
-
-    :param Longitude_WGS84: (Series[pd.Float64Dtype()]) La longitude en WGS84.
-    :param Latitude_WGS84: (Series[pd.Float64Dtype()]) La latitude en WGS84.
-    :param Depth_meter: (Series[pd.Float64Dtype()]) La profondeur en mètres.
-    :param Time_UTC: (Series[pd.DatetimeTZDtype("ns", tz="UTC")]) Le temps en UTC.
-    :param geometry: (GeoSeries) La géométrie.
     """
 
     Longitude_WGS84: Series[pd.Float64Dtype()]

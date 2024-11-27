@@ -1,3 +1,9 @@
+"""
+Module qui contient les fonctions pour afficher les série temporelle.
+
+Ce module contient les fonctions pour afficher un graphique de la série temporelle.
+"""
+
 from pathlib import Path
 from typing import Optional, Collection, Sequence
 

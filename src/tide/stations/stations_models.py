@@ -40,6 +40,9 @@ class TimeSeriesProtocol(Protocol):
     WLP: str = "wlp"
 
     def from_str(cls, value: str):
+        """
+        Méthode pour convertir une chaîne de caractères en série temporelle.
+        """
         pass
 
 

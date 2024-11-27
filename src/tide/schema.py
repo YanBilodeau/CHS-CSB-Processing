@@ -1,3 +1,9 @@
+"""
+Module qui contient les schémas des stations.
+
+Ce module contient les schémas des stations, des séries temporelles et des Voronoïs.
+"""
+
 import geopandas as gpd
 import pandas as pd
 import pandera as pa
@@ -11,6 +17,10 @@ LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station.Schema")
 
 
 class StationsSchema(pa.DataFrameModel):
+    """
+    Schéma des stations.
+    """
+
     id: Series[str]
     code: Series[str]
     name: Series[str]
@@ -20,12 +30,18 @@ class StationsSchema(pa.DataFrameModel):
 
 
 class TimeSerieDataSchema(pa.DataFrameModel):
+    """
+    Schéma des séries temporelles.
+    """
     event_date: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
     value: Series[pd.Float64Dtype()]
     time_serie_code: Series[str]
 
 
 class VoronoiSchema(pa.DataFrameModel):
+    """
+    Schéma des Voronoïs.
+    """
     id: Series[str]
     code: Series[str]
     name: Series[str]
