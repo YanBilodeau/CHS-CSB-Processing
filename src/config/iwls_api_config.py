@@ -6,26 +6,20 @@ from typing import Optional
 from loguru import logger
 from pydantic import BaseModel, field_validator
 
-from iwls_api_request import (
-    TimeSeries,
-    APIEnvironment,
-    APIProfile,
-    EnvironmentDict,
-    ProfileDict,
-    load_config,
-    get_environment_config,
-)
+import iwls_api_request as iwls
 
 LOGGER = logger.bind(name="CSB-Pipeline.Config.IWLSAPIConfig")
 
 CONFIG_FILE: Path = Path(__file__).parent.parent / "CONFIG_iwls_API.toml"
 
 TimeSeriesDict = dict[str, list[str]]
-IWLSapiDict = dict[str, dict[str, TimeSeriesDict | EnvironmentDict | ProfileDict]]
+IWLSapiDict = dict[
+    str, dict[str, TimeSeriesDict | iwls.EnvironmentDict | iwls.ProfileDict]
+]
 
 
 class TimeSeriesConfig(BaseModel):
-    priority: list[TimeSeries]
+    priority: list[iwls.TimeSeries]
     max_time_gap: str | None
     threshold_interpolation_filling: str | None
     wlo_qc_flag_filter: list[str] | None
@@ -52,11 +46,11 @@ class TimeSeriesConfig(BaseModel):
 
 
 class IWLSAPIConfig(BaseModel):
-    dev: Optional[APIEnvironment]
-    prod: Optional[APIEnvironment]
-    public: Optional[APIEnvironment]
+    dev: Optional[iwls.APIEnvironment]
+    prod: Optional[iwls.APIEnvironment]
+    public: Optional[iwls.APIEnvironment]
     time_series: TimeSeriesConfig
-    profile: APIProfile
+    profile: iwls.APIProfile
 
 
 def get_api_config(config_file: Optional[Path] = CONFIG_FILE) -> IWLSAPIConfig:
@@ -68,8 +62,8 @@ def get_api_config(config_file: Optional[Path] = CONFIG_FILE) -> IWLSAPIConfig:
     :return: Un objet APIConfig.
     :rtype: APIConfig
     """
-    config_data: IWLSapiDict = load_config(config_file=config_file)
-    environments: EnvironmentDict = get_environment_config(
+    config_data: IWLSapiDict = iwls.load_config(config_file=config_file)
+    environments: iwls.EnvironmentDict = iwls.get_environment_config(
         config_data["IWLS"]["API"]["ENVIRONMENT"]
     )
     LOGGER.debug(f"Initialisation de la configuration de l'API IWLS.")
@@ -89,5 +83,5 @@ def get_api_config(config_file: Optional[Path] = CONFIG_FILE) -> IWLSAPIConfig:
             ),
             buffer_time=config_data["IWLS"]["API"]["TimeSeries"].get("buffer_time"),
         ),
-        profile=APIProfile(**config_data["IWLS"]["API"]["PROFILE"]),
+        profile=iwls.APIProfile(**config_data["IWLS"]["API"]["PROFILE"]),
     )
