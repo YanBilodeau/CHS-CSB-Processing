@@ -1,3 +1,10 @@
+"""
+Module qui contient les fonctions utilitaires pour l'exportation des données.
+
+Ce module contient les fonctions qui permettent de sauvegarder les données dans des fichiers
+de différents formats.
+"""
+
 from pathlib import Path
 import re
 from typing import Optional
