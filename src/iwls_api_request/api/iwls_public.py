@@ -18,7 +18,13 @@ class IWLSapiPublic(IWLSapiABC):
         self,
         query_handler: HTTPQueryHandler,
         endpoint: Optional[EndpointPublic] = EndpointPublic,
-    ):
+    ) -> None:
+        """
+        Constructeur de la classe IWLSapiPublic.
+
+        :param query_handler: (HTTPQueryHandler) Un objet HTTPQueryHandler.
+        :param endpoint: (EndpointPublic) Un objet EndpointPublic.
+        """
         super().__init__(query_handler=query_handler, endpoint=endpoint)
 
     def get_time_serie_data(

@@ -20,7 +20,13 @@ class IWLSapiPrivate(IWLSapiABC):
         endpoint: Optional[
             EndpointPrivateDev | EndpointPrivateProd
         ] = EndpointPrivateProd,
-    ):
+    ) -> None:
+        """
+        Constructeur de la classe IWLSapiPrivate.
+
+        :param query_handler: (HTTPQueryHandler) Un objet HTTPQueryHandler.
+        :param endpoint: (EndpointPrivateDev | EndpointPrivateProd) L'endpoint de l'API iWLS.
+        """
         super().__init__(query_handler=query_handler, endpoint=endpoint)
 
     @ttl_cache(ttl=1200, maxsize=256)
