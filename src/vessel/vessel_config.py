@@ -97,13 +97,21 @@ class VesselConfig(BaseModel):
     Modèle de données pour la configuration du navire.
 
     :param id: (str) Identifiant du navire.
+    :type id: str
     :param axis_convention: (AxisConvention) Convention d'axes.
+    :type axis_convention: AxisConvention
     :param navigation: (list[Sensor]) Liste des données de navigation.
+    :type navigation: list[Sensor]
     :param motion: (list[Sensor]) Liste des données de mouvement.
+    :type motion: list[Sensor]
     :param sounder: (list[Sensor]) Liste des données du sondeur.
+    :type sounder: list[Sensor]
     :param waterline: (list[Waterline]) Liste des données de ligne d'eau.
+    :type waterline: list[Waterline]
     :param ssp_applied: (list[SoundSpeedProfile]) Liste des données de profil de vitesse du son appliqué.
+    :type ssp_applied: list[SoundSpeedProfile]
     :param attribute: (list[BDBattribute]) Liste des données d'attribut.
+    :type attribute: list[BDBattribute]
     """
 
     id: str
