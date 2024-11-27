@@ -20,6 +20,7 @@ class DataGapPeriod:
     :param end: (datetime) Date de fin.
     :param duration: (timedelta) Durée de la période.
     """
+
     start: datetime
     end: datetime
     duration: timedelta = field(init=False)
@@ -59,6 +60,7 @@ class StationsHandlerProtocol(Protocol):
     """
     Protocole pour les gestionnaires de stations.
     """
+
     def get_time_series_dataframe(
         self,
         station: str,

@@ -21,6 +21,7 @@ class WaterLevelDataError(Exception):
     :param from_time: (str) Date de début.
     :param to_time: (str) Date de fin.
     """
+
     station_id: str
     from_time: str
     to_time: str
@@ -38,6 +39,7 @@ class WaterLevelDataGapError(Exception):
     :param gaps: (pd.DataFrame) Périodes de données manquantes.
     :param max_time_gap: (str) Limite permise pour les données
     """
+
     station_id: str
     gaps: pd.DataFrame
     max_time_gap: str
@@ -89,6 +91,7 @@ class InterpolationValueError(Exception):
     :param from_time: (pd.Timestamp) Date de début.
     :param to_time: (pd.Timestamp) Date de fin.
     """
+
     from_time: pd.Timestamp
     to_time: pd.Timestamp
 

@@ -35,6 +35,7 @@ class StationsHandlerProtocol(Protocol):
     """
     Protocole pour définir les méthodes de manipulation des stations.
     """
+
     def get_stations_geodataframe(
         self,
         filter_time_series: Collection[TimeSeriesProtocol] | None,
