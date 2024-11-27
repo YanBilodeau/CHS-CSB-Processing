@@ -27,6 +27,7 @@ class StationsHandlerABC(ABC):
     """
     Classe abstraite pour récupérer des données stations de marée.
     """
+
     def __init__(self, api: IWLSapiProtocol):
         """
         Initialisation de la classe abstraite `StationsHandlerABC`.

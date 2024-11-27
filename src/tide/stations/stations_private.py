@@ -23,6 +23,7 @@ class StationsHandlerPrivate(StationsHandlerABC):
     """
     Classe récupérer des données stations de l'API privé.
     """
+
     def __init__(self, api: IWLSapiProtocol):
         """
         Constructeur de la classe StationsHandlerPrivate.
