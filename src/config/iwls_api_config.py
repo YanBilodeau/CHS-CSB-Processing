@@ -35,6 +35,7 @@ class TimeSeriesConfig(BaseModel):
     :param wlo_qc_flag_filter: (list[str] | None) Les filtres de qualité à filtrer.
     :param buffer_time: (timedelta | None) Le temps de buffer à ajouter s'il manque des données pour l'interpolation.
     """
+
     priority: list[iwls.TimeSeries]
     max_time_gap: str | None
     threshold_interpolation_filling: str | None
@@ -78,6 +79,7 @@ class IWLSAPIConfig(BaseModel):
     :param time_series: (TimeSeriesConfig) La configuration des séries temporelles.
     :param profile: (iwls.APIProfile) Le profil actif de l'API.
     """
+
     dev: Optional[iwls.APIEnvironment]
     prod: Optional[iwls.APIEnvironment]
     public: Optional[iwls.APIEnvironment]
