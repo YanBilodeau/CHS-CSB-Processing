@@ -56,17 +56,17 @@ class BDBattribute(BaseModel):
     """
     Modèle de données pour un attribut BDB.
 
-    :param time_stamp: (datetime) Date et heure.
+    :param time_stamp: Date et heure.
     :type time_stamp: datetime
-    :param pltfrm: (str) Plateforme.
+    :param pltfrm: Plateforme.
     :type pltfrm: str
-    :param sdghdw: (str) Système de sondage.
+    :param sdghdw: Système de sondage.
     :type sdghdw: str
-    :param poshdw: (str) Système de positionnement.
+    :param poshdw: Système de positionnement.
     :type poshdw: str
-    :param bureau: (str) Bureau du fournisseur de données.
+    :param bureau: Bureau du fournisseur de données.
     :type bureau: str
-    :param restrn: (str) Restrictions de données.
+    :param restrn: Restrictions de données.
     :type restrn: str
     """
 
