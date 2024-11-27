@@ -36,7 +36,9 @@ def main():
 
     stations: iwls.Response = api.get_all_stations()  # Get all stations
 
-    station: iwls.Response = api.get_all_stations(code="02985")  # Get a specific station.
+    station: iwls.Response = api.get_all_stations(
+        code="02985"
+    )  # Get a specific station.
     # The code is the station code. See https://www.tides.gc.ca/en/stations for the station code.
     LOGGER.info(station)
 
@@ -65,7 +67,10 @@ def main():
 
     wlo_and_wlp: dict[iwls.TimeSeries, iwls.Response] = (
         api.get_time_series_data(  # Get multiple time series data
-            time_series=[iwls.TimeSeries.WLO, iwls.TimeSeries.WLP],  # List of TimeSeries
+            time_series=[
+                iwls.TimeSeries.WLO,
+                iwls.TimeSeries.WLP,
+            ],  # List of TimeSeries
             station=station_id,
             from_time=from_time,
             to_time=to_time,

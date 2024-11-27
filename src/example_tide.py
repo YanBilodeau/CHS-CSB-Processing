@@ -30,7 +30,6 @@ from tide.voronoi import (
 from config.iwls_api_config import (
     get_api_config,
     IWLSAPIConfig,
-    APIEnvironment,
     CONFIG_FILE,
 )
 
@@ -39,7 +38,7 @@ LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station")
 EXPORT: Path = Path(__file__).parent.parent / "TideFileExport"
 
 
-def get_iwls_environment(config: IWLSAPIConfig) -> APIEnvironment:
+def get_iwls_environment(config: IWLSAPIConfig) -> iwls.APIEnvironment:
     """
     Réccupère l'environnement de l'API IWLS à partir du fichier de configuration.
 
@@ -47,7 +46,7 @@ def get_iwls_environment(config: IWLSAPIConfig) -> APIEnvironment:
     :return: (APIEnvironment) Environnement de l'API IWLS.
     """
     activated_profile: iwls.EnvironmentType = config.profile.active
-    activated_environment: APIEnvironment = config.__dict__.get(activated_profile)
+    activated_environment: iwls.APIEnvironment = config.__dict__.get(activated_profile)
 
     LOGGER.debug(
         f"Chargement du profil '{config.profile.active}' pour l'API IWLS. [{activated_environment}]."
@@ -56,7 +55,7 @@ def get_iwls_environment(config: IWLSAPIConfig) -> APIEnvironment:
     return activated_environment
 
 
-def get_api(environment: APIEnvironment) -> IWLSapiProtocol:
+def get_api(environment: iwls.APIEnvironment) -> IWLSapiProtocol:
     """
     Récupère l'API IWLS à partir de l'environnement spécifié.
 
@@ -185,7 +184,7 @@ def main():
     iwls_config: IWLSAPIConfig = get_api_config(config_file=CONFIG_FILE)
 
     # Get the environment of the API IWLS from the configuration file and the active profile
-    api_environment: APIEnvironment = get_iwls_environment(config=iwls_config)
+    api_environment: iwls.APIEnvironment = get_iwls_environment(config=iwls_config)
     # Get the API IWLS from the environment
     api: IWLSapiProtocol = get_api(environment=api_environment)
 
