@@ -1,3 +1,9 @@
+"""
+Module qui contient les fonctions de nettoyage des données.
+
+Ce module contient les fonctions qui permettent de nettoyer les données en fonction de critères
+"""
+
 from typing import Collection, Optional, Callable, Any, Type
 
 import geopandas as gpd
@@ -5,13 +11,7 @@ from loguru import logger
 
 from .exception_tranformation import DataCleaningFunctionError
 from .transformation_models import DataFilterConfigProtocol
-from schema import (
-    DataLoggerSchema,
-    DEPTH_METER,
-    TIME_UTC,
-    LATITUDE_WGS84,
-    LONGITUDE_WGS84,
-)
+import schema
 
 LOGGER = logger.bind(name="CSB-Pipeline.Transformation.DataCleaning")
 
@@ -40,17 +40,18 @@ def clean_depth(
     :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame nettoyé.
     """
     LOGGER.debug(
-        f"Nettoyage des données de profondeur {[DEPTH_METER]}. "
+        f"Nettoyage des données de profondeur {[schema.DEPTH_METER]}. "
         f"Profondeur minimale : {min_depth}, profondeur maximale : {max_depth}."
     )
 
-    geodataframe: gpd.GeoDataFrame[DataLoggerSchema] = geodataframe[
-        geodataframe[DEPTH_METER].notna() & (geodataframe[DEPTH_METER] > min_depth)
+    geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
+        geodataframe[schema.DEPTH_METER].notna()
+        & (geodataframe[schema.DEPTH_METER] > min_depth)
     ]
 
     if max_depth is not None:
-        geodataframe: gpd.GeoDataFrame[DataLoggerSchema] = geodataframe[
-            geodataframe[DEPTH_METER] <= max_depth
+        geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
+            geodataframe[schema.DEPTH_METER] <= max_depth
         ]
 
     return geodataframe
@@ -63,10 +64,10 @@ def clean_time(geodataframe: gpd.GeoDataFrame, **kwargs) -> gpd.GeoDataFrame:
     :param geodataframe: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame.
     :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame nettoyé.
     """
-    LOGGER.debug(f"Nettoyage des données de temps {[TIME_UTC]}.")
+    LOGGER.debug(f"Nettoyage des données de temps {[schema.TIME_UTC]}.")
 
-    geodataframe: gpd.GeoDataFrame[DataLoggerSchema] = geodataframe[
-        geodataframe[TIME_UTC].notna()
+    geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
+        geodataframe[schema.TIME_UTC].notna()
     ]
 
     return geodataframe
@@ -87,14 +88,14 @@ def clean_latitude(
     :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame nettoyé.
     """
     LOGGER.debug(
-        f"Nettoyage des données de latitude {[LATITUDE_WGS84]}. "
+        f"Nettoyage des données de latitude {[schema.LATITUDE_WGS84]}. "
         f"Latitude minimale : {min_latitude}, latitude maximale : {max_latitude}."
     )
 
-    geodataframe: gpd.GeoDataFrame[DataLoggerSchema] = geodataframe[
-        geodataframe[LATITUDE_WGS84].notna()
-        & (geodataframe[LATITUDE_WGS84] >= min_latitude)
-        & (geodataframe[LATITUDE_WGS84] <= max_latitude)
+    geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
+        geodataframe[schema.LATITUDE_WGS84].notna()
+        & (geodataframe[schema.LATITUDE_WGS84] >= min_latitude)
+        & (geodataframe[schema.LATITUDE_WGS84] <= max_latitude)
     ]
 
     return geodataframe
@@ -115,14 +116,14 @@ def clean_longitude(
     :return: (gpd.GeoDataFrame[DataLoggerSchema]) Le GeoDataFrame nettoyé.
     """
     LOGGER.debug(
-        f"Nettoyage des données de longitude {[LONGITUDE_WGS84]}. "
+        f"Nettoyage des données de longitude {[schema.LONGITUDE_WGS84]}. "
         f"Longitude minimale : {min_longitude}, longitude maximale : {max_longitude}."
     )
 
-    geodataframe: gpd.GeoDataFrame[DataLoggerSchema] = geodataframe[
-        geodataframe[LONGITUDE_WGS84].notna()
-        & (geodataframe[LONGITUDE_WGS84] >= min_longitude)
-        & (geodataframe[LONGITUDE_WGS84] <= max_longitude)
+    geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
+        geodataframe[schema.LONGITUDE_WGS84].notna()
+        & (geodataframe[schema.LONGITUDE_WGS84] >= min_longitude)
+        & (geodataframe[schema.LONGITUDE_WGS84] <= max_longitude)
     ]
 
     return geodataframe
@@ -163,7 +164,7 @@ def clean_data(
 
             func = globals_[func]
 
-        geodataframe: gpd.GeoDataFrame[DataLoggerSchema] = func(
+        geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = func(
             geodataframe,
             min_latitude=data_filter.min_latitude if data_filter else MIN_LATITUDE,
             max_latitude=data_filter.max_latitude if data_filter else MAX_LATITUDE,

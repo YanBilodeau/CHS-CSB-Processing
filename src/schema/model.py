@@ -1,5 +1,7 @@
 """
-Ce module contient les schémas des données.
+Module qui contient les schémas des données.
+
+Ce module contient les schémas des données des DataLoggers.
 """
 
 import geopandas as gpd

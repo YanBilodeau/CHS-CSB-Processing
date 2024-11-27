@@ -1,3 +1,9 @@
+"""
+Module pour la configuration du navire.
+
+Ce module contient les classes et les fonctions pour la configuration du navire.
+"""
+
 from datetime import datetime
 from enum import StrEnum
 
@@ -27,6 +33,15 @@ class AxisConvention(StrEnum):
 
 
 class Sensor(BaseModel):
+    """
+    Modèle de données pour un capteur.
+
+    :param time_stamp: (datetime) Date et heure.
+    :param x: (float) Bras de levier X.
+    :param y: (float) Bras de levier Y.
+    :param z: (float) Bras de levier Z.
+    """
+
     time_stamp: datetime
     x: float
     y: float
@@ -34,6 +49,17 @@ class Sensor(BaseModel):
 
 
 class BDBattribute(BaseModel):
+    """
+    Modèle de données pour un attribut BDB.
+
+    :param time_stamp: (datetime) Date et heure.
+    :param pltfrm: (str) Plateforme.
+    :param sdghdw: (str) Système de sondage.
+    :param poshdw: (str) Système de positionnement.
+    :param bureau: (str) Bureau du fournisseur de données.
+    :param restrn: (str) Restrictions de données.
+    """
+
     time_stamp: datetime
     pltfrm: str
     sdghdw: str
@@ -43,16 +69,40 @@ class BDBattribute(BaseModel):
 
 
 class Waterline(BaseModel):
+    """
+    Modèle de données pour une ligne d'eau.
+
+    :param time_stamp: (datetime) Date et heure.
+    :param z: (float) Bras de levier Z.
+    """
     time_stamp: datetime
     z: float
 
 
 class SoundSpeedProfile(BaseModel):
+    """
+    Modèle de données pour un profil de vitesse du son.
+
+    :param time_stamp: (datetime) Date et heure.
+    :param ssp: (bool) True si le profil de vitesse du son est appliqué.
+    """
     time_stamp: datetime
     ssp: bool
 
 
 class VesselConfig(BaseModel):
+    """
+    Modèle de données pour la configuration du navire.
+
+    :param id: (str) Identifiant du navire.
+    :param axis_convention: (AxisConvention) Convention d'axes.
+    :param navigation: (list[Sensor]) Liste des données de navigation.
+    :param motion: (list[Sensor]) Liste des données de mouvement.
+    :param sounder: (list[Sensor]) Liste des données du sondeur.
+    :param waterline: (list[Waterline]) Liste des données de ligne d'eau.
+    :param ssp_applied: (list[SoundSpeedProfile]) Liste des données de profil de vitesse du son appliqué.
+    :param attribute: (list[BDBattribute]) Liste des données d'attribut.
+    """
     id: str
     axis_convention: AxisConvention
     navigation: list[Sensor]

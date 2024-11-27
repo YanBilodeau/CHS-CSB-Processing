@@ -1,5 +1,3 @@
 """
-Module de configuration.
-
-Ce module contient les configurations nécessaires pour l'application.
+Ce package contient les configurations nécessaires pour l'application.
 """

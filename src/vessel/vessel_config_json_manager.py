@@ -1,3 +1,9 @@
+"""
+Module permettant de gérer la configuration des navires à partir d'un fichier JSON.
+
+Ce module contient la classe VesselConfigJsonManager qui permet de gérer la configuration des navires à partir d'un fichier JSON.
+"""
+
 from datetime import datetime
 import json
 from pathlib import Path
@@ -17,7 +23,15 @@ LOGGER = logger.bind(name="CSB-Pipeline.VesselConfigManager.JSON")
 
 
 class VesselConfigJsonManager(VesselConfigManagerABC):
+    """
+    Classe permettant de gérer la configuration des navires à partir d'un fichier JSON.
+    """
     def __init__(self, json_config_path: Path):
+        """
+        Initialisation du gestionnaire de configuration des navires à partir d'un fichier JSON.
+
+        :param json_config_path: (Path) Chemin du fichier JSON.
+        """
         super().__init__()
         self._vessel_configs = self._load_vessel_configs_file(
             json_config_path=json_config_path

@@ -1,3 +1,9 @@
+"""
+Module contenant la classe abstraite VesselConfigManagerABC.
+
+Ce module contient la classe abstraite VesselConfigManagerABC qui définit les méthodes pour gérer la configuration des navires.
+"""
+
 from abc import ABC, abstractmethod
 
 from loguru import logger
@@ -8,7 +14,15 @@ LOGGER = logger.bind(name="CSB-Pipeline.VesselConfigManager.ABC")
 
 
 class VesselConfigManagerABC(ABC):
+    """
+    Classe abstraite définissant les méthodes pour gérer la configuration des navires.
+    """
     def __init__(self, **kwargs):
+        """
+        Initialisation du gestionnaire de configuration des navires.
+
+        :param kwargs: (dict) Clé - valeur.
+        """
         LOGGER.debug(
             f"Initialisation du gestionnaire de configuration des navires : {self.__class__.__name__}."
         )

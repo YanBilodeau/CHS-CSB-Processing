@@ -1,5 +1,5 @@
 """
-Ce module contient les schémas des données.
+Ce package contient les schémas des données.
 """
 
 from .model import DataLoggerSchema, validate_schema

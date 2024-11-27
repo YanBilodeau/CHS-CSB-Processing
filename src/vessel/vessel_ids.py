@@ -1,3 +1,7 @@
+"""
+Ce module contient les constantes utilisées pour les identifiants des navires.
+"""
+
 from typing import LiteralString
 
 # Constantes pour VesselCongig
