@@ -1,3 +1,9 @@
+"""
+Module de gestion de la factory de stations.
+
+Ce module contient la classe StationsHandlerFactory qui permet de récupérer la factory de stations en fonction du type d'endpoint.
+"""
+
 from loguru import logger
 
 from .stations_abc import StationsHandlerABC
@@ -18,6 +24,12 @@ STATIONS_FACTORY: dict[EndpointTypeProtocol, type[StationsHandlerABC]] = {
 def get_stations_factory(
     enpoint_type: EndpointTypeProtocol,
 ) -> type[StationsHandlerABC]:
+    """
+    Récupère la factory de stations en fonction du type d'endpoint.
+
+    :param enpoint_type: (EndpointTypeProtocol) Type d'endpoint.
+    :return: (type[StationsHandlerABC]) Factory de stations
+    """
     LOGGER.debug(
         f"Récupération de la factory de stations pour le endpoint '{enpoint_type}'."
     )

@@ -1,3 +1,9 @@
+"""
+Module pour récupérer des données des stations de l'API privé.
+
+Ce module contient la classe StationsHandlerPrivate qui permet de récupérer les données des stations de l'API privé.
+"""
+
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, UTC
 from itertools import repeat
@@ -14,7 +20,15 @@ LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station.Private")
 
 
 class StationsHandlerPrivate(StationsHandlerABC):
+    """
+    Classe récupérer des données stations de l'API privé.
+    """
     def __init__(self, api: IWLSapiProtocol):
+        """
+        Constructeur de la classe StationsHandlerPrivate.
+
+        :param api: (IWLSapiProtocol) Instance de l'API.
+        """
         super().__init__(api=api)
 
     @staticmethod

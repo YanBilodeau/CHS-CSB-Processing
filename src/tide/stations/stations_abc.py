@@ -1,3 +1,9 @@
+"""
+Module ABC récupérer des données des stations de marée.
+
+Ce module contient la classe abstraite `StationsHandlerABC` qui définit les méthodes pour récupérer les données stations de marée.
+"""
+
 from abc import ABC, abstractmethod
 from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta, datetime
@@ -18,13 +24,26 @@ LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station.ABC")
 
 
 class StationsHandlerABC(ABC):
+    """
+    Classe abstraite pour récupérer des données stations de marée.
+    """
     def __init__(self, api: IWLSapiProtocol):
+        """
+        Initialisation de la classe abstraite `StationsHandlerABC`.
+
+        :param api: (IWLSapiProtocol) API pour récupérer les données des stations.
+        """
         LOGGER.debug(f"Initialisation d'un objet {self.__class__.__name__}.")
 
         self.api: IWLSapiProtocol = api
 
     @property
     def stations(self) -> list[dict]:
+        """
+        Récupère la liste des stations.
+
+        :return: (list[dict]) Liste des stations.
+        """
         stations: ResponseProtocol = self.api.get_all_stations()
 
         if not stations.is_ok:

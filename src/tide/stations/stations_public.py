@@ -1,3 +1,9 @@
+"""
+Module pour récupérer des données des stations de l'API public.
+
+Ce module contient la classe StationsHandlerPublic qui permet de récupérer des données des stations de l'API public.
+"""
+
 from datetime import datetime
 from typing import Optional, Collection
 
@@ -12,7 +18,15 @@ LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station.Public")
 
 
 class StationsHandlerPublic(StationsHandlerABC):
+    """
+    Classe récupérer des données des stations de l'API public.
+    """
     def __init__(self, api: IWLSapiProtocol):
+        """
+        Constructeur de la classe StationsHandlerPublic.
+
+        :param api: (IWLSapiProtocol) Instance de l'API.
+        """
         super().__init__(api=api)
 
     @staticmethod

@@ -1,3 +1,9 @@
+"""
+Module permettant de gérer un cache pour les données des stations de marées.
+
+Ce module contient les fonctions suivantes qui permettent de gérer un cache pour les données des stations de marées.
+"""
+
 from functools import wraps
 from pathlib import Path
 
@@ -10,9 +16,28 @@ CACHE: Cache = Cache(str(Path(__file__).parent / "cache"))
 
 
 def cache_result(ttl: int = 86400):
+    """
+    Décorateur pour mettre en cache le résultat d'une fonction.
+
+    :param ttl: (int) Durée de vie du cache en secondes.
+    """
+
     def decorator(func):
+        """
+        Décorateur pour mettre en cache le résultat d'une fonction.
+
+        :param func: Fonction à décorer.
+        """
+
         @wraps(func)
         def wrapper(*args, **kwargs):
+            """
+            Fonction pour mettre en cache le résultat d'une fonction.
+
+            :param args: Arguments de la fonction.
+            :param kwargs: Arguments nommés de la fonction
+
+            """
             cache_key = f"{func.__name__}_{args}_{kwargs}"
 
             if cache_key in CACHE:
@@ -35,7 +60,7 @@ def cache_result(ttl: int = 86400):
 
 def clear_cache():
     """
-    Vide le cache.
+    Fonction pour vider le cache.
     """
     CACHE.clear()
     LOGGER.debug("Le cache a été vidé.")

@@ -1,3 +1,7 @@
+"""
+Ce package contient les classes et fonctions permettant de gérer les stations marégraphiques.
+"""
+
 from .exception_stations import StationsError
 from .factory_stations import get_stations_factory
 from .stations_abc import StationsHandlerABC
