@@ -1,3 +1,7 @@
+"""
+Ce module contient les constantes pour les identifiants des modèles de données.
+"""
+
 # Constantes pour les noms des colonnes des données du schéma de données DataLoggerSchema.
 TIME_UTC: str = "Time_UTC"
 DEPTH_METER: str = "Depth_meter"

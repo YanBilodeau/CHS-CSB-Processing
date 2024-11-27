@@ -43,6 +43,7 @@ class DataParserLowrance(DataParserABC):
     """
     Classe permettant de parser les données de type Lowrance.
     """
+
     def read(self, file: Path, dtype_dict: dict[str, str] = None) -> gpd.GeoDataFrame:
         """
         Méthode permettant de lire un fichier brut et retourne un geodataframe.
@@ -127,7 +128,9 @@ class DataParserLowrance(DataParserABC):
         :param data: (gpd.GeoDataFrame) Le geodataframe à transformer.
         :return: (gpd.GeoDataFrame) Le geodataframe transformé.
         """
-        LOGGER.debug(f"Conversion des pieds en mètres de la colonne '{schema.DEPTH_METER}'.")
+        LOGGER.debug(
+            f"Conversion des pieds en mètres de la colonne '{schema.DEPTH_METER}'."
+        )
         data[schema.DEPTH_METER] = data[schema.DEPTH_METER] * 0.3048
 
         return data

@@ -42,6 +42,7 @@ class DataParserBCDB(DataParserABC):
     """
     Classe permettant de parser les données de type DCDB.
     """
+
     def read(self, file: Path, dtype_dict: dict[str, str] = None) -> gpd.GeoDataFrame:
         """
         Méthode permettant de lire un fichier brut et retourne un geodataframe.
