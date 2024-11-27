@@ -11,37 +11,40 @@ from typing import Protocol, Optional
 class EndpointTypeProtocol(Protocol):
     """
     Protocole pour définir les types des endpoints.
-
-    :param PUBLIC: Endpoint public.
-    :param PRIVATE_PROD: Endpoint privé de production.
-    :param PRIVATE_DEV: Endpoint privé de développement
     """
 
     PUBLIC: str = "EndpointPublic"
+    """Endpoint public."""
     PRIVATE_PROD: str = "EndpointPrivateProd"
+    """Endpoint privé de production."""
     PRIVATE_DEV: str = "EndpointPrivateDev"
+    """Endpoint privé de développement."""
 
 
 class TimeSeriesProtocol(Protocol):
     """
     Protocole pour définir les types des séries temporelles.
-
-    :param WLO: Water Level Observed.
-    :param WLF_SPINE: Water Level Forecast Spine.
-    :param WLF_VTG: Water Level Forecast VTG.
-    :param WLF: Water Level Forecast.
-    :param WLP: Water Level Prediction.
     """
 
     WLO: str = "wlo"
+    """Water Level Observed."""
     WLF_SPINE: str = "wlf-spine"
+    """Water Level Forecast Spine."""
     WLF_VTG: str = "wlf-vtg"
+    """Water Level Forecast VTG."""
     WLF: str = "wlf"
+    """Water Level Forecast."""
     WLP: str = "wlp"
+    """Water Level Prediction."""
 
-    def from_str(cls, value: str):
+    def from_str(cls, value: str) -> "TimeSeriesProtocol":
         """
         Méthode pour convertir une chaîne de caractères en série temporelle.
+
+        :param value: Chaîne de caractères.
+        :type value: str
+        :return: Série temporelle.
+        :rtype: TimeSeriesProtocol
         """
         pass
 
@@ -49,19 +52,18 @@ class TimeSeriesProtocol(Protocol):
 class ResponseProtocol(Protocol):
     """
     Protocole pour définir les types des réponses des API.
-
-    status_code: (int) Code de statut de la réponse.
-    is_ok: (bool) Indique si la réponse est valide.
-    message: (str) Message de la réponse.
-    error: (str) Erreur de la réponse.
-    data: (list[dict]) Données de la réponse.
     """
 
     status_code: int
+    """Code de statut de la réponse."""
     is_ok: bool
+    """Indique si la réponse est valide."""
     message: str
+    """Message de la réponse."""
     error: str
+    """Erreur de la réponse."""
     data: list[dict]
+    """Données de la réponse."""
 
 
 class IWLSapiProtocol(Protocol):
@@ -73,7 +75,8 @@ class IWLSapiProtocol(Protocol):
         """
         Méthode pour récupérer toutes les stations.
 
-        :return: (ResponseProtocol) Réponse de la requête.
+        :return: Réponse de la requête.
+        :rtype: ResponseProtocol
         """
         pass
 
@@ -81,8 +84,10 @@ class IWLSapiProtocol(Protocol):
         """
         Méthode pour récupérer les séries temporelles d'une station.
 
-        :param station: (str) Code de la station.
-        :return: (ResponseProtocol) Réponse de la requête.
+        :param station: Code de la station.
+        :type station: str
+        :return: Réponse de la requête.
+        :rtype: ResponseProtocol
         """
         pass
 
@@ -90,8 +95,10 @@ class IWLSapiProtocol(Protocol):
         """
         Méthode pour récupérer les métadonnées d'une station.
 
-        :param station: (str) Code de la station.
-        :return: (ResponseProtocol) Réponse de la requête.
+        :param station: Code de la station.
+        :type station: str
+        :return: Réponse de la requête.
+        :rtype: ResponseProtocol
         """
         pass
 
@@ -108,12 +115,19 @@ class IWLSapiProtocol(Protocol):
         """
         Méthode pour récupérer les données d'une série temporelle.
 
-        :param station: (str) Code de la station.
-        :param from_time: (str) Date de début.
-        :param to_time: (str) Date de fin.
-        :param time_serie_code: (TimeSeriesProtocol) Code de la série temporelle.
-        :param time_delta: (timedelta) Intervalle de temps.
-        :param datetime_sorted: (bool) Indique si les données sont triées par date.
-        :return: (ResponseProtocol) Réponse de la requête.
+        :param station: Code de la station.
+        :type station: str
+        :param from_time: Date de début.
+        :type from_time: str
+        :param to_time: Date de fin.
+        :type to_time: str
+        :param time_serie_code: Code de la série temporelle.
+        :type time_serie_code: Optional[TimeSeriesProtocol]
+        :param time_delta: Intervalle de temps.
+        :type time_delta: timedelta
+        :param datetime_sorted: Indique si les données sont triées par date.
+        :type datetime_sorted: bool
+        :return: Réponse de la requête.
+        :rtype: ResponseProtocol
         """
         pass

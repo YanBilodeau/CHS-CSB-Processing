@@ -114,7 +114,7 @@ class DataParserABC(ABC):
 
         :param files: Les fichiers à lire.
         :type files: Collection[Path]
-        :return:Un GeoDataFrame.
+        :return: Un GeoDataFrame.
         :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(

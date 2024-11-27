@@ -18,8 +18,10 @@ def create_scatter_traces(dataframe: pd.DataFrame) -> list[go.Scatter]:
     """
     Crée une liste de traces de type Scatter pour chaque série temporelle.
 
-    :param dataframe: (pd.DataFrame) Le DataFrame de la série temporelle.
-    :return: (list[go.Scatter]) La liste des traces Scatter.
+    :param dataframe: Le DataFrame de la série temporelle.
+    :type dataframe: pd.DataFrame
+    :return: La liste des traces Scatter.
+    :rtype: list[go.Scatter]
     """
     return [
         go.Scatter(
@@ -39,8 +41,10 @@ def add_traces(fig: go.Figure, dataframes: Collection[pd.DataFrame]) -> None:
     """
     Ajoute les traces Scatter pour chaque série temporelle dans la figure.
 
-    :param fig: (go.Figure) La figure Plotly.
-    :param dataframes: (Collection[pd.DataFrame]) La collection de DataFrames.
+    :param fig: La figure Plotly.
+    :type fig: go.Figure
+    :param dataframes: La collection de DataFrames.
+    :type dataframes: Collection[pd.DataFrame]
     """
     for index, dataframe in enumerate(dataframes):
         for trace in create_scatter_traces(dataframe=dataframe):
@@ -51,7 +55,8 @@ def create_annotations() -> list[dict]:
     """
     Crée une liste d'annotations pour le graphique.
 
-    :return: (list[dict]) La liste des annotations.
+    :return: La liste des annotations.
+    :rtype: list[dict]
     """
     return [
         dict(
@@ -86,12 +91,18 @@ def create_buttons(
     """
     Crée une liste de boutons pour le menu déroulant.
 
-    :param fig: (go.Figure) La figure Plotly.
-    :param dataframes: (Collection[pd.DataFrame]) La collection de DataFrames.
-    :param titles: (Collection[str]) Les titres des graphiques.
-    :param x_label: (str) Le titre de l'axe des x.
-    :param y_label: (str) Le titre de l'axe des y.
-    :return: (list[dict]) La liste des boutons.
+    :param fig: La figure Plotly.
+    :type fig: go.Figure
+    :param dataframes:La collection de DataFrames.
+    :type dataframes: Collection[pd.DataFrame]
+    :param titles: Les titres des graphiques.
+    :type titles: Collection[str]
+    :param x_label: Le titre de l'axe des x.
+    :type x_label: str
+    :param y_label: Le titre de l'axe des y.
+    :type y_label: str
+    :return: La liste des boutons.
+    :rtype: list[dict]
     """
     buttons = []
 
@@ -133,9 +144,12 @@ def set_initial_visibility(
     """
     Définit la visibilité initiale des traces pour chaque série temporelle.
 
-    :param fig: (go.Figure) La figure Plotly.
-    :param dataframes: (Collection[pd.DataFrame]) La collection de DataFrames.
-    :return: (list[bool]) La liste de visibilité initiale.
+    :param fig: La figure Plotly.
+    :type fig: go.Figure
+    :param dataframes: La collection de DataFrames.
+    :type dataframes: Collection[pd.DataFrame]
+    :return: La liste de visibilité initiale.
+    :rtype: list[bool]
     """
     initial_visibility = [False] * len(fig.data)
     for j in range(len(dataframes[0]["time_serie_code"].unique())):
@@ -155,12 +169,18 @@ def update_layout(
     """
     Met à jour la mise en page de la figure.
 
-    :param fig: (go.Figure) La figure Plotly.
-    :param buttons: (list[dict]) La liste des boutons.
-    :param x_label: (str) Le titre de l'axe des x.
-    :param y_label: (str) Le titre de l'axe des y.
-    :param title: (str) Le titre du graphique.
-    :param template: (str) Le template du graphique.
+    :param fig: La figure Plotly.
+    :type fig: go.Figure
+    :param buttons: La liste des boutons.
+    :type buttons: list[dict]
+    :param x_label: Le titre de l'axe des x.
+    :type x_label: str
+    :param y_label: Le titre de l'axe des y.
+    :type y_label: str
+    :param title: Le titre du graphique.
+    :type title: str
+    :param template: Le template du graphique.
+    :type template: str
     """
     fig.update_layout(
         updatemenus=[
@@ -200,13 +220,20 @@ def plot_time_series_dataframe(
     """
     Fonction qui affiche un graphique de la série temporelle avec un menu déroulant.
 
-    :param dataframes: (Collection[pd.DataFrame]) Le DataFrame de la série temporelle.
-    :param titles: (Sequence[str]) Le titre du graphique.
-    :param x_label: (str) Le titre de l'axe des x.
-    :param y_label: (str) Le titre de l'axe des y.
-    :param output_path: (Path) Le chemin du fichier de sortie.
-    :param show_plot: (bool) Afficher le graphique.
-    :param template: (str) Le template du graphique.
+    :param dataframes: Le DataFrame de la série temporelle.
+    :type dataframes: Collection[pd.DataFrame]
+    :param titles: Le titre du graphique.
+    :type titles: Sequence[str]
+    :param x_label: Le titre de l'axe des x.
+    :type x_label: str
+    :param y_label: Le titre de l'axe des y.
+    :type y_label: str
+    :param output_path: Le chemin du fichier de sortie.
+    :type output_path: Optional[Path]
+    :param show_plot: Afficher le graphique.
+    :type show_plot: bool
+    :param template: Le template du graphique.
+    :type template: str
     """
     if not dataframes:
         raise ValueError("Aucun DataFrame n'a été fourni.")

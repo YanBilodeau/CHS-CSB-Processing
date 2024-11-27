@@ -58,8 +58,10 @@ def validate_schema(
     """
     Valide le schéma des stations.
 
-    :param df: (gpd.GeoDataFrame | DataFrame) Les stations.
-    :param schema: (GeoDataFrameSchema) Le schéma.
+    :param df: Les stations.
+    :type df: gpd.GeoDataFrame | DataFrame
+    :param schema: Le schéma.
+    :type schema: type[pa.DataFrameModel]
     """
     try:
         LOGGER.debug(f"Validation du schéma {schema}.")

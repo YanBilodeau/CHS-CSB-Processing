@@ -6,6 +6,7 @@ Ce module contient les fonctions suivantes qui permettent de gérer un cache pou
 
 from functools import wraps
 from pathlib import Path
+from typing import Callable
 
 from diskcache import Cache
 from loguru import logger
@@ -19,14 +20,16 @@ def cache_result(ttl: int = 86400):
     """
     Décorateur pour mettre en cache le résultat d'une fonction.
 
-    :param ttl: (int) Durée de vie du cache en secondes.
+    :param ttl: Durée de vie du cache en secondes.
+    :type ttl: int
     """
 
-    def decorator(func):
+    def decorator(func: Callable):
         """
         Décorateur pour mettre en cache le résultat d'une fonction.
 
         :param func: Fonction à décorer.
+        :type func: Callable
         """
 
         @wraps(func)
@@ -35,7 +38,9 @@ def cache_result(ttl: int = 86400):
             Fonction pour mettre en cache le résultat d'une fonction.
 
             :param args: Arguments de la fonction.
+            :type args: tuple
             :param kwargs: Arguments nommés de la fonction
+            :type kwargs: dict
 
             """
             cache_key = f"{func.__name__}_{args}_{kwargs}"

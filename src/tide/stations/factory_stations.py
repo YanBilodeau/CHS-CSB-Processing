@@ -27,8 +27,10 @@ def get_stations_factory(
     """
     Récupère la factory de stations en fonction du type d'endpoint.
 
-    :param enpoint_type: (EndpointTypeProtocol) Type d'endpoint.
-    :return: (type[StationsHandlerABC]) Factory de stations
+    :param enpoint_type: Type d'endpoint.
+    :type enpoint_type: EndpointTypeProtocol
+    :return: Factory de stations
+    :rtype: type[StationsHandlerABC]
     """
     LOGGER.debug(
         f"Récupération de la factory de stations pour le endpoint '{enpoint_type}'."
