@@ -36,7 +36,7 @@ from config.iwls_api_config import (
 
 LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station")
 
-EXPORT: Path = Path(__file__).parent / "TideFileExport"
+EXPORT: Path = Path(__file__).parent.parent / "TideFileExport"
 
 
 def get_iwls_environment(config: IWLSAPIConfig) -> APIEnvironment:

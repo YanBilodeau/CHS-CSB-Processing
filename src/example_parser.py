@@ -15,7 +15,7 @@ from config.data_config import get_data_config, DataFilterConfig
 LOGGER = logger.bind(name="Example.Parser")
 
 ROOT: Path = Path(__file__).parent
-EXPORT: Path = ROOT / "DataLogger"
+EXPORT: Path = ROOT.parent / "DataLogger"
 
 
 def get_ofm_files() -> tuple[list[Path], Type[DataParserABC]]:
