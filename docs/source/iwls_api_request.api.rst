@@ -1,6 +1,14 @@
 iwls\_api\_request.api package
 ==============================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   iwls_api_request.api.endpoint
+
 Submodules
 ----------
 
@@ -8,14 +16,6 @@ iwls\_api\_request.api.datetime\_utils module
 ---------------------------------------------
 
 .. automodule:: iwls_api_request.api.datetime_utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-iwls\_api\_request.api.endpoint module
---------------------------------------
-
-.. automodule:: iwls_api_request.api.endpoint
    :members:
    :undoc-members:
    :show-inheritance:
