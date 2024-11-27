@@ -11,7 +11,7 @@ from loguru import logger
 
 from . import ids_iwls as ids
 from .datetime_utils import split_time
-from .endpoint import Endpoint, EndpointPrivateProd, EndpointPrivateDev, EndpointPublic
+from .endpoint import Endpoint
 from .exceptions_iwls import CoordinatesError
 from .models_api import Regions, TimeSeries, TypeTideTable
 from ..handler.http_query_handler import HTTPQueryHandler, Response
@@ -29,8 +29,14 @@ class IWLSapiABC(ABC):
     def __init__(
         self,
         query_handler: HTTPQueryHandler,
-        endpoint: EndpointPrivateDev | EndpointPrivateProd | EndpointPublic | Endpoint,
-    ):
+        endpoint: Endpoint,
+    ) -> None:
+        """
+        Constructeur de la classe IWLSapiABC.
+
+        :param query_handler: (HTTPQueryHandler) Un objet HTTPQueryHandler.
+        :param endpoint: (Endpoint) Un objet Endpoint.
+        """
         self.endpoint = endpoint
         self._query_handler = query_handler
 
