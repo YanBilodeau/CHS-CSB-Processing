@@ -37,7 +37,7 @@ class EndpointPrivateDev(EndpointPrivate):
     Classe pour les points d'entrés de l'API privée de développement.
     """
 
-    API: str = ""
+    API: str = r"https://intra-api.dev.iwls-sine.azure.cloud-nuage.dfo-mpo.gc.ca/rest/"
     TYPE: EndpointType = EndpointType.PRIVATE_DEV
 
 
@@ -47,5 +47,5 @@ class EndpointPrivateProd(EndpointPrivate):
     Classe pour les points d'entrés de l'API privée de production.
     """
 
-    API: str = ""
+    API: str = r"https://intra-api.iwls-sine.azure.cloud-nuage.dfo-mpo.gc.ca/rest/"
     TYPE: EndpointType = EndpointType.PRIVATE_PROD

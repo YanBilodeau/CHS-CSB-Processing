@@ -16,6 +16,7 @@ class DataCleaningFunctionError(Exception):
     """
 
     function: str
+    """La fonction de nettoyage."""
 
     def __str__(self):
         return f"La fonction de nettoyage '{self.function}' n'existe pas."

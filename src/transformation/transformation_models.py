@@ -20,8 +20,14 @@ class DataFilterConfigProtocol(Protocol):
     """
 
     min_latitude: int | float
+    """La latitude minimale."""
     max_latitude: int | float
+    """La latitude maximale."""
     min_longitude: int | float
+    """La longitude minimale."""
     max_longitude: int | float
+    """La longitude maximale."""
     min_depth: int | float
+    """La profondeur minimale."""
     max_depth: Optional[int | float]
+    """La profondeur maximale."""
