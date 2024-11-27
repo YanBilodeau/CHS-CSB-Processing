@@ -21,11 +21,14 @@ release = "0.1.0"
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    "sphinx.ext.autodoc",
-    "sphinx.ext.viewcode",
-    "sphinx.ext.todo",
-    "sphinx.ext.githubpages",
-    "sphinx.ext.intersphinx",
+    "sphinx.ext.autodoc",  # Permet de générer la documentation à partir des docstrings
+    "sphinx.ext.viewcode",  # Permet de générer des liens vers le code source
+    "sphinx.ext.todo",  # Permet de générer des listes de tâches
+    "sphinx.ext.githubpages",  # Permet de générer des liens vers les pages GitHub
+    "sphinx.ext.intersphinx",  # Permet de générer des liens vers d'autres documentations
+    "sphinx.ext.graphviz",  # Permet de générer des graphiques
+    "sphinx.ext.autosummary",  # Permet de générer des résumés de documentation
+    "sphinx.ext.inheritance_diagram",  # Permet de générer des diagrammes d'héritage
 ]
 
 templates_path = ["_templates"]
@@ -50,11 +53,14 @@ html_js_files = [
 # -- Options for autodoc -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html
 
-# autodoc_default_options = {
-#     'members': True,
-#     'member-order': 'bysource',
-#     'special-members': '__init__',
-#     'undoc-members': True,
-#     'exclude-members': '__weakref__',
-#     'show-inheritance': True,
-# }
+autodoc_default_options = {
+    "members": True,
+    "undoc-members": True,
+    "show-inheritance": True,
+    "inherited-members": False,
+    "member-order": "groupwise",
+    "special-members": "__init__",
+    "inheritance-diagram": True,
+    "private-members": True,
+    "exclude-members": "_abc_impl, model_computed_fields, model_config, model_fields",
+}
