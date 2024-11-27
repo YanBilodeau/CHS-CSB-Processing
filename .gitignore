@@ -165,6 +165,7 @@ cython_debug/
 Sphinx.txt
 composite_RDL_2024_ALL.n2kdecoded.csv
 endpoint_private.py
+endpoint_private.py.bck
 iwls_private.py
 TideFileExport/
 cache/
