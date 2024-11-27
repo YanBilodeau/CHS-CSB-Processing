@@ -44,14 +44,6 @@ iwls\_api\_request.api.iwls\_api\_abc module
    :undoc-members:
    :show-inheritance:
 
-iwls\_api\_request.api.iwls\_private module
--------------------------------------------
-
-.. automodule:: iwls_api_request.api.iwls_private
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 iwls\_api\_request.api.iwls\_public module
 ------------------------------------------
 
