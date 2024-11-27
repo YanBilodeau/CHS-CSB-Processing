@@ -22,7 +22,8 @@ class VesselConfigManagerABC(ABC):
         """
         Initialisation du gestionnaire de configuration des navires.
 
-        :param kwargs: (dict) Clé - valeur.
+        :param kwargs: Dictionnaire des paramètres.
+        :type kwargs: dict
         """
         LOGGER.debug(
             f"Initialisation du gestionnaire de configuration des navires : {self.__class__.__name__}."
@@ -33,8 +34,10 @@ class VesselConfigManagerABC(ABC):
         """
         Méthode permettant de récupérer la configuration d'un navire.
 
-        :param vessel_id: (str) Identifiant du navire.
-        :return: (VesselConfig) Configuration du navire.
+        :param vessel_id: Identifiant du navire.
+        :type vessel_id: str
+        :return: Configuration du navire.
+        :rtype: VesselConfig
         """
         pass
 
@@ -43,7 +46,8 @@ class VesselConfigManagerABC(ABC):
         """
         Méthode permettant de récupérer la configuration de tous les navires.
 
-        :return: (list[VesselConfig]) Configurations des navires.
+        :return: Configurations des navires.
+        :rtype: list[VesselConfig]
         """
         pass
 
@@ -52,7 +56,8 @@ class VesselConfigManagerABC(ABC):
         """
         Méthode permettant d'ajouter la configuration d'un navire.
 
-        :param vessel_config: (VesselConfig) Configuration du navire.
+        :param vessel_config: Configuration du navire.
+        :type vessel_config: VesselConfig
         """
         pass
 
@@ -61,8 +66,10 @@ class VesselConfigManagerABC(ABC):
         """
         Méthode permettant de mettre à jour la configuration d'un navire.
 
-        :param vessel_id: (str) Identifiant du navire.
-        :param vessel_config: (VesselConfig) Configuration du navire.
+        :param vessel_id: Identifiant du navire.
+        :type vessel_id: str
+        :param vessel_config: Configuration du navire.
+        :type vessel_config: Vessel
         """
         pass
 
@@ -71,7 +78,8 @@ class VesselConfigManagerABC(ABC):
         """
         Méthode permettant de supprimer la configuration d'un navire.
 
-        :param vessel_id: (str) Identifiant du navire.
+        :param vessel_id: Identifiant du navire.
+        :type vessel_id: str
         """
         pass
 
@@ -79,5 +87,8 @@ class VesselConfigManagerABC(ABC):
     def commit_vessel_configs(self, **kwargs) -> None:
         """
         Méthode permettant de sauvegarder les configurations des navires.
+
+        :param kwargs: Dictionnaire des paramètres.
+        :type kwargs: dict
         """
         pass

@@ -21,15 +21,16 @@ LOGGER = logger.bind(name="CSB-Pipeline.VesselConfig.BaseModel")
 class AxisConvention(StrEnum):
     """
     Enumération des conventions d'axes.
+    """
 
-    CARIS (str): The X-Y-Z fields set the location from the Reference Point (0). The Reference Point is the point on
-        the vessel where the X, Y, and Z axes intersect. The X, Y, and Z fields are defined as follows:
+    CARIS: str = ids.CARIS
+    """
+    The X-Y-Z fields set the location from the Reference Point (0). The Reference Point is the point on
+    the vessel where the X, Y, and Z axes intersect. The X, Y, and Z fields are defined as follows:
         •X: The athwart-ship distance of the sensor, positive to starboard.
         •Y: The along-ship distance of the sensor, positive to the bow.
         •Z: The vertical distance of the sensor, positive into the water.
     """
-
-    CARIS: str = ids.CARIS
 
 
 class Sensor(BaseModel):
@@ -147,13 +148,13 @@ class VesselConfig(BaseModel):
     axis_convention: AxisConvention
     """Convention des axes."""
     navigation: list[Sensor]
-    """Données de navigation."""
+    """Données des bras de levier du capteur de navigation."""
     motion: list[Sensor]
-    """Données de mouvement."""
+    """Données des bras de levier du capteur de mouvement."""
     sounder: list[Sensor]
-    """Données du sondeur."""
+    """Données des bras de levier du sondeur."""
     waterline: list[Waterline]
-    """Données de ligne d'eau."""
+    """Données des bras de levier de la ligne d'eau."""
     ssp_applied: list[SoundSpeedProfile]
     """Données de profil de vitesse du son appliqué."""
     attribute: list[BDBattribute]

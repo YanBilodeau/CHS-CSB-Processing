@@ -31,7 +31,8 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
         """
         Initialisation du gestionnaire de configuration des navires à partir d'un fichier JSON.
 
-        :param json_config_path: (Path) Chemin du fichier JSON.
+        :param json_config_path: Chemin du fichier JSON.
+        :type json_config_path: Path
         """
         super().__init__()
         self._vessel_configs = self._load_vessel_configs_file(
@@ -43,8 +44,12 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
         """
         Méthode permettant de charger la configuration des navires depuis un fichier JSON.
 
-        :param json_config_path: (Path) Chemin du fichier JSON.
-        :return: (dict[str, VesselConfigDict]) Les configurations des navires.
+        :param json_config_path: Chemin du fichier JSON.
+        :type json_config_path: Path
+        :return: Les configurations des navires.
+        :type: dict[str, VesselConfigDict]
+        :return: Configurations des navires.
+        :rtype: dict[str, VesselConfig]
         :raises FileNotFoundError: Si le fichier de configuration des navires n'existe pas.
         """
         LOGGER.debug(
@@ -68,7 +73,8 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
         """
         Méthode permettant de sauvegarder la configuration des navires dans un fichier JSON.
 
-        :param json_config_path: (Path) Chemin du fichier JSON.
+        :param json_config_path: Chemin du fichier JSON.
+        :type json_config_path: Path
         :raises TypeError: Si un objet n'est pas sérialisable.
         """
 
@@ -96,8 +102,10 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
         """
         Méthode permettant de récupérer la configuration d'un navire.
 
-        :param vessel_id: (str) Identifiant du navire.
-        :return: (VesselConfig) Configuration du navire.
+        :param vessel_id: Identifiant du navire.
+        :type vessel_id: str
+        :return: Configuration du navire.
+        :rtype: VesselConfig
         :raises VesselConfigNotFoundError: Si la configuration du navire n'existe pas.
         """
         LOGGER.debug(f"Récupération de la configuration du navire : {vessel_id}.")
@@ -111,7 +119,8 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
         """
         Méthode permettant de récupérer la configuration de tous les navires.
 
-        :return: (list[VesselConfig]) Configurations des navires.
+        :return: Configurations des navires.
+        :rtype: list[VesselConfig]
         """
         LOGGER.debug("Récupération de la configuration de tous les navires.")
 
@@ -121,7 +130,8 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
         """
         Méthode permettant d'ajouter la configuration d'un navire.
 
-        :param vessel_config: (VesselConfig) Configuration du navire.
+        :param vessel_config: Configuration du navire.
+        :type vessel_config: VesselConfig
         """
         LOGGER.debug(f"Ajout de la configuration du navire : {vessel_config.id}.")
 
@@ -131,8 +141,10 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
         """
         Méthode permettant de mettre à jour la configuration d'un navire.
 
-        :param vessel_id: (str) Identifiant du navire.
-        :param vessel_config: (VesselConfig) Configuration du navire.
+        :param vessel_id: Identifiant du navire.
+        :type vessel_id: str
+        :param vessel_config: Configuration du navire.
+        :type vessel_config: VesselConfig
         """
         LOGGER.debug(f"Mise à jour de la configuration du navire : {vessel_id}.")
 
@@ -142,7 +154,8 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
         """
         Méthode permettant de supprimer la configuration d'un navire.
 
-        :param vessel_id: (str) Identifiant du navire.
+        :param vessel_id: Identifiant du navire.
+        :type vessel_id: str
         """
         LOGGER.debug(f"Suppression de la configuration du navire : {vessel_id}.")
 
