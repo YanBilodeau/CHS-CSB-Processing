@@ -1,13 +1,13 @@
 from loguru import logger
 
-from iwls_api_request import IWLSapiPublic, RetryAdapterConfig
 from iwls_api_request import (
+    IWLSapiPublic,
+    RetryAdapterConfig,
     TimeSeries,
     get_iwls_api,
     Response,
     HandlerType,
     EndpointPublic,
-    # RetryAdapterConfig,
     SessionType,
 )
 

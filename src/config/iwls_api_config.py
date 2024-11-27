@@ -6,8 +6,8 @@ from typing import Optional
 from loguru import logger
 from pydantic import BaseModel, field_validator
 
-from iwls_api_request import TimeSeries
-from iwls_api_request.api_config import (
+from iwls_api_request import (
+    TimeSeries,
     APIEnvironment,
     APIProfile,
     EnvironmentDict,
