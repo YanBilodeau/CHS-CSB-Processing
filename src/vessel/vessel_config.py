@@ -36,20 +36,24 @@ class Sensor(BaseModel):
     """
     Modèle de données pour un capteur.
 
-    :param time_stamp: (datetime) Date et heure.
+    :param time_stamp: Date et heure.
     :type time_stamp: datetime
-    :param x: (float) Bras de levier X.
+    :param x: Bras de levier X.
     :type x: float
-    :param y: (float) Bras de levier Y.
+    :param y: Bras de levier Y.
     :type y: float
-    :param z: (float) Bras de levier Z.
+    :param z: Bras de levier Z.
     :type z: float
     """
 
     time_stamp: datetime
+    """Date et heure."""
     x: float
+    """Bras de levier X."""
     y: float
+    """Bras de levier Y."""
     z: float
+    """Bras de levier Z."""
 
 
 class BDBattribute(BaseModel):
@@ -71,71 +75,89 @@ class BDBattribute(BaseModel):
     """
 
     time_stamp: datetime
+    """Date et heure."""
     pltfrm: str
+    """Plateforme."""
     sdghdw: str
+    """Système de sondage."""
     poshdw: str
+    """Système de positionnement."""
     bureau: str
+    """Bureau du fournisseur de données."""
     restrn: str
+    """Restrictions de données."""
 
 
 class Waterline(BaseModel):
     """
     Modèle de données pour une ligne d'eau.
 
-    :param time_stamp: (datetime) Date et heure.
+    :param time_stamp: Date et heure.
     :type time_stamp: datetime
-    :param z: (float) Bras de levier Z.
+    :param z: Bras de levier Z.
     :type z: float
     """
 
     time_stamp: datetime
+    """Date et heure."""
     z: float
+    """Bras de levier Z."""
 
 
 class SoundSpeedProfile(BaseModel):
     """
     Modèle de données pour un profil de vitesse du son.
 
-    :param time_stamp: (datetime) Date et heure.
+    :param time_stamp: Date et heure.
     :type time_stamp: datetime
-    :param ssp: (bool) True si le profil de vitesse du son est appliqué.
+    :param ssp: True si le profil de vitesse du son est appliqué.
     :type ssp: bool
     """
 
     time_stamp: datetime
+    """Date et heure."""
     ssp: bool
+    """True si le profil de vitesse du son est appliqué."""
 
 
 class VesselConfig(BaseModel):
     """
     Modèle de données pour la configuration du navire.
 
-    :param id: (str) Identifiant du navire.
+    :param id: Identifiant du navire.
     :type id: str
-    :param axis_convention: (AxisConvention) Convention d'axes.
+    :param axis_convention: Convention d'axes.
     :type axis_convention: AxisConvention
-    :param navigation: (list[Sensor]) Liste des données de navigation.
+    :param navigation: Liste des données de navigation.
     :type navigation: list[Sensor]
-    :param motion: (list[Sensor]) Liste des données de mouvement.
+    :param motion: Liste des données de mouvement.
     :type motion: list[Sensor]
-    :param sounder: (list[Sensor]) Liste des données du sondeur.
+    :param sounder: Liste des données du sondeur.
     :type sounder: list[Sensor]
-    :param waterline: (list[Waterline]) Liste des données de ligne d'eau.
+    :param waterline: Liste des données de ligne d'eau.
     :type waterline: list[Waterline]
-    :param ssp_applied: (list[SoundSpeedProfile]) Liste des données de profil de vitesse du son appliqué.
+    :param ssp_applied: Liste des données de profil de vitesse du son appliqué.
     :type ssp_applied: list[SoundSpeedProfile]
-    :param attribute: (list[BDBattribute]) Liste des données d'attribut.
+    :param attribute: Liste des données d'attribut.
     :type attribute: list[BDBattribute]
     """
 
     id: str
+    """Identifiant du navire."""
     axis_convention: AxisConvention
+    """Convention des axes."""
     navigation: list[Sensor]
+    """Données de navigation."""
     motion: list[Sensor]
+    """Données de mouvement."""
     sounder: list[Sensor]
+    """Données du sondeur."""
     waterline: list[Waterline]
+    """Données de ligne d'eau."""
     ssp_applied: list[SoundSpeedProfile]
+    """Données de profil de vitesse du son appliqué."""
     attribute: list[BDBattribute]
+    """Données des attributs BDB."""
 
     def get_sensor(
         self, sensor_name: str, timestamp: datetime
@@ -143,11 +165,11 @@ class VesselConfig(BaseModel):
         """
         Récupère les données d'un type de capteur à un instant donné.
 
-        :param sensor_name: (str) Nom du capteur.
+        :param sensor_name: Nom du capteur.
         :type sensor_name: str
-        :param timestamp: (datetime) Une date et heure.
+        :param timestamp: Une date et heure.
         :type timestamp: datetime
-        :return: (Sensor | Waterline | SoundSpeedProfile | BDBattribute) Données du capteur pour le moment donné.
+        :return: Données du capteur pour le moment donné.
         :rtype: Sensor | Waterline | SoundSpeedProfile | BDBattribute
         :raises SensorNotFoundError: Si le capteur n'existe pas.
         """
@@ -176,9 +198,9 @@ class VesselConfig(BaseModel):
         """
         Méthode pour récupérer les données de navigation à un instant donné.
 
-        :param timestamp: (datetime) Une date et heure.
+        :param timestamp: Une date et heure.
         :type timestamp: datetime
-        :return: (Sensor) Données de navigation pour le moment donné.
+        :return: Données de navigation pour le moment donné.
         :rtype: Sensor
         """
         return self.get_sensor(sensor_name=ids.NAVIGATION, timestamp=timestamp)
@@ -187,9 +209,9 @@ class VesselConfig(BaseModel):
         """
         Méthode pour récupérer les données de mouvement à un instant donné.
 
-        :param timestamp: (datetime) Une date et heure.
+        :param timestamp: Une date et heure.
         :type timestamp: datetime
-        :return: (Sensor) Données de mouvement pour le moment donné.
+        :return: Données de mouvement pour le moment donné.
         :rtype: Sensor
         """
         return self.get_sensor(sensor_name=ids.MOTION, timestamp=timestamp)
@@ -198,9 +220,9 @@ class VesselConfig(BaseModel):
         """
         Méthode pour récupérer les données du sondeur à un instant donné.
 
-        :param timestamp: (datetime) Une date et heure.
+        :param timestamp: Une date et heure.
         :type timestamp: datetime
-        :return: (Sensor) Données du sondeur pour le moment donné.
+        :return: Données du sondeur pour le moment donné.
         :rtype: Sensor
         """
         return self.get_sensor(sensor_name=ids.SOUNDER, timestamp=timestamp)
@@ -209,9 +231,9 @@ class VesselConfig(BaseModel):
         """
         Méthode pour récupérer les données de ligne d'eau à un instant donné.
 
-        :param timestamp: (datetime) Une date et heure.
+        :param timestamp: Une date et heure.
         :type timestamp: datetime
-        :return: (Waterline) Données de ligne d'eau pour le moment donné.
+        :return: Données de ligne d'eau pour le moment donné.
         :rtype: Waterline
         """
         return self.get_sensor(sensor_name=ids.WATERLINE, timestamp=timestamp)
@@ -220,9 +242,9 @@ class VesselConfig(BaseModel):
         """
         Méthode pour récupérer les données de profil de vitesse du son appliqué à un instant donné.
 
-        :param timestamp: (datetime) Une date et heure.
+        :param timestamp: Une date et heure.
         :type timestamp: datetime
-        :return: (SoundSpeedProfile) Données de profil de vitesse du son appliqué pour le moment donné.
+        :return: Données de profil de vitesse du son appliqué pour le moment donné.
         :rtype: SoundSpeedProfile
         """
         return self.get_sensor(sensor_name=ids.SSP_APPLIED, timestamp=timestamp)
@@ -231,9 +253,9 @@ class VesselConfig(BaseModel):
         """
         Méthode pour récupérer les données d'attribut à un instant donné.
 
-        :param timestamp: (datetime) Une date et heure.
+        :param timestamp: Une date et heure.
         :type timestamp: datetime
-        :return: (BDBattribute) Données d'attribut pour le moment donné.
+        :return: Données d'attribut pour le moment donné.
         :rtype: BDBattribute
         """
         return self.get_sensor(sensor_name=ids.ATTRIBUTE, timestamp=timestamp)
@@ -243,9 +265,9 @@ def get_vessel_config_from_config_dict(config: VesselConfigDict) -> VesselConfig
     """
     Récupère la configuration du navire.
 
-    :param config: (VesselConfigDict) Configuration du navire.
+    :param config: Configuration du navire.
     :type config: VesselConfigDict
-    :return: (VesselConfig) Configuration du navire.
+    :return: Configuration du navire.
     :rtype: VesselConfig
     :raises MissingConfigKeyError: Si des clés de configuration sont manquantes.
     """
