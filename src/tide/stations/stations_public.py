@@ -26,7 +26,8 @@ class StationsHandlerPublic(StationsHandlerABC):
         """
         Constructeur de la classe StationsHandlerPublic.
 
-        :param api: (IWLSapiProtocol) Instance de l'API.
+        :param api: Instance de l'API.
+        :type api: IWLSapiProtocol
         """
         super().__init__(api=api)
 
@@ -39,10 +40,14 @@ class StationsHandlerPublic(StationsHandlerABC):
         """
         Filtre les stations en fonction des séries temporelles.
 
-        :param stations: (Collection[dict]) Liste des stations.
-        :param filter_time_series: (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer les stations.
-        :param excluded_stations: (Collection[str] | None) Liste des stations à exclure.
-        :return: (list[dict]) Liste des stations filtrées.
+        :param stations: Liste des stations.
+        :type stations: Collection[dict]
+        :param filter_time_series: Liste des séries temporelles pour filtrer les stations.
+        :type filter_time_series: Collection[TimeSeriesProtocol] | None
+        :param excluded_stations: Liste des stations à exclure.
+        :type excluded_stations: Collection[str] | None
+        :return: Liste des stations filtrées.
+        :rtype: list[dict]
         """
         LOGGER.debug(
             f"Filtrage des stations en fonction des séries temporelles [{filter_time_series}] "
@@ -66,9 +71,12 @@ class StationsHandlerPublic(StationsHandlerABC):
         """
         Récupère les séries temporelles de la station.
 
-        :param station: (dict) Données de la station.
-        :param index_map: (dict[str, int] | None) Carte d'index pour les séries temporelles.
-        :return: (list[str]) Liste des séries temporelles.
+        :param station: Données de la station.
+        :type station: dict
+        :param index_map: Carte d'index pour les séries temporelles.
+        :type index_map: dict[TimeSeriesProtocol, int] | None
+        :return: Liste des séries temporelles.
+        :rtype: list[str]
         """
         return [
             ts["code"] for ts in station["timeSeries"] if ts["code"] in index_map.keys()
@@ -80,10 +88,14 @@ class StationsHandlerPublic(StationsHandlerABC):
         """
         Récupère les données des stations avec les séries temporelles.
 
-        :param ttl: (int) Durée de vie du cache en secondes.
-        :param api: (str) Nom de l'API.
-        :param column_name_tidal: (str) Nom de la colonne pour les informations sur les marées.
-        :return: (list[dict]) Données des stations avec les séries temporelles.
+        :param ttl: Durée de vie du cache en secondes.
+        :type ttl: int
+        :param api: Nom de l'API.
+        :type api: str
+        :param column_name_tidal: Nom de la colonne pour les informations sur les marées.
+        :type column_name_tidal: str
+        :return: Données des stations avec les séries temporelles.
+        :rtype: list[dict]
         """
         LOGGER.debug("Récupération des métadonnées des stations.")
 
@@ -109,12 +121,16 @@ class StationsHandlerPublic(StationsHandlerABC):
         """
         Récupère les données des stations sous forme de GeoDataFrame.
 
-        :param filter_time_series: (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer
-                                        les stations. Si None, toutes les stations sont retournées.
-        :param excluded_stations: (Collection[str] | None) Liste des stations à exclure.
-        :param station_name_key: (str) Clé du nom de la station.
-        :param ttl: (int) Durée de vie du cache en secondes.
-        :return: (gpd.DataFrame) Données des stations sous forme de GeoDataFrame.
+        :param filter_time_series: Liste des séries temporelles pour filtrer les stations. Si None, toutes les stations sont retournées.
+        :type filter_time_series: Collection[TimeSeriesProtocol] | None
+        :param excluded_stations: Liste des stations à exclure.
+        :type excluded_stations: Collection[str] | None
+        :param station_name_key: Clé du nom de la station.
+        :type station_name_key: Optional[str]
+        :param ttl: Durée de vie du cache en secondes.
+        :type ttl: Optional[int]
+        :return: Données des stations sous forme de GeoDataFrame.
+        :rtype: gpd.GeoDataFrame
         """
         return self._get_stations_geodataframe(
             stations=self._get_stations_with_metadata(ttl=ttl),
@@ -128,8 +144,10 @@ class StationsHandlerPublic(StationsHandlerABC):
         """
         Récupère la date de l'événement.
 
-        :param event: (dict) Données de l'événement.
-        :return: (datetime) Date de l'événement.
+        :param event:`Données de l'événement.
+        :type event: dict
+        :return: Date de l'événement.
+        :rtype: datetime
         """
         return parser.isoparse(event["eventDate"])
 
@@ -138,7 +156,9 @@ class StationsHandlerPublic(StationsHandlerABC):
         """
         Récupère le type du flag de qualité.
 
-        :param event: (dict) Données de l'événement.
-        :return: (str) Type du flag de qualité.
+        :param event: Données de l'événement.
+        :type event: dict
+        :return: Type du flag de qualité.
+        :rtype: str
         """
         return event["qcFlagCode"]
