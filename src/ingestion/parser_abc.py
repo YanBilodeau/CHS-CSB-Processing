@@ -15,6 +15,7 @@ import pandas as pd
 from .parsing_exception import ColumnException
 from .warning_capture import WarningCapture
 import schema
+from schema import model_ids as schema_ids
 
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.ABC")
 
@@ -155,10 +156,10 @@ class DataParserABC(ABC):
 
         data = data.drop_duplicates(
             subset=[
-                schema.TIME_UTC,
-                schema.LATITUDE_WGS84,
-                schema.LONGITUDE_WGS84,
-                schema.DEPTH_METER,
+                schema_ids.TIME_UTC,
+                schema_ids.LATITUDE_WGS84,
+                schema_ids.LONGITUDE_WGS84,
+                schema_ids.DEPTH_METER,
             ]
         )
 
@@ -177,7 +178,7 @@ class DataParserABC(ABC):
         LOGGER.debug("Tri du geodataframe par datetime.")
 
         data = data.reset_index(drop=True)
-        data = data.sort_values(by=[schema.TIME_UTC])
+        data = data.sort_values(by=[schema_ids.TIME_UTC])
 
         return data
 

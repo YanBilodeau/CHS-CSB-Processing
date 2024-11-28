@@ -11,3 +11,29 @@ LONGITUDE_WGS84: str = "Longitude_WGS84"
 """Valeur de la constante Longitude_WGS84."""
 LATITUDE_WGS84: str = "Latitude_WGS84"
 """Valeur de la constante Latitude_WGS84."""
+GEOMETRY: str = "geometry"
+"""Valeur de la constante geometry."""
+
+# Constantes pour les noms des colonnes des données du schéma de données DataLoggerWithTideZoneSchema.
+TIDE_ZONE_ID: str = "Tide_zone_id"
+"""Valeur de la constante Tide_zone_id."""
+
+# Constantes pour les noms des colonnes des données du schéma de données StationsSchema et TideZoneSchema.
+ID: str = "id"
+"""Valeur de la constante id."""
+CODE: str = "code"
+"""Valeur de la constante code."""
+NAME: str = "name"
+"""Valeur de la constante name."""
+TIME_SERIES: str = "time_series"
+"""Valeur de la constante time_series."""
+IS_TIDAL: str = "is_tidal"
+"""Valeur de la constante is_tidal."""
+
+# Constantes pour les noms des colonnes des données du schéma de données TimeSerieDataSchema.
+EVENT_DATE: str = "event_date"
+"""Valeur de la constante event_date."""
+VALUE: str = "value"
+"""Valeur de la constante value."""
+TIME_SERIE_CODE: str = "time_serie_code"
+"""Valeur de la constante time_serie_code."""

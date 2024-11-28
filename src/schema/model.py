@@ -27,6 +27,14 @@ class DataLoggerSchema(pa.DataFrameModel):
     geometry: GeoSeries
 
 
+class DataLoggerWithTideZoneSchema(DataLoggerSchema):
+    """
+    Schéma des données des DataLoggers avec les zones de marées.
+    """
+
+    Tide_zone_id: Series[str]
+
+
 class StationsSchema(pa.DataFrameModel):
     """
     Schéma des stations.

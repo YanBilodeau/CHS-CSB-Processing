@@ -18,6 +18,7 @@ from .parsing_exception import (
 from .parser_abc import DataParserABC
 from . import parser_ids as ids
 import schema
+from schema import model_ids as schema_ids
 
 
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.DCDB")
@@ -93,10 +94,10 @@ class DataParserBCDB(DataParserABC):
         LOGGER.debug(f"Renommage des colonnes du geodataframe.")
         data: gpd.GeoDataFrame[schema.DataLoggerSchema] = data.rename(
             columns={
-                ids.TIME_DCDB: schema.TIME_UTC,
-                ids.DEPTH_DCDB: schema.DEPTH_METER,
-                ids.LONGITUDE_DCDB: schema.LONGITUDE_WGS84,
-                ids.LATITUDE_DCDB: schema.LATITUDE_WGS84,
+                ids.TIME_DCDB: schema_ids.TIME_UTC,
+                ids.DEPTH_DCDB: schema_ids.DEPTH_METER,
+                ids.LONGITUDE_DCDB: schema_ids.LONGITUDE_WGS84,
+                ids.LATITUDE_DCDB: schema_ids.LATITUDE_WGS84,
             }
         )
 

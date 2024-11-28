@@ -18,6 +18,7 @@ from .parsing_exception import (
 )
 from . import parser_ids as ids
 import schema
+from schema import model_ids as schema_ids
 
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.Lowrance")
 
@@ -97,10 +98,10 @@ class DataParserLowrance(DataParserABC):
         LOGGER.debug(f"Renommage des colonnes du geodataframe.")
         data: gpd.GeoDataFrame[schema.DataLoggerSchema] = data.rename(
             columns={
-                ids.TIME_LOWRANCE: schema.TIME_UTC,
-                ids.DEPTH_LOWRANCE: schema.DEPTH_METER,
-                ids.LONGITUDE_LOWRANCE: schema.LONGITUDE_WGS84,
-                ids.LATITUDE_LOWRANCE: schema.LATITUDE_WGS84,
+                ids.TIME_LOWRANCE: schema_ids.TIME_UTC,
+                ids.DEPTH_LOWRANCE: schema_ids.DEPTH_METER,
+                ids.LONGITUDE_LOWRANCE: schema_ids.LONGITUDE_WGS84,
+                ids.LATITUDE_LOWRANCE: schema_ids.LATITUDE_WGS84,
             }
         )
 
@@ -138,9 +139,9 @@ class DataParserLowrance(DataParserABC):
         :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(
-            f"Conversion des pieds en mètres de la colonne '{schema.DEPTH_METER}'."
+            f"Conversion des pieds en mètres de la colonne '{schema_ids.DEPTH_METER}'."
         )
-        data[schema.DEPTH_METER] = data[schema.DEPTH_METER] * 0.3048
+        data[schema_ids.DEPTH_METER] = data[schema_ids.DEPTH_METER] * 0.3048
 
         return data
 
