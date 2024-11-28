@@ -2,7 +2,7 @@
 Ce module contient les constantes utilisées pour parser les données des fichiers OFM, DCDB, Lowrance et Actisense.
 """
 
-# Constantes pour les noms des colonnes des données OFM et DCDB.
+# Constantes pour les noms des colonnes des données DCDB.
 LONGITUDE_DCDB: str = "LON"
 """Valeur de la constante pour la colonne de longitude des données DCDB."""
 LATITUDE_DCDB: str = "LAT"
@@ -12,7 +12,7 @@ DEPTH_DCDB: str = "DEPTH"
 TIME_DCDB: str = "TIME"
 """Valeur de la constante pour la colonne de temps des données DCDB."""
 
-# Constantes pour les noms des colonnes des données OFM et DCDB.
+# Constantes pour les noms des colonnes des données OFM.
 LONGITUDE_OFM: str = "LON"
 """Valeur de la constante pour la colonne de longitude des données OFM."""
 LATITUDE_OFM: str = "LAT"
