@@ -12,7 +12,7 @@ import geopandas as gpd
 from loguru import logger
 import pandas as pd
 
-from .parser_exception import ColumnException
+from .parsing_exception import ColumnException
 from .warning_capture import WarningCapture
 import schema
 

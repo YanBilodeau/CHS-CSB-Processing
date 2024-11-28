@@ -9,7 +9,7 @@ from loguru import logger
 import pandas as pd
 
 from .parser_abc import DataParserABC
-from .parser_exception import (
+from .parsing_exception import (
     ColumnException,
     ParsingDataframeTimeError,
     ParsingDataframeLongitudeError,

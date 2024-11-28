@@ -1,18 +1,19 @@
 """
-Ce module contient la fonction permettant de récupérer le parser associé à un format de fichier.
+Module permettant de récupérer le parser associé à un fichier.
+
+Ce module contient les fonctions permettant de récupérer le parser associé à un fichier.
 """
 
 from pathlib import Path
-from typing import Type
+from typing import Type, Collection
 
 import pandas as pd
 from loguru import logger
 
 from . import parser_ids as ids
-from .parser_exception import ParserIdentifierError
-from .parser_abc import DataParserABC
 from .parser_dcdb import DataParserBCDB
 from .parser_lowrance import DataParserLowrance
+from .parser_exception import ParserIdentifierError, MultipleParsersError, DataParserABC
 
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.Factory")
 
@@ -108,3 +109,38 @@ def get_parser_factory(file: Path) -> Type[DataParserABC]:
             return parser
 
     raise ParserIdentifierError(file=file)
+
+
+def map_files_to_parsers(
+    files: Collection[Path,]
+) -> dict[Type[DataParserABC], list[Path]]:
+    """
+    Fonction permettant de trouver les parsers associés aux fichiers.
+
+    :param files: Les fichiers à traiter.
+    :type files: Collection[Path]
+    :return: Un dictionnaire contenant les parsers associés aux fichiers.
+    :rtype: dict[Type[DataParserABC], list[Path]]
+    :raises factory_parser.ParserIdentifierError: Si une erreur survient lors de l'identification du parser.
+    """
+    data_parser_dict: dict[Type[DataParserABC], list[Path]] = {}
+
+    for file in files:
+        LOGGER.debug(f"Traitement du fichier : {file}.")
+
+        try:
+            parser: Type[DataParserABC] = get_parser_factory(file)
+            LOGGER.debug(f"Parser identifié : {parser}.")
+
+        except ParserIdentifierError as error:
+            LOGGER.error(
+                f"Erreur lors de l'identification du parser pour le fichier {file} : {error}"
+            )
+            raise error
+
+        data_parser_dict.setdefault(parser, []).append(file)
+
+        if len(data_parser_dict) > 1:
+            raise MultipleParsersError(parsers=list(data_parser_dict.keys()))
+
+    return data_parser_dict
