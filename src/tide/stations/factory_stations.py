@@ -1,7 +1,7 @@
 """
 Module de gestion de la factory de stations.
 
-Ce module contient la classe StationsHandlerFactory qui permet de récupérer la factory de stations en fonction du type d'endpoint.
+Ce module contient la la fonction factory qui permet de récupérer la factory de stations en fonction du type d'endpoint.
 """
 
 from loguru import logger
