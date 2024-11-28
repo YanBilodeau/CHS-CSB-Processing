@@ -1,7 +1,7 @@
 """
-Module qui contient les schémas des données.
+Module qui contient les schémas des dataframes.
 
-Ce module contient les schémas des données des DataLoggers.
+Ce module contient les schémas des dataframes des DataLoggers, des stations, des séries temporelles et des zones de marées.
 """
 
 import geopandas as gpd
@@ -12,7 +12,7 @@ from pandas import DataFrame
 from pandera.typing import Series
 from pandera.typing.geopandas import GeoSeries
 
-LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.Schema")
+LOGGER = logger.bind(name="CSB-Pipeline.Schema")
 
 
 class DataLoggerSchema(pa.DataFrameModel):
@@ -24,6 +24,42 @@ class DataLoggerSchema(pa.DataFrameModel):
     Latitude_WGS84: Series[pd.Float64Dtype()]
     Depth_meter: Series[pd.Float64Dtype()]
     Time_UTC: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
+    geometry: GeoSeries
+
+
+class StationsSchema(pa.DataFrameModel):
+    """
+    Schéma des stations.
+    """
+
+    id: Series[str]
+    code: Series[str]
+    name: Series[str]
+    time_series: Series[list]
+    is_tidal: Series[object] = pa.Field(nullable=True)
+    geometry: GeoSeries
+
+
+class TimeSerieDataSchema(pa.DataFrameModel):
+    """
+    Schéma des séries temporelles.
+    """
+
+    event_date: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
+    value: Series[pd.Float64Dtype()]
+    time_serie_code: Series[str]
+
+
+class TideZoneSchema(pa.DataFrameModel):
+    """
+    Schéma des zones de marées.
+    """
+
+    id: Series[str]
+    code: Series[str]
+    name: Series[str]
+    time_series: Series[list]
+    is_tidal: Series[object] = pa.Field(nullable=True)
     geometry: GeoSeries
 
 
