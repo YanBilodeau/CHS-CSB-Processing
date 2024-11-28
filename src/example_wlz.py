@@ -55,12 +55,27 @@ def main() -> None:
     data_config: DataFilterConfig = get_data_config()
 
     files: list[Path] = get_ofm_files()
+    # files = get_dcdb_files()
+    # files = get_lowrance_files()
+    # files = get_blackbox_files()
+    # files = get_actisense_files()
 
-    data_parser_dict: factory_parser.ParserFiles = factory_parser.get_files_parser(
+    parser_files: factory_parser.ParserFiles = factory_parser.get_files_parser(
         files=files
     )
 
-    LOGGER.debug(data_parser_dict)
+    LOGGER.debug(parser_files)
+
+    data: gpd.GeoDataFrame = parser_files.parser.from_files(files=parser_files.files)
+    data = cleaner.clean_data(data, data_filter=data_config)
+
+    export_geodataframe_to_geojson(data, EXPORT / "ParsedData.geojson")
+
+    print(data)
+    print(data.info())
+    print(data.columns)
+    print(data.dtypes)
+    print()
 
 
 if __name__ == "__main__":
