@@ -68,7 +68,7 @@ class ResponseProtocol(Protocol):
 
 class IWLSapiProtocol(Protocol):
     """
-    Protocole pour définir les méthode des différent types API.
+    Protocole pour définir les méthode des différent types d'API.
     """
 
     def get_all_stations(self, **kwargs) -> ResponseProtocol:

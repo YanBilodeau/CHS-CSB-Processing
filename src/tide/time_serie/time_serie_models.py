@@ -1,7 +1,7 @@
 """
 Module contenant les modèles pour les séries temporelles de données de marée.
 
-Ce module contient les modèles de données pour les séries temporelles de données de marée.
+Ce module contient les modèles de données et les protocoles pour les séries temporelles de données de marée.
 """
 
 from dataclasses import dataclass, field
@@ -16,14 +16,20 @@ class DataGapPeriod:
     """
     Modèle pour les périodes de données manquantes.
 
-    :param start: (datetime) Date de début.
-    :param end: (datetime) Date de fin.
-    :param duration: (timedelta) Durée de la période.
+    :param start: Date de début.
+    :type start: datetime
+    :param end: Date de fin.
+    :type end: datetime
+    :param duration: Durée de la période.
+    :type duration: timedelta
     """
 
     start: datetime
+    """Date de début."""
     end: datetime
+    """Date de fin."""
     duration: timedelta = field(init=False)
+    """Durée de la période."""
 
     def __post_init__(self):
         object.__setattr__(self, "duration", self.end - self.start)
@@ -35,26 +41,29 @@ class DataGapPeriod:
 class TimeSeriesProtocol(Protocol):
     """
     Protocole pour définir les types des séries temporelles.
-
-    :param WLO: Water Level Observed.
-    :param WLF_SPINE: Water Level Forecast Spine.
-    :param WLF_VTG: Water Level Forecast VTG.
-    :param WLF: Water Level Forecast.
-    :param WLP: Water Level Prediction.
     """
 
     WLO: str = "wlo"
+    """Water Level Observed."""
     WLF_SPINE: str = "wlf-spine"
+    """Water Level Forecast Spine."""
     WLF_VTG: str = "wlf-vtg"
+    """Water Level Forecast VTG."""
     WLF: str = "wlf"
+    """Water Level Forecast."""
     WLP: str = "wlp"
+    """Water Level Prediction."""
 
-    def from_str(cls, value: str):
+    def from_str(cls, value: str) -> "TimeSeriesProtocol":
         """
         Méthode pour convertir une chaîne de caractères en série temporelle.
+
+        :param value: Chaîne de caractères.
+        :type value: str
+        :return: Série temporelle.
+        :rtype: TimeSeriesProtocol
         """
         pass
-
 
 class StationsHandlerProtocol(Protocol):
     """
@@ -72,11 +81,17 @@ class StationsHandlerProtocol(Protocol):
         """
         Méthode pour récupérer les données de marée d'une station.
 
-        :param station: (str) Code de la station.
-        :param from_time: (str) Date de début.
-        :param to_time: (str) Date de fin.
-        :param time_serie_code: (TimeSeriesProtocol) Code de la série temporelle.
-        :param wlo_qc_flag_filter: (list[str]) Flag de qualité à filtrer.
-        :return: (pd.DataFrame) Données de marée.
+        :param station: Code de la station.
+        :type station: str
+        :param from_time: Date de début.
+        :type from_time: str
+        :param to_time: Date de fin.
+        :type to_time: str
+        :param time_serie_code: Code de la série temporelle.
+        :type time_serie_code: TimeSeriesProtocol
+        :param wlo_qc_flag_filter: Flag de qualité à filtrer.
+        :type wlo_qc_flag_filter: list[str]
+        :return: Données de marée.
+        :rtype: pd.DataFrame
         """
         pass

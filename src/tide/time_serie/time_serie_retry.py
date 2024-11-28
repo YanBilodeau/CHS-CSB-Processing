@@ -25,7 +25,8 @@ def double_buffer_time(retry_state) -> None:
     """
     Fonction pour doubler le temps tampon pour la prochaine tentative d'interpolation.
 
-    :param retry_state: (RetryState) État de la tentative.
+    :param retry_state: État de la tentative.
+    :type retry_state: RetryState
     """
     buffer_time = retry_state.kwargs.get("buffer_time")
 
