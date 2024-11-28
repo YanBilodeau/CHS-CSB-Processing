@@ -39,9 +39,9 @@ class TimeSerieDataSchema(pa.DataFrameModel):
     time_serie_code: Series[str]
 
 
-class VoronoiSchema(pa.DataFrameModel):
+class TideZoneSchema(pa.DataFrameModel):
     """
-    Schéma des Voronoïs.
+    Schéma des zones de marées.
     """
 
     id: Series[str]

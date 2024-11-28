@@ -10,7 +10,7 @@ from export.export_utils import (
     export_dataframe_to_csv,
 )
 from tide.plot import plot_time_series_dataframe
-from tide.schema import TimeSerieDataSchema, VoronoiSchema
+from tide.schema import TimeSerieDataSchema, TideZoneSchema
 from tide.stations import (
     StationsHandlerABC,
     get_stations_factory,
@@ -195,7 +195,7 @@ def main():
 
     # Get the Voronoi diagram of the stations. The stations are selected based on the priority of the time series.
     # The time series priority is defined in the configuration file.
-    gdf_voronoi: gpd.GeoDataFrame[VoronoiSchema] = get_voronoi_geodataframe(
+    gdf_voronoi: gpd.GeoDataFrame[TideZoneSchema] = get_voronoi_geodataframe(
         stations_handler=stations_handler,
         time_series=iwls_config.time_series.priority,
         # excluded_stations=("5cebf1df3d0f4a073c4bbced", "5cebf1e23d0f4a073c4bc021"),
