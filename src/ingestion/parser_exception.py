@@ -6,74 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Type
 
-
-@dataclass(frozen=True)
-class ParsingError(Exception):
-    """
-    Classe de base pour les exceptions de parsing.
-
-    :param file: (Path) Le fichier en cours de lecture.
-    :param column: (str) Le nom de la colonne en erreur.
-    """
-
-    file: Path
-    """Le ficher en erreur."""
-    column: str
-    """Le nom de la colonne en erreur."""
-
-    def __str__(self) -> str:
-        return f"Erreur lors de la lecture du fichier : {self.file}. Le fichier n'a pas de colonne '{self.column}'."
-
-
-@dataclass(frozen=True)
-class ParsingDataframeTimeError(ParsingError):
-    """
-    Exception pour les erreurs de parsing de la colonne de temps.
-    """
-
-    pass
-
-
-@dataclass(frozen=True)
-class ParsingDataframeDepthError(ParsingError):
-    """
-    Exception pour les erreurs de parsing de la colonne de profondeur.
-    """
-
-    pass
-
-
-@dataclass(frozen=True)
-class ParsingDataframeLongitudeError(ParsingError):
-    """
-    Exception pour les erreurs de parsing de la colonne de longitude
-    """
-
-    pass
-
-
-@dataclass(frozen=True)
-class ParsingDataframeLatitudeError(ParsingError):
-    """
-    Exception pour les erreurs de parsing de la colonne de latitude.
-    """
-
-    pass
-
-
-@dataclass(frozen=True)
-class ColumnException:
-    """
-    Classe pour les exceptions de colonnes.
-
-    :param column_name: (str) Le nom de la colonne.
-    :param error: (Type[ParsingError]) L'erreur de parsing associée.
-    """
-
-    column_name: str
-    """Le nom de la colonne."""
-    error: Type[ParsingError]
-    """L'erreur de parsing associée."""
+from .parser_abc import DataParserABC
 
 
 @dataclass(frozen=True)
@@ -91,3 +24,16 @@ class ParserIdentifierError(Exception):
         return (
             f"Erreur lors de l'idendification du parser pour le fichier : {self.file}."
         )
+
+
+@dataclass(frozen=True)
+class MultipleParsersError(Exception):
+    """
+    Exception pour les erreurs de multiples parsers.
+    """
+
+    parsers: list[Type[DataParserABC]]
+    """Liste des parsers trouvés."""
+
+    def __str__(self) -> str:
+        return f"Plus d'un type de parser a été identifié pour les fichiers : {self.parsers}"
