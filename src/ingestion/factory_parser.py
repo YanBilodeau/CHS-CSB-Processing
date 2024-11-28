@@ -164,6 +164,7 @@ class ParserFiles:
     :param files: Les fichiers à traiter.
     :type files: list[Path]
     """
+
     parser: Type[DataParserABC] = None
     """Le parser associé aux fichiers."""
     files: list[Path] = field(default_factory=list)
