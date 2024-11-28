@@ -19,6 +19,7 @@ from .time_serie_models import (
 )
 from .time_serie_retry import interpolation_retry
 from schema import TimeSerieDataSchema
+from schema import model_ids as schema_ids
 
 LOGGER = logger.bind(name="CSB-Pipeline.TimeSerie")
 NanDateRow = dict[str, Any]
@@ -74,10 +75,10 @@ def extend_rows_to_deltatime(
     :return: DataFrame contenant les données étendues.
     :rtype: pd.DataFrame
     """
-    if first_row["value"].isna().all():
+    if first_row[schema_ids.VALUE].isna().all():
         non_nan_dataframe = pd.concat([first_row, non_nan_dataframe])
 
-    if last_row["value"].isna().all():
+    if last_row[schema_ids.VALUE].isna().all():
         non_nan_dataframe = pd.concat([non_nan_dataframe, last_row])
 
     return non_nan_dataframe
@@ -102,7 +103,7 @@ def extend_non_nan_dataframe(
         non_nan_dataframe=non_nan_dataframe, first_row=first_row, last_row=last_row
     )
     reset_and_sort_index(wl_dataframe=non_nan_dataframe, drop=True)
-    non_nan_dataframe["data_time_gap"] = non_nan_dataframe["event_date"].diff()
+    non_nan_dataframe["data_time_gap"] = non_nan_dataframe[schema_ids.EVENT_DATE].diff()
 
     return non_nan_dataframe
 
@@ -151,12 +152,12 @@ def identify_data_gaps(
     """
     LOGGER.debug(
         f"Identification des périodes de données manquantes de plus de {max_time_gap} pour "
-        f"{wl_dataframe['time_serie_code'].unique()}."
+        f"{wl_dataframe[schema_ids.TIME_SERIE_CODE].unique()}."
     )
 
     first_row, last_row = get_first_and_last_rows(wl_dataframe=wl_dataframe)
 
-    non_nan_dataframe: pd.DataFrame = wl_dataframe.dropna(subset=["value"])
+    non_nan_dataframe: pd.DataFrame = wl_dataframe.dropna(subset=[schema_ids.VALUE])
     non_nan_dataframe: pd.DataFrame = extend_non_nan_dataframe(
         non_nan_dataframe=non_nan_dataframe, first_row=first_row, last_row=last_row
     )
@@ -192,9 +193,9 @@ def resample_data(wl_dataframe: pd.DataFrame, time: str) -> pd.DataFrame:
     )
 
     wl_resampled: pd.DataFrame = wl_dataframe.resample(time).asfreq()
-    wl_resampled["time_serie_code"] = wl_resampled["time_serie_code"].fillna(
-        f"{wl_dataframe['time_serie_code'].unique()[0]}-interpolated"
-    )
+    wl_resampled[schema_ids.TIME_SERIE_CODE] = wl_resampled[
+        schema_ids.TIME_SERIE_CODE
+    ].fillna(f"{wl_dataframe[schema_ids.TIME_SERIE_CODE].unique()[0]}-interpolated")
 
     return wl_resampled
 
@@ -229,7 +230,7 @@ def cubic_spline_interpolation(
 
     cubic_spline_interplation: CubicSpline = CubicSpline(index_time, values)
     # Convertir l'index en valeur numérique
-    wl_resampled["value"] = cubic_spline_interplation(
+    wl_resampled[schema_ids.VALUE] = cubic_spline_interplation(
         wl_resampled.index.astype(np.int64) // 10**9
     )
 
@@ -253,7 +254,7 @@ def reset_and_sort_index(
     """
     LOGGER.debug("Réinitialisation de l'index et trie par event_date du DataFrame.")
 
-    wl_dataframe.sort_values(by="event_date", inplace=inplace)  # type: ignore
+    wl_dataframe.sort_values(by=schema_ids.EVENT_DATE, inplace=inplace)  # type: ignore
     wl_dataframe.reset_index(inplace=inplace, drop=drop)
 
 
@@ -273,10 +274,10 @@ def interpolate_data_gaps(
     :rtype: pd.DataFrame[TimeSerieDataSchema]
     """
     LOGGER.debug(
-        f"Interpolation des données manquantes de {wl_dataframe['time_serie_code'].unique()}."
+        f"Interpolation des données manquantes de {wl_dataframe[schema_ids.TIME_SERIE_CODE].unique()}."
     )
 
-    wl_dataframe.set_index("event_date", inplace=True)
+    wl_dataframe.set_index(schema_ids.EVENT_DATE, inplace=True)
 
     wl_resampled: pd.DataFrame = resample_data(
         wl_dataframe=wl_dataframe, time=max_time_gap
@@ -284,7 +285,7 @@ def interpolate_data_gaps(
 
     # Convertir l'index en valeur numérique pour l'interpolation
     time: pd.Index = wl_dataframe.index.astype(np.int64) // 10**9
-    water_level_values: pd.Series = wl_dataframe["value"]
+    water_level_values: pd.Series = wl_dataframe[schema_ids.VALUE]
 
     wl_resampled = cubic_spline_interpolation(
         index_time=time, values=water_level_values, wl_resampled=wl_resampled
@@ -327,7 +328,7 @@ def process_gaps_to_interpolate(
     if gaps_to_interpolate.empty:
         LOGGER.debug(
             f"Aucune période de données manquantes de plus de {max_time_gap} à interpoler pour "
-            f"{wl_dataframe['time_serie_code'].unique()}."
+            f"{wl_dataframe[schema_ids.TIME_SERIE_CODE].unique()}."
         )
         return wl_dataframe
 
@@ -357,8 +358,11 @@ def get_gaps_dataframe_list(
     """
     return [
         wl_dataframe[
-            (wl_dataframe["event_date"] > row["event_date"] - row["data_time_gap"])
-            & (wl_dataframe["event_date"] < row["event_date"])
+            (
+                wl_dataframe[schema_ids.EVENT_DATE]
+                > row[schema_ids.EVENT_DATE] - row["data_time_gap"]
+            )
+            & (wl_dataframe[schema_ids.EVENT_DATE] < row[schema_ids.EVENT_DATE])
         ]
         for _, row in gaps_dataframe.iterrows()
     ]
@@ -378,14 +382,14 @@ def merge_dataframes(
     :rtype: pd.DataFrame[TimeSerieDataSchema]
     """
     wl_combined_dataframe = wl_combined_dataframe.merge(
-        wl_dataframe, on="event_date", how="left", suffixes=("", "_wl")
+        wl_dataframe, on=schema_ids.EVENT_DATE, how="left", suffixes=("", "_wl")
     )
 
-    wl_combined_dataframe["value"] = wl_combined_dataframe["value"].combine_first(
-        wl_combined_dataframe["value_wl"]
-    )
-    wl_combined_dataframe["time_serie_code"] = wl_combined_dataframe[
-        "time_serie_code"
+    wl_combined_dataframe[schema_ids.VALUE] = wl_combined_dataframe[
+        schema_ids.VALUE
+    ].combine_first(wl_combined_dataframe["value_wl"])
+    wl_combined_dataframe[schema_ids.TIME_SERIE_CODE] = wl_combined_dataframe[
+        schema_ids.TIME_SERIE_CODE
     ].combine_first(wl_combined_dataframe["time_serie_code_wl"])
 
     return wl_combined_dataframe.drop(columns=["value_wl", "time_serie_code_wl"])
@@ -409,7 +413,7 @@ def fill_data_gaps(
     :rtype: pd.DataFrame[TimeSerieDataSchema]
     """
     LOGGER.debug(
-        f"Remplissage des données manquantes à partir de la série temporelle {wl_dataframe['time_serie_code'].unique()}."
+        f"Remplissage des données manquantes à partir de la série temporelle {wl_dataframe[schema_ids.TIME_SERIE_CODE].unique()}."
     )
 
     gaps_dataframe_list: list[pd.DataFrame[TimeSerieDataSchema]] = (
@@ -493,7 +497,7 @@ def create_nan_date_row(date_time: str) -> NanDateRow:
     :return: Ligne de données.
     :rtype: NanDateRow
     """
-    return {"event_date": pd.to_datetime(date_time), "value": np.nan}
+    return {schema_ids.EVENT_DATE: pd.to_datetime(date_time), schema_ids.VALUE: np.nan}
 
 
 def add_nan_date_row(wl_dataframe: pd.DataFrame, time: str) -> pd.DataFrame:
@@ -536,12 +540,12 @@ def clean_time_series_data(
         "Nettoyage des données de la série temporelle et validation du temps de début et de fin."
     )
 
-    wl_dataframe.dropna(subset=["value"], inplace=True)
+    wl_dataframe.dropna(subset=[schema_ids.VALUE], inplace=True)
 
-    if wl_dataframe["event_date"].iloc[0] > pd.to_datetime(from_time):
+    if wl_dataframe[schema_ids.EVENT_DATE].iloc[0] > pd.to_datetime(from_time):
         wl_dataframe = add_nan_date_row(wl_dataframe=wl_dataframe, time=from_time)
 
-    if wl_dataframe["event_date"].iloc[-1] < pd.to_datetime(to_time):
+    if wl_dataframe[schema_ids.EVENT_DATE].iloc[-1] < pd.to_datetime(to_time):
         wl_dataframe = add_nan_date_row(wl_dataframe=wl_dataframe, time=to_time)
 
     return wl_dataframe

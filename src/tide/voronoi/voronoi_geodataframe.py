@@ -19,6 +19,7 @@ from shapely.constructive import concave_hull
 from .voronoi_algorithm import create_voronoi_polygons
 from .voronoi_models import TimeSeriesProtocol, StationsHandlerProtocol
 from schema import validate_schema, StationsSchema, TideZoneSchema
+from schema import model_ids as schema_ids
 
 LOGGER = logger.bind(name="CSB-Pipeline.Tide.Voronoi.Geodataframe")
 WGS84: int = 4326
@@ -97,7 +98,16 @@ def merge_attributes(
     LOGGER.debug("Fusion des attributs des stations avec les polygones de Voronoi.")
 
     gdf_voronoi = gdf_voronoi.merge(
-        gdf_joined[["index_right", "id", "code", "name", "time_series", "is_tidal"]],
+        gdf_joined[
+            [
+                "index_right",
+                schema_ids.ID,
+                schema_ids.CODE,
+                schema_ids.NAME,
+                schema_ids.TIME_SERIES,
+                schema_ids.IS_TIDAL,
+            ]
+        ],
         left_index=True,
         right_on="index_right",
     )
@@ -163,7 +173,7 @@ def get_polygon_by_station_id(
     """
     LOGGER.debug(f"Récupération du polygone de Voronoi de la station '{station_id}'.")
 
-    return gdf_voronoi.loc[gdf_voronoi["id"] == station_id]
+    return gdf_voronoi.loc[gdf_voronoi[schema_ids.ID] == station_id]
 
 
 def get_time_series_by_station_id(
@@ -181,7 +191,9 @@ def get_time_series_by_station_id(
     """
     LOGGER.debug(f"Récupération des séries temporelles de la station '{station_id}'.")
 
-    return gdf_voronoi.loc[gdf_voronoi["id"] == station_id]["time_series"].values[0]
+    return gdf_voronoi.loc[gdf_voronoi[schema_ids.ID] == station_id][
+        schema_ids.TIME_SERIES
+    ].values[0]
 
 
 def get_code_by_station_id(gdf_voronoi: gpd.GeoDataFrame, station_id: str) -> str:
@@ -197,7 +209,9 @@ def get_code_by_station_id(gdf_voronoi: gpd.GeoDataFrame, station_id: str) -> st
     """
     LOGGER.debug(f"Récupération du code de la station '{station_id}'.")
 
-    return gdf_voronoi.loc[gdf_voronoi["id"] == station_id]["code"].values[0]
+    return gdf_voronoi.loc[gdf_voronoi[schema_ids.ID] == station_id][
+        schema_ids.CODE
+    ].values[0]
 
 
 def get_name_by_station_id(gdf_voronoi: gpd.GeoDataFrame, station_id: str) -> str:
@@ -213,7 +227,9 @@ def get_name_by_station_id(gdf_voronoi: gpd.GeoDataFrame, station_id: str) -> st
     """
     LOGGER.debug(f"Récupération du nom de la station '{station_id}'.")
 
-    return gdf_voronoi.loc[gdf_voronoi["id"] == station_id]["name"].values[0]
+    return gdf_voronoi.loc[gdf_voronoi[schema_ids.ID] == station_id][
+        schema_ids.NAME
+    ].values[0]
 
 
 def get_polygon_by_geometry(
@@ -244,7 +260,7 @@ def get_polygon_by_geometry(
     )
     result_computed: gpd.GeoDataFrame = result.compute()
     result_unique: gpd.GeoDataFrame[TideZoneSchema] = result_computed.drop_duplicates(
-        subset=["id"]
+        subset=[schema_ids.ID]
     ).reset_index(drop=True)
 
     return result_unique[gdf_voronoi.columns]
