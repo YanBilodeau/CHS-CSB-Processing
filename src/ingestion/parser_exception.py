@@ -4,7 +4,7 @@ Module pour définir les exceptions des parsers.
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Type
+from typing import Type, Collection
 
 from .parser_abc import DataParserABC
 
@@ -32,7 +32,7 @@ class MultipleParsersError(Exception):
     Exception pour les erreurs de multiples parsers.
     """
 
-    parsers: list[Type[DataParserABC]]
+    parsers: Collection[Type[DataParserABC]]
     """Liste des parsers trouvés."""
 
     def __str__(self) -> str:
