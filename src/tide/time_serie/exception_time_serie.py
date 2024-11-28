@@ -87,7 +87,7 @@ def get_data_gaps_message(gaps: pd.DataFrame) -> str:
     :param gaps: Périodes de données manquantes.
     :type gaps: pd.DataFrame
     :return: Journalisation des périodes de données manquantes.
-    :rtype
+    :rtype str
     """
     data_gaps_list: list[DataGapPeriod] = get_data_gap_periods(gaps=gaps)
 
