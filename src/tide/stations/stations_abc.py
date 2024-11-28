@@ -18,7 +18,7 @@ from shapely.geometry import Point
 from .cache_wrapper import cache_result
 from .exception_stations import StationsError
 from .stations_models import TimeSeriesProtocol, ResponseProtocol, IWLSapiProtocol
-from ..schema import StationsSchema, validate_schema, TimeSerieDataSchema
+from schema import StationsSchema, validate_schema, TimeSerieDataSchema
 
 LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station.ABC")
 
