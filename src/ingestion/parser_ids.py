@@ -9,8 +9,18 @@ LATITUDE_DCDB: str = "LAT"
 """Valeur de la constante pour la colonne de latitude des données DCDB."""
 DEPTH_DCDB: str = "DEPTH"
 """Valeur de la constante pour la colonne de profondeur des données DCDB."""
-TIME: str = "TIME"
+TIME_DCDB: str = "TIME"
 """Valeur de la constante pour la colonne de temps des données DCDB."""
+
+# Constantes pour les noms des colonnes des données OFM et DCDB.
+LONGITUDE_OFM: str = "LON"
+"""Valeur de la constante pour la colonne de longitude des données OFM."""
+LATITUDE_OFM: str = "LAT"
+"""Valeur de la constante pour la colonne de latitude des données OFM."""
+DEPTH_OFM: str = "DEPTH"
+"""Valeur de la constante pour la colonne de profondeur des données OFM."""
+TIME_OFM: str = "TIME"
+"""Valeur de la constante pour la colonne de temps des données OFM."""
 
 # Constantes pour les noms des colonnes des données Lowrance.
 LONGITUDE_LOWRANCE: str = "Longitude[°WGS84]"
