@@ -93,8 +93,7 @@ def create_buttons(
 
     :param fig: La figure Plotly.
     :type fig: go.Figure
-
-    :param dataframes:La collection de DataFrames.
+    :param dataframes: La collection de DataFrames.
     :type dataframes: Collection[pd.DataFrame]
     :param titles: Les titres des graphiques.
     :type titles: Collection[str]
@@ -102,6 +101,7 @@ def create_buttons(
     :type x_label: str
     :param y_label: Le titre de l'axe des y.
     :type y_label: str
+
     :return: La liste des boutons.
     :rtype: list[dict]
     """

@@ -144,7 +144,7 @@ class StationsHandlerPublic(StationsHandlerABC):
         """
         Récupère la date de l'événement.
 
-        :param event:`Données de l'événement.
+        :param event: Données de l'événement.
         :type event: dict
         :return: Date de l'événement.
         :rtype: datetime

@@ -36,8 +36,7 @@ def clean_depth(
 
     :param geodataframe: Le GeoDataFrame.
     :type geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
-
-    :param min_depth:La profondeur minimale.
+    :param min_depth: La profondeur minimale.
     :type min_depth: int | float
     :param max_depth: La profondeur maximale.
     :type max_depth: int | float | None
