@@ -20,24 +20,32 @@ from .parser_exception import ParserIdentifierError, MultipleParsersError, DataP
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.Factory")
 
 Header = tuple[str, ...]
+"""Alias pour un tuple de str représentant une entête."""
+
 DCDB_HEADER: Header = (
     ids.LONGITUDE_DCDB,
     ids.LATITUDE_DCDB,
     ids.DEPTH_DCDB,
     ids.TIME_DCDB,
 )
+"""Entête des fichiers DCDB."""
+
 OFM_HEADER: Header = (
     ids.LONGITUDE_OFM,
     ids.LATITUDE_OFM,
     ids.DEPTH_OFM,
     ids.TIME_OFM,
 )
+"""Entête des fichiers OFM."""
+
 LOWRANCE_HEADER: Header = (
     ids.LONGITUDE_LOWRANCE,
     ids.LATITUDE_LOWRANCE,
     ids.DEPTH_LOWRANCE,
     ids.TIME_LOWRANCE,
 )
+"""Entête des fichiers Lowrance."""
+
 ACTISENSE_HEADER: Header = (
     ids.LINE_ACTISENSE,
     ids.TIME_ACTISENSE,
@@ -52,7 +60,10 @@ ACTISENSE_HEADER: Header = (
     ids.SPEED_OVER_GROUND_ACTISENSE,
     ids.PGN_ACTISENSE,
 )
+"""Entête des fichiers Actisense."""
+
 BLACKBOX_HEADER: None = None
+"""Entête des fichiers BlackBox."""
 
 
 FACTORY_PARSER: dict[tuple[Header | None, str], Type[DataParserABC]] = {
@@ -62,6 +73,7 @@ FACTORY_PARSER: dict[tuple[Header | None, str], Type[DataParserABC]] = {
     (ACTISENSE_HEADER, ids.EXTENSION_CSV): "Actisense",
     (BLACKBOX_HEADER, ids.EXTENSION_TXT): "BlackBox",
 }
+"""Dictionnaire associant les entêtes et les extensions aux parsers."""
 
 
 def get_header(file: Path) -> tuple[str, ...] | None:
@@ -98,7 +110,7 @@ def get_extension(file: Path) -> str:
     """
     Fonction permettant de récupérer l'extension d'un fichier.
 
-    :param file: Le fichier à analyser.
+    :param file: Le fichier a à analyser.
     :type file: Path
     :return: L'extension du fichier.
     :rtype: str
@@ -144,8 +156,18 @@ def get_parser_factory(file: Path) -> Type[DataParserABC]:
 
 @dataclass
 class ParserFiles:
+    """
+    Classe permettant de stocker les fichiers et le parser associés.
+
+    :param parser: Le parser associé aux fichiers.
+    :type parser: Type[DataParserABC]
+    :param files: Les fichiers à traiter.
+    :type files: list[Path]
+    """
     parser: Type[DataParserABC] = None
+    """Le parser associé aux fichiers."""
     files: list[Path] = field(default_factory=list)
+    """Les fichiers à traiter."""
 
     def __setattr__(self, name, value):
         if name == "parser" and self.parser is not None and self.parser != value:
@@ -172,7 +194,9 @@ def get_files_parser(files: Collection[Path,]) -> ParserFiles:
 
         try:
             parser: Type[DataParserABC] = get_parser_factory(file)
-            LOGGER.debug(f"Parser identifié : {parser}.")
+            LOGGER.debug(
+                f"Parser identifié pour le fichier {file} : {parser.__name__}."
+            )
 
         except ParserIdentifierError as error:
             LOGGER.error(error)
