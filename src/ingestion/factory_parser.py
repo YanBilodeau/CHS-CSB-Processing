@@ -4,6 +4,7 @@ Module permettant de récupérer le parser associé à un fichier.
 Ce module contient les fonctions permettant de récupérer le parser associé à un fichier.
 """
 
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Type, Collection
 
@@ -13,24 +14,31 @@ from loguru import logger
 from . import parser_ids as ids
 from .parser_dcdb import DataParserBCDB
 from .parser_lowrance import DataParserLowrance
+from .parser_ofm import DataParserOFM
 from .parser_exception import ParserIdentifierError, MultipleParsersError, DataParserABC
 
 LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.Factory")
 
-
-DCDB_HEADER: tuple[str, ...] = (
+Header = tuple[str, ...]
+DCDB_HEADER: Header = (
     ids.LONGITUDE_DCDB,
     ids.LATITUDE_DCDB,
     ids.DEPTH_DCDB,
-    ids.TIME,
+    ids.TIME_DCDB,
 )
-LOWRANCE_HEADER: tuple[str, ...] = (
+OFM_HEADER: Header = (
+    ids.LONGITUDE_OFM,
+    ids.LATITUDE_OFM,
+    ids.DEPTH_OFM,
+    ids.TIME_OFM,
+)
+LOWRANCE_HEADER: Header = (
     ids.LONGITUDE_LOWRANCE,
     ids.LATITUDE_LOWRANCE,
     ids.DEPTH_LOWRANCE,
     ids.TIME_LOWRANCE,
 )
-ACTISENSE_HEADER: tuple[str, ...] = (
+ACTISENSE_HEADER: Header = (
     ids.LINE_ACTISENSE,
     ids.TIME_ACTISENSE,
     ids.NAME_ACTISENSE,
@@ -47,11 +55,12 @@ ACTISENSE_HEADER: tuple[str, ...] = (
 BLACKBOX_HEADER: None = None
 
 
-FACTORY_PARSER: dict[tuple[str, ...] | None, Type[DataParserABC]] = {
-    DCDB_HEADER: DataParserBCDB,
-    LOWRANCE_HEADER: DataParserLowrance,
-    ACTISENSE_HEADER: "Actisense",
-    BLACKBOX_HEADER: "BlackBox",
+FACTORY_PARSER: dict[tuple[Header | None, str], Type[DataParserABC]] = {
+    (DCDB_HEADER, ids.EXTENSION_CSV): DataParserBCDB,
+    (OFM_HEADER, ids.EXTENSION_XYZ): DataParserOFM,
+    (LOWRANCE_HEADER, ids.EXTENSION_CSV): DataParserLowrance,
+    (ACTISENSE_HEADER, ids.EXTENSION_CSV): "Actisense",
+    (BLACKBOX_HEADER, ids.EXTENSION_TXT): "BlackBox",
 }
 
 
@@ -85,6 +94,24 @@ def get_header(file: Path) -> tuple[str, ...] | None:
     return tuple(header.columns.tolist())
 
 
+def get_extension(file: Path) -> str:
+    """
+    Fonction permettant de récupérer l'extension d'un fichier.
+
+    :param file: Le fichier à analyser.
+    :type file: Path
+    :return: L'extension du fichier.
+    :rtype: str
+    """
+    LOGGER.debug(f"Récupération de l'extension du fichier : {file}.")
+
+    extension: str = file.suffix
+
+    LOGGER.debug(f"Extension du fichier {file} : {extension}.")
+
+    return extension
+
+
 def get_parser_factory(file: Path) -> Type[DataParserABC]:
     """
     Fonction permettant de récupérer le parser associé à un fichier.
@@ -98,32 +125,47 @@ def get_parser_factory(file: Path) -> Type[DataParserABC]:
     LOGGER.debug(f"Récupération du parser associé au fichier : {file}.")
 
     header_file: tuple[str, ...] | None = get_header(file)
+    extension: str = get_extension(file)
+    key: tuple[Header | None, str] = (header_file, extension)
 
-    if header_file in FACTORY_PARSER:
-        return FACTORY_PARSER[header_file]
+    if key in FACTORY_PARSER:
+        return FACTORY_PARSER[key]
 
-    for header_signature, parser in FACTORY_PARSER.items():
-        if header_signature and all(
-            column in header_file for column in header_signature
+    for (format_header, format_extension), parser in FACTORY_PARSER.items():
+        if (
+            format_header
+            and all(column in header_file for column in format_header)
+            and format_extension == extension
         ):
             return parser
 
     raise ParserIdentifierError(file=file)
 
 
-def map_files_to_parsers(
-    files: Collection[Path,]
-) -> dict[Type[DataParserABC], list[Path]]:
+@dataclass
+class ParserFiles:
+    parser: Type[DataParserABC] = None
+    files: list[Path] = field(default_factory=list)
+
+    def __setattr__(self, name, value):
+        if name == "parser" and self.parser is not None and self.parser != value:
+            raise MultipleParsersError(parsers=(self.parser, value))
+
+        super().__setattr__(name, value)
+
+
+def get_files_parser(files: Collection[Path,]) -> ParserFiles:
     """
     Fonction permettant de trouver les parsers associés aux fichiers.
 
     :param files: Les fichiers à traiter.
     :type files: Collection[Path]
-    :return: Un dictionnaire contenant les parsers associés aux fichiers.
-    :rtype: dict[Type[DataParserABC], list[Path]]
+    :return: Un objet ParserFiles contenant le parser associés aux fichiers.
+    :rtype: ParserFiles
     :raises factory_parser.ParserIdentifierError: Si une erreur survient lors de l'identification du parser.
+    :raises factory_parser.MultipleParsersError: Si plusieurs parsers sont identifiés.
     """
-    data_parser_dict: dict[Type[DataParserABC], list[Path]] = {}
+    parser_files: ParserFiles = ParserFiles()
 
     for file in files:
         LOGGER.debug(f"Traitement du fichier : {file}.")
@@ -133,14 +175,10 @@ def map_files_to_parsers(
             LOGGER.debug(f"Parser identifié : {parser}.")
 
         except ParserIdentifierError as error:
-            LOGGER.error(
-                f"Erreur lors de l'identification du parser pour le fichier {file} : {error}"
-            )
+            LOGGER.error(error)
             raise error
 
-        data_parser_dict.setdefault(parser, []).append(file)
+        parser_files.parser = parser
+        parser_files.files.append(file)
 
-        if len(data_parser_dict) > 1:
-            raise MultipleParsersError(parsers=list(data_parser_dict.keys()))
-
-    return data_parser_dict
+    return parser_files
