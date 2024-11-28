@@ -59,7 +59,7 @@ autodoc_default_options = {
     "show-inheritance": True,
     "inherited-members": False,
     "member-order": "groupwise",
-    "special-members": "__init__",
+    # "special-members": "__init__",
     "inheritance-diagram": True,
     "private-members": True,
     "exclude-members": "_abc_impl, model_computed_fields, model_config, model_fields, _generate_next_value_",
