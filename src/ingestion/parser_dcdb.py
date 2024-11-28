@@ -29,7 +29,7 @@ DTYPE_DICT: dict[str, str] = {
 }
 
 COLUMN_EXCEPTIONS: list[ColumnException] = [
-    ColumnException(column_name=ids.TIME, error=ParsingDataframeTimeError),
+    ColumnException(column_name=ids.TIME_DCDB, error=ParsingDataframeTimeError),
     ColumnException(
         column_name=ids.LONGITUDE_DCDB, error=ParsingDataframeLongitudeError
     ),
@@ -64,7 +64,10 @@ class DataParserBCDB(DataParserABC):
             dataframe=dataframe, file=file, column_exceptions=COLUMN_EXCEPTIONS
         )
         dataframe = self.convert_dtype(
-            dataframe=dataframe, dtype_dict=dtype_dict, time_column=ids.TIME, file=file
+            dataframe=dataframe,
+            dtype_dict=dtype_dict,
+            time_column=ids.TIME_DCDB,
+            file=file,
         )
 
         gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
@@ -90,7 +93,7 @@ class DataParserBCDB(DataParserABC):
         LOGGER.debug(f"Renommage des colonnes du geodataframe.")
         data: gpd.GeoDataFrame[schema.DataLoggerSchema] = data.rename(
             columns={
-                ids.TIME: schema.TIME_UTC,
+                ids.TIME_DCDB: schema.TIME_UTC,
                 ids.DEPTH_DCDB: schema.DEPTH_METER,
                 ids.LONGITUDE_DCDB: schema.LONGITUDE_WGS84,
                 ids.LATITUDE_DCDB: schema.LATITUDE_WGS84,
