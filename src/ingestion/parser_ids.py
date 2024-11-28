@@ -53,3 +53,10 @@ FLOAT64: str = "float64"
 """Valeur de la constante pour le type de données float64."""
 EPSG_WGS84: str = "EPSG:4326"
 """Valeur de la constante pour le code EPSG 4326."""
+
+# Constantes pour les extensions de fichier.
+EXTENSION_CSV: str = ".csv"
+"""Valeur de la constante pour l'extension de fichier CSV."""
+EXTENSION_XYZ: str = ".xyz"
+"""Valeur de la constante pour l'extension de fichier XYZ."""
+EXTENSION_TXT: str = ".TXT"
