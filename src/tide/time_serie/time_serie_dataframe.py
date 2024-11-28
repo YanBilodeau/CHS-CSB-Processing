@@ -388,6 +388,7 @@ def merge_dataframes(
     wl_combined_dataframe[schema_ids.VALUE] = wl_combined_dataframe[
         schema_ids.VALUE
     ].combine_first(wl_combined_dataframe["value_wl"])
+
     wl_combined_dataframe[schema_ids.TIME_SERIE_CODE] = wl_combined_dataframe[
         schema_ids.TIME_SERIE_CODE
     ].combine_first(wl_combined_dataframe["time_serie_code_wl"])
