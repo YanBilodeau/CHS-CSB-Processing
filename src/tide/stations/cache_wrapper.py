@@ -1,5 +1,5 @@
 """
-Module permettant de gérer un cache pour les données des stations de marées.
+Module permettant de gérer une cache pour les données des stations de marées.
 
 Ce module contient les fonctions suivantes qui permettent de gérer une cache pour les données des stations de marées.
 """
