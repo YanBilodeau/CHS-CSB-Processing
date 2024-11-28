@@ -1,5 +1,5 @@
 """
-Module qui contient les modèles pour manipuler les données des séries temporelles et des stations.
+Module qui contient les modèles et les protocoles pour manipuler les données des séries temporelles et des stations.
 """
 
 from typing import Protocol, Collection, Optional
@@ -10,23 +10,27 @@ import geopandas as gpd
 class TimeSeriesProtocol(Protocol):
     """
     Protocole pour définir les types des séries temporelles.
-
-    :param WLO: Water Level Observed.
-    :param WLF_SPINE: Water Level Forecast Spine.
-    :param WLF_VTG: Water Level Forecast VTG.
-    :param WLF: Water Level Forecast.
-    :param WLP: Water Level Prediction.
     """
 
     WLO: str = "wlo"
+    """Water Level Observed."""
     WLF_SPINE: str = "wlf-spine"
+    """Water Level Forecast Spine."""
     WLF_VTG: str = "wlf-vtg"
+    """Water Level Forecast VTG."""
     WLF: str = "wlf"
+    """Water Level Forecast."""
     WLP: str = "wlp"
+    """Water Level Prediction."""
 
-    def from_str(cls, value: str):
+    def from_str(cls, value: str) -> "TimeSeriesProtocol":
         """
         Méthode pour convertir une chaîne de caractères en série temporelle.
+
+        :param value: Chaîne de caractères.
+        :type value: str
+        :return: Série temporelle.
+        :rtype: TimeSeriesProtocol
         """
         pass
 
@@ -39,15 +43,19 @@ class StationsHandlerProtocol(Protocol):
     def get_stations_geodataframe(
         self,
         filter_time_series: Collection[TimeSeriesProtocol] | None,
-        exclude_stations: Collection[str] | None,
+        excluded_stations: Collection[str] | None,
         ttl: Optional[int],
     ) -> gpd.GeoDataFrame:
         """
         Méthode pour récupérer le GeoDataFrame des stations.
 
-        :param filter_time_series: (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer
-                                        les stations. Si None, toutes les stations sont retournées.
-        :param exclude_stations: (Collection[str] | None) Liste des stations à exclure.
-        :param ttl: (Optional[int]) Durée de vie du cache.
+        :param filter_time_series: Liste des séries temporelles pour filtrer les stations. Si None, toutes les stations sont retournées.
+        :type filter_time_series: Collection[TimeSeriesProtocol] | None
+        :param excluded_stations: Liste des stations à exclure.
+        :type excluded_stations: Collection[str] | None
+        :param ttl: Durée de vie du cache.
+        :type ttl: Optional[int]
+        :return: GeoDataFrame des stations.
+        :rtype: gpd.GeoDataFrame
         """
         pass

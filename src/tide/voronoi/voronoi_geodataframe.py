@@ -21,7 +21,8 @@ from .voronoi_models import TimeSeriesProtocol, StationsHandlerProtocol
 from ..schema import validate_schema, StationsSchema, VoronoiSchema
 
 LOGGER = logger.bind(name="CSB-Pipeline.Tide.Voronoi.Geodataframe")
-WGS84 = 4326
+WGS84: int = 4326
+"""EPSG code pouur le système de coordonnées WGS84."""
 
 
 def from_shapely_object_to_geodataframe(
@@ -30,9 +31,12 @@ def from_shapely_object_to_geodataframe(
     """
     Fonction qui transforme un objet Shapely en GeoDataFrame.
 
-    :param geometry: (Geometry) La géométrie Shapely à transformer.
-    :param epsg: (int) Le code EPSG du CRS à utiliser.
-    :return: (gpd.GeoDataFrame) Le GeoDataFrame.
+    :param geometry: La géométrie Shapely à transformer.
+    :type geometry: shapely.geometry
+    :param epsg: Le code EPSG du CRS à utiliser.
+    :type epsg: Optional[int]
+    :return: Le GeoDataFrame.
+    :rtype: gpd.GeoDataFrame
     """
     LOGGER.debug(
         f"Transformation de la géométrie Shapely de type {geometry.geom_type} en GeoDataFrame."
@@ -49,8 +53,10 @@ def create_voronoi_gdf(geometry: Geometry) -> gpd.GeoDataFrame:
     """
     Crée un GeoDataFrame de polygone de Voronoi à partir d'une geometrie Shapely.
 
-    :param geometry: (Geometry) La géométrie Shapely à utiliser pour créer les polygones de Voronoi.
-    :return: (gpd.GeoDataFrame) Le GeoDataFrame contenant les polygones de Voronoi.
+    :param geometry: La géométrie Shapely à utiliser pour créer les polygones de Voronoi.
+    :type geometry: Geometry
+    :return: Le GeoDataFrame contenant les polygones de Voronoi.
+    :rtype: gpd.GeoDataFrame
     """
     voronoi: GeometryCollection = create_voronoi_polygons(geometry=geometry)
 
@@ -63,9 +69,12 @@ def join_stations_voronoi(
     """
     Crée une jointure spatiale entre les stations et les polygones de Voronoi.
 
-    :param gdf_stations: (gpd.GeoDataFrame) Le GeoDataFrame des stations.
-    :param gdf_voronoi: (gpd.GeoDataFrame) Le GeoDataFrame des polygones de Voronoi.
-    :return: (gpd.GeoDataFrame) Le GeoDataFrame joint.
+    :param gdf_stations: Le GeoDataFrame des stations.
+    :type gdf_stations: gpd.GeoDataFrame
+    :param gdf_voronoi: Le GeoDataFrame des polygones de Voronoi.
+    :type gdf_voronoi: gpd.GeoDataFrame
+    :return: Le GeoDataFrame joint.
+    :rtype: gpd.GeoDataFrame
     """
     LOGGER.debug("Jointure spatiale entre les stations et les polygones de Voronoi.")
 
@@ -78,9 +87,12 @@ def merge_attributes(
     """
     Fusionne les attributs des stations avec les polygones de Voronoi.
 
-    :param gdf_voronoi: (gpd.GeoDataFrame) Le GeoDataFrame des polygones de Voronoi.
-    :param gdf_joined: (gpd.GeoDataFrame) Le GeoDataFrame avec le geodataframe des stations et des polygones de Voronoi joins.
-    :return: (gpd.GeoDataFrame) Le GeoDataFrame avec les attributs fusionnés.
+    :param gdf_voronoi: Le GeoDataFrame des polygones de Voronoi.
+    :type gdf_voronoi: gpd.GeoDataFrame
+    :param gdf_joined: Le GeoDataFrame avec le geodataframe des stations et des polygones de Voronoi joins.
+    :type gdf_joined: gpd.GeoDataFrame
+    :return: Le GeoDataFrame avec les attributs fusionnés.
+    :rtype: gpd.GeoDataFrame
     """
     LOGGER.debug("Fusion des attributs des stations avec les polygones de Voronoi.")
 
@@ -103,11 +115,14 @@ def get_voronoi_geodataframe(
     """
     Récupère le GeoDataFrame des polygones de Voronoi.
 
-    :param stations_handler: (StationsHandlerABC) Gestionnaire des stations.
-    :param time_series: (Collection[TimeSeriesProtocol] | None) Liste des séries temporelles pour filtrer
-                                        les stations. Si None, toutes les stations sont retournées.
-    :param excluded_stations: (Collection[str] | None) Liste des stations à exclure.
-    :return: (gpd.GeoDataFrame[VoronoiSchema]) Le GeoDataFrame des polygones de Voronoi.
+    :param stations_handler: Gestionnaire des stations.
+    :type stations_handler: StationsHandlerABC
+    :param time_series: Liste des séries temporelles pour filtrer les stations. Si None, toutes les stations sont retournées.
+    :type time_series: Collection[TimeSeriesProtocol] | None
+    :param excluded_stations: Liste des stations à exclure.
+    :type excluded_stations: Collection[str] | None
+    :return: Le GeoDataFrame des polygones de Voronoi.
+    :rtype: gpd.GeoDataFrame[VoronoiSchema]
     """
     gdf_stations: gpd.GeoDataFrame[StationsSchema] = (
         stations_handler.get_stations_geodataframe(
@@ -139,9 +154,12 @@ def get_polygon_by_station_id(
     """
     Récupère le polygone de Voronoi pour une station donnée.
 
-    :param gdf_voronoi: (gpd.GeoDataFrame[VoronoiSchema]) Le GeoDataFrame des polygones de Voronoi.
-    :param station_id: (str) L'identifiant de la station.
-    :return: (gpd.GeoDataFrame) Le polygone de Voronoi de la station.
+    :param gdf_voronoi: Le GeoDataFrame des polygones de Voronoi.
+    :type gdf_voronoi: gpd.GeoDataFrame[VoronoiSchema]
+    :param station_id: L'identifiant de la station.
+    :type station_id: str
+    :return: Le polygone de Voronoi de la station.
+    :rtype: gpd.GeoDataFrame
     """
     LOGGER.debug(f"Récupération du polygone de Voronoi de la station '{station_id}'.")
 
@@ -154,9 +172,12 @@ def get_time_series_by_station_id(
     """
     Récupère les séries temporelles pour une station donnée.
 
-    :param gdf_voronoi: (gpd.GeoDataFrame[VoronoiSchema]) Le GeoDataFrame des polygones de Voronoi.
-    :param station_id: (str) L'identifiant de la station.
-    :return: (list[str]) Les séries temporelles de la station.
+    :param gdf_voronoi: Le GeoDataFrame des polygones de Voronoi.
+    :type gdf_voronoi: gpd.GeoDataFrame[VoronoiSchema]
+    :param station_id: L'identifiant de la station.
+    :type station_id: str
+    :return: Les séries temporelles de la station.
+    :rtype: list[str]
     """
     LOGGER.debug(f"Récupération des séries temporelles de la station '{station_id}'.")
 
@@ -167,9 +188,12 @@ def get_code_by_station_id(gdf_voronoi: gpd.GeoDataFrame, station_id: str) -> st
     """
     Récupère le code de la station.
 
-    :param gdf_voronoi: (gpd.GeoDataFrame[VoronoiSchema]) Le GeoDataFrame des polygones de Voronoi.
-    :param station_id: (str) L'identifiant de la station.
-    :return: (str) Le code de la station.
+    :param gdf_voronoi: Le GeoDataFrame des polygones de Voronoi.
+    :type gdf_voronoi: gpd.GeoDataFrame[VoronoiSchema]
+    :param station_id: L'identifiant de la station.
+    :type station_id: str
+    :return: Le code de la station.
+    :rtype: str
     """
     LOGGER.debug(f"Récupération du code de la station '{station_id}'.")
 
@@ -180,9 +204,12 @@ def get_name_by_station_id(gdf_voronoi: gpd.GeoDataFrame, station_id: str) -> st
     """
     Récupère le nom de la station.
 
-    :param gdf_voronoi: (gpd.GeoDataFrame[VoronoiSchema]) Le GeoDataFrame des polygones de Voronoi.
-    :param station_id: (str) L'identifiant de la station.
-    :return: (str) Le nom de la station.
+    :param gdf_voronoi: Le GeoDataFrame des polygones de Voronoi.
+    :type gdf_voronoi: gpd.GeoDataFrame[VoronoiSchema]
+    :param station_id: L'identifiant de la station.
+    :type station_id: str
+    :return: Le nom de la station.
+    :rtype: str
     """
     LOGGER.debug(f"Récupération du nom de la station '{station_id}'.")
 
@@ -196,9 +223,12 @@ def get_polygon_by_geometry(
     """
     Récupère les polygones de Voronoi qui intersectent les géométries données.
 
-    :param gdf_voronoi: (gpd.GeoDataFrame[VoronoiSchema]) Le GeoDataFrame des polygones de Voronoi.
-    :param geometry: (Geometry) La géométrie a utilisé pour l'intersection.
-    :return: (gpd.GeoDataFrame[VoronoiSchema]) Le GeoDataFrame des polygones de Voronoi qui intersectent les géométries.
+    :param gdf_voronoi: Le GeoDataFrame des polygones de Voronoi.
+    :type gdf_voronoi: gpd.GeoDataFrame[VoronoiSchema]
+    :param geometry: La géométrie a utilisé pour l'intersection.
+    :type geometry: gpd.GeoDataFrame
+    :return: Le GeoDataFrame des polygones de Voronoi qui intersectent les géométries.
+    :rtype: gpd.GeoDataFrame[VoronoiSchema]
     """
     LOGGER.debug(
         "Récupération des polygones de Voronoi qui intersectent les géométries."
@@ -226,10 +256,14 @@ def get_concave_hull(
     """
     Récupère l'enveloppe concave des polygones de Voronoi.
 
-    :param geometry: (Geometry) La géométrie a utilisé pour l'enveloppe concave.
-    :param ratio: (float) Le ratio de l'enveloppe concave.
-    :param allow_holes: (bool) Autorise les trous dans l'enveloppe concave.
-    :return: (Geometry) L'enveloppe concave des polygones.
+    :param geometry: La géométrie a utilisé pour l'enveloppe concave.
+    :type geometry: Geometry
+    :param ratio: Le ratio de l'enveloppe concave.
+    :type ratio: float
+    :param allow_holes: Autorise les trous dans l'enveloppe concave.
+    :type allow_holes: bool
+    :return: L'enveloppe concave des polygones.
+    :rtype: Geometry
     """
     LOGGER.debug(f"Création de l'enveloppe concave avec un ratio de {ratio}.")
 

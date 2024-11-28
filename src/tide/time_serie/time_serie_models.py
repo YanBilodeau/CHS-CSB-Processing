@@ -65,6 +65,7 @@ class TimeSeriesProtocol(Protocol):
         """
         pass
 
+
 class StationsHandlerProtocol(Protocol):
     """
     Protocole pour les gestionnaires de stations.

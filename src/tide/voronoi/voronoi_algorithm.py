@@ -25,12 +25,18 @@ def create_voronoi_polygons(
     Fonction qui crée des polygones de Voronoi à partir d'un ensemble de points.
     https://shapely.readthedocs.io/en/stable/reference/shapely.voronoi_polygons.html
 
-    :param geometry: (Geometry) Géométrie des objets.
-    :param tolerance: (float) La tolérance pour l'intersection des lignes.
-    :param extend_to: (Geometry) L'étendue de la géométrie des polygones de Voronoi.
-    :param only_edges: (bool) Création de polylignes plutôt que des polygones.
-    :param kwargs: (dict) Autres paramètres.
-    :return: (GeometryCollection) Collection de polygones de Voronoi.
+    :param geometry: Géométrie des objets.
+    :type geometry: Geometry
+    :param tolerance: La tolérance pour l'intersection des lignes.
+    :type tolerance: float
+    :param extend_to: L'étendue de la géométrie des polygones de Voronoi.
+    :type extend_to: Geometry
+    :param only_edges: Création de polylignes plutôt que des polygones.
+    :type only_edges: bool
+    :param kwargs: Autres paramètres.
+    :type kwargs: dict
+    :return: Collection de polygones de Voronoi.
+    :rtype: GeometryCollection
     """
     LOGGER.debug(
         f"Création des polygones de Voronoi à partir de la géométrie : {geometry}."
