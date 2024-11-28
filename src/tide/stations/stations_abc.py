@@ -19,6 +19,7 @@ from .cache_wrapper import cache_result
 from .exception_stations import StationsError
 from .stations_models import TimeSeriesProtocol, ResponseProtocol, IWLSapiProtocol
 from schema import StationsSchema, validate_schema, TimeSerieDataSchema
+from schema import model_ids as schema_ids
 
 LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station.ABC")
 
@@ -151,10 +152,10 @@ class StationsHandlerABC(ABC):
 
         return [
             {
-                "id": station["id"],
-                "code": station["code"],
-                "name": station[station_name_key].replace("/", "-"),
-                "time_series": (
+                schema_ids.ID: station["id"],
+                schema_ids.CODE: station["code"],
+                schema_ids.NAME: station[station_name_key].replace("/", "-"),
+                schema_ids.TIME_SERIES: (
                     ["Unknown"]
                     if index_map is None
                     else sorted(
@@ -162,7 +163,7 @@ class StationsHandlerABC(ABC):
                         key=lambda code: index_map.get(code, float("inf")),
                     )
                 ),
-                "is_tidal": str(station["isTidal"]),
+                schema_ids.IS_TIDAL: str(station["isTidal"]),
             }
             for station in stations
         ]
@@ -344,9 +345,9 @@ class StationsHandlerABC(ABC):
         """
         return [
             {
-                "event_date": self._get_event_date(event=event),
-                "value": event["value"],
-                "time_serie_code": time_serie_code,
+                schema_ids.EVENT_DATE: self._get_event_date(event=event),
+                schema_ids.VALUE: event["value"],
+                schema_ids.TIME_SERIE_CODE: time_serie_code,
                 "qc_flag": self._get_qc_flag(event=event),
             }
             for event in data
