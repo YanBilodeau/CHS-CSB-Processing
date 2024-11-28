@@ -38,7 +38,7 @@ COLUMN_EXCEPTIONS: list[ColumnException] = [
 ]
 
 
-class DataParserBCDB(DataParserABC):
+class DataParserOFM(DataParserABC):
     """
     Classe permettant de parser les données de type OFM.
     """
