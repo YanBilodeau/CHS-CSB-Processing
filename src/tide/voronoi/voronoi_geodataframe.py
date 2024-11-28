@@ -18,7 +18,7 @@ from shapely.constructive import concave_hull
 
 from .voronoi_algorithm import create_voronoi_polygons
 from .voronoi_models import TimeSeriesProtocol, StationsHandlerProtocol
-from ..schema import validate_schema, StationsSchema, TideZoneSchema
+from schema import validate_schema, StationsSchema, TideZoneSchema
 
 LOGGER = logger.bind(name="CSB-Pipeline.Tide.Voronoi.Geodataframe")
 WGS84: int = 4326

@@ -18,7 +18,7 @@ from .time_serie_models import (
     StationsHandlerProtocol,
 )
 from .time_serie_retry import interpolation_retry
-from ..schema import TimeSerieDataSchema
+from schema import TimeSerieDataSchema
 
 LOGGER = logger.bind(name="CSB-Pipeline.TimeSerie")
 NanDateRow = dict[str, Any]
