@@ -1,5 +1,5 @@
 """
-Ce module contient la fonction permettant de récupérer le parser associé à un formtat de fichier.
+Ce module contient la fonction permettant de récupérer le parser associé à un format de fichier.
 """
 
 from pathlib import Path
