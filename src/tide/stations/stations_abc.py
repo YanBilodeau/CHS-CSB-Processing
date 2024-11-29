@@ -453,7 +453,7 @@ class StationsHandlerABC(ABC):
 
         data_dataframe: pd.DataFrame[schema.TimeSerieDataSchema] = pd.DataFrame(
             data_list
-        )
+        ).astype({schema_ids.TIME_SERIE_CODE: pd.StringDtype()})
 
         data_dataframe = self.filter_wlo_qc_flag(
             data_dataframe=data_dataframe,
