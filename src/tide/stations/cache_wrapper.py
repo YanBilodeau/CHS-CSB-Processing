@@ -46,12 +46,12 @@ def cache_result(ttl: int = 86400):
             cache_key = f"{func.__name__}_{args}_{kwargs}"
 
             if cache_key in CACHE:
-                logger.debug(f"Récupération des données depuis la cache : {cache_key}.")
+                LOGGER.trace(f"Récupération des données depuis la cache : {cache_key}.")
                 return CACHE[cache_key]
 
             result = func(*args, **kwargs)
 
-            logger.debug(
+            LOGGER.trace(
                 f"Ajout de données dans la cache avec un ttl de {ttl} secondes : '{cache_key}'."
             )
             CACHE.set(key=cache_key, value=result, expire=ttl)
