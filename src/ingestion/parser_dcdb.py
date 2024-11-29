@@ -80,6 +80,7 @@ class DataParserBCDB(DataParserABC):
 
         return gdf
 
+    @schema.validate_schemas(return_schema=schema.DataLoggerSchema)
     def transform(self, data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         """
         Méthode permettant de transformer le geodataframe pour respecter le schéma de données.
@@ -100,7 +101,5 @@ class DataParserBCDB(DataParserABC):
                 ids.LATITUDE_DCDB: schema_ids.LATITUDE_WGS84,
             }
         )
-
-        schema.validate_schema(data, schema.DataLoggerSchema)
 
         return data
