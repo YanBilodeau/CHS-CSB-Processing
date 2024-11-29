@@ -276,6 +276,12 @@ class StationsHandlerABC(ABC):
 
         gdf_stations: gpd.GeoDataFrame[schema.StationsSchema] = gpd.GeoDataFrame(
             attributes, geometry=geometry, crs="EPSG:4326"
+        ).astype(
+            {
+                schema_ids.ID: pd.StringDtype(),
+                schema_ids.NAME: pd.StringDtype(),
+                schema_ids.CODE: pd.StringDtype(),
+            }
         )
 
         return gdf_stations
