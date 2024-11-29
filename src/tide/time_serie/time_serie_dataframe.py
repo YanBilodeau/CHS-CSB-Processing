@@ -555,8 +555,8 @@ def clean_time_series_data(
 def get_time_series_data(
     stations_handler: StationsHandlerProtocol,
     station_id: str,
-    from_time: str,
-    to_time: str,
+    from_time: str | datetime,
+    to_time: str | datetime,
     time_serie_code: TimeSeriesProtocol,
     buffer_time: Optional[timedelta] = None,
     wlo_qc_flag_filter: Optional[list[str] | None] = None,
@@ -568,10 +568,10 @@ def get_time_series_data(
     :type stations_handler: StationsHandlerProtocol
     :param station_id: Identifiant de la station.
     :type station_id: str
-    :param from_time: Date de début.
-    :type from_time: str
-    :param to_time: Date de fin.
-    :type to_time: str
+    :param from_time: Date de début en format ISO 8601 ou objet datetime.
+    :type from_time: str | datetime
+    :param to_time: Date de fin en format ISO 8601 ou objet datetime.
+    :type to_time: str | datetime
     :param time_serie_code: Série temporelle.
     :type time_serie_code: TimeSeriesProtocol
     :param buffer_time: Temps tampon à ajouter au début et à la fin de la période de données.
@@ -587,12 +587,20 @@ def get_time_series_data(
             f"de {from_time} à {to_time} avec un temps tampon de {buffer_time}."
         )
     from_time_buffered: str = (
-        get_iso8601_from_datetime(get_datetime_from_iso8601(from_time) - buffer_time)
+        get_iso8601_from_datetime(
+            get_datetime_from_iso8601(from_time)
+            if isinstance(from_time, str)
+            else from_time - buffer_time
+        )
         if buffer_time
         else from_time
     )
     to_time_buffered: str = (
-        get_iso8601_from_datetime(get_datetime_from_iso8601(to_time) + buffer_time)
+        get_iso8601_from_datetime(
+            get_datetime_from_iso8601(to_time)
+            if isinstance(to_time, str)
+            else to_time + buffer_time
+        )
         if buffer_time
         else to_time
     )
@@ -653,8 +661,8 @@ def get_iso8601_from_datetime(date: datetime) -> str:
 def get_water_level_data(
     stations_handler: StationsHandlerProtocol,
     station_id: str,
-    from_time: str,
-    to_time: str,
+    from_time: str | datetime,
+    to_time: str | datetime,
     time_series_priority: Collection[TimeSeriesProtocol],
     buffer_time: Optional[timedelta | None] = None,
     max_time_gap: Optional[str | None] = None,
@@ -668,10 +676,10 @@ def get_water_level_data(
     :type stations_handler: StationsHandlerProtocol
     :param station_id: Identifiant de la station.
     :type station_id: str
-    :param from_time: Date de début.
-    :type from_time: str
-    :param to_time: Date de fin.
-    :type to_time: str
+    :param from_time: Date de début en format ISO 8601 ou objet datetime.
+    :type from_time: str | datetime
+    :param to_time: Date de fin en format ISO 8601 ou objet datetime.
+    :type to_time: str | datetime
     :param time_series_priority: Liste des séries temporelles à récupérer en ordre de priorité.
     :type time_series_priority: Collection[TimeSeriesProtocol]
     :param buffer_time: Temps tampon à ajouter au début et à la fin de la période de données.
