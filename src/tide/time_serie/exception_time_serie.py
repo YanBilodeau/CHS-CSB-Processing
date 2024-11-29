@@ -96,7 +96,7 @@ def get_data_gaps_message(gaps: pd.DataFrame) -> str:
     )
     gaps_str = "; ".join([str(gap) for gap in data_gaps_list])
 
-    return f"{total_duration_minutes} minutes de données manquantes pour les périodes suivantes : {gaps_str}."
+    return f"{total_duration_minutes} minutes de données manquantes pour le Dataframe '{gaps.attrs.get('name')}' : {gaps_str}."
 
 
 @dataclass(frozen=True)
