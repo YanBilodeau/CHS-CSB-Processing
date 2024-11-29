@@ -18,7 +18,7 @@ from .time_serie_models import (
     StationsHandlerProtocol,
 )
 from .time_serie_retry import interpolation_retry
-from schema import TimeSerieDataSchema
+import schema
 from schema import model_ids as schema_ids
 
 LOGGER = logger.bind(name="CSB-Pipeline.TimeSerie")
@@ -115,16 +115,16 @@ def identify_interpolation_and_fill_gaps(
     Identifie les périodes de données manquantes à interpoler et à remplir.
 
     :param gaps_dataframe: DataFrame contenant les périodes de données manquantes.
-    :type gaps_dataframe: pd.DataFrame[TimeSerieDataSchema]
+    :type gaps_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
     :param threshold_interpolation_filling: Seuil de temps en dessous duquel les données manquantes sont interpolées ou remplies.
     :type threshold_interpolation_filling: str
     :return: Périodes de données manquantes à interpoler et à remplir.
-    :rtype: tuple[pd.DataFrame[TimeSerieDataSchema], pd.DataFrame[TimeSerieDataSchema]]
+    :rtype: tuple[pd.DataFrame[schema.TimeSerieDataSchema], pd.DataFrame[schema.TimeSerieDataSchema]]
     """
-    gaps_to_interpolate: pd.DataFrame[TimeSerieDataSchema] = gaps_dataframe[
+    gaps_to_interpolate: pd.DataFrame[schema.TimeSerieDataSchema] = gaps_dataframe[
         gaps_dataframe["data_time_gap"] < pd.Timedelta(threshold_interpolation_filling)
     ]
-    gaps_to_fill: pd.DataFrame[TimeSerieDataSchema] = gaps_dataframe[
+    gaps_to_fill: pd.DataFrame[schema.TimeSerieDataSchema] = gaps_dataframe[
         gaps_dataframe["data_time_gap"] >= pd.Timedelta(threshold_interpolation_filling)
     ]
 
@@ -140,7 +140,7 @@ def identify_data_gaps(
     Identifie les périodes de données manquantes.
 
     :param wl_dataframe: DataFrame contenant les données.
-    :type wl_dataframe: pd.DataFrame[TimeSerieDataSchema]
+    :type wl_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
     :param max_time_gap: Intervalle de temps maximale permise avant de  combler les données manquantes.
     :type max_time_gap: str
     :param threshold_interpolation_filling: Seuil de temps en dessous duquel les données manquantes sont interpolées ou remplies.
@@ -148,7 +148,7 @@ def identify_data_gaps(
     :type threshold_interpolation_filling: Optional[str | None]
     :return: Un tuple contenant toutes les périodes de données manquantes, les périodes de données manquantes à interpoler
              et les périodes de données manquantes à remplir.
-    :rtype: tuple[pd.DataFrame[TimeSerieDataSchema], pd.DataFrame[TimeSerieDataSchema], pd.DataFrame[TimeSerieDataSchema]]
+    :rtype: tuple[pd.DataFrame[schema.TimeSerieDataSchema], pd.DataFrame[schema.TimeSerieDataSchema], pd.DataFrame[schema.TimeSerieDataSchema]]
     """
     LOGGER.debug(
         f"Identification des périodes de données manquantes de plus de {max_time_gap} pour "
@@ -162,7 +162,7 @@ def identify_data_gaps(
         non_nan_dataframe=non_nan_dataframe, first_row=first_row, last_row=last_row
     )
 
-    gaps_dataframe: pd.DataFrame[TimeSerieDataSchema] = non_nan_dataframe[
+    gaps_dataframe: pd.DataFrame[schema.TimeSerieDataSchema] = non_nan_dataframe[
         non_nan_dataframe["data_time_gap"] > pd.Timedelta(max_time_gap)
     ]
 
@@ -182,7 +182,7 @@ def resample_data(wl_dataframe: pd.DataFrame, time: str) -> pd.DataFrame:
     Rééchantillonne les données.
 
     :param wl_dataframe: DataFrame contenant les données.
-    :type wl_dataframe: pd.DataFrame[TimeSerieDataSchema]
+    :type wl_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
     :param time: Intervalle de temps.
     :type time: str
     :return: DataFrame contenant les données rééchantillonnées.
@@ -265,13 +265,13 @@ def interpolate_data_gaps(
     Interpole les données manquantes.
 
     :param wl_dataframe: DataFrame contenant les données.
-    :type wl_dataframe: pd.DataFrame[TimeSerieDataSchema]
+    :type wl_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
     :param gaps_dataframe: DataFrame contenant les périodes de données manquantes à interpoler.
     :type gaps_dataframe: pd.DataFrame
     :param max_time_gap: Intervalle de temps maximale permise avant de combler les données manquantes.
     :type max_time_gap: str
     :return: DataFrame contenant les données interpolées.
-    :rtype: pd.DataFrame[TimeSerieDataSchema]
+    :rtype: pd.DataFrame[schema.TimeSerieDataSchema]
     """
     LOGGER.debug(
         f"Interpolation des données manquantes de {wl_dataframe[schema_ids.TIME_SERIE_CODE].unique()}."
@@ -310,14 +310,14 @@ def process_gaps_to_interpolate(
     Identifie et comble les données manquantes avec une interpolation.
 
     :param wl_dataframe: DataFrame contenant les données.
-    :type wl_dataframe: pd.DataFrame[TimeSerieDataSchema]
+    :type wl_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
     :param max_time_gap: Intervalle de temps maximale permise avant de  combler les données manquantes.
     :type max_time_gap: str
     :param threshold_interpolation_filling: Seuil de temps en dessous duquel les données manquantes sont interpolées ou remplies.
                                             Si None, les données manquantes sont seulement remplies par la time série suivante.
     :type threshold_interpolation_filling: Optional[str | None]
     :return: Données de niveau d'eau combinées.
-    :Rtype: pd.DataFrame[TimeSerieDataSchema]
+    :Rtype: pd.DataFrame[schema.TimeSerieDataSchema]
     """
     _, gaps_to_interpolate, _ = identify_data_gaps(
         wl_dataframe=wl_dataframe,
@@ -334,7 +334,7 @@ def process_gaps_to_interpolate(
 
     LOGGER.debug(get_data_gaps_message(gaps=gaps_to_interpolate))
 
-    wl_dataframe: pd.DataFrame[TimeSerieDataSchema] = interpolate_data_gaps(
+    wl_dataframe: pd.DataFrame[schema.TimeSerieDataSchema] = interpolate_data_gaps(
         gaps_dataframe=gaps_to_interpolate,
         wl_dataframe=wl_dataframe,
         max_time_gap=max_time_gap,
@@ -375,11 +375,11 @@ def merge_dataframes(
     Fusionne les DataFrames.
 
     :param wl_combined_dataframe: DataFrame contenant les données combinées.
-    :type wl_combined_dataframe: pd.DataFrame[TimeSerieDataSchema]
+    :type wl_combined_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
     :param wl_dataframe: DataFrame contenant les données à ajouter
-    :type wl_dataframe: pd.DataFrame[TimeSerieDataSchema]
+    :type wl_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
     :return: DataFrame contenant les données à ajouter et celles combinées.
-    :rtype: pd.DataFrame[TimeSerieDataSchema]
+    :rtype: pd.DataFrame[schema.TimeSerieDataSchema]
     """
     wl_combined_dataframe = wl_combined_dataframe.merge(
         wl_dataframe, on=schema_ids.EVENT_DATE, how="left", suffixes=("", "_wl")
@@ -405,28 +405,28 @@ def fill_data_gaps(
     Permet de remplir les périodes de données manquantes.
 
     :param gaps_dataframe: DataFrame contenant les périodes de données manquantes.
-    :type gaps_dataframe: pd.DataFrame[TimeSerieDataSchema]
+    :type gaps_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
     :param wl_dataframe: DataFrame contenant les données à ajouter.
-    :type wl_dataframe: pd.DataFrame[TimeSerieDataSchema]
+    :type wl_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
     :param wl_combined_dataframe: DataFrame contenant les données combinées.
-    :type wl_combined_dataframe: pd.DataFrame[TimeSerieDataSchema]
+    :type wl_combined_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
     :return: DataFrame contenant les données ajoutées au données combinées.
-    :rtype: pd.DataFrame[TimeSerieDataSchema]
+    :rtype: pd.DataFrame[schema.TimeSerieDataSchema]
     """
     LOGGER.debug(
         f"Remplissage des données manquantes à partir de la série temporelle {wl_dataframe[schema_ids.TIME_SERIE_CODE].unique()}."
     )
 
-    gaps_dataframe_list: list[pd.DataFrame[TimeSerieDataSchema]] = (
+    gaps_dataframe_list: list[pd.DataFrame[schema.TimeSerieDataSchema]] = (
         get_gaps_dataframe_list(
             gaps_dataframe=gaps_dataframe, wl_dataframe=wl_dataframe
         )
     )
 
-    wl_combined_dataframe: pd.DataFrame[TimeSerieDataSchema] = pd.concat(
+    wl_combined_dataframe: pd.DataFrame[schema.TimeSerieDataSchema] = pd.concat(
         [wl_combined_dataframe] + gaps_dataframe_list
     )
-    wl_combined_dataframe: pd.DataFrame[TimeSerieDataSchema] = merge_dataframes(
+    wl_combined_dataframe: pd.DataFrame[schema.TimeSerieDataSchema] = merge_dataframes(
         wl_combined_dataframe=wl_combined_dataframe, wl_dataframe=wl_dataframe
     )
 
@@ -442,17 +442,17 @@ def process_gaps_to_fill(
     Identifie et comble les données manquantes.
 
     :param wl_combined_dataframe: DataFrame contenant les données combinées.
-    :type wl_combined_dataframe: pd.DataFrame[TimeSerieDataSchema]
+    :type wl_combined_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
     :param gaps_dataframe: DataFrame contenant les périodes de données manquantes.
-    :type gaps_dataframe: pd.DataFrame[TimeSerieDataSchema]
+    :type gaps_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
     :param wl_dataframe: DataFrame contenant les données à ajouter aux données combinées.
-    :type wl_dataframe: pd.DataFrame[TimeSerieDataSchema]
+    :type wl_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
     :return: Données de niveau d'eau combinées.
-    :rtype: pd.DataFrame[TimeSerieDataSchema]
+    :rtype: pd.DataFrame[schema.TimeSerieDataSchema]
     """
     LOGGER.debug(get_data_gaps_message(gaps=gaps_dataframe))
 
-    wl_combined_dataframe: pd.DataFrame[TimeSerieDataSchema] = fill_data_gaps(
+    wl_combined_dataframe: pd.DataFrame[schema.TimeSerieDataSchema] = fill_data_gaps(
         gaps_dataframe=gaps_dataframe,
         wl_dataframe=wl_dataframe,
         wl_combined_dataframe=wl_combined_dataframe,
@@ -471,13 +471,13 @@ def combine_water_level_data(
     Combine les données de niveau d'eau.
 
     :param wl_combined_dataframe: DataFrame contenant les données de niveau d'eau combinées.
-    :type wl_combined_dataframe: pd.DataFrame[TimeSerieDataSchema]
+    :type wl_combined_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
     :param wl_data_dataframe: DataFrame contenant les données de niveau d'eau.
-    :type wl_data_dataframe: pd.DataFrame[TimeSerieDataSchema]
+    :type wl_data_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
     :param gaps_dataframe: DataFrame contenant les périodes de données manquantes.
-    :type gaps_dataframe: pd.DataFrame[TimeSerieDataSchema]
+    :type gaps_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
     :return: DataFrame contenant les données de niveau d'eau combinées.
-    :rtype: pd.DataFrame[TimeSerieDataSchema]
+    :rtype: pd.DataFrame[schema.TimeSerieDataSchema]
     """
     if wl_combined_dataframe.empty:
         return wl_data_dataframe
@@ -506,11 +506,11 @@ def add_nan_date_row(wl_dataframe: pd.DataFrame, time: str) -> pd.DataFrame:
     Ajoute une ligne de données avec une valeur de NaN à partir d'une date.
 
     :param wl_dataframe: DataFrame contenant les données.
-    :type wl_dataframe: pd.DataFrame[TimeSerieDataSchema]
+    :type wl_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
     :param time: Date.
     :type time: str
     :return: DataFrame contenant la ligne ajouter aux autres données.
-    :rtype: pd.DataFrame[TimeSerieDataSchema]
+    :rtype: pd.DataFrame[schema.TimeSerieDataSchema]
     """
     LOGGER.debug(f"Ajout d'une ligne de données NaN à partir de la date '{time}'.")
 
@@ -529,13 +529,13 @@ def clean_time_series_data(
     Nettoie les données de la série temporelle.
 
     :param wl_dataframe: Données de la série temporelle.
-    :type wl_dataframe: pd.DataFrame[TimeSerieDataSchema]
+    :type wl_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
     :param from_time: Date de début.
     :type from_time: str
     :param to_time: Date de fin.
     :type to_time: str
     :return: Données de la série temporelle nettoyées.
-    :rtype: pd.DataFrame[TimeSerieDataSchema]
+    :rtype: pd.DataFrame[schema.TimeSerieDataSchema]
     """
     LOGGER.debug(
         "Nettoyage des données de la série temporelle et validation du temps de début et de fin."
@@ -579,7 +579,7 @@ def get_time_series_data(
     :param wlo_qc_flag_filter: Filtre de qualité des données wlo.
     :type wlo_qc_flag_filter: Optional[list[str] | None]
     :return: Données de la série temporelle.
-    :rtype: pd.DataFrame[TimeSerieDataSchema] | None
+    :rtype: pd.DataFrame[schema.TimeSerieDataSchema] | None
     """
     if buffer_time:
         LOGGER.debug(
@@ -597,7 +597,7 @@ def get_time_series_data(
         else to_time
     )
 
-    wl_data: pd.DataFrame[TimeSerieDataSchema] = (
+    wl_data: pd.DataFrame[schema.TimeSerieDataSchema] = (
         stations_handler.get_time_series_dataframe(
             station=station_id,
             from_time=from_time_buffered,
@@ -622,7 +622,7 @@ def get_empty_dataframe() -> pd.DataFrame:
     :return: DataFrame vide.
     :rtype: pd.DataFrame
     """
-    return pd.DataFrame(columns=list(TimeSerieDataSchema.__annotations__.keys()))
+    return pd.DataFrame(columns=list(schema.TimeSerieDataSchema.__annotations__.keys()))
 
 
 def get_datetime_from_iso8601(date: str) -> datetime:
@@ -684,12 +684,12 @@ def get_water_level_data(
     :param wlo_qc_flag_filter: Filtre de qualité des données wlo.
     :type wlo_qc_flag_filter: Optional[list[str] | None]
     :return: Données de niveau d'eau combinées.
-    :rtype: pd.DataFrame[TimeSerieDataSchema]
+    :rtype: pd.DataFrame[schema.TimeSerieDataSchema]
     """
     wl_combined: pd.DataFrame = get_empty_dataframe()
 
     for index, time_serie in enumerate(time_series_priority):
-        wl_data: pd.DataFrame[TimeSerieDataSchema] = get_time_series_data(
+        wl_data: pd.DataFrame[schema.TimeSerieDataSchema] = get_time_series_data(
             stations_handler=stations_handler,
             station_id=station_id,
             from_time=from_time,
@@ -725,7 +725,7 @@ def get_water_level_data(
             wl_combined = wl_data if wl_combined.empty else wl_combined
             break
 
-        wl_data: pd.DataFrame[TimeSerieDataSchema] = process_gaps_to_interpolate(
+        wl_data: pd.DataFrame[schema.TimeSerieDataSchema] = process_gaps_to_interpolate(
             wl_dataframe=wl_data,
             max_time_gap=max_time_gap,
             threshold_interpolation_filling=threshold_interpolation_filling,
@@ -733,10 +733,12 @@ def get_water_level_data(
 
         # todo : identifier les données manquantes après interpolation ?
 
-        wl_combined: pd.DataFrame[TimeSerieDataSchema] = combine_water_level_data(
-            wl_combined_dataframe=wl_combined,
-            wl_data_dataframe=wl_data,
-            gaps_dataframe=gaps_to_fill,
+        wl_combined: pd.DataFrame[schema.TimeSerieDataSchema] = (
+            combine_water_level_data(
+                wl_combined_dataframe=wl_combined,
+                wl_data_dataframe=wl_data,
+                gaps_dataframe=gaps_to_fill,
+            )
         )
 
     else:
