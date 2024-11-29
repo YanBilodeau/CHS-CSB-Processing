@@ -58,12 +58,19 @@ class TimeSerieDataSchema(pa.DataFrameModel):
     time_serie_code: Series[str]
 
 
-class TideZoneSchema(pa.DataFrameModel):
+class TideZoneProtocolSchema(pa.DataFrameModel):
+    """
+    Schéma des protocoles des zones de marées.
+    """
+
+    id: Series[str]
+
+
+class TideZoneSchema(TideZoneProtocolSchema):
     """
     Schéma des zones de marées.
     """
 
-    id: Series[str]
     code: Series[str]
     name: Series[str]
     time_series: Series[list]
