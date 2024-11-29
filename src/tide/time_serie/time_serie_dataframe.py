@@ -124,9 +124,12 @@ def identify_interpolation_and_fill_gaps(
     gaps_to_interpolate: pd.DataFrame[schema.TimeSerieDataSchema] = gaps_dataframe[
         gaps_dataframe["data_time_gap"] < pd.Timedelta(threshold_interpolation_filling)
     ]
+    gaps_to_interpolate.attrs["name"] = "GapsToInterpolate"
+
     gaps_to_fill: pd.DataFrame[schema.TimeSerieDataSchema] = gaps_dataframe[
         gaps_dataframe["data_time_gap"] >= pd.Timedelta(threshold_interpolation_filling)
     ]
+    gaps_to_fill.attrs["name"] = "GapsToFill"
 
     return gaps_to_interpolate, gaps_to_fill
 
@@ -165,6 +168,7 @@ def identify_data_gaps(
     gaps_dataframe: pd.DataFrame[schema.TimeSerieDataSchema] = non_nan_dataframe[
         non_nan_dataframe["data_time_gap"] > pd.Timedelta(max_time_gap)
     ]
+    gaps_dataframe.attrs["name"] = "TotalGaps"
 
     if threshold_interpolation_filling is None:
         return gaps_dataframe, pd.DataFrame(), gaps_dataframe
@@ -657,7 +661,27 @@ def get_iso8601_from_datetime(date: datetime) -> str:
     return date.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def add_metadata_to_time_serie_dataframe(
+    wl_dataframe: pd.DataFrame, station_id: str
+) -> pd.DataFrame:
+    """
+    Ajoute les métadonnées aux données de la série temporelle.
+
+    :param wl_dataframe: Données de la série temporelle.
+    :type wl_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
+    :param station_id: Identifiant de la station.
+    :type station_id: str
+    :return: Données de la série temporelle avec les métadonnées.
+    :rtype: pd.DataFrame[schema.TimeSerieDataWithMetaDataSchema]
+    """
+    wl_dataframe.attrs["name"] = "WaterLevel"
+    wl_dataframe.attrs["station_id"] = station_id
+
+    return wl_dataframe
+
+
 @interpolation_retry()
+@schema.validate_schemas(return_schema=schema.TimeSerieDataWithMetaDataSchema)
 def get_water_level_data(
     stations_handler: StationsHandlerProtocol,
     station_id: str,
@@ -692,7 +716,7 @@ def get_water_level_data(
     :param wlo_qc_flag_filter: Filtre de qualité des données wlo.
     :type wlo_qc_flag_filter: Optional[list[str] | None]
     :return: Données de niveau d'eau combinées.
-    :rtype: pd.DataFrame[schema.TimeSerieDataSchema]
+    :rtype: pd.DataFrame[schema.TimeSerieDataWithMetaDataSchema]
     """
     wl_combined: pd.DataFrame = get_empty_dataframe()
 
@@ -717,7 +741,10 @@ def get_water_level_data(
             LOGGER.debug(
                 f"L'interpolation et le remplissage des données manquantes est désactivée pour la station {station_id}."
             )
-            return wl_data
+
+            return add_metadata_to_time_serie_dataframe(
+                wl_dataframe=wl_data, station_id=station_id
+            )
 
         gaps_total, _, gaps_to_fill = identify_data_gaps(
             wl_dataframe=wl_data if wl_combined.empty else wl_combined,
@@ -754,7 +781,9 @@ def get_water_level_data(
             f"Toutes les séries temporelles disponibles pour la station {station_id} ont été traitées: {time_series_priority}."
         )
 
-    return wl_combined
+    return add_metadata_to_time_serie_dataframe(
+        wl_dataframe=wl_combined, station_id=station_id
+    )
 
 
 # todo isTidal == False  -> interpolation linéaire plutôt que spline cubique ?
