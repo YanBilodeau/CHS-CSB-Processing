@@ -674,8 +674,8 @@ def add_metadata_to_time_serie_dataframe(
     :return: Données de la série temporelle avec les métadonnées.
     :rtype: pd.DataFrame[schema.TimeSerieDataWithMetaDataSchema]
     """
-    wl_dataframe.attrs["name"] = "WaterLevel"
-    wl_dataframe.attrs["station_id"] = station_id
+    wl_dataframe.attrs[schema_ids.NAME_METADATA] = "WaterLevel"
+    wl_dataframe.attrs[schema_ids.STATION_ID] = station_id
 
     return wl_dataframe
 

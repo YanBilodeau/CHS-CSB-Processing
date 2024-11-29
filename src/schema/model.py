@@ -15,6 +15,8 @@ from pandas import DataFrame
 from pandera.typing import Series
 from pandera.typing.geopandas import GeoSeries
 
+from . import model_ids as schema_ids
+
 LOGGER = logger.bind(name="CSB-Pipeline.Schema")
 
 
@@ -89,14 +91,14 @@ class TimeSerieDataWithMetaDataSchema(TimeSerieDataSchema):
         :return: Les séries temporelles validées.
         :rtype: DataFrame
         """
-        required_attrs = ["name", "station_id"]
+        required_attrs = [schema_ids.NAME_METADATA, schema_ids.STATION_ID]
         validated_df = super().validate(df, *args, **kwargs)
 
-        for attr in required_attrs:
-            if attr not in validated_df.attrs:  # type: ignore[attr-defined]
-                raise ValueError(
-                    f"Attribut manquant dans les métadonnées de {cls.__name__} : {attr}"
-                )
+        missing_attrs = [attr for attr in required_attrs if attr not in validated_df.attrs]  # type: ignore
+        if missing_attrs:
+            raise ValueError(
+                f"Attributs manquants dans les métadonnées de {cls.__name__} : {', '.join(missing_attrs)}"
+            )
 
         LOGGER.debug(
             f"Métadonnées des séries temporelles de {cls.__name__} validées avec succès."
