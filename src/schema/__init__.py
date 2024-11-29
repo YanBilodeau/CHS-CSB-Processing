@@ -10,6 +10,7 @@ from .model import (
     TideZoneSchema,
     TimeSerieDataSchema,
     validate_schema,
+    validate_schemas,
 )
 
 
@@ -20,4 +21,5 @@ __all__ = [
     "TideZoneSchema",
     "TimeSerieDataSchema",
     "validate_schema",
+    "validate_schemas",
 ]

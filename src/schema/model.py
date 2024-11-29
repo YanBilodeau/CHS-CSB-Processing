@@ -4,6 +4,9 @@ Module qui contient les schémas des dataframes.
 Ce module contient les schémas des dataframes des DataLoggers, des stations, des séries temporelles et des zones de marées.
 """
 
+import functools
+from typing import Optional, Callable, Type
+
 import geopandas as gpd
 import pandas as pd
 import pandera as pa
@@ -79,7 +82,7 @@ class TideZoneSchema(TideZoneProtocolSchema):
 
 
 def validate_schema(
-    df: gpd.GeoDataFrame | DataFrame, schema: type[pa.DataFrameModel]
+    df: gpd.GeoDataFrame | DataFrame, schema: Type[pa.DataFrameModel]
 ) -> None:
     """
     Valide le schéma des stations.
@@ -87,7 +90,7 @@ def validate_schema(
     :param df: Les stations.
     :type df: gpd.GeoDataFrame | DataFrame
     :param schema: Le schéma.
-    :type schema: type[pa.DataFrameModel]
+    :type schema: Type[pa.DataFrameModel]
     """
     try:
         LOGGER.debug(f"Validation du schéma {schema}.")
@@ -98,3 +101,44 @@ def validate_schema(
         LOGGER.error(f"Attributs attendus : {schema.__annotations__}")
 
         raise error
+
+
+def validate_schemas(
+    return_schema: Optional[Type[pa.DataFrameModel]] = None,
+    **schemas: Type[pa.DataFrameModel],
+) -> Callable:
+    """
+    Valide les schémas des dataframes.
+
+    :param return_schema: Le schéma de retour.
+    :type return_schema: Optional[Type[pa.DataFrameModel]]
+    :param schemas: Les schémas.
+    :type schemas: : Type[pa.DataFrameModel]]
+    :return: La fonction décorée.
+    :rtype: Callable
+    """
+
+    def decorator_validate(func: Callable) -> Callable:
+        @functools.wraps(func)
+        def wrapper_validate(*args, **kwargs):
+            # Valider les arguments d'entrée
+            for arg_name, arg_schema in schemas.items():
+                if arg_name in kwargs:
+                    validate_schema(kwargs[arg_name], arg_schema)
+                else:
+                    raise ValueError(
+                        f"Paramètre '{arg_name}' non trouvé dans les kwargs."
+                    )
+
+            # Appeler la fonction originale
+            result = func(*args, **kwargs)
+
+            # Valider le résultat de la fonction
+            if return_schema is not None:
+                validate_schema(result, return_schema)
+
+            return result
+
+        return wrapper_validate
+
+    return decorator_validate
