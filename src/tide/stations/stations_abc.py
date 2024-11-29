@@ -18,7 +18,7 @@ from shapely.geometry import Point
 from .cache_wrapper import cache_result
 from .exception_stations import StationsError
 from .stations_models import TimeSeriesProtocol, ResponseProtocol, IWLSapiProtocol
-from schema import StationsSchema, validate_schema, TimeSerieDataSchema
+import schema
 from schema import model_ids as schema_ids
 
 LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station.ABC")
@@ -229,6 +229,7 @@ class StationsHandlerABC(ABC):
 
         return tidal_info_list
 
+    @schema.validate_schemas(return_schema=schema.StationsSchema)
     def _get_stations_geodataframe(
         self,
         stations: Collection[dict],
@@ -248,7 +249,7 @@ class StationsHandlerABC(ABC):
         :param station_name_key: Clé du nom de la station.
         :type station_name_key: str
         :return: Données des stations sous forme de GeoDataFrame.
-        :rtype: gpd.GeoDataFrame
+        :rtype: gpd.GeoDataFrame[schema.StationsSchema]
         """
         LOGGER.debug("Création du GeoDataFrame des stations.")
 
@@ -273,10 +274,9 @@ class StationsHandlerABC(ABC):
             station_name_key=station_name_key,
         )
 
-        gdf_stations: gpd.GeoDataFrame[StationsSchema] = gpd.GeoDataFrame(
+        gdf_stations: gpd.GeoDataFrame[schema.StationsSchema] = gpd.GeoDataFrame(
             attributes, geometry=geometry, crs="EPSG:4326"
         )
-        validate_schema(df=gdf_stations, schema=StationsSchema)
 
         return gdf_stations
 
@@ -300,7 +300,7 @@ class StationsHandlerABC(ABC):
         :param ttl: Durée de vie du cache en secondes.
         :type ttl: int
         :return: Données des stations sous forme de GeoDataFrame.
-        :rtype: gpd.GeoDataFrame
+        :rtype: gpd.GeoDataFrame[schema.StationsSchema]
         """
         ...
 
@@ -409,7 +409,7 @@ class StationsHandlerABC(ABC):
         :param wlo_qc_flag_filter: Liste des flags de qualité à filtrer pour la série temporelle WLO.
         :type wlo_qc_flag_filter: Collection[str] | None
         :return: Données des séries temporelles sous forme de DataFrame.
-        :rtype: pd.DataFrame
+        :rtype: pd.DataFrame[schema.TimeSerieDataSchema]
         """
         LOGGER.debug(
             f"Récupération des données {time_serie_code} pour la station '{station}' du {from_time} au {to_time} "
@@ -445,7 +445,9 @@ class StationsHandlerABC(ABC):
             data=data.data, time_serie_code=time_serie_code  # type: ignore
         )
 
-        data_dataframe: pd.DataFrame[TimeSerieDataSchema] = pd.DataFrame(data_list)
+        data_dataframe: pd.DataFrame[schema.TimeSerieDataSchema] = pd.DataFrame(
+            data_list
+        )
 
         data_dataframe = self.filter_wlo_qc_flag(
             data_dataframe=data_dataframe,
@@ -455,6 +457,6 @@ class StationsHandlerABC(ABC):
 
         data_dataframe.drop(columns=["qc_flag"], inplace=True)
 
-        validate_schema(df=data_dataframe, schema=TimeSerieDataSchema)
+        schema.validate_schema(df=data_dataframe, schema=schema.TimeSerieDataSchema)
 
         return data_dataframe
