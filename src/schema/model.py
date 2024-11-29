@@ -54,9 +54,12 @@ class StationsSchema(pa.DataFrameModel):
     id: Series[str]
     code: Series[str]
     name: Series[str]
-    time_series: Series[list]  # todo valider type
-    is_tidal: Series[object] = pa.Field(nullable=True)
+    time_series: Series[object]
+    is_tidal: Series[object] = pa.Field(nullable=True)  # todo valider le type
     geometry: GeoSeries
+
+    class Config:
+        coerce = True
 
 
 class TimeSerieDataSchema(pa.DataFrameModel):
@@ -114,6 +117,9 @@ class TideZoneProtocolSchema(pa.DataFrameModel):
 
     id: Series[str]
 
+    class Config:
+        coerce = True
+
 
 class TideZoneSchema(TideZoneProtocolSchema):
     """
@@ -122,8 +128,8 @@ class TideZoneSchema(TideZoneProtocolSchema):
 
     code: Series[str]
     name: Series[str]
-    time_series: Series[list]  # todo valider type
-    is_tidal: Series[object] = pa.Field(nullable=True)
+    time_series: Series[object]
+    is_tidal: Series[object] = pa.Field(nullable=True)  # todo valider le type
     geometry: GeoSeries
 
 
