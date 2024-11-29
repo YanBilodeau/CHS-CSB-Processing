@@ -55,11 +55,13 @@ class StationsSchema(pa.DataFrameModel):
     code: Series[str]
     name: Series[str]
     time_series: Series[object]
-    is_tidal: Series[object] = pa.Field(nullable=True)  # todo valider le type
+    is_tidal: Series[object] = pa.Field(
+        nullable=True
+    )  # On utilise object pour accepter les booléens et les None
     geometry: GeoSeries
 
-    class Config:
-        coerce = True
+    # class Config:
+    #     coerce = True
 
 
 class TimeSerieDataSchema(pa.DataFrameModel):
@@ -129,7 +131,9 @@ class TideZoneSchema(TideZoneProtocolSchema):
     code: Series[str]
     name: Series[str]
     time_series: Series[object]
-    is_tidal: Series[object] = pa.Field(nullable=True)  # todo valider le type
+    is_tidal: Series[object] = pa.Field(
+        nullable=True
+    )  # On utilise object pour accepter les booléens et les None
     geometry: GeoSeries
 
 
