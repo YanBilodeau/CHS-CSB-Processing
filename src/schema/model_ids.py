@@ -37,3 +37,9 @@ VALUE: str = "value"
 """Valeur de la constante value."""
 TIME_SERIE_CODE: str = "time_serie_code"
 """Valeur de la constante time_serie_code."""
+
+# Constantes pour les noms des colonnes des données du schéma de données TimeSerieDataWithMetaDataSchema.
+NAME_METADATA: str = "name"
+"""Valeur de la constante name."""
+STATION_ID: str = "station_id"
+"""Valeur de la constante station_id."""
