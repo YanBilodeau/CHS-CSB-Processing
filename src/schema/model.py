@@ -5,7 +5,7 @@ Ce module contient les schémas des dataframes des DataLoggers, des stations, de
 """
 
 import functools
-from typing import Optional, Callable, Type
+from typing import Optional, Callable, Type, Any
 
 import geopandas as gpd
 import pandas as pd
@@ -29,6 +29,9 @@ class DataLoggerSchema(pa.DataFrameModel):
     Time_UTC: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
     geometry: GeoSeries
 
+    class Config:
+        coerce = True
+
 
 class DataLoggerWithTideZoneSchema(DataLoggerSchema):
     """
@@ -36,6 +39,9 @@ class DataLoggerWithTideZoneSchema(DataLoggerSchema):
     """
 
     Tide_zone_id: Series[str]
+
+    class Config:
+        coerce = True
 
 
 class StationsSchema(pa.DataFrameModel):
@@ -46,7 +52,7 @@ class StationsSchema(pa.DataFrameModel):
     id: Series[str]
     code: Series[str]
     name: Series[str]
-    time_series: Series[list]
+    time_series: Series[list]  # todo valider type
     is_tidal: Series[object] = pa.Field(nullable=True)
     geometry: GeoSeries
 
@@ -59,6 +65,44 @@ class TimeSerieDataSchema(pa.DataFrameModel):
     event_date: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
     value: Series[pd.Float64Dtype()]
     time_serie_code: Series[str]
+
+    class Config:
+        coerce = True
+
+
+class TimeSerieDataWithMetaDataSchema(TimeSerieDataSchema):
+    """
+    Schéma des séries temporelles avec les métadonnées.
+    """
+
+    @classmethod
+    def validate(cls, df: DataFrame, *args: Any, **kwargs: Any) -> DataFrame:
+        """
+        Valide les métadonnées des séries temporelles en surchargeant la méthode de validation par défaut.
+
+        :param df: Les séries temporelles.
+        :type df: DataFrame
+        :param args: Les arguments.
+        :type args: Any
+        :param kwargs: Les paramètres.
+        :type kwargs: Any
+        :return: Les séries temporelles validées.
+        :rtype: DataFrame
+        """
+        required_attrs = ["name", "station_id"]
+        validated_df = super().validate(df, *args, **kwargs)
+
+        for attr in required_attrs:
+            if attr not in validated_df.attrs:  # type: ignore[attr-defined]
+                raise ValueError(
+                    f"Attribut manquant dans les métadonnées de {cls.__name__} : {attr}"
+                )
+
+        LOGGER.debug(
+            f"Métadonnées des séries temporelles de {cls.__name__} validées avec succès."
+        )
+
+        return validated_df  # type: ignore
 
 
 class TideZoneProtocolSchema(pa.DataFrameModel):
@@ -76,7 +120,7 @@ class TideZoneSchema(TideZoneProtocolSchema):
 
     code: Series[str]
     name: Series[str]
-    time_series: Series[list]
+    time_series: Series[list]  # todo valider type
     is_tidal: Series[object] = pa.Field(nullable=True)
     geometry: GeoSeries
 
@@ -98,7 +142,9 @@ def validate_schema(
 
     except pa.errors.SchemaError as error:
         LOGGER.error(f"Erreur de validation du schéma {schema} : {error}.")
-        LOGGER.error(f"Attributs attendus : {schema.__annotations__}")
+        LOGGER.error(
+            f"Attributs attendus dans le schéma {schema} : {schema.__annotations__}"
+        )
 
         raise error
 
