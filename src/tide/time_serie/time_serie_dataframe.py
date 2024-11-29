@@ -252,7 +252,7 @@ def reset_and_sort_index(
     :param wl_dataframe: DataFrame contenant les données.
     :type wl_dataframe: pd.DataFrame
     """
-    LOGGER.debug("Réinitialisation de l'index et trie par event_date du DataFrame.")
+    LOGGER.trace("Réinitialisation de l'index et trie par event_date du DataFrame.")
 
     wl_dataframe.sort_values(by=schema_ids.EVENT_DATE, inplace=inplace)  # type: ignore
     wl_dataframe.reset_index(inplace=inplace, drop=drop)
@@ -450,8 +450,6 @@ def process_gaps_to_fill(
     :return: Données de niveau d'eau combinées.
     :rtype: pd.DataFrame[schema.TimeSerieDataSchema]
     """
-    LOGGER.debug(get_data_gaps_message(gaps=gaps_dataframe))
-
     wl_combined_dataframe: pd.DataFrame[schema.TimeSerieDataSchema] = fill_data_gaps(
         gaps_dataframe=gaps_dataframe,
         wl_dataframe=wl_dataframe,
@@ -481,6 +479,8 @@ def combine_water_level_data(
     """
     if wl_combined_dataframe.empty:
         return wl_data_dataframe
+
+    LOGGER.debug(get_data_gaps_message(gaps=gaps_dataframe))
 
     return process_gaps_to_fill(
         wl_combined_dataframe=wl_combined_dataframe,
