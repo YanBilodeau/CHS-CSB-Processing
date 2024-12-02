@@ -152,16 +152,23 @@ class DataParserABC(ABC):
         :return: Le geodataframe nettoyé.
         :rtype: gpd.GeoDataFrame
         """
+        colunms: list[str] = [
+            schema_ids.TIME_UTC,
+            schema_ids.LATITUDE_WGS84,
+            schema_ids.LONGITUDE_WGS84,
+            schema_ids.DEPTH_METER,
+        ]
+
         LOGGER.debug("Suppression des doublons.")
 
-        data = data.drop_duplicates(
-            subset=[
-                schema_ids.TIME_UTC,
-                schema_ids.LATITUDE_WGS84,
-                schema_ids.LONGITUDE_WGS84,
-                schema_ids.DEPTH_METER,
-            ]
-        )
+        initial_count: int = len(data)
+        data: gpd.GeoDataFrame = data.drop_duplicates(subset=colunms)
+        duplicates_count: int = initial_count - len(data)
+
+        if duplicates_count > 0:
+            LOGGER.warning(
+                f"{duplicates_count} doublons ont été supprimés avec les mêmes valeurs pour les attributs : {colunms}."
+            )
 
         return data
 
