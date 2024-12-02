@@ -6,7 +6,7 @@ Ce module contient les modèles de données et les protocoles pour les séries t
 
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import Protocol, Optional
+from typing import Protocol, Optional, runtime_checkable
 
 import pandas as pd
 
@@ -38,6 +38,7 @@ class DataGapPeriod:
         return f"{self.start} - {self.end}"
 
 
+@runtime_checkable
 class TimeSeriesProtocol(Protocol):
     """
     Protocole pour définir les types des séries temporelles.
