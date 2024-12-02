@@ -9,7 +9,7 @@ from datetime import timedelta
 
 import pandas as pd
 
-from .time_serie_models import DataGapPeriod
+from .time_serie_models import DataGapPeriod, TimeSeriesProtocol
 from schema import model_ids as schema_ids
 
 
@@ -108,17 +108,19 @@ class InterpolationValueError(Exception):
     :type from_time: pd.Timestamp
     :param to_time: Date de fin.
     :type to_time: pd.Timestamp
+    :param time_serie: Série temporelle.
+    :type time_serie: TimeSeriesProtocol
     """
 
     from_time: pd.Timestamp
     """Date de début."""
     to_time: pd.Timestamp
     """Date de fin."""
-    time_serie: str
+    time_serie: TimeSeriesProtocol
     """Série temporelle."""
 
     def __str__(self) -> str:
         return (
             f"Impossible d'interpoler les valeurs de {self.from_time} à {self.to_time} pour la série temporelle "
-            f"{self.time_serie}. Il y a des données manquantes qui sont nécessaires à l'interpolation."
+            f"{self.time_serie}. Il manque des données pour réaliser l'interpolation."
         )
