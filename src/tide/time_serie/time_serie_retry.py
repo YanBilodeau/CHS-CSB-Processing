@@ -18,6 +18,7 @@ from tenacity import (
 )
 
 from .exception_time_serie import InterpolationValueError
+from ..voronoi.voronoi_models import TimeSeriesProtocol
 
 LOGGER = logger.bind(name="CSB-Pipeline.TimeSerie.Retry")
 
@@ -42,6 +43,31 @@ def double_buffer_time(retry_state: RetryCallState) -> None:
     retry_state.kwargs["buffer_time"] = buffer_time * 2
 
 
+def exclude_time_serie_retry(retry_state: RetryCallState) -> None:
+    """
+    Fonction pour exclure les tentatives d'interpolation de séries temporelles.
+
+    :param retry_state: État de la tentative.
+    :type retry_state: RetryCallState
+    """
+    from .time_serie_dataframe import get_water_level_data
+
+    error: InterpolationValueError = retry_state.outcome.exception()
+
+    time_series: list[TimeSeriesProtocol] = retry_state.kwargs.setdefault(
+        "time_series_excluded_from_interpolation", []
+    )
+    time_series.append(error.time_serie)
+
+    kwargs: dict = {
+        key: value
+        for key, value in retry_state.kwargs.items()
+        if key != "time_series_excluded_from_interpolation"
+    }
+
+    get_water_level_data(**kwargs, time_series_excluded_from_interpolation=time_series)
+
+
 LEVEL: str = "TRACE"
 interpolation_retry = partial(
     retry,
@@ -50,4 +76,5 @@ interpolation_retry = partial(
     before=before_log(LOGGER, LEVEL),  # type: ignore
     after=double_buffer_time,
     retry=retry_if_exception_type(InterpolationValueError),
+    retry_error_callback=exclude_time_serie_retry,
 )
