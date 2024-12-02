@@ -14,6 +14,7 @@ from tenacity import (
     wait_exponential_jitter,
     before_log,
     retry_if_exception_type,
+    RetryCallState,
 )
 
 from .exception_time_serie import InterpolationValueError
@@ -21,14 +22,14 @@ from .exception_time_serie import InterpolationValueError
 LOGGER = logger.bind(name="CSB-Pipeline.TimeSerie.Retry")
 
 
-def double_buffer_time(retry_state) -> None:
+def double_buffer_time(retry_state: RetryCallState) -> None:
     """
     Fonction pour doubler le temps tampon pour la prochaine tentative d'interpolation.
 
     :param retry_state: État de la tentative.
-    :type retry_state: RetryState
+    :type retry_state: RetryCallState
     """
-    buffer_time = retry_state.kwargs.get("buffer_time")
+    buffer_time: timedelta = retry_state.kwargs.get("buffer_time")
 
     if buffer_time is None:
         buffer_time = timedelta(hours=24)
