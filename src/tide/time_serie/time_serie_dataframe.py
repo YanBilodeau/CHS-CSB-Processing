@@ -155,7 +155,7 @@ def identify_data_gaps(
     """
     LOGGER.debug(
         f"Identification des périodes de données manquantes de plus de {max_time_gap} pour "
-        f"{wl_dataframe[schema_ids.TIME_SERIE_CODE].unique()}."
+        f"{wl_dataframe[schema_ids.TIME_SERIE_CODE].unique().tolist()}."
     )
 
     first_row, last_row = get_first_and_last_rows(wl_dataframe=wl_dataframe)
@@ -278,7 +278,7 @@ def interpolate_data_gaps(
     :rtype: pd.DataFrame[schema.TimeSerieDataSchema]
     """
     LOGGER.debug(
-        f"Interpolation des données manquantes de {wl_dataframe[schema_ids.TIME_SERIE_CODE].unique()}."
+        f"Interpolation des données manquantes de {wl_dataframe[schema_ids.TIME_SERIE_CODE].unique().tolist()}."
     )
 
     wl_dataframe.set_index(schema_ids.EVENT_DATE, inplace=True)
@@ -332,7 +332,7 @@ def process_gaps_to_interpolate(
     if gaps_to_interpolate.empty:
         LOGGER.debug(
             f"Aucune période de données manquantes de plus de {max_time_gap} à interpoler pour "
-            f"{wl_dataframe[schema_ids.TIME_SERIE_CODE].unique()}."
+            f"{wl_dataframe[schema_ids.TIME_SERIE_CODE].unique().tolist()}."
         )
         return wl_dataframe
 
@@ -418,7 +418,9 @@ def fill_data_gaps(
     :rtype: pd.DataFrame[schema.TimeSerieDataSchema]
     """
     LOGGER.debug(
-        f"Remplissage des données manquantes à partir de la série temporelle {wl_dataframe[schema_ids.TIME_SERIE_CODE].unique()}."
+        f"Remplissage des données manquantes de la série temporelle "
+        f"{wl_combined_dataframe[schema_ids.TIME_SERIE_CODE].unique().tolist()} "
+        f"à partir de {wl_dataframe[schema_ids.TIME_SERIE_CODE].unique().tolist()}."
     )
 
     gaps_dataframe_list: list[pd.DataFrame[schema.TimeSerieDataSchema]] = (
@@ -762,11 +764,13 @@ def get_water_level_data(
 
         wl_data: pd.DataFrame[schema.TimeSerieDataSchema] = process_gaps_to_interpolate(
             wl_dataframe=wl_data,
+            # Important de rechercher les données manquantes dans wl_data pour les interpoler
             max_time_gap=max_time_gap,
             threshold_interpolation_filling=threshold_interpolation_filling,
         )
 
-        # todo : identifier les données manquantes après interpolation ?
+        # todo : identifier les données manquantes après interpolation dans le cas qu'il y ait un pas de trou à remplir,
+        #  utile passer la premiere itération
 
         wl_combined: pd.DataFrame[schema.TimeSerieDataSchema] = (
             combine_water_level_data(
@@ -787,6 +791,9 @@ def get_water_level_data(
 
 
 # todo isTidal == False  -> interpolation linéaire plutôt que spline cubique ?
-# todo problème avec l'interpolation si les données sont manquantes à la fin ou au début de la période NaN
+# todo récupérer isTidal pour savoir si on doit interpoler linéairement ou avec une spline cubique
+
+# todo problème avec l'interpolation si les données sont manquantes à la fin ou au début de la période NaN -> refaire les polygones sans cette station
+
 # todo Valider qu' il y a au moins x heure de part et d autre pour faire l interpolation, sinon raise exception
-# todo valider le holding avant de demander les données (n'enlève pas les trous de moins de 10 jours) seulement pour wlo ! -> sinon refaire les polygon sans cette station ?
+# info : le holding n'enlève pas les trous de moins de 10 jours et c'est seulement pour wlo dans l'API public !
