@@ -231,4 +231,3 @@ def clean_data(
         )
 
     return geodataframe
-
