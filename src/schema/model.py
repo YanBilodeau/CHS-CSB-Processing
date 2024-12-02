@@ -96,7 +96,12 @@ class TimeSerieDataWithMetaDataSchema(TimeSerieDataSchema):
         :return: Les séries temporelles validées.
         :rtype: DataFrame
         """
-        required_attrs = [schema_ids.NAME_METADATA, schema_ids.STATION_ID]
+        required_attrs = [
+            schema_ids.NAME_METADATA,
+            schema_ids.STATION_ID,
+            schema_ids.START_TIME,
+            schema_ids.END_TIME,
+        ]
         validated_df = super().validate(df, *args, **kwargs)
 
         missing_attrs = [attr for attr in required_attrs if attr not in validated_df.attrs]  # type: ignore
