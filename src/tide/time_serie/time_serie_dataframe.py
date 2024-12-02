@@ -124,12 +124,12 @@ def identify_interpolation_and_fill_gaps(
     gaps_to_interpolate: pd.DataFrame[schema.TimeSerieDataSchema] = gaps_dataframe[
         gaps_dataframe["data_time_gap"] < pd.Timedelta(threshold_interpolation_filling)
     ]
-    gaps_to_interpolate.attrs["name"] = "GapsToInterpolate"
+    gaps_to_interpolate.attrs[schema_ids.NAME_METADATA] = "à interpoler"
 
     gaps_to_fill: pd.DataFrame[schema.TimeSerieDataSchema] = gaps_dataframe[
         gaps_dataframe["data_time_gap"] >= pd.Timedelta(threshold_interpolation_filling)
     ]
-    gaps_to_fill.attrs["name"] = "GapsToFill"
+    gaps_to_fill.attrs[schema_ids.NAME_METADATA] = "à remplir"
 
     return gaps_to_interpolate, gaps_to_fill
 
@@ -168,7 +168,7 @@ def identify_data_gaps(
     gaps_dataframe: pd.DataFrame[schema.TimeSerieDataSchema] = non_nan_dataframe[
         non_nan_dataframe["data_time_gap"] > pd.Timedelta(max_time_gap)
     ]
-    gaps_dataframe.attrs["name"] = "TotalGaps"
+    gaps_dataframe.attrs[schema_ids.NAME_METADATA] = "au total"
 
     if threshold_interpolation_filling is None:
         return gaps_dataframe, pd.DataFrame(), gaps_dataframe
@@ -678,6 +678,12 @@ def add_metadata_to_time_serie_dataframe(
     """
     wl_dataframe.attrs[schema_ids.NAME_METADATA] = "WaterLevel"
     wl_dataframe.attrs[schema_ids.STATION_ID] = station_id
+    wl_dataframe.attrs[schema_ids.START_TIME] = wl_dataframe[
+        schema_ids.EVENT_DATE
+    ].iloc[0]
+    wl_dataframe.attrs[schema_ids.END_TIME] = wl_dataframe[schema_ids.EVENT_DATE].iloc[
+        -1
+    ]
 
     return wl_dataframe
 

@@ -10,6 +10,7 @@ from datetime import timedelta
 import pandas as pd
 
 from .time_serie_models import DataGapPeriod
+from schema import model_ids as schema_ids
 
 
 @dataclass(frozen=True)
@@ -95,7 +96,7 @@ def get_data_gaps_message(gaps: pd.DataFrame) -> str:
         sum((gap.duration for gap in data_gaps_list), timedelta()).total_seconds() / 60
     )
 
-    return f"{total_duration_minutes} minutes de données manquantes pour le Dataframe '{gaps.attrs.get('name')}'."
+    return f"{total_duration_minutes} minutes de données manquantes {gaps.attrs.get(schema_ids.NAME_METADATA)}."
 
 
 @dataclass(frozen=True)
