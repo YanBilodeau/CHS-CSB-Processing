@@ -8,6 +8,7 @@ from typing import Collection, Optional, Callable, Any, Type
 
 import geopandas as gpd
 from loguru import logger
+import pandas as pd
 
 from .exception_tranformation import DataCleaningFunctionError
 from .transformation_models import DataFilterConfigProtocol
@@ -49,15 +50,24 @@ def clean_depth(
         f"Profondeur minimale : {min_depth}, profondeur maximale : {max_depth}."
     )
 
-    geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
-        geodataframe[schema_ids.DEPTH_METER].notna()
-        & (geodataframe[schema_ids.DEPTH_METER] > min_depth)
-    ]
+    invalid_depths: pd.Series = (
+        geodataframe[schema_ids.DEPTH_METER].isna()
+        | (geodataframe[schema_ids.DEPTH_METER] < min_depth)
+        | (
+            geodataframe[schema_ids.DEPTH_METER] > max_depth
+            if max_depth is not None
+            else False
+        )
+    )
 
-    if max_depth is not None:
-        geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
-            geodataframe[schema_ids.DEPTH_METER] <= max_depth
-        ]
+    if invalid_depths.any():
+        LOGGER.warning(
+            f"{invalid_depths.sum()} entrées ont des profondeurs invalides et seront supprimées."
+        )
+
+    geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
+        ~invalid_depths
+    ]
 
     return geodataframe
 
@@ -73,8 +83,19 @@ def clean_time(geodataframe: gpd.GeoDataFrame, **kwargs) -> gpd.GeoDataFrame:
     """
     LOGGER.debug(f"Nettoyage des données de temps {[schema_ids.TIME_UTC]}.")
 
+    current_time: pd.Timestamp = pd.Timestamp.now(tz="UTC")
+
+    invalid_dates: pd.Series = geodataframe[schema_ids.TIME_UTC].isna() | (
+        geodataframe[schema_ids.TIME_UTC] > current_time
+    )
+
+    if invalid_dates.any():
+        LOGGER.warning(
+            f"{invalid_dates.sum()} entrées ont des dates invalides et seront supprimées."
+        )
+
     geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
-        geodataframe[schema_ids.TIME_UTC].notna()
+        ~invalid_dates
     ]
 
     return geodataframe
@@ -103,10 +124,18 @@ def clean_latitude(
         f"Latitude minimale : {min_latitude}, latitude maximale : {max_latitude}."
     )
 
+    invalid_latitudes: pd.Series = (
+        geodataframe[schema_ids.LATITUDE_WGS84].isna()
+        | (geodataframe[schema_ids.LATITUDE_WGS84] < min_latitude)
+        | (geodataframe[schema_ids.LATITUDE_WGS84] > max_latitude)
+    )
+    if invalid_latitudes.any():
+        LOGGER.warning(
+            f"{invalid_latitudes.sum()} entrées ont des latitudes invalides et seront supprimées."
+        )
+
     geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
-        geodataframe[schema_ids.LATITUDE_WGS84].notna()
-        & (geodataframe[schema_ids.LATITUDE_WGS84] >= min_latitude)
-        & (geodataframe[schema_ids.LATITUDE_WGS84] <= max_latitude)
+        ~invalid_latitudes
     ]
 
     return geodataframe
@@ -135,10 +164,18 @@ def clean_longitude(
         f"Longitude minimale : {min_longitude}, longitude maximale : {max_longitude}."
     )
 
+    invalid_longitudes: pd.Series = (
+        geodataframe[schema_ids.LONGITUDE_WGS84].isna()
+        | (geodataframe[schema_ids.LONGITUDE_WGS84] < min_longitude)
+        | (geodataframe[schema_ids.LONGITUDE_WGS84] > max_longitude)
+    )
+    if invalid_longitudes.any():
+        LOGGER.warning(
+            f"{invalid_longitudes.sum()} entrées ont des longitudes invalides et seront suppressées."
+        )
+
     geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
-        geodataframe[schema_ids.LONGITUDE_WGS84].notna()
-        & (geodataframe[schema_ids.LONGITUDE_WGS84] >= min_longitude)
-        & (geodataframe[schema_ids.LONGITUDE_WGS84] <= max_longitude)
+        ~invalid_longitudes
     ]
 
     return geodataframe
