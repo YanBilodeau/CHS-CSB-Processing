@@ -114,6 +114,11 @@ class InterpolationValueError(Exception):
     """Date de début."""
     to_time: pd.Timestamp
     """Date de fin."""
+    time_serie: str
+    """Série temporelle."""
 
     def __str__(self) -> str:
-        return f"Impossible d'interpoler les valeurs de {self.from_time} à {self.to_time}. Il y a possiblement des données manquantes."
+        return (
+            f"Impossible d'interpoler les valeurs de {self.from_time} à {self.to_time} pour la série temporelle "
+            f"{self.time_serie}. Il y a des données manquantes qui sont nécessaires à l'interpolation."
+        )
