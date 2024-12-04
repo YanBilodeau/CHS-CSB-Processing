@@ -43,6 +43,7 @@ LOWRANCE_HEADER: Header = (
     ids.LATITUDE_LOWRANCE,
     ids.DEPTH_LOWRANCE,
     ids.TIME_LOWRANCE,
+    ids.SURVEY_TYPE_LOWRANCE,
 )
 """Entête des fichiers Lowrance."""
 
