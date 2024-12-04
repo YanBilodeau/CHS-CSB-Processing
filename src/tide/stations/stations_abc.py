@@ -19,7 +19,7 @@ from .cache_wrapper import cache_result
 from .exception_stations import StationsError
 from .stations_models import TimeSeriesProtocol, ResponseProtocol, IWLSapiProtocol
 import schema
-from schema import model_ids as schema_ids
+from schema import model_ids as schema_ids, validate_schemas
 
 LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station.ABC")
 
@@ -386,6 +386,7 @@ class StationsHandlerABC(ABC):
 
         return data_dataframe
 
+    @validate_schemas(return_schema=schema.TimeSerieDataSchema)
     def get_time_series_dataframe(
         self,
         station: str,
@@ -445,7 +446,9 @@ class StationsHandlerABC(ABC):
                 f"Aucune donnée pour la station '{station}' et la série temporelle '{time_serie_code}' "
                 f"entre le {from_time} et le {to_time}."
             )
-            return pd.DataFrame()
+            return pd.DataFrame(
+                columns=list(schema.TimeSerieDataSchema.__annotations__.keys())
+            )
 
         data_list: list[dict] = self.create_data_list(
             data=data.data, time_serie_code=time_serie_code  # type: ignore
@@ -463,6 +466,6 @@ class StationsHandlerABC(ABC):
 
         data_dataframe.drop(columns=["qc_flag"], inplace=True)
 
-        schema.validate_schema(df=data_dataframe, schema=schema.TimeSerieDataSchema)
+        # schema.validate_schema(df=data_dataframe, schema=schema.TimeSerieDataSchema)
 
         return data_dataframe
