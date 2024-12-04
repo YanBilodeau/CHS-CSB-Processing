@@ -71,7 +71,7 @@ class DataParserOFM(DataParserABC):
             file=file,
         )
 
-        LOGGER.debug("Conversion des données en GeoDataFrame.")
+        LOGGER.debug(f"Conversion des données en GeoDataFrame : {file}")
         gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
             data=dataframe,
             geometry=gpd.points_from_xy(
