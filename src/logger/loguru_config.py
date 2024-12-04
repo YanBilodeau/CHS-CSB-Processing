@@ -41,7 +41,7 @@ def formatter(record) -> str:
     return (
         "<bold><white>"
         f"<{color_tag}>"
-        "{extra[name]: <35}"
+        "{extra[name]: <40}"
         f"</{color_tag}> | "
         "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | </white></bold> "
         "<level>{level: ^8}</level> <bold><white>-</white></bold> <level>{message}</level>\n"
