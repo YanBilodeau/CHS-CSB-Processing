@@ -8,6 +8,7 @@ from datetime import timedelta
 from functools import partial
 
 from loguru import logger
+import pandas as pd
 from tenacity import (
     retry,
     stop_after_attempt,
@@ -43,20 +44,27 @@ def double_buffer_time(retry_state: RetryCallState) -> None:
     retry_state.kwargs["buffer_time"] = buffer_time * 2
 
 
-def exclude_time_serie_retry(retry_state: RetryCallState) -> None:
+def exclude_time_serie_retry(retry_state: RetryCallState) -> pd.DataFrame:
     """
     Fonction pour exclure les tentatives d'interpolation de séries temporelles.
 
     :param retry_state: État de la tentative.
     :type retry_state: RetryCallState
+    :return: Données de niveau d'eau combinées.
+    :rtype: pd.DataFrame[schema.TimeSerieDataWithMetaDataSchema]
     """
     from .time_serie_dataframe import get_water_level_data
 
     error: InterpolationValueError = retry_state.outcome.exception()
 
+    LOGGER.debug(
+        f"Ajout de la série temporelle {error.time_serie} à la liste d'exclusion."
+    )
+
     time_series: list[TimeSeriesProtocol] = retry_state.kwargs.setdefault(
         "time_series_excluded_from_interpolation", []
     )
+
     time_series.append(error.time_serie)
 
     kwargs: dict = {
@@ -65,13 +73,15 @@ def exclude_time_serie_retry(retry_state: RetryCallState) -> None:
         if key != "time_series_excluded_from_interpolation"
     }
 
-    get_water_level_data(**kwargs, time_series_excluded_from_interpolation=time_series)
+    return get_water_level_data(
+        **kwargs, time_series_excluded_from_interpolation=time_series
+    )
 
 
 LEVEL: str = "TRACE"
 interpolation_retry = partial(
     retry,
-    stop=stop_after_attempt(5),
+    stop=stop_after_attempt(3),
     wait=wait_exponential_jitter(initial=1, jitter=1, max=3),
     before=before_log(LOGGER, LEVEL),  # type: ignore
     after=double_buffer_time,
