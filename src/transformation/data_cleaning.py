@@ -52,7 +52,7 @@ def clean_depth(
 
     invalid_depths: pd.Series = (
         geodataframe[schema_ids.DEPTH_METER].isna()
-        | (geodataframe[schema_ids.DEPTH_METER] < min_depth)
+        | (geodataframe[schema_ids.DEPTH_METER] <= min_depth)
         | (
             geodataframe[schema_ids.DEPTH_METER] > max_depth
             if max_depth is not None
