@@ -31,6 +31,8 @@ DEPTH_LOWRANCE: str = "WaterDepth[Feet]"
 """Valeur de la constante pour la colonne de profondeur des données Lowrance."""
 TIME_LOWRANCE: str = "DateTime[UTC]"
 """Valeur de la constante pour la colonne de temps des données Lowrance."""
+SURVEY_TYPE_LOWRANCE: str = "SurveyType"
+"""Valeur de la constante pour la colonne de type de relevé des données Lowrance."""
 
 # Constantes pour les noms des colonnes des données Actisense.
 LINE_ACTISENSE: str = "Line"
