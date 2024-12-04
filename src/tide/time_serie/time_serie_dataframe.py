@@ -5,7 +5,7 @@ Ce module contient les fonctions pour gérer les données de séries temporelles
 """
 
 from datetime import timedelta, datetime
-from typing import Optional, Any, Collection
+from typing import Optional, Any, Collection, runtime_checkable
 
 from loguru import logger
 import numpy as np
@@ -204,6 +204,36 @@ def resample_data(wl_dataframe: pd.DataFrame, time: str) -> pd.DataFrame:
     return wl_resampled
 
 
+def check_for_missing_values_for_interpolation(
+    values: pd.Series, wl_resampled: pd.DataFrame
+) -> None:
+    """
+    Vérifie la présence de valeurs manquantes et lève une exception si nécessaire.
+
+    :param values: Série de valeurs à vérifier.
+    :type values: pd.Series
+    :param wl_resampled: DataFrame contenant les données rééchantillonnées.
+    :type wl_resampled: pd.DataFrame
+    :raises InterpolationValueError: Si des valeurs manquantes sont détectées.
+    """
+    if values.isna().any():
+        LOGGER.warning(
+            "L'interpolation cubique slpine ne peut pas être effectuée avec des données manquantes. "
+            "Des données manquantes ont été détectées dans les données de niveau d'eau de "
+            f"{wl_resampled.index[0]} à {wl_resampled.index[-1]}."
+        )
+
+        raise InterpolationValueError(
+            from_time=wl_resampled.index[0],
+            to_time=wl_resampled.index[-1],
+            time_serie=[
+                ts
+                for ts in wl_resampled[schema_ids.TIME_SERIE_CODE].unique().tolist()
+                if isinstance(ts, TimeSeriesProtocol)
+            ][0],
+        )
+
+
 def cubic_spline_interpolation(
     index_time: pd.Index, values: pd.Series, wl_resampled: pd.DataFrame
 ) -> pd.DataFrame:
@@ -219,16 +249,7 @@ def cubic_spline_interpolation(
     :return: DataFrame contenant les données interpolées.
     :rtype: pd.DataFrame
     """
-    if values.isna().any():
-        LOGGER.warning(
-            "L'interpolation cubique slpine ne peut pas être effectuée avec des données manquantes. "
-            "Des données manquantes ont été détectées dans les données de niveau d'eau de "
-            f"{wl_resampled.index[0]} à {wl_resampled.index[-1]}."
-        )
-
-        raise InterpolationValueError(
-            from_time=wl_resampled.index[0], to_time=wl_resampled.index[-1]
-        )
+    check_for_missing_values_for_interpolation(values=values, wl_resampled=wl_resampled)
 
     LOGGER.debug("Interpolation des données manquantes avec une spline cubique.")
 
@@ -332,7 +353,8 @@ def process_gaps_to_interpolate(
     if gaps_to_interpolate.empty:
         LOGGER.debug(
             f"Aucune période de données manquantes de plus de {max_time_gap} à interpoler pour "
-            f"{wl_dataframe[schema_ids.TIME_SERIE_CODE].unique().tolist()}."
+            f"{wl_dataframe[schema_ids.TIME_SERIE_CODE].unique().tolist()} avec un seuil de "
+            f"{threshold_interpolation_filling}."
         )
         return wl_dataframe
 
@@ -520,7 +542,12 @@ def add_nan_date_row(wl_dataframe: pd.DataFrame, time: str) -> pd.DataFrame:
     """
     LOGGER.debug(f"Ajout d'une ligne de données NaN à partir de la date '{time}'.")
 
-    wl_dataframe.loc[len(wl_dataframe)] = create_nan_date_row(date_time=time)
+    nan_row: NanDateRow = create_nan_date_row(date_time=time)
+    nan_row_df: pd.DataFrame = pd.DataFrame(
+        [nan_row], columns=wl_dataframe.columns
+    ).astype(wl_dataframe.dtypes.to_dict())
+    wl_dataframe = pd.concat([wl_dataframe, nan_row_df], ignore_index=True)
+
     reset_and_sort_index(wl_dataframe=wl_dataframe, drop=True)
 
     return wl_dataframe
@@ -663,6 +690,66 @@ def get_iso8601_from_datetime(date: datetime) -> str:
     return date.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def get_threshold_interpolation_filling_value(
+    time_serie: TimeSeriesProtocol,
+    threshold_interpolation_filling: Optional[str | None] = None,
+    time_series_excluded_from_interpolation: Optional[list[TimeSeriesProtocol]] = None,
+) -> str | None:
+    """
+    Fonction pour obtenir la valeur du seuil d'interpolation.
+
+    :param time_serie: Série temporelle.
+    :type time_serie: TimeSeriesProtocol
+    :param threshold_interpolation_filling: Seuil de temps en dessous duquel les données manquantes sont interpolées ou remplies.
+                                            Si None, les données manquantes sont seulement remplies par la time série suivante.
+    :type threshold_interpolation_filling: Optional[str | None]
+    :param time_series_excluded_from_interpolation: Liste des séries temporelles à exclure de l'interpolation.
+    :type time_series_excluded_from_interpolation: Optional[list[TimeSeriesProtocol]]
+    :return: Seuil d'interpolation.
+    :rtype: str | None
+    """
+    LOGGER.debug(
+        f"Obtention du seuil d'interpolation pour la série temporelle {time_serie} avec un seuil de "
+        f"{threshold_interpolation_filling} et les séries temporelles {time_series_excluded_from_interpolation} "
+        f"exclues de l'interpolation."
+    )
+
+    if threshold_interpolation_filling is None:
+        return None
+
+    if (
+        time_series_excluded_from_interpolation
+        and time_serie in time_series_excluded_from_interpolation
+    ):
+        return None
+
+    return threshold_interpolation_filling
+
+
+def finalize_time_serie_dataframe(
+    wl_dataframe: pd.DataFrame, station_id: str
+) -> pd.DataFrame:
+    """
+    Finalise les données de la série temporelle en les nettoyant, en les triant et en ajoutant les métadonnées.
+
+    :param wl_dataframe: Données de la série temporelle.
+    :type wl_dataframe: pd.DataFrame[schema.TimeSerieDataSchema]
+    :param station_id: Identifiant de la station.
+    :type station_id: str
+    :return: Données de la série temporelle finalisées.
+    :rtype: pd.DataFrame[schema.TimeSerieDataWithMetaDataSchema]
+    """
+    LOGGER.debug("Finalisation des données de la série temporelle.")
+
+    reset_and_sort_index(wl_dataframe=wl_dataframe, drop=True)
+    wl_dataframe: pd.DataFrame = wl_dataframe.dropna(subset=[schema_ids.VALUE])
+    add_metadata_to_time_serie_dataframe(
+        wl_dataframe=wl_dataframe, station_id=station_id
+    )
+
+    return wl_dataframe
+
+
 def add_metadata_to_time_serie_dataframe(
     wl_dataframe: pd.DataFrame, station_id: str
 ) -> pd.DataFrame:
@@ -676,14 +763,16 @@ def add_metadata_to_time_serie_dataframe(
     :return: Données de la série temporelle avec les métadonnées.
     :rtype: pd.DataFrame[schema.TimeSerieDataWithMetaDataSchema]
     """
+    LOGGER.debug("Ajout des métadonnées aux données de la série temporelle.")
+
     wl_dataframe.attrs[schema_ids.NAME_METADATA] = "WaterLevel"
     wl_dataframe.attrs[schema_ids.STATION_ID] = station_id
-    wl_dataframe.attrs[schema_ids.START_TIME] = wl_dataframe[
-        schema_ids.EVENT_DATE
-    ].iloc[0]
-    wl_dataframe.attrs[schema_ids.END_TIME] = wl_dataframe[schema_ids.EVENT_DATE].iloc[
-        -1
-    ]
+    wl_dataframe.attrs[schema_ids.START_TIME] = (
+        wl_dataframe[schema_ids.EVENT_DATE].iloc[0] if not wl_dataframe.empty else None
+    )
+    wl_dataframe.attrs[schema_ids.END_TIME] = (
+        wl_dataframe[schema_ids.EVENT_DATE].iloc[-1] if not wl_dataframe.empty else None
+    )
 
     return wl_dataframe
 
@@ -696,10 +785,11 @@ def get_water_level_data(
     from_time: str | datetime,
     to_time: str | datetime,
     time_series_priority: Collection[TimeSeriesProtocol],
+    wlo_qc_flag_filter: Optional[list[str] | None] = None,
     buffer_time: Optional[timedelta | None] = None,
     max_time_gap: Optional[str | None] = None,
     threshold_interpolation_filling: Optional[str | None] = None,
-    wlo_qc_flag_filter: Optional[list[str] | None] = None,
+    time_series_excluded_from_interpolation: Optional[list[TimeSeriesProtocol]] = None,
 ) -> pd.DataFrame:
     """
     Récupère et traite les séries temporelles de niveau d'eau pour une station donnée.
@@ -714,6 +804,8 @@ def get_water_level_data(
     :type to_time: str | datetime
     :param time_series_priority: Liste des séries temporelles à récupérer en ordre de priorité.
     :type time_series_priority: Collection[TimeSeriesProtocol]
+    :param wlo_qc_flag_filter: Filtre de qualité des données wlo.
+    :type wlo_qc_flag_filter: Optional[list[str] | None]
     :param buffer_time: Temps tampon à ajouter au début et à la fin de la période de données.
     :type buffer_time: Optional[timedelta | None]
     :param max_time_gap: Intervalle de temps maximal permis. Si None, l'interpolation et le remplissage des données manquantes est désactivée.
@@ -721,8 +813,9 @@ def get_water_level_data(
     :param threshold_interpolation_filling: Seuil de temps en dessous duquel les données manquantes sont interpolées ou remplies.
                                             Si None, les données manquantes sont seulement remplies par la time série suivante.
     :type threshold_interpolation_filling: Optional[str | None]
-    :param wlo_qc_flag_filter: Filtre de qualité des données wlo.
-    :type wlo_qc_flag_filter: Optional[list[str] | None]
+    :param time_series_excluded_from_interpolation: Liste des séries temporelles à exclure de l'interpolation. Si une
+
+    :type time_series_excluded_from_interpolation: Optional[list[TimeSeriesProtocol]]
     :return: Données de niveau d'eau combinées.
     :rtype: pd.DataFrame[schema.TimeSerieDataWithMetaDataSchema]
     """
@@ -750,14 +843,18 @@ def get_water_level_data(
                 f"L'interpolation et le remplissage des données manquantes est désactivée pour la station {station_id}."
             )
 
-            return add_metadata_to_time_serie_dataframe(
+            return finalize_time_serie_dataframe(
                 wl_dataframe=wl_data, station_id=station_id
             )
 
         gaps_total, _, gaps_to_fill = identify_data_gaps(
             wl_dataframe=wl_data if wl_combined.empty else wl_combined,
             max_time_gap=max_time_gap,
-            threshold_interpolation_filling=threshold_interpolation_filling,
+            threshold_interpolation_filling=get_threshold_interpolation_filling_value(
+                time_serie=time_serie,
+                threshold_interpolation_filling=threshold_interpolation_filling,
+                time_series_excluded_from_interpolation=time_series_excluded_from_interpolation,
+            ),
         )
 
         if gaps_total.empty:
@@ -772,7 +869,11 @@ def get_water_level_data(
             wl_dataframe=wl_data,
             # Important de rechercher les données manquantes dans wl_data pour les interpoler
             max_time_gap=max_time_gap,
-            threshold_interpolation_filling=threshold_interpolation_filling,
+            threshold_interpolation_filling=get_threshold_interpolation_filling_value(
+                time_serie=time_serie,
+                threshold_interpolation_filling=threshold_interpolation_filling,
+                time_series_excluded_from_interpolation=time_series_excluded_from_interpolation,
+            ),
         )
 
         # todo : identifier les données manquantes après interpolation dans le cas qu'il y ait un pas de trou à remplir,
@@ -791,7 +892,7 @@ def get_water_level_data(
             f"Toutes les séries temporelles disponibles pour la station {station_id} ont été traitées: {time_series_priority}."
         )
 
-    return add_metadata_to_time_serie_dataframe(
+    return finalize_time_serie_dataframe(
         wl_dataframe=wl_combined, station_id=station_id
     )
 
