@@ -466,6 +466,4 @@ class StationsHandlerABC(ABC):
 
         data_dataframe.drop(columns=["qc_flag"], inplace=True)
 
-        # schema.validate_schema(df=data_dataframe, schema=schema.TimeSerieDataSchema)
-
         return data_dataframe
