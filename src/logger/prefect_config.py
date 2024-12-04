@@ -91,5 +91,9 @@ def configure_prefect_logger(
 
     logger.configure(
         handlers=handlers,
-        extra={"name": "CSB-Processing", "hostname": gethostname(), "username": getlogin()},
+        extra={
+            "name": "CSB-Processing",
+            "hostname": gethostname(),
+            "username": getlogin(),
+        },
     )
