@@ -131,7 +131,7 @@ class TideZoneProtocolSchema(pa.DataFrameModel):
 
 class TideZoneStationSchema(TideZoneProtocolSchema):
     """
-    Schéma des zones de marées.
+    Schéma des zones de marées extraite des stations.
     """
 
     code: Series[str]
@@ -142,7 +142,13 @@ class TideZoneStationSchema(TideZoneProtocolSchema):
     geometry: GeoSeries
 
 
-class TideZoneInfoSchema(TideZoneProtocolSchema):
+class TideZoneInfoSchema(pa.DataFrameModel):
+    """
+    Schéma des informations des zones de marées.
+    """
+
+    Tide_zone_id: Series[str]
+    time_series: Series[object]
     min_time: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
     max_time: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
 
