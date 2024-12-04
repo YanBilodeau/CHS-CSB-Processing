@@ -15,6 +15,7 @@ from .parsing_exception import (
     ParsingDataframeLongitudeError,
     ParsingDataframeLatitudeError,
     ParsingDataframeDepthError,
+    ParsingError,
 )
 from . import parser_ids as ids
 import schema
@@ -37,6 +38,7 @@ COLUMN_EXCEPTIONS: list[ColumnException] = [
         column_name=ids.LATITUDE_LOWRANCE, error=ParsingDataframeLatitudeError
     ),
     ColumnException(column_name=ids.DEPTH_LOWRANCE, error=ParsingDataframeDepthError),
+    ColumnException(column_name=ids.SURVEY_TYPE_LOWRANCE, error=ParsingError),
 ]
 
 
@@ -60,8 +62,7 @@ class DataParserLowrance(DataParserABC):
             f"Chargement du fichier de données brutes de type Lowrance : {file}"
         )
 
-        if dtype_dict is None:
-            dtype_dict = DTYPE_DICT
+        dtype_dict = dtype_dict or DTYPE_DICT
 
         dataframe: pd.DataFrame = pd.read_csv(file)
         self.validate_columns(
@@ -73,7 +74,13 @@ class DataParserLowrance(DataParserABC):
             time_column=ids.TIME_LOWRANCE,
             file=file,
         )
+        # Arrondir les timestamps pour uniformiser la précision
+        dataframe[ids.TIME_LOWRANCE] = dataframe[ids.TIME_LOWRANCE].dt.round("100ms")
+        dataframe = dataframe.query(
+            f"{ids.SURVEY_TYPE_LOWRANCE} == '{ids.PRIMARY_LOWRANCE}'"
+        )
 
+        LOGGER.debug("Conversion des données en GeoDataFrame.")
         gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
             data=dataframe,
             geometry=gpd.points_from_xy(

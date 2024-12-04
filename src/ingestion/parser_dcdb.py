@@ -71,6 +71,7 @@ class DataParserBCDB(DataParserABC):
             file=file,
         )
 
+        LOGGER.debug("Conversion des données en GeoDataFrame.")
         gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
             data=dataframe,
             geometry=gpd.points_from_xy(
