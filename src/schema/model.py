@@ -129,7 +129,7 @@ class TideZoneProtocolSchema(pa.DataFrameModel):
         coerce = True
 
 
-class TideZoneSchema(TideZoneProtocolSchema):
+class TideZoneStationSchema(TideZoneProtocolSchema):
     """
     Schéma des zones de marées.
     """
