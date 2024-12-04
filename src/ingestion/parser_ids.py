@@ -34,6 +34,7 @@ TIME_LOWRANCE: str = "DateTime[UTC]"
 SURVEY_TYPE_LOWRANCE: str = "SurveyType"
 """Valeur de la constante pour la colonne de type de relevé des données Lowrance."""
 PRIMARY_LOWRANCE: str = "Primary"
+"""Valeur de la constante pour le type de relevé primaire des données Lowrance."""
 
 # Constantes pour les noms des colonnes des données Actisense.
 LINE_ACTISENSE: str = "Line"
