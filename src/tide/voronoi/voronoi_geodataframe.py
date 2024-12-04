@@ -116,7 +116,7 @@ def merge_attributes(
     return gdf_voronoi
 
 
-@schema.validate_schemas(return_schema=schema.TideZoneSchema)
+@schema.validate_schemas(return_schema=schema.TideZoneStationSchema)
 def get_voronoi_geodataframe(
     stations_handler: StationsHandlerProtocol,
     time_series: Optional[Collection[TimeSeriesProtocol] | None] = None,
@@ -133,7 +133,7 @@ def get_voronoi_geodataframe(
     :param excluded_stations: Liste des stations à exclure.
     :type excluded_stations: Collection[str] | None
     :return: Le GeoDataFrame des polygones de Voronoi.
-    :rtype: gpd.GeoDataFrame[schema.TideZoneSchema]
+    :rtype: gpd.GeoDataFrame[schema.TideZoneStationSchema]
     """
     gdf_stations: gpd.GeoDataFrame[schema.StationsSchema] = (
         stations_handler.get_stations_geodataframe(
@@ -151,7 +151,7 @@ def get_voronoi_geodataframe(
         gdf_stations=gdf_stations, gdf_voronoi=gdf_voronoi
     )
 
-    gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneSchema] = merge_attributes(
+    gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema] = merge_attributes(
         gdf_voronoi=gdf_voronoi, gdf_joined=gdf_joined
     )
 
@@ -165,7 +165,7 @@ def get_polygon_by_station_id(
     Récupère le polygone de Voronoi pour une station donnée.
 
     :param gdf_voronoi: Le GeoDataFrame des polygones de Voronoi.
-    :type gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneSchema]
+    :type gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema]
     :param station_id: L'identifiant de la station.
     :type station_id: str
     :return: Le polygone de Voronoi de la station.
@@ -183,7 +183,7 @@ def get_time_series_by_station_id(
     Récupère les séries temporelles pour une station donnée.
 
     :param gdf_voronoi: Le GeoDataFrame des polygones de Voronoi.
-    :type gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneSchema]
+    :type gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema]
     :param station_id: L'identifiant de la station.
     :type station_id: str
     :return: Les séries temporelles de la station.
@@ -201,7 +201,7 @@ def get_code_by_station_id(gdf_voronoi: gpd.GeoDataFrame, station_id: str) -> st
     Récupère le code de la station.
 
     :param gdf_voronoi: Le GeoDataFrame des polygones de Voronoi.
-    :type gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneSchema]
+    :type gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema]
     :param station_id: L'identifiant de la station.
     :type station_id: str
     :return: Le code de la station.
@@ -219,7 +219,7 @@ def get_name_by_station_id(gdf_voronoi: gpd.GeoDataFrame, station_id: str) -> st
     Récupère le nom de la station.
 
     :param gdf_voronoi: Le GeoDataFrame des polygones de Voronoi.
-    :type gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneSchema]
+    :type gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema]
     :param station_id: L'identifiant de la station.
     :type station_id: str
     :return: Le nom de la station.
@@ -240,7 +240,7 @@ def get_polygon_by_geometry(
     Récupère les polygones de Voronoi qui intersectent les géométries données.
 
     :param gdf_voronoi: Le GeoDataFrame des polygones de Voronoi.
-    :type gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneSchema]
+    :type gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema]
     :param geometry: La géométrie a utilisé pour l'intersection.
     :type geometry: gpd.GeoDataFrame
     :return: Le GeoDataFrame des polygones de Voronoi qui intersectent les géométries.
@@ -250,8 +250,8 @@ def get_polygon_by_geometry(
         "Récupération des polygones de Voronoi qui intersectent les géométries."
     )
 
-    dask_gdf_voronoi: dgpd.GeoDataFrame[schema.TideZoneSchema] = dgpd.from_geopandas(
-        gdf_voronoi, npartitions=12
+    dask_gdf_voronoi: dgpd.GeoDataFrame[schema.TideZoneStationSchema] = (
+        dgpd.from_geopandas(gdf_voronoi, npartitions=12)
     )
     dask_geometry: dgpd.GeoDataFrame = dgpd.from_geopandas(geometry, npartitions=12)
 
@@ -259,7 +259,7 @@ def get_polygon_by_geometry(
         dask_gdf_voronoi, dask_geometry, how="inner", predicate="intersects"
     )
     result_computed: gpd.GeoDataFrame = result.compute()
-    result_unique: gpd.GeoDataFrame[schema.TideZoneSchema] = (
+    result_unique: gpd.GeoDataFrame[schema.TideZoneStationSchema] = (
         result_computed.drop_duplicates(subset=[schema_ids.ID]).reset_index(drop=True)
     )
 
