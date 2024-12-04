@@ -1,6 +1,7 @@
 from os import getlogin
 from pathlib import Path
 from socket import gethostname
+from typing import Optional
 
 from loguru import logger
 from prefect import get_run_logger
@@ -15,12 +16,26 @@ def formatter(_) -> str:
 
 
 def configure_prefect_logger(
-    log_file: Path,
+    log_file: Optional[Path] = None,
     rotation: str | int = "1 day",
     retention: str | int = "30 days",
     log_file_level: str = "TRACE",
     enqueue: bool = True,
 ) -> None:
+    """
+    Fonction de configuration du logger pour Prefect.
+
+    :param log_file: Chemin du fichier de log.
+    :type log_file: Optional[Path]
+    :param log_file_level: Niveau de log pour le fichier de log.
+    :type log_file_level: str
+    :param rotation: Durée de rotation des fichiers de log.
+    :type rotation: str | int
+    :param retention: Durée de rétention des fichiers de log.
+    :type retention: str | int
+    :param enqueue: Indique si les messages doivent être enfilés.
+    :type enqueue: bool
+    """
     logger.remove()
     prefect_logger = get_run_logger()
 
@@ -76,5 +91,5 @@ def configure_prefect_logger(
 
     logger.configure(
         handlers=handlers,
-        extra={"name": "SHCoutils", "hostname": gethostname(), "username": getlogin()},
+        extra={"name": "CSB-Processing", "hostname": gethostname(), "username": getlogin()},
     )

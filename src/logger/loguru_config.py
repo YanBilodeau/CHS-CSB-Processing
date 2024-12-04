@@ -5,6 +5,7 @@ from pathlib import Path
 from random import choice, seed
 from socket import gethostname
 from threading import Lock
+from typing import Optional
 
 from loguru import logger
 
@@ -49,13 +50,29 @@ def formatter(record) -> str:
 
 
 def configure_logger(
-    log_file: Path,
+    log_file: Optional[Path] = None,
     std_level: str = "INFO",
     log_file_level: str = "TRACE",
     rotation: str | int = "1 day",
     retention: str | int = "30 days",
     enqueue: bool = True,
 ) -> None:
+    """
+    Fonction de configuration du logger loguru.
+
+    :param log_file: Chemin du fichier de log.
+    :type log_file: Optional[Path]
+    :param std_level: Niveau de log pour la sortie standard.
+    :type std_level: str
+    :param log_file_level: Niveau de log pour le fichier de log.
+    :type log_file_level: str
+    :param rotation: Durée de rotation des fichiers de log.
+    :type rotation: str | int
+    :param retention: Durée de rétention des fichiers de log.
+    :type retention: str | int
+    :param enqueue: Indique si les messages doivent être enfilés.
+    :type enqueue: bool
+    """
     logger.remove()
 
     handlers = [
@@ -85,5 +102,5 @@ def configure_logger(
 
     logger.configure(
         handlers=handlers,
-        extra={"name": "SHCoutils", "hostname": gethostname(), "username": getlogin()},
+        extra={"name": "CSB-Processing", "hostname": gethostname(), "username": getlogin()},
     )
