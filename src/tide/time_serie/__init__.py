@@ -4,7 +4,7 @@ Ce package contient les fonctions et les classes nécessaires pour traiter les s
 
 from .exception_time_serie import (
     WaterLevelDataGapError,
-    WaterLevelDataError,
+    NoWaterLevelDataError,
     InterpolationValueError,
     get_data_gaps_message,
 )
@@ -23,6 +23,6 @@ __all__ = [
     "identify_data_gaps",
     "get_data_gaps_message",
     "WaterLevelDataGapError",
-    "WaterLevelDataError",
+    "NoWaterLevelDataError",
     "InterpolationValueError",
 ]

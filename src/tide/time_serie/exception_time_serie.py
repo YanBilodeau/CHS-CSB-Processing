@@ -14,9 +14,9 @@ from schema import model_ids as schema_ids
 
 
 @dataclass(frozen=True)
-class WaterLevelDataError(Exception):
+class NoWaterLevelDataError(Exception):
     """
-    Exception pour les erreurs de données de marée.
+    Exception pour les erreurs de données de marée manquantes.
 
     :param station_id: Code de la station.
     :type station_id: str
