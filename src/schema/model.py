@@ -59,6 +59,17 @@ class DataLoggerProcessedSchema(DataLoggerSchema):
         coerce = True
 
 
+class DataLoggerProcessedSchemaWithTideZone(DataLoggerProcessedSchema):
+    """
+    Schéma des données des DataLoggers traitées avec les zones de marées.
+    """
+
+    Tide_zone_id: Series[str]
+
+    class Config:
+        coerce = True
+
+
 class WaterLevelSerieDataSchema(pa.DataFrameModel):
     """
     Schéma des séries temporelles.

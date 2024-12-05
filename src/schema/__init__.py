@@ -5,12 +5,14 @@ Ce package contient les schémas des données.
 from .model import (
     DataLoggerSchema,
     DataLoggerWithTideZoneSchema,
+    DataLoggerProcessedSchema,
+    DataLoggerProcessedSchemaWithTideZone,
     StationsSchema,
     TideZoneProtocolSchema,
     TideZoneStationSchema,
     TideZoneInfoSchema,
-    TimeSerieDataSchema,
-    TimeSerieDataWithMetaDataSchema,
+    WaterLevelSerieDataSchema,
+    WaterLevelSerieDataWithMetaDataSchema,
     validate_schema,
     validate_schemas,
 )
@@ -18,12 +20,15 @@ from .model import (
 
 __all__ = [
     "DataLoggerSchema",
+    "DataLoggerWithTideZoneSchema",
+    "DataLoggerProcessedSchema",
+    "DataLoggerProcessedSchemaWithTideZone",
     "StationsSchema",
     "TideZoneProtocolSchema",
     "TideZoneStationSchema",
-    "TimeSerieDataSchema",
+    "WaterLevelSerieDataSchema",
     "TideZoneInfoSchema",
-    "TimeSerieDataWithMetaDataSchema",
+    "WaterLevelSerieDataWithMetaDataSchema",
     "validate_schema",
     "validate_schemas",
 ]
