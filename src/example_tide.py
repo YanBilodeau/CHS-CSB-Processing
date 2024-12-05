@@ -134,29 +134,6 @@ def initialize_station_info(tide_zone: gpd.GeoDataFrame) -> pd.DataFrame:
     :param tide_zone: (gpd.GeoDataFrame) The tide zone.
     :return: (pd.DataFrame) The information of the stations.
     """
-    # station_rimouski: str = "5cebf1e03d0f4a073c4bbd92"
-    # from_time_rimouski: str = "2024-10-01T12:00:00Z"
-    # to_time_rimouski: str = "2024-10-29T13:00:00Z"
-    #
-    # station_winter = "5cebf1de3d0f4a073c4bba71"
-    # from_time_winter = "2024-08-01T8:00:00Z"
-    # to_time_winter = "2024-10-28T10:00:00Z"
-    #
-    # station_montreal = "5cebf1e03d0f4a073c4bbdd7"
-    # from_time_montreal = "2024-10-07T8:00:00Z"
-    # to_time_montreal = "2024-10-28T10:00:00Z"
-    #
-    # station_quebec = "5cebf1e23d0f4a073c4bc0f6"
-    # from_time_quebec = "2024-07-07T8:00:00Z"
-    # to_time_quebec = "2024-10-28T10:00:00Z"
-    #
-    # memphremagog = "5dd3064de0fdc4b9b4be664c"
-    # from_time_memphremagog: str = "2024-10-01T00:00:00Z"
-    # to_time_memphremagog: str = "2024-10-15T00:00:00Z"
-    #
-    # rsp = "5dd30650e0fdc4b9b4be6bee"
-    # from_time_rsp: str = "2024-09-29T00:00:00Z"
-    # to_time_rsp: str = "2024-11-15T00:00:00Z"
 
     def create_station_info(station_id: str, from_time: str, to_time: str) -> tuple:
         return (
@@ -187,7 +164,14 @@ def initialize_station_info(tide_zone: gpd.GeoDataFrame) -> pd.DataFrame:
 
     # Convertissez la liste de tuples en DataFrame
     tide_zone_info = pd.DataFrame(
-        [station_rimouski, station_winter, station_montreal, station_quebec, memphremagog, rsp],
+        [
+            station_rimouski,
+            station_winter,
+            station_montreal,
+            station_quebec,
+            memphremagog,
+            rsp,
+        ],
         columns=[
             schema_ids.TIDE_ZONE_ID,
             "min_time",
@@ -267,11 +251,11 @@ def main():
     )
 
     # Initialize the information of the stations for the example
-    # tide_zonde_info = initialize_station_info()
+    tide_zonde_info = initialize_station_info(tide_zone=gdf_voronoi)
     # Initialize the information of the stations for the example
-    tide_zonde_info = initialize_all_station_info(
-        tide_zone=gdf_voronoi, stations_index=slice(800, 1000)  #  1000, 1150)
-    )
+    # tide_zonde_info = initialize_all_station_info(
+    #     tide_zone=gdf_voronoi, stations_index=slice(800, 1000)  #  1000, 1150)
+    # )
 
     # Get the water level data for each station
     wl_combineds, wl_exceptions = time_serie.get_water_level_data_for_stations(
