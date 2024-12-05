@@ -4,15 +4,21 @@ Module pour la gestion des données de séries temporelles de marée.
 Ce module contient les fonctions pour gérer les données de séries temporelles de marée.
 """
 
+import concurrent.futures
 from datetime import timedelta, datetime
-from typing import Optional, Any, Collection, runtime_checkable
+from multiprocessing import cpu_count
+from typing import Optional, Any, Collection
 
 from loguru import logger
 import numpy as np
 import pandas as pd
 from scipy.interpolate import CubicSpline
 
-from .exception_time_serie import get_data_gaps_message, InterpolationValueError
+from .exception_time_serie import (
+    get_data_gaps_message,
+    InterpolationValueError,
+    NoWaterLevelDataError,
+)
 from .time_serie_models import (
     TimeSeriesProtocol,
     StationsHandlerProtocol,
@@ -24,6 +30,29 @@ from schema import model_ids as schema_ids
 LOGGER = logger.bind(name="CSB-Pipeline.TimeSerie")
 NanDateRow = dict[str, Any]
 """Dictionnaire pour une ligne de données avec une valeur de NaN."""
+
+
+def get_water_level_data_retrieval_message(
+    station_id: str,
+    from_time: str,
+    to_time: str,
+    time_series_priority: Collection[TimeSeriesProtocol],
+) -> str:
+    """
+    Récupère le message de log pour la récupération des données de niveau d'eau.
+
+    :param station_id: (str) L'identifiant de la station.
+    :param from_time: (str) La date de début.
+    :param to_time: (str) La date de fin.
+    :param time_series_priority: (Collection[TimeSeriesProtocol]) Les séries temporelles prioritaires.
+    :return: (str) Le message de log.
+    """
+    series_label = (
+        "les séries temporelles"
+        if len(time_series_priority) > 1
+        else "la série temporelle"
+    )
+    return f"Récupération des données de niveau d'eau pour la station '{station_id}' de {from_time} à {to_time} avec {series_label} : {time_series_priority}."
 
 
 def get_row_by_index(wl_dataframe: pd.DataFrame, index: int) -> pd.DataFrame:
@@ -585,14 +614,14 @@ def clean_time_series_data(
     return wl_dataframe
 
 
-def get_time_series_data(
+def get_water_level_time_serie(
     stations_handler: StationsHandlerProtocol,
     station_id: str,
     from_time: str | datetime,
     to_time: str | datetime,
     time_serie_code: TimeSeriesProtocol,
     buffer_time: Optional[timedelta] = None,
-    wlo_qc_flag_filter: Optional[list[str] | None] = None,
+    wlo_qc_flag_filter: Optional[Collection[str] | None] = None,
 ) -> pd.DataFrame | None:
     """
     Récupère les données de la série temporelle.
@@ -610,7 +639,7 @@ def get_time_series_data(
     :param buffer_time: Temps tampon à ajouter au début et à la fin de la période de données.
     :type buffer_time: Optional[timedelta]
     :param wlo_qc_flag_filter: Filtre de qualité des données wlo.
-    :type wlo_qc_flag_filter: Optional[list[str] | None]
+    :type wlo_qc_flag_filter: Optional[Collection[str] | None]
     :return: Données de la série temporelle.
     :rtype: pd.DataFrame[schema.TimeSerieDataSchema] | None
     """
@@ -693,7 +722,9 @@ def get_iso8601_from_datetime(date: datetime) -> str:
 def get_threshold_interpolation_filling_value(
     time_serie: TimeSeriesProtocol,
     threshold_interpolation_filling: Optional[str | None] = None,
-    time_series_excluded_from_interpolation: Optional[list[TimeSeriesProtocol]] = None,
+    time_series_excluded_from_interpolation: Optional[
+        Collection[TimeSeriesProtocol]
+    ] = None,
 ) -> str | None:
     """
     Fonction pour obtenir la valeur du seuil d'interpolation.
@@ -704,7 +735,7 @@ def get_threshold_interpolation_filling_value(
                                             Si None, les données manquantes sont seulement remplies par la time série suivante.
     :type threshold_interpolation_filling: Optional[str | None]
     :param time_series_excluded_from_interpolation: Liste des séries temporelles à exclure de l'interpolation.
-    :type time_series_excluded_from_interpolation: Optional[list[TimeSeriesProtocol]]
+    :type time_series_excluded_from_interpolation: Optional[Collection[TimeSeriesProtocol]]
     :return: Seuil d'interpolation.
     :rtype: str | None
     """
@@ -785,11 +816,13 @@ def get_water_level_data(
     from_time: str | datetime,
     to_time: str | datetime,
     time_series_priority: Collection[TimeSeriesProtocol],
-    wlo_qc_flag_filter: Optional[list[str] | None] = None,
+    wlo_qc_flag_filter: Optional[Collection[str] | None] = None,
     buffer_time: Optional[timedelta | None] = None,
     max_time_gap: Optional[str | None] = None,
     threshold_interpolation_filling: Optional[str | None] = None,
-    time_series_excluded_from_interpolation: Optional[list[TimeSeriesProtocol]] = None,
+    time_series_excluded_from_interpolation: Optional[
+        Collection[TimeSeriesProtocol]
+    ] = None,
 ) -> pd.DataFrame:
     """
     Récupère et traite les séries temporelles de niveau d'eau pour une station donnée.
@@ -805,7 +838,7 @@ def get_water_level_data(
     :param time_series_priority: Liste des séries temporelles à récupérer en ordre de priorité.
     :type time_series_priority: Collection[TimeSeriesProtocol]
     :param wlo_qc_flag_filter: Filtre de qualité des données wlo.
-    :type wlo_qc_flag_filter: Optional[list[str] | None]
+    :type wlo_qc_flag_filter: Optional[Collection[str] | None]
     :param buffer_time: Temps tampon à ajouter au début et à la fin de la période de données.
     :type buffer_time: Optional[timedelta | None]
     :param max_time_gap: Intervalle de temps maximal permis. Si None, l'interpolation et le remplissage des données manquantes est désactivée.
@@ -815,14 +848,14 @@ def get_water_level_data(
     :type threshold_interpolation_filling: Optional[str | None]
     :param time_series_excluded_from_interpolation: Liste des séries temporelles à exclure de l'interpolation. Si une
 
-    :type time_series_excluded_from_interpolation: Optional[list[TimeSeriesProtocol]]
+    :type time_series_excluded_from_interpolation: Optional[Collection[TimeSeriesProtocol]]
     :return: Données de niveau d'eau combinées.
     :rtype: pd.DataFrame[schema.TimeSerieDataWithMetaDataSchema]
     """
     wl_combined: pd.DataFrame = get_empty_dataframe()
 
     for index, time_serie in enumerate(time_series_priority):
-        wl_data: pd.DataFrame[schema.TimeSerieDataSchema] = get_time_series_data(
+        wl_data: pd.DataFrame[schema.TimeSerieDataSchema] = get_water_level_time_serie(
             stations_handler=stations_handler,
             station_id=station_id,
             from_time=from_time,
@@ -895,6 +928,132 @@ def get_water_level_data(
     return finalize_time_serie_dataframe(
         wl_dataframe=wl_combined, station_id=station_id
     )
+
+
+def get_water_level_data_for_stations(
+    stations_handler: StationsHandlerProtocol,
+    tide_zonde_info: pd.DataFrame,
+    wlo_qc_flag_filter: Optional[Collection[str] | None] = None,
+    buffer_time: Optional[timedelta | None] = None,
+    max_time_gap: Optional[str | None] = None,
+    threshold_interpolation_filling: Optional[str | None] = None,
+) -> tuple[
+    dict[str, pd.DataFrame],
+    dict[str, Exception],
+]:
+    """
+    Récupère les données de niveau d'eau pour plusieurs stations.
+
+    :param stations_handler: Gestionnaire des stations.
+    :type stations_handler: StationsHandlerProtocol
+    :param tide_zonde_info: Informations sur les stations et les périodes de données à récupérer et leur priorité de séries temporelles.
+    :type tide_zonde_info: pd.DataFrame[shema.TideZondeInfoSchema]
+    :param wlo_qc_flag_filter: Filtre de qualité des données wlo.
+    :type wlo_qc_flag_filter: Optional[Collection[str] | None]
+    :param buffer_time: Temps tampon à ajouter au début et à la fin de la période de données.
+    :type buffer_time: Optional[timedelta | None]
+    :param max_time_gap: Intervalle de temps maximal permis. Si None, l'interpolation et le remplissage des données manquantes est désactivée.
+    :type max_time_gap: Optional[str | None]
+    :param threshold_interpolation_filling: Seuil de temps en dessous duquel les données manquantes sont interpolées ou remplies.
+                                            Si None, les données manquantes sont seulement remplies par la time série suivante.
+    :type threshold_interpolation_filling: Optional[str | None]
+    :return: Données de niveau d'eau combinées et exceptions.
+    :rtype: tuple[dict[str, pd.DataFrame[schema.TimeSerieDataWithMetaDataSchema]], dict[str, Exception]]
+    """
+
+    def fetch_water_level_data(
+        station_id: str,
+        from_time: str | datetime,
+        to_time: str | datetime,
+        time_series_priority: Collection[TimeSeriesProtocol],
+    ) -> tuple[Optional[pd.DataFrame], str, Optional[Exception]]:
+        """
+        Récupère les données de niveau d'eau pour une station donnée.
+
+        :param station_id: Identifiant de la station.
+        :type station_id: str
+        :param from_time: Date de début en format ISO 8601 ou objet datetime.
+        :type from_time: str | datetime
+        :param to_time: Date de fin en format ISO 8601 ou objet datetime.
+        :type to_time: str | datetime
+        :param time_series_priority: Liste des séries temporelles à récupérer en ordre de priorité.
+        :type time_series_priority: Collection[TimeSeriesProtocol]
+        :return: Données de niveau d'eau combinées et identifiant de la station.
+        :rtype: tuple[Optional[pd.DataFrame[schema.TimeSerieDataWithMetaDataSchema]], str, Optional[Exception]]]
+        """
+        LOGGER.info(
+            get_water_level_data_retrieval_message(
+                station_id=station_id,
+                from_time=from_time,
+                to_time=to_time,
+                time_series_priority=time_series_priority,
+            )
+        )
+
+        try:
+            wl_data: pd.DataFrame[schema.TimeSerieDataWithMetaDataSchema] = (
+                get_water_level_data(
+                    stations_handler=stations_handler,
+                    station_id=station_id,
+                    from_time=from_time,
+                    to_time=to_time,
+                    time_series_priority=time_series_priority,
+                    max_time_gap=max_time_gap,
+                    threshold_interpolation_filling=threshold_interpolation_filling,
+                    wlo_qc_flag_filter=wlo_qc_flag_filter,
+                    buffer_time=buffer_time,
+                )
+            )
+
+            if wl_data.empty:
+                LOGGER.warning(
+                    f"Aucune donnée de niveau d'eau n'a été récupérée pour la station {station_id}."
+                )
+
+                raise NoWaterLevelDataError(
+                    station_id=station_id, from_time=from_time, to_time=to_time
+                )
+
+            return wl_data, station_id, None
+
+        except Exception as error:
+            LOGGER.warning(f"Erreur pour la station {station_id} : {error}")
+
+            return None, station_id, error
+
+    wl_combineds: dict[str, pd.DataFrame[schema.TimeSerieDataWithMetaDataSchema]] = {}
+    exceptions: dict[str, Exception] = {}
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        futures = [
+            executor.submit(
+                fetch_water_level_data,
+                station_id=station_id,
+                from_time=from_time,
+                to_time=to_time,
+                time_series_priority=time_series_priority,
+            )
+            for station_id, from_time, to_time, time_series_priority in tide_zonde_info.itertuples(
+                index=False
+            )
+        ]
+
+        for future in concurrent.futures.as_completed(futures):
+            try:
+                wl_data, station_id, exception = future.result()
+
+                if wl_data is not None:
+                    wl_combineds[station_id] = wl_data
+                else:
+                    exceptions[station_id] = exception
+
+            except Exception as error_future:
+                LOGGER.error(
+                    f"Erreur lors de la récupération des données de niveau d'eau : {error_future}"
+                )
+                exceptions["Unknown"] = error_future
+
+    return wl_combineds, exceptions
 
 
 # todo isTidal == False  -> interpolation linéaire plutôt que spline cubique ?
