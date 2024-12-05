@@ -258,5 +258,55 @@
         "restrn": "1"
       }
     ]
+  },
+   {
+    "id": "Tuktoyaktuk",
+    "axis_convention": "CARIS",
+    "navigation": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    ],
+    "motion": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    ],
+    "sounder": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    ],
+    "waterline": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "z": 0.0
+      }
+    ],
+    "ssp_applied": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "ssp": false
+      }
+    ],
+    "attribute": [
+      {
+        "time_stamp": "2021-09-25T00:00:00Z",
+        "pltfrm": "Tuktoyaktuk",
+        "sdghdw": "1:found by Echo sounder",
+        "poshdw": "10",
+        "bureau": "",
+        "restrn": "1"
+      }
+    ]
   }
 ]
