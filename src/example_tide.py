@@ -1,8 +1,8 @@
 from pathlib import Path
 
 import geopandas as gpd
-import pandas as pd
 from loguru import logger
+import pandas as pd
 
 from config.iwls_api_config import (
     get_api_config,
@@ -14,7 +14,8 @@ from export.export_utils import (
     export_geodataframe_to_geojson,
     export_dataframe_to_csv,
 )
-from schema import TimeSerieDataSchema, TideZoneSchema
+from schema import TideZoneStationSchema
+import schema.model_ids as schema_ids
 from tide.plot import plot_time_series_dataframe
 from tide.stations import (
     StationsHandlerABC,
@@ -23,20 +24,14 @@ from tide.stations import (
     TimeSeriesProtocol,
     EndpointTypeProtocol,
 )
-from tide.time_serie import (
-    get_water_level_data,
-)
-from tide.voronoi import (
-    get_voronoi_geodataframe,
-    get_time_series_by_station_id,
-    get_name_by_station_id,
-    get_code_by_station_id,
-)
+from tide import time_serie
+import tide.voronoi as voronoi
 
 
 LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station")
 
-EXPORT: Path = Path(__file__).parent.parent / "TideFileExport"
+ROOT: Path = Path(__file__).parent
+EXPORT_TIDE: Path = ROOT.parent / "TideFileExport"
 
 
 def get_iwls_environment(config: IWLSAPIConfig) -> iwls.APIEnvironment:
@@ -121,71 +116,132 @@ def create_random_points_geodataframe(numbers_points: int) -> gpd.GeoDataFrame:
     return gpd.GeoDataFrame(geometry=points, crs="EPSG:4326")
 
 
-def initialize_station_info() -> tuple:
+def get_time_series_for_station(
+    station_id: str, tide_zone: gpd.GeoDataFrame
+) -> list[iwls.TimeSeries]:
+    return [
+        iwls.TimeSeries.from_str(ts)
+        for ts in voronoi.get_time_series_by_station_id(
+            gdf_voronoi=tide_zone, station_id=station_id
+        )
+    ]
+
+
+def initialize_station_info(tide_zone: gpd.GeoDataFrame) -> pd.DataFrame:
     """
     Initialize the information of the stations for the example.
 
-    :return: (tuple) Information of the stations.
+    :param tide_zone: (gpd.GeoDataFrame) The tide zone.
+    :return: (pd.DataFrame) The information of the stations.
     """
-    station_rimouski: str = "5cebf1e03d0f4a073c4bbd92"
-    from_time_rimouski: str = "2024-10-01T12:00:00Z"
-    to_time_rimouski: str = "2024-10-29T13:00:00Z"
+    # station_rimouski: str = "5cebf1e03d0f4a073c4bbd92"
+    # from_time_rimouski: str = "2024-10-01T12:00:00Z"
+    # to_time_rimouski: str = "2024-10-29T13:00:00Z"
+    #
+    # station_winter = "5cebf1de3d0f4a073c4bba71"
+    # from_time_winter = "2024-08-01T8:00:00Z"
+    # to_time_winter = "2024-10-28T10:00:00Z"
+    #
+    # station_montreal = "5cebf1e03d0f4a073c4bbdd7"
+    # from_time_montreal = "2024-10-07T8:00:00Z"
+    # to_time_montreal = "2024-10-28T10:00:00Z"
+    #
+    # station_quebec = "5cebf1e23d0f4a073c4bc0f6"
+    # from_time_quebec = "2024-07-07T8:00:00Z"
+    # to_time_quebec = "2024-10-28T10:00:00Z"
+    #
+    # memphremagog = "5dd3064de0fdc4b9b4be664c"
+    # from_time_memphremagog: str = "2024-10-01T00:00:00Z"
+    # to_time_memphremagog: str = "2024-10-15T00:00:00Z"
+    #
+    # rsp = "5dd30650e0fdc4b9b4be6bee"
+    # from_time_rsp: str = "2024-09-29T00:00:00Z"
+    # to_time_rsp: str = "2024-11-15T00:00:00Z"
 
-    station_winter = "5cebf1de3d0f4a073c4bba71"
-    from_time_winter = "2024-08-01T8:00:00Z"
-    to_time_winter = "2024-10-28T10:00:00Z"
+    def create_station_info(station_id: str, from_time: str, to_time: str) -> tuple:
+        return (
+            station_id,
+            from_time,
+            to_time,
+            get_time_series_for_station(station_id, tide_zone),
+        )
 
-    station_montreal = "5cebf1e03d0f4a073c4bbdd7"
-    from_time_montreal = "2024-10-07T8:00:00Z"
-    to_time_montreal = "2024-10-28T10:00:00Z"
-
-    station_quebec = "5cebf1e23d0f4a073c4bc0f6"
-    from_time_quebec = "2024-07-07T8:00:00Z"
-    to_time_quebec = "2024-10-28T10:00:00Z"
-
-    memphremagog = "5dd3064de0fdc4b9b4be664c"
-    from_time_memphremagog: str = "2024-10-01T00:00:00Z"
-    to_time_memphremagog: str = "2024-10-15T00:00:00Z"
-
-    rsp = "5dd30650e0fdc4b9b4be6bee"
-    from_time_rsp: str = "2024-09-29T00:00:00Z"
-    to_time_rsp: str = "2024-11-15T00:00:00Z"
-
-    info_stations = (
-        (station_rimouski, from_time_rimouski, to_time_rimouski),
-        # (station_winter, from_time_winter, to_time_winter),
-        # (station_montreal, from_time_montreal, to_time_montreal),
-        # (station_quebec, from_time_quebec, to_time_quebec),
-        # (memphremagog, from_time_memphremagog, to_time_memphremagog),
-        # (rsp, from_time_rsp, to_time_rsp),
+    station_rimouski = create_station_info(
+        "5cebf1e03d0f4a073c4bbd92", "2024-10-01T12:00:00Z", "2024-10-29T13:00:00Z"
+    )
+    station_winter = create_station_info(
+        "5cebf1de3d0f4a073c4bba71", "2024-08-01T8:00:00Z", "2024-10-28T10:00:00Z"
+    )
+    station_montreal = create_station_info(
+        "5cebf1e03d0f4a073c4bbdd7", "2024-10-07T8:00:00Z", "2024-10-28T10:00:00Z"
+    )
+    station_quebec = create_station_info(
+        "5cebf1e23d0f4a073c4bc0f6", "2024-07-07T8:00:00Z", "2024-10-28T10:00:00Z"
+    )
+    memphremagog = create_station_info(
+        "5dd3064de0fdc4b9b4be664c", "2024-10-01T00:00:00Z", "2024-10-15T00:00:00Z"
+    )
+    rsp = create_station_info(
+        "5dd30650e0fdc4b9b4be6bee", "2024-09-29T00:00:00Z", "2024-11-15T00:00:00Z"
     )
 
-    return info_stations
+    # Convertissez la liste de tuples en DataFrame
+    tide_zone_info = pd.DataFrame(
+        [station_rimouski, station_winter, station_montreal, station_quebec, memphremagog, rsp],
+        columns=[
+            schema_ids.TIDE_ZONE_ID,
+            "min_time",
+            "max_time",
+            schema_ids.TIME_SERIES,
+        ],
+    )
+
+    return tide_zone_info
 
 
 def initialize_all_station_info(
-    gdf_voronoi: gpd.GeoDataFrame, stations: slice = slice(0, 10)
-) -> list[tuple]:
-    gdf_voronoi.sort_values(by="id", inplace=True)
-    stations = gdf_voronoi.iloc[stations]["id"].to_list()
+    tide_zone: gpd.GeoDataFrame, stations_index: slice = slice(0, 10)
+) -> pd.DataFrame:
+    tide_zone.sort_values(by="id", inplace=True)
+    stations = tide_zone.iloc[stations_index]["id"].to_list()
 
     from_time: str = "2024-10-01T00:00:00Z"
     to_time: str = "2024-10-15T00:00:00Z"
 
-    info_stations = [(station_id, from_time, to_time) for station_id in stations]
+    # Créez une liste de tuples contenant les informations des stations
+    tide_zone_info_list = [
+        (
+            station_id,
+            from_time,
+            to_time,
+            get_time_series_for_station(tide_zone=tide_zone, station_id=station_id),
+        )
+        for station_id in stations
+    ]
 
-    return info_stations
+    # Convertissez la liste de tuples en DataFrame
+    tide_zone_info = pd.DataFrame(
+        tide_zone_info_list,
+        columns=[
+            schema_ids.TIDE_ZONE_ID,
+            "min_time",
+            "max_time",
+            schema_ids.TIME_SERIES,
+        ],
+    )
+
+    return tide_zone_info
 
 
 def main():
-    if not EXPORT.exists():
-        EXPORT.mkdir()
+    if not EXPORT_TIDE.exists():
+        EXPORT_TIDE.mkdir()
 
     # Read the configuration file 'iwls_API_config.toml'
-    iwls_config: IWLSAPIConfig = get_api_config(config_file=CONFIG_FILE)
+    iwls_api_config: IWLSAPIConfig = get_api_config(config_file=CONFIG_FILE)
 
     # Get the environment of the API IWLS from the configuration file and the active profile
-    api_environment: iwls.APIEnvironment = get_iwls_environment(config=iwls_config)
+    api_environment: iwls.APIEnvironment = get_iwls_environment(config=iwls_api_config)
     # Get the API IWLS from the environment
     api: IWLSapiProtocol = get_api(environment=api_environment)
 
@@ -196,110 +252,83 @@ def main():
 
     # Get the Voronoi diagram of the stations. The stations are selected based on the priority of the time series.
     # The time series priority is defined in the configuration file.
-    gdf_voronoi: gpd.GeoDataFrame[TideZoneSchema] = get_voronoi_geodataframe(
-        stations_handler=stations_handler,
-        time_series=iwls_config.time_series.priority,
-        # excluded_stations=("5cebf1df3d0f4a073c4bbced", "5cebf1e23d0f4a073c4bc021"),
+    gdf_voronoi: gpd.GeoDataFrame[TideZoneStationSchema] = (
+        voronoi.get_voronoi_geodataframe(
+            stations_handler=stations_handler,
+            time_series=iwls_api_config.time_series.priority,
+            # excluded_stations=("5cebf1df3d0f4a073c4bbced", "5cebf1e23d0f4a073c4bc021"),
+        )
     )
 
     # Export the Voronoi diagram to a GeoJSON file
     export_geodataframe_to_geojson(
         geodataframe=gdf_voronoi,
-        output_path=EXPORT / "voronoi_merged.geojson",
+        output_path=EXPORT_TIDE / "voronoi_merged.geojson",
     )
 
     # Initialize the information of the stations for the example
-    # info_stations = initialize_station_info()
+    # tide_zonde_info = initialize_station_info()
     # Initialize the information of the stations for the example
-    info_stations = initialize_all_station_info(
-        gdf_voronoi=gdf_voronoi, stations=slice(0, 10)  #  1000, 1150)
+    tide_zonde_info = initialize_all_station_info(
+        tide_zone=gdf_voronoi, stations_index=slice(800, 1000)  #  1000, 1150)
     )
-
-    wl_combineds = []
-    titles = []
-    empty = []
-    exceptions = []
 
     # Get the water level data for each station
-    for station, from_time, to_time in info_stations:
-        # Get the time series priority for the station based on the Voronoi diagram
-        time_series_priority: list[iwls.TimeSeries] = [
-            iwls.TimeSeries.from_str(ts)
-            for ts in get_time_series_by_station_id(
-                gdf_voronoi=gdf_voronoi, station_id=station
-            )
-        ]
+    wl_combineds, wl_exceptions = time_serie.get_water_level_data_for_stations(
+        # Stations handler to retrieve the water level data.
+        stations_handler=stations_handler,
+        # Tide zone information for the water level data. Tide zone id, start time, end time and time series.
+        tide_zonde_info=tide_zonde_info,
+        # Quality control flag filter for the wlo time series.
+        wlo_qc_flag_filter=iwls_api_config.time_series.wlo_qc_flag_filter,
+        # Buffer time to add before and after the requested time range for the interpolation.
+        buffer_time=iwls_api_config.time_series.buffer_time,
+        # Maximum time gap allowed for the data. The maximum time gap is defined in the configuration file.
+        # If the gap is greater than this value, data from the next time series will be retrieved to fill
+        # the gaps. For example, if the time series priority is [wlo, wlp] and the maximum time gap is 1 hour, the
+        # data for the time series wlo will be retrieved first. If the gap between two consecutive
+        # data points is greater than 1 hour, the data for the time series wlp will be retrieved to fill the gap.
+        max_time_gap=iwls_api_config.time_series.max_time_gap,
+        # Threshold for the interpolation versus filling of the gaps in the data.
+        threshold_interpolation_filling=iwls_api_config.time_series.threshold_interpolation_filling,
+    )
 
-        LOGGER.info(
-            get_water_level_data_retrieval_message(
-                station, from_time, to_time, time_series_priority
-            )
-        )
-
-        # Get the water level data for the station
-        try:
-            wl_combined: pd.DataFrame[TimeSerieDataSchema] = get_water_level_data(
-                stations_handler=stations_handler,
-                station_id=station,
-                from_time=from_time,
-                to_time=to_time,
-                # Retrieve the data based on the priority of the time series.
-                time_series_priority=time_series_priority,
-                # Maximum time gap allowed for the data. The maximum time gap is defined in the configuration file.
-                # If the gap is greater than this value, data from the next time series will be retrieved to fill
-                # the gaps. For example, if the time series priority is [wlo, wlp] and the maximum time gap is 1 hour, the
-                # data for the time series wlo will be retrieved first. If the gap between two consecutive
-                # data points is greater than 1 hour, the data for the time series wlp will be retrieved to fill the gap.
-                max_time_gap=iwls_config.time_series.max_time_gap,
-                # Threshold for the interpolation versus filling of the gaps in the data.
-                threshold_interpolation_filling=iwls_config.time_series.threshold_interpolation_filling,
-                # Quality control flag filter for the wlo time series.
-                wlo_qc_flag_filter=iwls_config.time_series.wlo_qc_flag_filter,
-                # Buffer time to add before and after the requested time range for the interpolation.
-                buffer_time=iwls_config.time_series.buffer_time,
-            )
-        except Exception as e:
-            LOGGER.exception(f"Erreur pour la station {station} : {e}")
-            exceptions.append((station, e))
-            wl_combined = pd.DataFrame()
-
-        if wl_combined.empty:
-            empty.append(station)
-            continue
-        #     raise WaterLevelDataError(
-        #         station_id=station,
-        #         from_time=from_time,
-        #         to_time=to_time
-        #     )
-
-        LOGGER.info(wl_combined)
-
+    station_titles = []
+    for station_id, wl_dataframe in wl_combineds.items():
         station_title = (
-            f"{get_name_by_station_id(gdf_voronoi=gdf_voronoi, station_id=station)} "
-            f"({get_code_by_station_id(gdf_voronoi=gdf_voronoi, station_id=station)})"
+            f"{voronoi.get_name_by_station_id(gdf_voronoi=gdf_voronoi, station_id=station_id)} "
+            f"({voronoi.get_code_by_station_id(gdf_voronoi=gdf_voronoi, station_id=station_id)})"
+        )
+        station_titles.append(station_title)
+
+        output_path: Path = (
+            EXPORT_TIDE / f"{station_title} "
+            f"({wl_dataframe.attrs.get(schema_ids.START_TIME).strftime('%Y-%m-%d %H-%M-%S')} - "
+            f"{wl_dataframe.attrs.get(schema_ids.END_TIME).strftime('%Y-%m-%d %H-%M-%S')}).csv"
         )
 
         # Export the water level data to a CSV file
+        LOGGER.info(f"Enregistrement des données de niveaux d'eau : {output_path}.")
         export_dataframe_to_csv(
-            dataframe=wl_combined,
-            output_path=EXPORT / f"{station_title} ({from_time} - {to_time}).csv",
+            dataframe=wl_dataframe,
+            output_path=output_path,
         )
-
-        wl_combineds.append(wl_combined)
-        titles.append(station_title)
 
     # Plot the water level data for each station
     if wl_combineds:
+        output_path: Path = EXPORT_TIDE / "WaterLevel.html"
+        LOGGER.info(
+            f"Enregistrement des graphiques des données de niveaux d'eau [{station_titles}]: {output_path}."
+        )
         plot_time_series_dataframe(
-            dataframes=wl_combineds,
-            titles=titles,
+            dataframes=list(wl_combineds.values()),
+            titles=station_titles,
             show_plot=True,  # Show the plot in a web browser
-            output_path=EXPORT / "WaterLevel.html",  # Export the plot to an HTML file
+            output_path=output_path,  # Export the plot to an HTML file
         )
 
-    LOGGER.debug(f"Stations vides : {empty}.")
-
-    LOGGER.debug(f"Exceptions : {exceptions}.")
+    LOGGER.debug(wl_combineds)
+    LOGGER.debug(f"Exceptions : {wl_exceptions}.")
 
     # Create a GeoDataFrame with random points
     # data: gpd.GeoDataFrame = create_random_points_geodataframe(1_000_000)
