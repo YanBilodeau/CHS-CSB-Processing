@@ -97,7 +97,7 @@ class DataParserOFM(DataParserABC):
         data: gpd.GeoDataFrame[schema.DataLoggerSchema] = data.rename(
             columns={
                 ids.TIME_OFM: schema_ids.TIME_UTC,
-                ids.DEPTH_OFM: schema_ids.DEPTH_METER,
+                ids.DEPTH_OFM: schema_ids.DEPTH_RAW_METER,
                 ids.LONGITUDE_OFM: schema_ids.LONGITUDE_WGS84,
                 ids.LATITUDE_OFM: schema_ids.LATITUDE_WGS84,
             }

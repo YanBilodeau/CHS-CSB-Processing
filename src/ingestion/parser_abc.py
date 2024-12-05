@@ -156,7 +156,7 @@ class DataParserABC(ABC):
             schema_ids.TIME_UTC,
             schema_ids.LATITUDE_WGS84,
             schema_ids.LONGITUDE_WGS84,
-            schema_ids.DEPTH_METER,
+            schema_ids.DEPTH_RAW_METER,
         ]
 
         LOGGER.debug("Suppression des doublons.")

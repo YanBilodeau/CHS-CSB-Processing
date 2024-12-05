@@ -106,7 +106,7 @@ class DataParserLowrance(DataParserABC):
         data: gpd.GeoDataFrame[schema.DataLoggerSchema] = data.rename(
             columns={
                 ids.TIME_LOWRANCE: schema_ids.TIME_UTC,
-                ids.DEPTH_LOWRANCE: schema_ids.DEPTH_METER,
+                ids.DEPTH_LOWRANCE: schema_ids.DEPTH_RAW_METER,
                 ids.LONGITUDE_LOWRANCE: schema_ids.LONGITUDE_WGS84,
                 ids.LATITUDE_LOWRANCE: schema_ids.LATITUDE_WGS84,
             }
@@ -146,9 +146,9 @@ class DataParserLowrance(DataParserABC):
         :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(
-            f"Conversion des pieds en mètres de la colonne '{schema_ids.DEPTH_METER}'."
+            f"Conversion des pieds en mètres de la colonne '{schema_ids.DEPTH_RAW_METER}'."
         )
-        data[schema_ids.DEPTH_METER] = data[schema_ids.DEPTH_METER] * 0.3048
+        data[schema_ids.DEPTH_RAW_METER] = data[schema_ids.DEPTH_RAW_METER] * 0.3048
 
         return data
 
