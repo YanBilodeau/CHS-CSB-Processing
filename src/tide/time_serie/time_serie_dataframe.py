@@ -150,9 +150,12 @@ def identify_interpolation_and_fill_gaps(
     :return: Périodes de données manquantes à interpoler et à remplir.
     :rtype: tuple[pd.DataFrame[schema.TimeSerieDataSchema], pd.DataFrame[schema.TimeSerieDataSchema]]
     """
-    gaps_to_interpolate: pd.DataFrame[schema.WaterLevelSerieDataSchema] = gaps_dataframe[
-        gaps_dataframe["data_time_gap"] < pd.Timedelta(threshold_interpolation_filling)
-    ]
+    gaps_to_interpolate: pd.DataFrame[schema.WaterLevelSerieDataSchema] = (
+        gaps_dataframe[
+            gaps_dataframe["data_time_gap"]
+            < pd.Timedelta(threshold_interpolation_filling)
+        ]
+    )
     gaps_to_interpolate.attrs[schema_ids.NAME_METADATA] = "à interpoler"
 
     gaps_to_fill: pd.DataFrame[schema.WaterLevelSerieDataSchema] = gaps_dataframe[
@@ -389,10 +392,12 @@ def process_gaps_to_interpolate(
 
     LOGGER.debug(get_data_gaps_message(gaps=gaps_to_interpolate))
 
-    wl_dataframe: pd.DataFrame[schema.WaterLevelSerieDataSchema] = interpolate_data_gaps(
-        gaps_dataframe=gaps_to_interpolate,
-        wl_dataframe=wl_dataframe,
-        max_time_gap=max_time_gap,
+    wl_dataframe: pd.DataFrame[schema.WaterLevelSerieDataSchema] = (
+        interpolate_data_gaps(
+            gaps_dataframe=gaps_to_interpolate,
+            wl_dataframe=wl_dataframe,
+            max_time_gap=max_time_gap,
+        )
     )
 
     return wl_dataframe
@@ -483,8 +488,10 @@ def fill_data_gaps(
     wl_combined_dataframe: pd.DataFrame[schema.WaterLevelSerieDataSchema] = pd.concat(
         [wl_combined_dataframe] + gaps_dataframe_list
     )
-    wl_combined_dataframe: pd.DataFrame[schema.WaterLevelSerieDataSchema] = merge_dataframes(
-        wl_combined_dataframe=wl_combined_dataframe, wl_dataframe=wl_dataframe
+    wl_combined_dataframe: pd.DataFrame[schema.WaterLevelSerieDataSchema] = (
+        merge_dataframes(
+            wl_combined_dataframe=wl_combined_dataframe, wl_dataframe=wl_dataframe
+        )
     )
 
     return wl_combined_dataframe
@@ -507,10 +514,12 @@ def process_gaps_to_fill(
     :return: Données de niveau d'eau combinées.
     :rtype: pd.DataFrame[schema.TimeSerieDataSchema]
     """
-    wl_combined_dataframe: pd.DataFrame[schema.WaterLevelSerieDataSchema] = fill_data_gaps(
-        gaps_dataframe=gaps_dataframe,
-        wl_dataframe=wl_dataframe,
-        wl_combined_dataframe=wl_combined_dataframe,
+    wl_combined_dataframe: pd.DataFrame[schema.WaterLevelSerieDataSchema] = (
+        fill_data_gaps(
+            gaps_dataframe=gaps_dataframe,
+            wl_dataframe=wl_dataframe,
+            wl_combined_dataframe=wl_combined_dataframe,
+        )
     )
     reset_and_sort_index(wl_dataframe=wl_combined_dataframe, drop=True)
 
@@ -692,7 +701,9 @@ def get_empty_dataframe() -> pd.DataFrame:
     :return: DataFrame vide.
     :rtype: pd.DataFrame
     """
-    return pd.DataFrame(columns=list(schema.WaterLevelSerieDataSchema.__annotations__.keys()))
+    return pd.DataFrame(
+        columns=list(schema.WaterLevelSerieDataSchema.__annotations__.keys())
+    )
 
 
 def get_datetime_from_iso8601(date: str) -> datetime:
@@ -855,14 +866,16 @@ def get_water_level_data(
     wl_combined: pd.DataFrame = get_empty_dataframe()
 
     for index, time_serie in enumerate(time_series_priority):
-        wl_data: pd.DataFrame[schema.WaterLevelSerieDataSchema] = get_water_level_time_serie(
-            stations_handler=stations_handler,
-            station_id=station_id,
-            from_time=from_time,
-            to_time=to_time,
-            time_serie_code=time_serie,
-            buffer_time=buffer_time,
-            wlo_qc_flag_filter=wlo_qc_flag_filter,
+        wl_data: pd.DataFrame[schema.WaterLevelSerieDataSchema] = (
+            get_water_level_time_serie(
+                stations_handler=stations_handler,
+                station_id=station_id,
+                from_time=from_time,
+                to_time=to_time,
+                time_serie_code=time_serie,
+                buffer_time=buffer_time,
+                wlo_qc_flag_filter=wlo_qc_flag_filter,
+            )
         )
 
         if wl_data is None:
@@ -898,15 +911,17 @@ def get_water_level_data(
             wl_combined = wl_data if wl_combined.empty else wl_combined
             break
 
-        wl_data: pd.DataFrame[schema.WaterLevelSerieDataSchema] = process_gaps_to_interpolate(
-            wl_dataframe=wl_data,
-            # Important de rechercher les données manquantes dans wl_data pour les interpoler
-            max_time_gap=max_time_gap,
-            threshold_interpolation_filling=get_threshold_interpolation_filling_value(
-                time_serie=time_serie,
-                threshold_interpolation_filling=threshold_interpolation_filling,
-                time_series_excluded_from_interpolation=time_series_excluded_from_interpolation,
-            ),
+        wl_data: pd.DataFrame[schema.WaterLevelSerieDataSchema] = (
+            process_gaps_to_interpolate(
+                wl_dataframe=wl_data,
+                # Important de rechercher les données manquantes dans wl_data pour les interpoler
+                max_time_gap=max_time_gap,
+                threshold_interpolation_filling=get_threshold_interpolation_filling_value(
+                    time_serie=time_serie,
+                    threshold_interpolation_filling=threshold_interpolation_filling,
+                    time_series_excluded_from_interpolation=time_series_excluded_from_interpolation,
+                ),
+            )
         )
 
         # todo : identifier les données manquantes après interpolation dans le cas qu'il y ait un pas de trou à remplir,
@@ -1021,7 +1036,9 @@ def get_water_level_data_for_stations(
 
             return None, station_id, error
 
-    wl_combineds: dict[str, pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]] = {}
+    wl_combineds: dict[
+        str, pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]
+    ] = {}
     exceptions: dict[str, Exception] = {}
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
