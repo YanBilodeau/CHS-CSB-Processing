@@ -122,7 +122,14 @@ def export_geodataframe_to_csv(
     :param to_epsg: Le code EPSG de la projection.
     :type to_epsg: Optional[int]
     """
-    export_geodataframe(gdf, "CSV", output_path, to_epsg=to_epsg)
+    # Transformer le système de coordonnées si nécessaire
+    transform_geodataframe_crs(gdf, to_epsg)
+
+    # Convertir le GeoDataFrame en DataFrame en supprimant la colonne de géométrie
+    df = gdf.drop(columns=gdf.geometry.name)
+
+    # Sauvegarder le DataFrame en CSV
+    export_dataframe_to_csv(df, output_path)
 
 
 def export_dataframe_to_csv(dataframe: pd.DataFrame, output_path: Path) -> None:
