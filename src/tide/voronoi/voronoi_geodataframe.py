@@ -4,6 +4,7 @@ Module qui contient les fonctions pour manipuler les GeoDataFrame des polygones 
 Les fonctions permettent de créer les polygones de Voronoi, de les joindre avec les stations et de fusionner les attributs.
 """
 
+from multiprocessing import cpu_count
 from typing import Optional, Collection
 
 import dask_geopandas as dgpd
@@ -251,7 +252,7 @@ def get_polygon_by_geometry(
     )
 
     dask_gdf_voronoi: dgpd.GeoDataFrame[schema.TideZoneStationSchema] = (
-        dgpd.from_geopandas(gdf_voronoi, npartitions=12)
+        dgpd.from_geopandas(gdf_voronoi, npartitions=cpu_count())
     )
     dask_geometry: dgpd.GeoDataFrame = dgpd.from_geopandas(geometry, npartitions=12)
 
