@@ -251,11 +251,11 @@ def main():
     )
 
     # Initialize the information of the stations for the example
-    tide_zonde_info = initialize_station_info(tide_zone=gdf_voronoi)
+    # tide_zonde_info = initialize_station_info(tide_zone=gdf_voronoi)
     # Initialize the information of the stations for the example
-    # tide_zonde_info = initialize_all_station_info(
-    #     tide_zone=gdf_voronoi, stations_index=slice(800, 1000)  #  1000, 1150)
-    # )
+    tide_zonde_info = initialize_all_station_info(
+        tide_zone=gdf_voronoi, stations_index=slice(600, 800)
+    )
 
     # Get the water level data for each station
     wl_combineds, wl_exceptions = time_serie.get_water_level_data_for_stations(

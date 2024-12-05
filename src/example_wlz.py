@@ -1,25 +1,35 @@
+from datetime import datetime
 from pathlib import Path
+from typing import Optional
 
 import geopandas as gpd
 from loguru import logger
+import pandas as pd
 
 from config import data_config as data_config
 from config import iwls_api_config as iwls_config
-from export.export_utils import export_geodataframe_to_geojson
+import export.export_utils as export
 from ingestion import factory_parser
 import iwls_api_request as iwls
+from logger.loguru_config import configure_logger
 import schema
 import schema.model_ids as schema_ids
+from tide.plot import plot_time_series_dataframe
 import tide.stations as stations
 import tide.voronoi as voronoi
+import tide.time_serie as time_serie
 import transformation.data_cleaning as cleaner
+import transformation.georeference as georeference
+import vessel.vessel_config_json_manager as vessel
 
 
-LOGGER = logger.bind(name="Example.WaterLevelZones")
+LOGGER = logger.bind(name="CSB-Processing.Flow")
 
 ROOT: Path = Path(__file__).parent
 EXPORT_DATA: Path = ROOT.parent / "DataLogger"
 EXPORT_TIDE: Path = ROOT.parent / "TideFileExport"
+LOG: Path = ROOT.parent / "Log"
+VESSEL_JSON_PATH: Path = ROOT / "vessel" / "TCSB_VESSELSLIST.json"
 
 
 def get_ofm_files() -> list[Path]:
@@ -45,7 +55,8 @@ def get_dcdb_files() -> list[Path]:
 
 
 def get_lowrance_files() -> list[Path]:
-    return [ROOT / "ingestion" / "Lowrance" / "Sonar_2022-08-05_16.04.31-route.csv"]
+    source_path = Path("D:\Tuktoyaktuk\export")
+    return list(source_path.glob("*.csv"))
 
 
 def get_blackbox_files() -> list[Path]:
@@ -108,7 +119,12 @@ def get_stations_handler(
     return stations.get_stations_factory(enpoint_type=endpoint_type)(api=api)
 
 
-def add_tide_zone_to_geodataframe(
+@schema.validate_schemas(
+    data_geodataframe=schema.DataLoggerSchema,
+    tide_zone=schema.TideZoneProtocolSchema,
+    return_schema=schema.DataLoggerWithTideZoneSchema,
+)
+def add_tide_zone_id_to_geodataframe(
     data_geodataframe: gpd.GeoDataFrame,
     tide_zone: gpd.GeoDataFrame,
 ) -> gpd.GeoDataFrame:
@@ -118,15 +134,17 @@ def add_tide_zone_to_geodataframe(
     :param data_geodataframe: Les données des DataLoggers.
     :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
     :param tide_zone: Les zones de marées.
-    :type tide_zone: gpd.GeoDataFrame[schema.TideZoneSchema]
+    :type tide_zone: gpd.GeoDataFrame[schema.TideZoneProtocolSchema]
     :return: Les données des DataLoggers avec les zones de marées.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
+    LOGGER.debug(f"Récupération des zones de marées selon l'extension des données.")
+
     columns: list[str] = [
         schema_ids.TIME_UTC,
         schema_ids.LATITUDE_WGS84,
         schema_ids.LONGITUDE_WGS84,
-        schema_ids.DEPTH_METER,
+        schema_ids.DEPTH_RAW_METER,
         schema_ids.GEOMETRY,
         schema_ids.ID,
     ]
@@ -142,15 +160,152 @@ def add_tide_zone_to_geodataframe(
         ].rename(columns={schema_ids.ID: schema_ids.TIDE_ZONE_ID})
     )
 
-    schema.validate_schema(gdf_data_time_zone, schema.DataLoggerWithTideZoneSchema)
-
     return gdf_data_time_zone
 
+    # todo Identification des périodes en enlevant les trous de x temps
 
-def get_time_tide_zone(): ...
+
+@schema.validate_schemas(
+    data_geodataframe=schema.DataLoggerWithTideZoneSchema,
+    tide_zone=schema.TideZoneProtocolSchema,
+    return_schema=schema.TideZoneInfoSchema,
+)
+def get_intersected_tide_zone_info(
+    data_geodataframe: gpd.GeoDataFrame,
+    tide_zone: gpd.GeoDataFrame,
+) -> pd.DataFrame:
+    """
+    Récupère les zones de marées et le temps de début et de fin pour les données.
+
+    :param data_geodataframe: Les données des DataLoggers.
+    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
+    param tide_zone: Les zones de marées.
+    :type tide_zone: gpd.GeoDataFrame[schema.TideZoneProtocolSchema]
+    :return: Les zones de marées et le temps de début et de fin pour les données.
+    :rtype: pd.DataFrame
+    """
+
+    def get_time_series_for_station(station_id: str) -> list[iwls.TimeSeries]:
+        return [
+            iwls.TimeSeries.from_str(ts)
+            for ts in voronoi.get_time_series_by_station_id(
+                gdf_voronoi=tide_zone, station_id=station_id
+            )
+        ]
+
+    LOGGER.debug(
+        f"Récupération du temps de début et de fin pour les données selon les zones de marées."
+    )
+
+    tide_zone_info: pd.DataFrame = (
+        data_geodataframe.groupby(schema_ids.TIDE_ZONE_ID)[schema_ids.TIME_UTC]
+        .agg(min_time="min", max_time="max")
+        .reset_index()
+    )
+    tide_zone_info[schema_ids.TIME_SERIES] = tide_zone_info[
+        schema_ids.TIDE_ZONE_ID
+    ].apply(get_time_series_for_station)
+
+    return tide_zone_info
+
+
+def export_water_level_dataframe(
+    station_title: str, wl_dataframe: pd.DataFrame, export_tide_path: Path
+) -> None:
+    """
+    Exporte les données de niveaux d'eau pour une station dans un fichier CSV.
+
+    :param station_title: Titre de la station.
+    :type station_title: str
+    :param wl_dataframe: DataFrame contenant les données de niveaux d'eau.
+    :type wl_dataframe: pd.DataFrame
+    :param export_tide_path: Chemin du répertoire d'exportation des fichiers CSV.
+    :type export_tide_path: Path
+    """
+    output_path: Path = (
+        export_tide_path / f"{station_title} "
+        f"({wl_dataframe.attrs.get(schema_ids.START_TIME).strftime('%Y-%m-%d %H-%M-%S')} - "
+        f"{wl_dataframe.attrs.get(schema_ids.END_TIME).strftime('%Y-%m-%d %H-%M-%S')}).csv"
+    )
+
+    # Export the water level data to a CSV file
+    LOGGER.info(f"Enregistrement des données de niveaux d'eau : {output_path}.")
+    export.export_dataframe_to_csv(
+        dataframe=wl_dataframe,
+        output_path=output_path,
+    )
+
+
+def export_station_water_levels(
+    wl_combineds: dict[str, pd.DataFrame],
+    gdf_voronoi: gpd.GeoDataFrame,
+    export_tide_path: Optional[Path] = None,
+) -> list[str]:
+    """
+    Exporte les données de niveaux d'eau pour chaque station dans des fichiers CSV.
+
+    :param wl_combineds: Dictionnaire contenant les DataFrames des niveaux d'eau par station.
+    :type wl_combineds: dict[str, pd.DataFrame]
+    :param gdf_voronoi: GeoDataFrame contenant les informations des stations.
+    :type gdf_voronoi: gpd.GeoDataFrame
+    :param export_tide_path: Chemin du répertoire d'exportation des fichiers CSV.
+    :type export_tide_path: Optional[Path]
+    :return: Liste des titres des stations.
+    :rtype: list[str]
+    """
+    station_titles = []
+
+    for station_id, wl_dataframe in wl_combineds.items():
+        station_title = (
+            f"{voronoi.get_name_by_station_id(gdf_voronoi=gdf_voronoi, station_id=station_id)} "
+            f"({voronoi.get_code_by_station_id(gdf_voronoi=gdf_voronoi, station_id=station_id)})"
+        )
+        station_titles.append(station_title)
+
+        if export_tide_path:
+            export_water_level_dataframe(
+                station_title=station_title,
+                wl_dataframe=wl_dataframe,
+                export_tide_path=export_tide_path,
+            )
+
+    return station_titles
+
+
+def plot_water_level_data(
+    wl_combineds: dict[str, pd.DataFrame],
+    station_titles: list[str],
+    export_path: Path,
+) -> None:
+    """
+    Trace les données de niveaux d'eau pour chaque station et les enregistre dans un fichier HTML.
+
+    :param wl_combineds: Dictionnaire contenant les DataFrames des niveaux d'eau par station.
+    :type wl_combineds: dict[str, pd.DataFrame]
+    :param station_titles: Liste des titres des stations.
+    :type station_titles: list[str]
+    :param export_path: Chemin du répertoire d'exportation des fichiers HTML.
+    :type export_path: Path
+    """
+    LOGGER.info(
+        f"Enregistrement des graphiques des données de niveaux d'eau [{station_titles}]: {export_path}."
+    )
+
+    plot_time_series_dataframe(
+        dataframes=list(wl_combineds.values()),
+        titles=station_titles,
+        show_plot=True,  # Afficher le graphique dans un navigateur web
+        output_path=export_path,  # Exporter le graphique dans un fichier HTML
+    )
 
 
 def main() -> None:
+    configure_logger(
+        LOG / f"{datetime.now().strftime('%Y-%m-%d')}_CSB-Processing.log",
+        std_level="DEBUG",
+        log_file_level="DEBUG",
+    )
+
     # Create the directories if they do not exist
     if not EXPORT_DATA.exists():
         EXPORT_DATA.mkdir()
@@ -166,12 +321,12 @@ def main() -> None:
     )
 
     # Get the files to parse
-    files: list[Path] = get_ofm_files()
-    # files = get_dcdb_files()
-    # files = get_lowrance_files()
-    # files = get_blackbox_files()
-    # files = get_actisense_files()
-    # files = (
+    # files: list[Path] = get_ofm_files()
+    # files: list[Path] = get_dcdb_files()
+    files: list[Path] = get_lowrance_files()
+    # files: list[Path] = get_blackbox_files()
+    # files: list[Path] = get_actisense_files()
+    # files: list[Path] = (
     #     get_ofm_files()
     #     + get_dcdb_files()
     #     + get_lowrance_files()
@@ -180,23 +335,39 @@ def main() -> None:
     # )
 
     # Get the parser and the parsed data
+    LOGGER.info(f"Récupération des données brutes des fichiers : {files}.")
     parser_files: factory_parser.ParserFiles = factory_parser.get_files_parser(
         files=files
     )
     LOGGER.debug(parser_files)
 
-    # Clean the data
     data: gpd.GeoDataFrame[schema.DataLoggerSchema] = parser_files.parser.from_files(
         files=parser_files.files
     )
+
+    # Clean the data
+    LOGGER.info(f"Nettoyage et filtrage des données.")
     data = cleaner.clean_data(data, data_filter=data_filter_config)
+
+    LOGGER.success(f"{len(data)} sondes valides récupérées.")
+
     # Export the parsed data to a GeoJSON file
-    export_geodataframe_to_geojson(data, EXPORT_DATA / "ParsedData.geojson")
+    # export_geodataframe_to_geojson(data, EXPORT_DATA / "ParsedData.geojson")
 
     # Get the environment of the API IWLS from the configuration file and the active profile
     api_environment: iwls.APIEnvironment = get_iwls_environment(config=iwls_api_config)
     # Get the API IWLS from the environment
     api: stations.IWLSapiProtocol = get_api(environment=api_environment)
+
+    # Get the vessel configuration
+    vessel_config_manager = vessel.VesselConfigJsonManager(
+        json_config_path=VESSEL_JSON_PATH
+    )
+    vessel_name: str = "Tuktoyaktuk"
+    LOGGER.info(f"Récupération de la configuration du navire {vessel_name}.")
+    tuktoyaktuk_vessel: vessel.VesselConfig = vessel_config_manager.get_vessel_config(
+        vessel_name
+    )
 
     # Get the handler of the stations
     stations_handler: stations.StationsHandlerABC = get_stations_handler(
@@ -205,30 +376,91 @@ def main() -> None:
 
     # Get the Voronoi diagram of the stations. The stations are selected based on the priority of the time series.
     # The time series priority is defined in the configuration file.
-    gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneSchema] = (
+    LOGGER.info("Récupération du diagramme de Voronoi.")
+    gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema] = (
         voronoi.get_voronoi_geodataframe(
             stations_handler=stations_handler,
             time_series=iwls_api_config.time_series.priority,
-            # excluded_stations=("5cebf1df3d0f4a073c4bbced", "5cebf1e23d0f4a073c4bc021"),
         )
     )
     # Export the Voronoi diagram to a GeoJSON file
-    export_geodataframe_to_geojson(
+    export.export_geodataframe_to_geojson(
         geodataframe=gdf_voronoi,
         output_path=EXPORT_TIDE / "voronoi_merged.geojson",
     )
 
     # Add the tide zone to the data
-    gdf_data_tide_zone: gpd.GeoDataFrame = add_tide_zone_to_geodataframe(
+    gdf_data_tide_zone: gpd.GeoDataFrame = add_tide_zone_id_to_geodataframe(
         data_geodataframe=data, tide_zone=gdf_voronoi
     )
-    # Export the data with the tide zone to a GeoJSON file
-    export_geodataframe_to_geojson(
+
+    # Export the data with the tide zone
+    export.export_geodataframe_to_geojson(
         geodataframe=gdf_data_tide_zone,
         output_path=EXPORT_DATA / "ParsedDataWithTideZone.geojson",
     )
-    print(gdf_data_tide_zone)
-    print(gdf_data_tide_zone.columns)
+    export.export_geodataframe_to_gpkg(
+        gdf_data_tide_zone, EXPORT_DATA / "ParsedDataWithTideZone.gpkg"
+    )
+
+    # Get the time and tide zone
+    LOGGER.info(
+        "Récupération des information sur les zones de marées qui intersetent les données brutes."
+    )
+    tide_zonde_info: pd.DataFrame = get_intersected_tide_zone_info(
+        data_geodataframe=gdf_data_tide_zone,
+        tide_zone=gdf_voronoi,
+    )
+    for zone, min_time, max_time, ts in tide_zonde_info.itertuples(index=False):
+        LOGGER.info(
+            f"Zone de marée {zone} : temps minimum - {min_time}, temps maximum - {max_time}, séries temporelles - {ts}."
+        )
+
+    # Get the water level data for each station
+    wl_combineds, wl_exceptions = time_serie.get_water_level_data_for_stations(
+        # Stations handler to retrieve the water level data.
+        stations_handler=stations_handler,
+        # Tide zone information for the water level data. Tide zone id, start time, end time and time series.
+        tide_zonde_info=tide_zonde_info,
+        # Quality control flag filter for the wlo time series.
+        wlo_qc_flag_filter=iwls_api_config.time_series.wlo_qc_flag_filter,
+        # Buffer time to add before and after the requested time range for the interpolation.
+        buffer_time=iwls_api_config.time_series.buffer_time,
+        # Maximum time gap allowed for the data. The maximum time gap is defined in the configuration file.
+        # If the gap is greater than this value, data from the next time series will be retrieved to fill
+        # the gaps. For example, if the time series priority is [wlo, wlp] and the maximum time gap is 1 hour, the
+        # data for the time series wlo will be retrieved first. If the gap between two consecutive
+        # data points is greater than 1 hour, the data for the time series wlp will be retrieved to fill the gap.
+        max_time_gap=iwls_api_config.time_series.max_time_gap,
+        # Threshold for the interpolation versus filling of the gaps in the data.
+        threshold_interpolation_filling=iwls_api_config.time_series.threshold_interpolation_filling,
+    )
+
+    # Export the water level data for each station
+    station_titles: list[str] = export_station_water_levels(
+        wl_combineds=wl_combineds,
+        gdf_voronoi=gdf_voronoi,
+        export_tide_path=EXPORT_TIDE,
+    )
+
+    # Plot the water level data for each station
+    if wl_combineds:
+        plot_water_level_data(
+            wl_combineds=wl_combineds,
+            station_titles=station_titles,
+            export_path=EXPORT_TIDE / "WaterLevel.html",
+        )
+
+    LOGGER.debug(f"Exceptions : {wl_exceptions}.")
+    LOGGER.debug(wl_combineds)
+
+    processed_data: gpd.GeoDataFrame[schema.DataLoggerProcessedSchema] = (
+        georeference.georeference_bathymetry(
+            data=gdf_data_tide_zone, water_level=wl_combineds
+        )
+    )
+
+    LOGGER.debug(processed_data)
 
 
 if __name__ == "__main__":
