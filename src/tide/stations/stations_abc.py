@@ -386,7 +386,7 @@ class StationsHandlerABC(ABC):
 
         return data_dataframe
 
-    @validate_schemas(return_schema=schema.TimeSerieDataSchema)
+    @validate_schemas(return_schema=schema.WaterLevelSerieDataSchema)
     def get_time_series_dataframe(
         self,
         station: str,
@@ -416,7 +416,7 @@ class StationsHandlerABC(ABC):
         :param wlo_qc_flag_filter: Liste des flags de qualité à filtrer pour la série temporelle WLO.
         :type wlo_qc_flag_filter: Collection[str] | None
         :return: Données des séries temporelles sous forme de DataFrame.
-        :rtype: pd.DataFrame[schema.TimeSerieDataSchema]
+        :rtype: pd.DataFrame[schema.WaterLevelSerieDataSchema]
         """
         LOGGER.debug(
             f"Récupération des données {time_serie_code} pour la station '{station}' du {from_time} au {to_time} "
@@ -447,14 +447,14 @@ class StationsHandlerABC(ABC):
                 f"entre le {from_time} et le {to_time}."
             )
             return pd.DataFrame(
-                columns=list(schema.TimeSerieDataSchema.__annotations__.keys())
+                columns=list(schema.WaterLevelSerieDataSchema.__annotations__.keys())
             )
 
         data_list: list[dict] = self.create_data_list(
             data=data.data, time_serie_code=time_serie_code  # type: ignore
         )
 
-        data_dataframe: pd.DataFrame[schema.TimeSerieDataSchema] = pd.DataFrame(
+        data_dataframe: pd.DataFrame[schema.WaterLevelSerieDataSchema] = pd.DataFrame(
             data_list
         ).astype({schema_ids.TIME_SERIE_CODE: pd.StringDtype()})
 

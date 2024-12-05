@@ -51,7 +51,7 @@ def exclude_time_serie_retry(retry_state: RetryCallState) -> pd.DataFrame:
     :param retry_state: État de la tentative.
     :type retry_state: RetryCallState
     :return: Données de niveau d'eau combinées.
-    :rtype: pd.DataFrame[schema.TimeSerieDataWithMetaDataSchema]
+    :rtype: pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]
     """
     from .time_serie_dataframe import get_water_level_data
 

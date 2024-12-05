@@ -59,7 +59,7 @@ class DataLoggerProcessedSchema(DataLoggerSchema):
         coerce = True
 
 
-class TimeSerieDataSchema(pa.DataFrameModel):
+class WaterLevelSerieDataSchema(pa.DataFrameModel):
     """
     Schéma des séries temporelles.
     """
@@ -72,7 +72,7 @@ class TimeSerieDataSchema(pa.DataFrameModel):
         coerce = True
 
 
-class TimeSerieDataWithMetaDataSchema(TimeSerieDataSchema):
+class WaterLevelSerieDataWithMetaDataSchema(WaterLevelSerieDataSchema):
     """
     Schéma des séries temporelles avec les métadonnées.
     """
