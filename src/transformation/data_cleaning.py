@@ -46,15 +46,15 @@ def clean_depth(
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
     LOGGER.debug(
-        f"Nettoyage des données de profondeur {[schema_ids.DEPTH_METER]}. "
+        f"Nettoyage des données de profondeur {[schema_ids.DEPTH_RAW_METER]}. "
         f"Profondeur minimale : {min_depth}, profondeur maximale : {max_depth}."
     )
 
     invalid_depths: pd.Series = (
-        geodataframe[schema_ids.DEPTH_METER].isna()
-        | (geodataframe[schema_ids.DEPTH_METER] <= min_depth)
+        geodataframe[schema_ids.DEPTH_RAW_METER].isna()
+        | (geodataframe[schema_ids.DEPTH_RAW_METER] <= min_depth)
         | (
-            geodataframe[schema_ids.DEPTH_METER] > max_depth
+            geodataframe[schema_ids.DEPTH_RAW_METER] > max_depth
             if max_depth is not None
             else False
         )
