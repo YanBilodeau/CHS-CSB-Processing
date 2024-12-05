@@ -51,9 +51,9 @@ class DataLoggerProcessedSchema(DataLoggerSchema):
     Schéma des données des DataLoggers traitées.
     """
 
-    Depth_processed_meter: Series[pd.Float64Dtype()]
-    Water_level_meter: Series[pd.Float64Dtype()]
-    Uncertainty: Series[pd.Float64Dtype()]
+    Depth_processed_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
+    Water_level_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
+    Uncertainty: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
 
     class Config:
         coerce = True
