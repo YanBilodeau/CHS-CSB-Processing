@@ -178,19 +178,19 @@ class TideZoneInfoSchema(pa.DataFrameModel):
 
 
 def validate_schema(
-    df: gpd.GeoDataFrame | DataFrame, schema: Type[pa.DataFrameModel]
+    data: gpd.GeoDataFrame | DataFrame, schema: Type[pa.DataFrameModel]
 ) -> None:
     """
     Valide le schéma des stations.
 
-    :param df: Les stations.
-    :type df: gpd.GeoDataFrame | DataFrame
+    :param data: Les stations.
+    :type data: gpd.GeoDataFrame | DataFrame
     :param schema: Le schéma.
     :type schema: Type[pa.DataFrameModel]
     """
     try:
         LOGGER.debug(f"Validation du schéma {schema}.")
-        schema.validate(df)
+        schema.validate(data)
 
     except pa.errors.SchemaError as error:
         LOGGER.error(f"Erreur de validation du schéma {schema} : {error}.")
