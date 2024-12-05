@@ -27,7 +27,7 @@ class DataLoggerSchema(pa.DataFrameModel):
 
     Longitude_WGS84: Series[pd.Float64Dtype()]
     Latitude_WGS84: Series[pd.Float64Dtype()]
-    Depth_meter: Series[pd.Float64Dtype()]
+    Depth_raw_meter: Series[pd.Float64Dtype()]
     Time_UTC: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
     geometry: GeoSeries
 
@@ -46,22 +46,17 @@ class DataLoggerWithTideZoneSchema(DataLoggerSchema):
         coerce = True
 
 
-class StationsSchema(pa.DataFrameModel):
+class DataLoggerProcessedSchema(DataLoggerSchema):
     """
-    Schéma des stations.
+    Schéma des données des DataLoggers traitées.
     """
 
-    id: Series[str]
-    code: Series[str]
-    name: Series[str]
-    time_series: Series[object]
-    is_tidal: Series[object] = pa.Field(
-        nullable=True
-    )  # On utilise object pour accepter les booléens et les None
-    geometry: GeoSeries
+    Depth_processed_meter: Series[pd.Float64Dtype()]
+    Water_level_meter: Series[pd.Float64Dtype()]
+    Uncertainty: Series[pd.Float64Dtype()]
 
-    # class Config:
-    #     coerce = True
+    class Config:
+        coerce = True
 
 
 class TimeSerieDataSchema(pa.DataFrameModel):
@@ -115,6 +110,24 @@ class TimeSerieDataWithMetaDataSchema(TimeSerieDataSchema):
         )
 
         return validated_df  # type: ignore
+
+
+class StationsSchema(pa.DataFrameModel):
+    """
+    Schéma des stations.
+    """
+
+    id: Series[str]
+    code: Series[str]
+    name: Series[str]
+    time_series: Series[object]
+    is_tidal: Series[object] = pa.Field(
+        nullable=True
+    )  # On utilise object pour accepter les booléens et les None
+    geometry: GeoSeries
+
+    class Config:
+        coerce = True
 
 
 class TideZoneProtocolSchema(pa.DataFrameModel):

@@ -5,8 +5,8 @@ Ce module contient les constantes pour les identifiants des modèles de données
 # Constantes pour les noms des colonnes des données du schéma de données DataLoggerSchema.
 TIME_UTC: str = "Time_UTC"
 """Valeur de la constante Time_UTC."""
-DEPTH_METER: str = "Depth_meter"
-"""Valeur de la constante Depth_meter."""
+DEPTH_RAW_METER: str = "Depth_raw_meter"
+"""Valeur de la constante Depth_raw_meter."""
 LONGITUDE_WGS84: str = "Longitude_WGS84"
 """Valeur de la constante Longitude_WGS84."""
 LATITUDE_WGS84: str = "Latitude_WGS84"
@@ -17,6 +17,14 @@ GEOMETRY: str = "geometry"
 # Constantes pour les noms des colonnes des données du schéma de données DataLoggerWithTideZoneSchema.
 TIDE_ZONE_ID: str = "Tide_zone_id"
 """Valeur de la constante Tide_zone_id."""
+
+# Constantes pour les noms des colonnes des données du schéma de données DataLoggerProcessedZoneSchema.
+DEPTH_PROCESSED_METER: str = "Depth_processed_meter"
+"""Valeur de la constante Depth_processed_meter."""
+WATER_LEVEL_METER: str = "Water_level_meter"
+"""Valeur de la constante Water_level_meter."""
+UNCERTAINTY: str = "Uncertainty"
+"""Valeur de la constante Uncertainty."""
 
 # Constantes pour les noms des colonnes des données du schéma de données StationsSchema et TideZoneSchema.
 ID: str = "id"
