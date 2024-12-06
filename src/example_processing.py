@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -20,7 +21,7 @@ import tide.voronoi as voronoi
 import tide.time_serie as time_serie
 import transformation.data_cleaning as cleaner
 import transformation.georeference as georeference
-import vessel.vessel_config_json_manager as vessel
+import vessel
 
 
 LOGGER = logger.bind(name="CSB-Processing.Flow")
@@ -30,6 +31,19 @@ EXPORT_DATA: Path = ROOT.parent / "DataLogger"
 EXPORT_TIDE: Path = ROOT.parent / "TideFileExport"
 LOG: Path = ROOT.parent / "Log"
 VESSEL_JSON_PATH: Path = ROOT / "vessel" / "TCSB_VESSELSLIST.json"
+
+
+@dataclass(frozen=True)
+class SensorConfigurationError(Exception):
+    """
+    Exception levée lorsque la configuration du capteur change durant la période de temps couverte par les données.
+    """
+
+    sensor_type: str
+    """Le type de capteur."""
+
+    def __str__(self) -> str:
+        return f"La configuration du capteur {self.sensor_type} a changé durant la période de temps couverte par les données."
 
 
 def get_ofm_files() -> list[Path]:
@@ -294,9 +308,64 @@ def plot_water_level_data(
     plot_time_series_dataframe(
         dataframes=list(wl_combineds.values()),
         titles=station_titles,
-        show_plot=True,  # Afficher le graphique dans un navigateur web
+        show_plot=False,  # Afficher le graphique dans un navigateur web
         output_path=export_path,  # Exporter le graphique dans un fichier HTML
     )
+
+
+def get_sensor_with_validation(
+    vessel_config: vessel.VesselConfig,
+    sensor_type: str,
+    min_time: datetime,
+    max_time: datetime,
+) -> vessel.Sensor | vessel.Waterline:
+    """
+    Récupère et valide les capteurs pour une période de temps donnée.
+
+    :param vessel_config: Configuration du navire.
+    :type vessel_config: vessel.VesselConfig
+    :param sensor_type: Type de capteur à récupérer.
+    :type sensor_type: str
+    :param min_time: Date et heure minimale.
+    :type min_time: datetime
+    :param max_time: Date et heure maximale.
+    :type max_time: datetime
+    :return: Capteur pour le moment donné.
+    :rtype: vessel.Sensor | vessel.Waterline
+    :raises SensorConfigurationError: Si la configuration du capteur change durant la période de temps couverte par les données.
+    """
+    min_time_sensor = getattr(vessel_config, f"get_{sensor_type}")(timestamp=min_time)
+    max_time_sensor = getattr(vessel_config, f"get_{sensor_type}")(timestamp=max_time)
+
+    if min_time_sensor.time_stamp != max_time_sensor.time_stamp:
+        raise SensorConfigurationError(sensor_type=sensor_type)
+
+    return min_time_sensor
+
+
+def get_sensors(
+    vessel_config: vessel.VesselConfig, min_time: datetime, max_time: datetime
+) -> tuple[vessel.Sensor, vessel.Waterline]:
+    """
+    Méthode pour récupérer les données des capteurs et valider que la configuration du navire couvre la période de temps.
+
+    :param vessel_config: Configuration du navire.
+    :type vessel_config: vessel.VesselConfig
+    :param min_time: Date et heure minimale.
+    :type min_time: datetime
+    :param max_time: Date et heure maximale.
+    :type max_time: datetime
+    :return: Données des capteurs pour le moment donné.
+    :rtype: tuple[vessel.Sensor, vessel.Waterline]
+    """
+    sounder: vessel.Sensor = get_sensor_with_validation(
+        vessel_config, "sounder", min_time, max_time
+    )
+    waterline: vessel.Waterline = get_sensor_with_validation(
+        vessel_config, "waterline", min_time, max_time
+    )
+
+    return sounder, waterline
 
 
 def main() -> None:
@@ -454,13 +523,32 @@ def main() -> None:
     LOGGER.debug(f"Exceptions : {wl_exceptions}.")
     LOGGER.debug(wl_combineds)
 
+    tide_zonde_info[schema_ids.MAX_TIME].max()
+    tide_zonde_info[schema_ids.MIN_TIME].min()
+
+    LOGGER.info("Géoréférencement des données de bathymétrie.")
+
+    sounder, waterline = get_sensors(
+        vessel_config=tuktoyaktuk_vessel,
+        min_time=tide_zonde_info[schema_ids.MIN_TIME].min(),
+        max_time=tide_zonde_info[schema_ids.MAX_TIME].max(),
+    )
     processed_data: gpd.GeoDataFrame[schema.DataLoggerProcessedSchema] = (
         georeference.georeference_bathymetry(
-            data=gdf_data_tide_zone, water_level=wl_combineds
+            data=gdf_data_tide_zone,
+            water_level=wl_combineds,
+            waterline=waterline,
+            sounder=sounder,
         )
     )
 
     LOGGER.debug(processed_data)
+    for idx, row in processed_data.head(5).iterrows():
+        LOGGER.debug(row)
+
+    export.export_geodataframe_to_gpkg(
+        gdf=processed_data, output_path=EXPORT_DATA / "ProcessedData.gpkg"
+    )
 
 
 if __name__ == "__main__":
