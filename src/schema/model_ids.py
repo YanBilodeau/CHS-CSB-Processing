@@ -11,20 +11,18 @@ LONGITUDE_WGS84: str = "Longitude_WGS84"
 """Valeur de la constante Longitude_WGS84."""
 LATITUDE_WGS84: str = "Latitude_WGS84"
 """Valeur de la constante Latitude_WGS84."""
-GEOMETRY: str = "geometry"
-"""Valeur de la constante geometry."""
-
-# Constantes pour les noms des colonnes des données du schéma de données DataLoggerWithTideZoneSchema.
-TIDE_ZONE_ID: str = "Tide_zone_id"
-"""Valeur de la constante Tide_zone_id."""
-
-# Constantes pour les noms des colonnes des données du schéma de données DataLoggerProcessedZoneSchema.
 DEPTH_PROCESSED_METER: str = "Depth_processed_meter"
 """Valeur de la constante Depth_processed_meter."""
 WATER_LEVEL_METER: str = "Water_level_meter"
 """Valeur de la constante Water_level_meter."""
 UNCERTAINTY: str = "Uncertainty"
 """Valeur de la constante Uncertainty."""
+GEOMETRY: str = "geometry"
+"""Valeur de la constante geometry."""
+
+# Constantes pour les noms des colonnes des données du schéma de données DataLoggerWithTideZoneSchema.
+TIDE_ZONE_ID: str = "Tide_zone_id"
+"""Valeur de la constante Tide_zone_id."""
 
 # Constantes pour les noms des colonnes des données du schéma de données StationsSchema et TideZoneSchema.
 ID: str = "id"
