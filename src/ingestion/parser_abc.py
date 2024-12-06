@@ -189,7 +189,33 @@ class DataParserABC(ABC):
 
         return data
 
+    @staticmethod
+    def add_empty_columns_to_geodataframe(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+        """
+        Ajoute des colonnes vides à un GeoDataFrame.
+
+        :param data: Données brutes.
+        :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
+        :return: Données avec des colonnes vides.
+        :rtype: gpd.GeoDataFrame[schema.DataLoggerProcessedSchemaWithTideZone]
+        """
+        columns: dict[str, pd.Series] = {
+            schema_ids.DEPTH_PROCESSED_METER: pd.Series(dtype="float64"),
+            schema_ids.WATER_LEVEL_METER: pd.Series(dtype="float64"),
+            schema_ids.UNCERTAINTY: pd.Series(dtype="float64"),
+        }
+
+        LOGGER.debug(f"Ajout de colonnes vides aux données : {columns.keys()}.")
+
+        for column_name, empty_column in columns.items():
+            data[column_name] = empty_column
+
+        return data
+
     @classmethod
+    @schema.validate_schemas(
+        return_schema=schema.DataLoggerSchema,
+    )
     def from_files(cls, files: Collection[Path]) -> gpd.GeoDataFrame:
         """
         Méthode permettant de lire les fichiers brutes et retourne un geodataframe.
@@ -201,8 +227,9 @@ class DataParserABC(ABC):
         """
         parser = cls()
         data_geodataframe: gpd.GeoDataFrame = parser.read_files(files=files)
-        data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = parser.transform(
-            data=data_geodataframe
+        data_geodataframe = parser.transform(data=data_geodataframe)
+        data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = (
+            parser.add_empty_columns_to_geodataframe(data=data_geodataframe)
         )
         data_geodataframe = parser.remove_duplicates(data=data_geodataframe)
         data_geodataframe = parser.sort_geodataframe_by_datetime(data=data_geodataframe)
