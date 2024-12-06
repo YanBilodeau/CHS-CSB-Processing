@@ -14,6 +14,7 @@ import numpy as np
 from loguru import logger
 import pandas as pd
 
+from .transformation_models import SensorProtocol, WaterlineProtocol
 import schema
 from schema import model_ids as schema_ids
 
@@ -22,6 +23,9 @@ LOGGER = logger.bind(name="CSB-Pipeline.Transformation.Georeferencing")
 event_dates_cache = LRUCache(maxsize=128)
 
 
+@schema.validate_schemas(
+    return_schema=schema.DataLoggerProcessedSchemaWithTideZone,
+)
 def add_empty_columns_to_geodataframe(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     """
     Ajoute des colonnes vides à un GeoDataFrame.
@@ -135,7 +139,7 @@ def _handle_missing_data(idx_sounding: int, tide_zone_id: str) -> None:
     return None
 
 
-def _append_value_if_within_limit(
+def _add_value_within_limit(
     event_position_wl: np.int64,
     time_utc_sounding: pd.Timestamp,
     event_dates_wl: pd.DatetimeIndex,
@@ -215,7 +219,7 @@ def process_row(
     )
     # Vérifier si position_after est hors des limites
     if position_after >= len(event_dates_wl):
-        return _append_value_if_within_limit(
+        return _add_value_within_limit(
             event_position_wl=np.float64(position_after - 1),
             time_utc_sounding=time_utc_sounding,
             event_dates_wl=event_dates_wl,
@@ -227,7 +231,7 @@ def process_row(
     position_before: np.int64 = max(np.int64(0), np.int64(position_after - 1))
     # Vérifier si position_before est hors des limites
     if position_before < 0:
-        return _append_value_if_within_limit(
+        return _add_value_within_limit(
             event_position_wl=position_after,
             time_utc_sounding=time_utc_sounding,
             event_dates_wl=event_dates_wl,
@@ -243,10 +247,7 @@ def process_row(
     )
 
 
-@schema.validate_schemas(
-    return_schema=schema.DataLoggerProcessedSchemaWithTideZone,
-)
-def add_water_level_to_depth_data(
+def get_water_level(
     data: gpd.GeoDataFrame, water_level_data: dict[str, pd.DataFrame]
 ) -> gpd.GeoDataFrame:
     """
@@ -263,7 +264,7 @@ def add_water_level_to_depth_data(
 
     cpu: int = cpu_count()
     LOGGER.debug(
-        f"Récupération des niveaux d'eau pour les {len(data)} sonde avec {cpu} processus en parallèle."
+        f"Récupération des niveaux d'eau pour les {len(data)} sondes avec {cpu} processus en parallèle."
     )
 
     dask_data = dgpd.from_geopandas(data, npartitions=cpu)
@@ -282,13 +283,46 @@ def add_water_level_to_depth_data(
     return data
 
 
+def apply_georeference_bathymetry(
+    data: gpd.GeoDataFrame, waterline: WaterlineProtocol, sounder: SensorProtocol
+) -> gpd.GeoDataFrame:
+    """
+    Applique la transformation de géoréférencement des données de bathymétrie.
+
+    :param data: Données brutes de profondeur.
+    :type data: gpd.GeoDataFrame[schema.DataLoggerProcessedSchema]
+    :param waterline: Données de la ligne d'eau.
+    :type waterline: WaterlineProtocol
+    :param sounder: Données du sondeur.
+    :type sounder: SensorProtocol
+    :return: Données de profondeur géoréférencées.
+    :rtype: gpd.GeoDataFrame[schema.DataLoggerProcessedSchema]
+    """
+    pass
+
+
+def compute_tpu(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    """
+    Calcule le TPU des données de bathymétrie.
+
+    :param data: Données brut de profondeur.
+    :type data: gpd.GeoDataFrame[schema.DataLoggerProcessedSchema]
+    :return: Données de profondeur avec le TPU.
+    :rtype: gpd.GeoDataFrame[schema.DataLoggerProcessedSchema]
+    """
+    pass
+
+
 @schema.validate_schemas(
     data=schema.DataLoggerWithTideZoneSchema,
     return_schema=schema.DataLoggerProcessedSchema,
 )
 def georeference_bathymetry(
-    data: gpd.GeoDataFrame, water_level: dict[str, pd.DataFrame]
-) -> gpd.GeoDataFrame:  # todo prendre waterline, sensor sounder en entrée
+    data: gpd.GeoDataFrame,
+    water_level: dict[str, pd.DataFrame],
+    waterline: WaterlineProtocol,
+    sounder: SensorProtocol,
+) -> gpd.GeoDataFrame:
     """
     Géoréférence les données de bathymétrie.
 
@@ -296,6 +330,10 @@ def georeference_bathymetry(
     :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     :param water_level: Niveau d'eau.
     :type water_level: dict[str, pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]
+    :param waterline: Données de la ligne d'eau.
+    :type waterline: WaterlineProtocol
+    :param sounder: Données du sondeur.
+    :type sounder: SensorProtocol
     :return: Données de profondeur avec le niveau d'eau.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerProcessedSchema]
     """
@@ -304,14 +342,19 @@ def georeference_bathymetry(
     data: gpd.GeoDataFrame[schema.DataLoggerProcessedSchemaWithTideZone] = (
         add_empty_columns_to_geodataframe(data)
     )
-    data: gpd.GeoDataFrame[schema.DataLoggerProcessedSchemaWithTideZone] = (
-        add_water_level_to_depth_data(data, water_level)
-    )
 
-    # todo apply georeferencing transformation
+    data: gpd.GeoDataFrame[schema.DataLoggerProcessedSchemaWithTideZone] = (
+        get_water_level(data, water_level)
+    )
 
     data: gpd.GeoDataFrame[schema.DataLoggerProcessedSchema] = data.drop(
         columns=[schema_ids.TIDE_ZONE_ID]
     )
+
+    # data: gpd.GeoDataFrame[schema.DataLoggerProcessedSchema] = (
+    #     apply_georeference_bathymetry(data=data, waterline=waterline, sounder=sounder)
+    # )
+    #
+    # data: gpd.GeoDataFrame[schema.DataLoggerProcessedSchema] = compute_tpu(data)
 
     return data
