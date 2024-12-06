@@ -288,7 +288,7 @@ def apply_georeference_bathymetry(
             row[schema_ids.DEPTH_RAW_METER]
             + row[schema_ids.WATER_LEVEL_METER]
             - waterline.z
-            + sounder.z  # todo valider la formule, navigation ?
+            + sounder.z  # todo valider la formule, inclure z navigation ?
         )
 
     cpu: int = cpu_count()
