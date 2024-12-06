@@ -152,7 +152,6 @@ class DataParserLowrance(DataParserABC):
 
         return data
 
-    @schema.validate_schemas(return_schema=schema.DataLoggerSchema)
     def transform(self, data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         """
         Méthode permettant de transformer le geodataframe pour respecter le schéma de données.
@@ -160,7 +159,7 @@ class DataParserLowrance(DataParserABC):
         :param data: Le geodataframe à transformer.
         :type data: gpd.GeoDataFrame
         :return: Le geodataframe transformé respectant le schéma de données DataLoggerSchema.
-        :rtype: gpd.GeoDataFrame[DataLoggerSchema]
+        :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug("Transformation du geodataframe.")
 

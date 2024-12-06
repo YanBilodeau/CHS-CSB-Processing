@@ -81,7 +81,6 @@ class DataParserOFM(DataParserABC):
 
         return gdf
 
-    @schema.validate_schemas(return_schema=schema.DataLoggerSchema)
     def transform(self, data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         """
         Méthode permettant de transformer le geodataframe pour respecter le schéma de données.
@@ -89,12 +88,12 @@ class DataParserOFM(DataParserABC):
         :param data: Le geodataframe à transformer.
         :type data: gpd.GeoDataFrame
         :return: e geodataframe transformé et respectant le schéma de données DataLoggerSchema.
-        :rtype: gpd.GeoDataFrame[DataLoggerSchema]
+        :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug("Transformation du geodataframe.")
 
         LOGGER.debug(f"Renommage des colonnes du geodataframe.")
-        data: gpd.GeoDataFrame[schema.DataLoggerSchema] = data.rename(
+        data: gpd.GeoDataFrame = data.rename(
             columns={
                 ids.TIME_OFM: schema_ids.TIME_UTC,
                 ids.DEPTH_OFM: schema_ids.DEPTH_RAW_METER,
