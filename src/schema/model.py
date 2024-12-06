@@ -29,6 +29,9 @@ class DataLoggerSchema(pa.DataFrameModel):
     Latitude_WGS84: Series[pd.Float64Dtype()]
     Depth_raw_meter: Series[pd.Float64Dtype()]
     Time_UTC: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
+    Depth_processed_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
+    Water_level_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
+    Uncertainty: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
     geometry: GeoSeries
 
     class Config:
@@ -38,30 +41,6 @@ class DataLoggerSchema(pa.DataFrameModel):
 class DataLoggerWithTideZoneSchema(DataLoggerSchema):
     """
     Schéma des données des DataLoggers avec les zones de marées.
-    """
-
-    Tide_zone_id: Series[str]
-
-    class Config:
-        coerce = True
-
-
-class DataLoggerProcessedSchema(DataLoggerSchema):
-    """
-    Schéma des données des DataLoggers traitées.
-    """
-
-    Depth_processed_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
-    Water_level_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
-    Uncertainty: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
-
-    class Config:
-        coerce = True
-
-
-class DataLoggerProcessedSchemaWithTideZone(DataLoggerProcessedSchema):
-    """
-    Schéma des données des DataLoggers traitées avec les zones de marées.
     """
 
     Tide_zone_id: Series[str]
