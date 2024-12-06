@@ -443,7 +443,7 @@ class StationsHandlerABC(ABC):
 
         if not data.data:
             LOGGER.warning(
-                f"Aucune donnée pour la station '{station}' et la série temporelle '{time_serie_code}' "
+                f"Aucune donnée de la série temporelle '{time_serie_code}' pour la station '{station}' "
                 f"entre le {from_time} et le {to_time}."
             )
             return pd.DataFrame(
