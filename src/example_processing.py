@@ -159,6 +159,9 @@ def add_tide_zone_id_to_geodataframe(
         schema_ids.LATITUDE_WGS84,
         schema_ids.LONGITUDE_WGS84,
         schema_ids.DEPTH_RAW_METER,
+        schema_ids.DEPTH_PROCESSED_METER,
+        schema_ids.WATER_LEVEL_METER,
+        schema_ids.UNCERTAINTY,
         schema_ids.GEOMETRY,
         schema_ids.ID,
     ]
@@ -181,7 +184,6 @@ def add_tide_zone_id_to_geodataframe(
 
 @schema.validate_schemas(
     data_geodataframe=schema.DataLoggerWithTideZoneSchema,
-    tide_zone=schema.TideZoneProtocolSchema,
     return_schema=schema.TideZoneInfoSchema,
 )
 def get_intersected_tide_zone_info(
@@ -196,7 +198,7 @@ def get_intersected_tide_zone_info(
     param tide_zone: Les zones de marées.
     :type tide_zone: gpd.GeoDataFrame[schema.TideZoneProtocolSchema]
     :return: Les zones de marées et le temps de début et de fin pour les données.
-    :rtype: pd.DataFrame
+    :rtype: pd.DataFrame[schema.TideZoneInfoSchema]
     """
 
     def get_time_series_for_station(station_id: str) -> list[iwls.TimeSeries]:
@@ -371,7 +373,7 @@ def get_sensors(
 def main() -> None:
     configure_logger(
         LOG / f"{datetime.now().strftime('%Y-%m-%d')}_CSB-Processing.log",
-        std_level="DEBUG",
+        std_level="INFO",
         log_file_level="DEBUG",
     )
 
@@ -390,7 +392,7 @@ def main() -> None:
     )
 
     # Get the files to parse
-    # files: list[Path] = get_ofm_files()
+    files: list[Path] = get_ofm_files()
     # files: list[Path] = get_dcdb_files()
     files: list[Path] = get_lowrance_files()
     # files: list[Path] = get_blackbox_files()
@@ -420,8 +422,12 @@ def main() -> None:
 
     LOGGER.success(f"{len(data)} sondes valides récupérées.")
 
-    # Export the parsed data to a GeoJSON file
-    # export_geodataframe_to_geojson(data, EXPORT_DATA / "ParsedData.geojson")
+    # Export the parsed data
+    # export.export_geodataframe_to_geojson(
+    #     geodataframe=data,
+    #     output_path=EXPORT_DATA / "ParsedData.geojson",
+    # )
+    export.export_geodataframe_to_gpkg(data, EXPORT_DATA / "ParsedData.gpkg")
 
     # Get the environment of the API IWLS from the configuration file and the active profile
     api_environment: iwls.APIEnvironment = get_iwls_environment(config=iwls_api_config)
@@ -445,7 +451,7 @@ def main() -> None:
 
     # Get the Voronoi diagram of the stations. The stations are selected based on the priority of the time series.
     # The time series priority is defined in the configuration file.
-    LOGGER.info("Récupération du diagramme de Voronoi.")
+    LOGGER.info("Récupération des zones de marée (diagramme de Voronoi).")
     gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema] = (
         voronoi.get_voronoi_geodataframe(
             stations_handler=stations_handler,
@@ -463,15 +469,6 @@ def main() -> None:
         data_geodataframe=data, tide_zone=gdf_voronoi
     )
 
-    # Export the data with the tide zone
-    export.export_geodataframe_to_geojson(
-        geodataframe=gdf_data_tide_zone,
-        output_path=EXPORT_DATA / "ParsedDataWithTideZone.geojson",
-    )
-    export.export_geodataframe_to_gpkg(
-        gdf_data_tide_zone, EXPORT_DATA / "ParsedDataWithTideZone.gpkg"
-    )
-
     # Get the time and tide zone
     LOGGER.info(
         "Récupération des information sur les zones de marées qui intersetent les données brutes."
@@ -480,12 +477,16 @@ def main() -> None:
         data_geodataframe=gdf_data_tide_zone,
         tide_zone=gdf_voronoi,
     )
+
     for zone, min_time, max_time, ts in tide_zonde_info.itertuples(index=False):
         LOGGER.info(
             f"Zone de marée {zone} : temps minimum - {min_time}, temps maximum - {max_time}, séries temporelles - {ts}."
         )
 
     # Get the water level data for each station
+    LOGGER.info(
+        "Récupération des données de niveaux d'eau pour chaque station touchant les données brutes."
+    )
     wl_combineds, wl_exceptions = time_serie.get_water_level_data_for_stations(
         # Stations handler to retrieve the water level data.
         stations_handler=stations_handler,
@@ -526,14 +527,14 @@ def main() -> None:
     tide_zonde_info[schema_ids.MAX_TIME].max()
     tide_zonde_info[schema_ids.MIN_TIME].min()
 
-    LOGGER.info("Géoréférencement des données de bathymétrie.")
-
+    # Get the sensors for the vessel
     sounder, waterline = get_sensors(
         vessel_config=tuktoyaktuk_vessel,
         min_time=tide_zonde_info[schema_ids.MIN_TIME].min(),
         max_time=tide_zonde_info[schema_ids.MAX_TIME].max(),
     )
-    processed_data: gpd.GeoDataFrame[schema.DataLoggerProcessedSchema] = (
+    # Georeference the bathymetry data
+    processed_data: gpd.GeoDataFrame[schema.DataLoggerSchema] = (
         georeference.georeference_bathymetry(
             data=gdf_data_tide_zone,
             water_level=wl_combineds,
