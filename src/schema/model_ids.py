@@ -55,3 +55,8 @@ START_TIME: str = "start_time"
 """Valeur de la constante start_time."""
 END_TIME: str = "end_time"
 """Valeur de la constante end_time."""
+
+# Constantes pour les noms des colonnes des données du schéma de données TideZoneSchema.
+MIN_TIME: str = "min_time"
+"""Valeur de la constante min_time."""
+MAX_TIME: str = "max_time"
