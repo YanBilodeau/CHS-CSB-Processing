@@ -69,7 +69,7 @@ def get_dcdb_files() -> list[Path]:
 
 
 def get_lowrance_files() -> list[Path]:
-    source_path = Path("D:\Tuktoyaktuk\export")
+    source_path = ROOT / "ingestion" / "Lowrance" / "Tuktoyaktuk"
     return list(source_path.glob("*.csv"))
 
 
