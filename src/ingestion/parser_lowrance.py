@@ -148,7 +148,9 @@ class DataParserLowrance(DataParserABC):
         LOGGER.debug(
             f"Conversion des pieds en mètres de la colonne '{schema_ids.DEPTH_RAW_METER}'."
         )
-        data[schema_ids.DEPTH_RAW_METER] = data[schema_ids.DEPTH_RAW_METER] * 0.3048
+        data[schema_ids.DEPTH_RAW_METER] = round(
+            data[schema_ids.DEPTH_RAW_METER] * 0.3048, 3
+        )
 
         return data
 
