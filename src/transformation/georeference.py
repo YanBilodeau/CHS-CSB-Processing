@@ -97,7 +97,7 @@ def _interpolate_water_level(
     return round(interpolated_value, 3)
 
 
-def _handle_missing_data(idx_sounding: int, tide_zone_id: str) -> None:
+def _handle_missing_data(idx_sounding: int, tide_zone_id: str) -> float:
     """
     Gère les données manquantes de niveau d'eau.
 
@@ -105,12 +105,14 @@ def _handle_missing_data(idx_sounding: int, tide_zone_id: str) -> None:
     :type idx_sounding: int
     :param tide_zone_id: Identifiant de la zone de marée.
     :type tide_zone_id: str
+    :return: np.nan
+    :rtype: float
     """
     LOGGER.warning(
         f"Aucune donnée disponible pour la zone de marée {tide_zone_id} (index {idx_sounding})."
     )
 
-    return None
+    return np.nan
 
 
 def _add_value_within_limit_if_applicable(
@@ -121,7 +123,7 @@ def _add_value_within_limit_if_applicable(
     idx_sounding: int,
     tide_zone_id: str,
     water_level_tolerance: int | float,
-) -> Optional[np.float64]:
+) -> np.float64 | float:
     """
     Ajoute la valeur du niveau d'eau si elle est dans les limites.
 
@@ -140,7 +142,7 @@ def _add_value_within_limit_if_applicable(
     :param water_level_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
     :type water_level_tolerance: int | float
     :return: Valeur du niveau d'eau.
-    :rtype: Optional[np.float64]
+    :rtype: np.float64 | float
     """
     time_diff_after: float = (
         event_dates_wl[event_position_wl] - time_utc_sounding
@@ -153,14 +155,14 @@ def _add_value_within_limit_if_applicable(
         f"Pas de données de niveau d'eau suffisantes pour récupérer l'index {idx_sounding} : (tide_zone_id={tide_zone_id})."
     )
 
-    return None
+    return np.nan
 
 
 def _get_water_level(
     row: pd.Series,
     water_level_data: dict[str, pd.DataFrame],
     water_level_tolerance: int | float,
-) -> Optional[np.float64]:
+) -> np.float64 | float:
     """
     Récupère la valeur du niveau d'eau pour une sonde.
 
@@ -171,7 +173,7 @@ def _get_water_level(
     :param water_level_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
     :type water_level_tolerance: int | float
     :return: Valeur du niveau d'eau.
-    :rtype: Optional[np.float64]
+    :rtype: np.float64 | float
     """
     tide_zone_id: str = row.get(schema_ids.TIDE_ZONE_ID)
     time_utc_sounding: pd.Timestamp = row.get(schema_ids.TIME_UTC)
@@ -182,9 +184,7 @@ def _get_water_level(
         or water_level_data[tide_zone_id].empty
         or water_level_data[tide_zone_id] is None
     ):
-        return _handle_missing_data(
-            idx_sounding, tide_zone_id
-        )  # todo tester cas limite
+        return _handle_missing_data(idx_sounding, tide_zone_id)
 
     water_level_df: pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema] = (
         water_level_data[tide_zone_id]
