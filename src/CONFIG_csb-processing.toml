@@ -15,11 +15,11 @@ wlo_qc_flag_filter = ["NOT_EVAL", "QUESTIONABLE", "BAD", "MISSING", "2", "3"]
 # Temps tampon en heures pour les données de la série temporelle à récupérer pour les interpolations {int}.
 buffer_time = 24
 
-[IWLS.API.PROFILE]
+[IWLS.API.Profile]
 # {"dev", "prod", "public"}
 active = "public"
 
-[IWLS.API.ENVIRONMENT.dev]
+[IWLS.API.Environment.dev]
 name = "DEV"
 endpoint = "EndpointPrivateDev"
 # Nombre maximal d'appels par période de temps {int}.
@@ -27,14 +27,33 @@ calls = 15
 # Période de temps en secondes {int}.
 period = 1
 
-[IWLS.API.ENVIRONMENT.prod]
+[IWLS.API.Environment.prod]
 name = "PROD"
 endpoint = "EndpointPrivateProd"
 calls = 10
 period = 1
 
-[IWLS.API.ENVIRONMENT.public]
+[IWLS.API.Environment.public]
 name = "PUBLIC"
 endpoint = "EndpointPublic"
 calls = 15
 period = 1
+
+[Data.Transformation.Filter]
+# Valeurs minimales et maximales de latitude et longitude pour filtrer les données {int, float}.
+# Commenter les lignes suivantes pour utiliser les valeurs par défaut.
+min_latitude = -90
+max_latitude = 90
+min_longitude = -180
+max_longitude = 180
+# Valeurs minimales et maximales de profondeur pour filtrer les données {int, float}
+min_depth = 0
+# Ce paramètre est désactivé par défaut.
+# max_depth = 1000
+
+[Data.Georeference.Tide]
+
+
+[CSB.Processing.Options]
+# Niveau de log {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
+log_level = "INFO"
