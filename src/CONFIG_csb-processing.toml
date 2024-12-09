@@ -52,7 +52,8 @@ min_depth = 0
 # max_depth = 1000
 
 [DATA.Georeference.tide]
-
+# Temps tampon en minutes pour les données de marée à récupérer pour le géoréférencement {int | float}.
+water_level_tolerance = 15
 
 [CSB.Processing.options]
 # Niveau de log {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
