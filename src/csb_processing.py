@@ -1,7 +1,9 @@
+import click
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+import sys
+from typing import Optional, Collection
 
 import geopandas as gpd
 from loguru import logger
@@ -24,12 +26,10 @@ import transformation.georeference as georeference
 import vessel
 
 
-LOGGER = logger.bind(name="CSB-Processing.Flow")
+LOGGER = logger.bind(name="CSB-Processing.WorkFlow")
 
 ROOT: Path = Path(__file__).parent
-EXPORT_DATA: Path = ROOT.parent / "DataLogger"
-EXPORT_TIDE: Path = ROOT.parent / "TideFileExport"
-LOG: Path = ROOT.parent / "Log"
+OUTPUT: Path = ROOT.parent / "Output"
 VESSEL_JSON_PATH: Path = ROOT / "vessel" / "TCSB_VESSELSLIST.json"
 
 
@@ -46,39 +46,28 @@ class SensorConfigurationError(Exception):
         return f"La configuration du capteur {self.sensor_type} a changé durant la période de temps couverte par les données."
 
 
-def get_ofm_files() -> list[Path]:
-    return [
-        ROOT
-        / "ingestion"
-        / "OFM"
-        / "CHS9-Aventure9_20241001183031_20241001194143-singlefile.xyz",
-        ROOT
-        / "ingestion"
-        / "OFM"
-        / "CHS9-Aventure9_20241002132309_20241002144241-singlefile.xyz",
-    ]
+def get_data_structure(output_path: Path) -> tuple[Path, Path, Path]:
+    """
+    Récupère la structure de répertoires pour les données.
 
+    :param output_path: Chemin du répertoire de sortie.
+    :type output_path: Path
+    :return: Chemin des répertoires pour les données.
+    :rtype: tuple[Path, Path, Path]
+    """
+    data_path: Path = output_path / "Data"
+    tide_path: Path = output_path / "Tide"
+    log_path: Path = output_path / "Log"
 
-def get_dcdb_files() -> list[Path]:
-    return [
-        ROOT
-        / "ingestion"
-        / "DCDB"
-        / "20240605215519876796_08b05f2b-eb9f-11ee-a43c-bd300fe11e8a_pointData.csv"
-    ]
+    # Create the directories if they do not exist
+    if not data_path.exists():
+        data_path.mkdir(parents=True)
+    if not tide_path.exists():
+        tide_path.mkdir()
+    if not log_path.exists():
+        log_path.mkdir()
 
-
-def get_lowrance_files() -> list[Path]:
-    source_path = ROOT / "ingestion" / "Lowrance" / "Tuktoyaktuk"
-    return list(source_path.glob("*.csv"))
-
-
-def get_blackbox_files() -> list[Path]:
-    return [ROOT / "ingestion" / "BlackBox" / "NMEALOG.TXT"]
-
-
-def get_actisense_files() -> list[Path]:
-    return [ROOT / "ingestion" / "ActiSense" / "composite_RDL_2024_ALL.n2kdecoded.csv"]
+    return data_path, tide_path, log_path
 
 
 def get_iwls_environment(config: iwls_config.IWLSAPIConfig) -> iwls.APIEnvironment:
@@ -304,7 +293,7 @@ def plot_water_level_data(
     :type export_path: Path
     """
     LOGGER.info(
-        f"Enregistrement des graphiques des données de niveaux d'eau [{station_titles}]: {export_path}."
+        f"Enregistrement des graphiques des données de niveaux d'eau {station_titles}: {export_path}."
     )
 
     plot_time_series_dataframe(
@@ -370,40 +359,62 @@ def get_sensors(
     return sounder, waterline
 
 
-def main() -> None:
+def is_valid_file(file: Path) -> bool:
+    """
+    Vérifie si le fichier est valide pour le traitement.
+
+    :param file: Chemin du fichier.
+    :type file: Path
+    :return: Vrai si le fichier est valide, faux sinon.
+    :rtype: bool
+    """
+    return file.suffix.lower() in {".csv", ".txt", ".xyz"}
+
+
+def get_files(paths: Collection[Path]) -> list[Path]:
+    """
+    Récupère les fichiers à traiter.
+
+    :param paths: Chemins des fichiers ou répertoires.
+    :type paths: Collection[Path]
+    :return: Liste des fichiers à traiter.
+    :rtype: list[Path]
+    """
+    files: list[Path] = []
+
+    for path in paths:
+        path = Path(path)
+
+        if path.is_file() and is_valid_file(path):
+            files.append(path)
+
+        elif path.is_dir():
+            files.extend(file for file in path.glob("**/*") if is_valid_file(file))
+
+    return files
+
+
+def main(files: Collection[Path], vessel_id: str, output: Path) -> None:
+    # Get the files to parse
+    files: list[Path] = get_files(files)
+
+    # Check if there are files to process
+    if not files:
+        LOGGER.error("Aucun fichier valide à traiter.")
+        return None
+
+    # Get the data structure
+    export_data_path, export_tide_path, log_path = get_data_structure(output)
+
+    # Configure the logger
     configure_logger(
-        LOG / f"{datetime.now().strftime('%Y-%m-%d')}_CSB-Processing.log",
-        std_level="INFO",
+        log_path / f"{datetime.now().strftime('%Y-%m-%d')}_CSB-Processing.log",
+        std_level="DEBUG",
         log_file_level="DEBUG",
     )
 
-    # Create the directories if they do not exist
-    if not EXPORT_DATA.exists():
-        EXPORT_DATA.mkdir()
-    if not EXPORT_TIDE.exists():
-        EXPORT_TIDE.mkdir()
-
     # Read the configuration file 'data_config.toml'
-    data_filter_config: data_config.DataFilterConfig = data_config.get_data_config()
-
-    # Read the configuration file 'iwls_API_config.toml'
-    iwls_api_config: iwls_config.IWLSAPIConfig = iwls_config.get_api_config(
-        config_file=iwls_config.CONFIG_FILE
-    )
-
-    # Get the files to parse
-    files: list[Path] = get_ofm_files()
-    # files: list[Path] = get_dcdb_files()
-    files: list[Path] = get_lowrance_files()
-    # files: list[Path] = get_blackbox_files()
-    # files: list[Path] = get_actisense_files()
-    # files: list[Path] = (
-    #     get_ofm_files()
-    #     + get_dcdb_files()
-    #     + get_lowrance_files()
-    #     + get_blackbox_files()
-    #     + get_actisense_files()
-    # )
+    data_filter_config, data_georef_config = data_config.get_data_config()
 
     # Get the parser and the parsed data
     LOGGER.info(f"Récupération des données brutes des fichiers : {files}.")
@@ -412,6 +423,7 @@ def main() -> None:
     )
     LOGGER.debug(parser_files)
 
+    # Parse the data
     data: gpd.GeoDataFrame[schema.DataLoggerSchema] = parser_files.parser.from_files(
         files=parser_files.files
     )
@@ -423,27 +435,26 @@ def main() -> None:
     LOGGER.success(f"{len(data)} sondes valides récupérées.")
 
     # Export the parsed data
-    # export.export_geodataframe_to_geojson(
-    #     geodataframe=data,
-    #     output_path=EXPORT_DATA / "ParsedData.geojson",
-    # )
-    export.export_geodataframe_to_gpkg(data, EXPORT_DATA / "ParsedData.gpkg")
-
-    # Get the environment of the API IWLS from the configuration file and the active profile
-    api_environment: iwls.APIEnvironment = get_iwls_environment(config=iwls_api_config)
-    # Get the API IWLS from the environment
-    api: stations.IWLSapiProtocol = get_api(environment=api_environment)
+    export.export_geodataframe_to_gpkg(data, export_data_path / "ParsedData.gpkg")
 
     # Get the vessel configuration
     vessel_config_manager = vessel.VesselConfigJsonManager(
         json_config_path=VESSEL_JSON_PATH
     )
-    vessel_name: str = "Tuktoyaktuk"
-    LOGGER.info(f"Récupération de la configuration du navire {vessel_name}.")
+
+    LOGGER.info(f"Récupération de la configuration du navire {vessel_id}.")
     tuktoyaktuk_vessel: vessel.VesselConfig = vessel_config_manager.get_vessel_config(
-        vessel_name
+        vessel_id=vessel_id
     )
 
+    # Read the configuration file 'iwls_API_config.toml'
+    iwls_api_config: iwls_config.IWLSAPIConfig = iwls_config.get_api_config(
+        config_file=iwls_config.CONFIG_FILE
+    )
+    # Get the environment of the API IWLS from the configuration file and the active profile
+    api_environment: iwls.APIEnvironment = get_iwls_environment(config=iwls_api_config)
+    # Get the API IWLS from the environment
+    api: stations.IWLSapiProtocol = get_api(environment=api_environment)
     # Get the handler of the stations
     stations_handler: stations.StationsHandlerABC = get_stations_handler(
         api=api, endpoint_type=api_environment.endpoint.TYPE
@@ -461,7 +472,7 @@ def main() -> None:
     # Export the Voronoi diagram to a GeoJSON file
     export.export_geodataframe_to_geojson(
         geodataframe=gdf_voronoi,
-        output_path=EXPORT_TIDE / "voronoi_merged.geojson",
+        output_path=export_tide_path / "voronoi_merged.geojson",
     )
 
     # Add the tide zone to the data
@@ -482,6 +493,16 @@ def main() -> None:
         LOGGER.info(
             f"Zone de marée {zone} : temps minimum - {min_time}, temps maximum - {max_time}, séries temporelles - {ts}."
         )
+
+    tide_zonde_info[schema_ids.MAX_TIME].max()
+    tide_zonde_info[schema_ids.MIN_TIME].min()
+
+    # Get the sensors for the vessel
+    sounder, waterline = get_sensors(
+        vessel_config=tuktoyaktuk_vessel,
+        min_time=tide_zonde_info[schema_ids.MIN_TIME].min(),
+        max_time=tide_zonde_info[schema_ids.MAX_TIME].max(),
+    )
 
     # Get the water level data for each station
     LOGGER.info(
@@ -510,7 +531,7 @@ def main() -> None:
     station_titles: list[str] = export_station_water_levels(
         wl_combineds=wl_combineds,
         gdf_voronoi=gdf_voronoi,
-        export_tide_path=EXPORT_TIDE,
+        export_tide_path=export_tide_path,
     )
 
     # Plot the water level data for each station
@@ -518,21 +539,12 @@ def main() -> None:
         plot_water_level_data(
             wl_combineds=wl_combineds,
             station_titles=station_titles,
-            export_path=EXPORT_TIDE / "WaterLevel.html",
+            export_path=export_tide_path / "WaterLevel.html",
         )
 
     LOGGER.debug(f"Exceptions : {wl_exceptions}.")
     LOGGER.debug(wl_combineds)
 
-    tide_zonde_info[schema_ids.MAX_TIME].max()
-    tide_zonde_info[schema_ids.MIN_TIME].min()
-
-    # Get the sensors for the vessel
-    sounder, waterline = get_sensors(
-        vessel_config=tuktoyaktuk_vessel,
-        min_time=tide_zonde_info[schema_ids.MIN_TIME].min(),
-        max_time=tide_zonde_info[schema_ids.MAX_TIME].max(),
-    )
     # Georeference the bathymetry data
     processed_data: gpd.GeoDataFrame[schema.DataLoggerSchema] = (
         georeference.georeference_bathymetry(
@@ -540,6 +552,7 @@ def main() -> None:
             water_level=wl_combineds,
             waterline=waterline,
             sounder=sounder,
+            water_level_tolerance=data_georef_config.water_level_tolerance,
         )
     )
 
@@ -547,10 +560,85 @@ def main() -> None:
     for idx, row in processed_data.head(5).iterrows():
         LOGGER.debug(row)
 
-    export.export_geodataframe_to_gpkg(
-        gdf=processed_data, output_path=EXPORT_DATA / "ProcessedData.gpkg"
-    )
+    # Export the processed data
+    output_path: Path = export_data_path / "ProcessedData.gpkg"
+    LOGGER.info(f"Exportation des données traitées : {output_path}.")
+    export.export_geodataframe_to_gpkg(gdf=processed_data, output_path=output_path)
+
+
+@click.command(
+    help="""Ce script permet de traiter des fichiers de données bathymétriques et de les géoréférencer."""
+)
+@click.option(
+    "--files",
+    type=click.Path(exists=False),
+    multiple=True,
+    help="Chemins des fichiers ou répertoires à traiter.",
+)
+@click.option(
+    "--vessel_id",
+    type=str,
+    help="Identifiant du navire.",
+)
+@click.option(
+    "--output",
+    type=click.Path(),
+    help="Chemin du répertoire de sortie.",
+)
+def cli(files: Collection[Path], vessel_id: str, output: Path) -> None:
+    command_line_args = " ".join(sys.argv)
+    LOGGER.info(f"Ligne de commande exécutée : {command_line_args}")
+    main(files=files, vessel_id=vessel_id, output=Path(output))
 
 
 if __name__ == "__main__":
-    main()
+    if sys.argv[1:]:
+        cli()
+
+    def get_ofm_files() -> list[Path]:
+        return [
+            ROOT
+            / "ingestion"
+            / "OFM"
+            / "CHS9-Aventure9_20241001183031_20241001194143-singlefile.xyz",
+            ROOT
+            / "ingestion"
+            / "OFM"
+            / "CHS9-Aventure9_20241002132309_20241002144241-singlefile.xyz",
+        ]
+
+    def get_dcdb_files() -> list[Path]:
+        return [
+            ROOT
+            / "ingestion"
+            / "DCDB"
+            / "20240605215519876796_08b05f2b-eb9f-11ee-a43c-bd300fe11e8a_pointData.csv"
+        ]
+
+    def get_lowrance_files() -> list[Path]:
+        source_path = ROOT / "ingestion" / "Lowrance" / "Tuktoyaktuk"
+        return list(source_path.glob("*.csv"))
+
+    def get_blackbox_files() -> list[Path]:
+        return [ROOT / "ingestion" / "BlackBox" / "NMEALOG.TXT"]
+
+    def get_actisense_files() -> list[Path]:
+        return [
+            ROOT / "ingestion" / "ActiSense" / "composite_RDL_2024_ALL.n2kdecoded.csv"
+        ]
+
+    # Get the files to parse
+    files_path: list[Path] = get_ofm_files()
+    # files_path: list[Path] = get_dcdb_files()
+    # files_path: list[Path] = get_lowrance_files()
+    # files_path: list[Path] = get_blackbox_files()
+    # files_path: list[Path] = get_actisense_files()
+    # files_path: list[Path] = (
+    #     get_ofm_files()
+    #     + get_dcdb_files()
+    #     + get_lowrance_files()
+    #     + get_blackbox_files()
+    #     + get_actisense_files()
+    # )
+
+    main(files=files_path, vessel_id="Tuktoyaktuk", output=OUTPUT)
