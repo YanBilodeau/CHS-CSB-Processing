@@ -17,7 +17,7 @@ import iwls_api_request as iwls
 
 LOGGER = logger.bind(name="CSB-Pipeline.Config.IWLSAPIConfig")
 
-CONFIG_FILE: Path = Path(__file__).parent.parent / "CONFIG_iwls_API.toml"
+CONFIG_FILE: Path = Path(__file__).parent.parent / "CONFIG_csb-processing.toml"
 
 TimeSeriesDict = dict[str, list[str]]
 IWLSapiDict = dict[
@@ -120,7 +120,7 @@ def get_api_config(config_file: Optional[Path] = CONFIG_FILE) -> IWLSAPIConfig:
     """
     config_data: IWLSapiDict = iwls.load_config(config_file=config_file)
     environments: iwls.EnvironmentDict = iwls.get_environment_config(
-        config_data["IWLS"]["API"]["ENVIRONMENT"]
+        config_data["IWLS"]["API"]["Environment"]
     )
     LOGGER.debug(f"Initialisation de la configuration de l'API IWLS.")
 
@@ -139,5 +139,5 @@ def get_api_config(config_file: Optional[Path] = CONFIG_FILE) -> IWLSAPIConfig:
             ),
             buffer_time=config_data["IWLS"]["API"]["TimeSeries"].get("buffer_time"),
         ),
-        profile=iwls.APIProfile(**config_data["IWLS"]["API"]["PROFILE"]),
+        profile=iwls.APIProfile(**config_data["IWLS"]["API"]["Profile"]),
     )
