@@ -18,3 +18,4 @@ tenacity
 shapely
 python-dateutil
 sphinx-rtd-theme
+click
