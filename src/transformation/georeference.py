@@ -145,6 +145,7 @@ def _add_value_within_limit_if_applicable(
     time_diff_after: float = (
         event_dates_wl[event_position_wl] - time_utc_sounding
     ).total_seconds() / 60
+
     if time_diff_after <= water_level_tolerance:
         return round(water_level_df.iloc[event_position_wl][schema_ids.VALUE], 3)
 
@@ -155,13 +156,13 @@ def _add_value_within_limit_if_applicable(
     return None
 
 
-def process_row(
+def _get_water_level(
     row: pd.Series,
     water_level_data: dict[str, pd.DataFrame],
     water_level_tolerance: int | float,
 ) -> Optional[np.float64]:
     """
-    Traite une ligne de données de sonde.
+    Récupère la valeur du niveau d'eau pour une sonde.
 
     :param row: Ligne de données de sonde.
     :type row: pd.Series[schema.DataLoggerWithTideZoneSchema]
@@ -264,7 +265,7 @@ def get_water_level(
     dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=cpu)
     interpolated_values: pd.Series = dask_data.map_partitions(
         lambda df: df.apply(
-            process_row,
+            _get_water_level,  #  todo : weighted average ?
             axis=1,
             water_level_data=water_level_data,
             water_level_tolerance=water_level_tolerance,
@@ -301,7 +302,7 @@ def apply_georeference_bathymetry(
     def calculate_depth(row: gpd.GeoSeries) -> float:
         return (
             row[schema_ids.DEPTH_RAW_METER]
-            + row[schema_ids.WATER_LEVEL_METER]
+            - row[schema_ids.WATER_LEVEL_METER]
             - waterline.z
             + sounder.z  # todo valider la formule, inclure z navigation ?
         ) or np.nan
@@ -335,12 +336,14 @@ def compute_tpu(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     def calculate_tpu(row: gpd.GeoSeries) -> float:
         return (
             (row[schema_ids.DEPTH_PROCESSED_METER] * 0.05)
-            + 2  # todo mettre en paramètre
+            + 2  # todo mettre en paramètre (wlo 1 ? et wlp 2 ?)
         ) or np.nan
 
-    LOGGER.debug("Calcul du TPU des données de profondeur.")
-
     cpu: int = cpu_count()
+
+    LOGGER.debug(
+        f"Calcul du TPU des données de profondeur avec {cpu} processus en parallèle."
+    )
 
     dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=cpu)
 
