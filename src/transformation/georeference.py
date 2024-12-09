@@ -113,13 +113,14 @@ def _handle_missing_data(idx_sounding: int, tide_zone_id: str) -> None:
     return None
 
 
-def _add_value_within_limit(
+def _add_value_within_limit_if_applicable(
     event_position_wl: np.int64,
     time_utc_sounding: pd.Timestamp,
     event_dates_wl: pd.DatetimeIndex,
     water_level_df: pd.DataFrame,
     idx_sounding: int,
     tide_zone_id: str,
+    time_tolerance: int,
 ) -> Optional[np.float64]:
     """
     Ajoute la valeur du niveau d'eau si elle est dans les limites.
@@ -136,16 +137,15 @@ def _add_value_within_limit(
     :type idx_sounding: int
     :param tide_zone_id: Identifiant de la zone de marée.
     :type tide_zone_id: str
+    :param time_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
+    :type time_tolerance: int
     :return: Valeur du niveau d'eau.
     :rtype: Optional[np.float64]
     """
     time_diff_after: float = (
         event_dates_wl[event_position_wl] - time_utc_sounding
     ).total_seconds() / 60
-
-    if (
-        time_diff_after <= 15
-    ):  # todo mettre comme paramètre dans le fichier de configuration
+    if time_diff_after <= time_tolerance:
         return round(water_level_df.iloc[event_position_wl][schema_ids.VALUE], 3)
 
     LOGGER.warning(
@@ -156,7 +156,7 @@ def _add_value_within_limit(
 
 
 def process_row(
-    row: pd.Series, water_level_data: dict[str, pd.DataFrame]
+    row: pd.Series, water_level_data: dict[str, pd.DataFrame], time_tolerance: int
 ) -> Optional[np.float64]:
     """
     Traite une ligne de données de sonde.
@@ -165,6 +165,10 @@ def process_row(
     :type row: pd.Series[schema.DataLoggerWithTideZoneSchema]
     :param water_level_data: Les séries temporelles des niveaux d'eau.
     :type water_level_data: dict[str, pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]
+    :param time_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
+    :type time_tolerance: int
+    :return: Valeur du niveau d'eau.
+    :rtype: Optional[np.float64]
     """
     tide_zone_id: str = row.get(schema_ids.TIDE_ZONE_ID)
     time_utc_sounding: pd.Timestamp = row.get(schema_ids.TIME_UTC)
@@ -201,25 +205,27 @@ def process_row(
 
     # Vérifier si position_after est hors des limites
     if position_after >= len(event_dates_wl):
-        return _add_value_within_limit(
+        return _add_value_within_limit_if_applicable(
             event_position_wl=np.float64(position_after - 1),
             time_utc_sounding=time_utc_sounding,
             event_dates_wl=event_dates_wl,
             water_level_df=water_level_df,
             idx_sounding=idx_sounding,
             tide_zone_id=tide_zone_id,
+            time_tolerance=time_tolerance,
         )  # todo tester cas limite
 
     position_before: np.int64 = max(np.int64(0), np.int64(position_after - 1))
     # Vérifier si position_before est hors des limites
     if position_before < 0:
-        return _add_value_within_limit(
+        return _add_value_within_limit_if_applicable(
             event_position_wl=position_after,
             time_utc_sounding=time_utc_sounding,
             event_dates_wl=event_dates_wl,
             water_level_df=water_level_df,
             idx_sounding=idx_sounding,
             tide_zone_id=tide_zone_id,
+            time_tolerance=time_tolerance,
         )  # todo tester cas limite
 
     return _interpolate_water_level(
@@ -230,7 +236,9 @@ def process_row(
 
 
 def get_water_level(
-    data: gpd.GeoDataFrame, water_level_data: dict[str, pd.DataFrame]
+    data: gpd.GeoDataFrame,
+    water_level_data: dict[str, pd.DataFrame],
+    time_tolerance: int,
 ) -> gpd.GeoDataFrame:
     """
     Ajoute le niveau d'eau aux données de profondeur.
@@ -239,6 +247,8 @@ def get_water_level(
     :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     :param water_level_data: Niveau d'eau.
     :type water_level_data: dict[str, pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]
+    :param time_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
+    :type time_tolerance: int
     :return: Données de profondeur avec le niveau d'eau.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
@@ -251,7 +261,12 @@ def get_water_level(
 
     dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=cpu)
     interpolated_values: pd.Series = dask_data.map_partitions(
-        lambda df: df.apply(process_row, axis=1, water_level_data=water_level_data),
+        lambda df: df.apply(
+            process_row,
+            axis=1,
+            water_level_data=water_level_data,
+            time_tolerance=time_tolerance,
+        ),
         meta=("x", "f8"),
     ).compute()
 
@@ -330,6 +345,7 @@ def georeference_bathymetry(
     water_level: dict[str, pd.DataFrame],
     waterline: WaterlineProtocol,
     sounder: SensorProtocol,
+    time_tolerance: int = 15,
 ) -> gpd.GeoDataFrame:
     """
     Géoréférence les données de bathymétrie.
@@ -342,6 +358,8 @@ def georeference_bathymetry(
     :type waterline: WaterlineProtocol
     :param sounder: Données du sondeur.
     :type sounder: SensorProtocol
+    :param time_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
+    :type time_tolerance: int
     :return: Données de profondeur avec le niveau d'eau.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
@@ -349,7 +367,7 @@ def georeference_bathymetry(
 
     LOGGER.info("Récupération des niveaux d'eau pour les sondes.")
     data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = get_water_level(
-        data, water_level
+        data, water_level, time_tolerance=time_tolerance
     )
 
     data: gpd.GeoDataFrame[schema.DataLoggerSchema] = data.drop(
