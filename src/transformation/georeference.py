@@ -187,20 +187,18 @@ def process_row(
         water_level_df=water_level_df,
     )
 
-    # Trouver l'événement au moment exact
-    exact_match: pd.DatetimeIndex = event_dates_wl[event_dates_wl == time_utc_sounding]
-    if not exact_match.empty:
-        return round(
-            water_level_df.iloc[event_dates_wl.get_loc(time_utc_sounding)][
-                schema_ids.VALUE
-            ],
-            3,
-        )
-
     # Trouver les indices des événements avant et après
     position_after: np.int64 = event_dates_wl.searchsorted(
         time_utc_sounding, side="right"
     )
+
+    # Vérifier si [position_after - 1] est un match exact
+    if event_dates_wl[position_after - 1] == time_utc_sounding:
+        return round(
+            water_level_df.iloc[position_after - 1][schema_ids.VALUE],
+            3,
+        )
+
     # Vérifier si position_after est hors des limites
     if position_after >= len(event_dates_wl):
         return _add_value_within_limit(
@@ -289,7 +287,7 @@ def apply_georeference_bathymetry(
             + row[schema_ids.WATER_LEVEL_METER]
             - waterline.z
             + sounder.z  # todo valider la formule, inclure z navigation ?
-        )
+        ) or np.nan
 
     cpu: int = cpu_count()
 
@@ -316,7 +314,11 @@ def compute_tpu(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     :return: Données de profondeur avec le TPU.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
-    pass
+    LOGGER.debug("Calcul du TPU des données de profondeur.")
+
+    # todo calculer le TPU
+
+    return data
 
 
 @schema.validate_schemas(
