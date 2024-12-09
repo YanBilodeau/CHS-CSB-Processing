@@ -118,14 +118,14 @@ class DataFilterConfig(BaseModel):
 
 class DataGeoreferenceConfig(BaseModel):
     """
-    Classe de configuration pour la géoréférencement des données.
+    Classe de configuration pour le géoréférencement des données.
 
-    :param water_level_tolerance: Temps tampon en minutes pour les données de marée à récupérer pour le géoréférencement
+    :param water_level_tolerance: Temps tampon en minutes pour les données de niveau d'eau à récupérer.
     :type water_level_tolerance: int | float
     """
 
     water_level_tolerance: int | float
-    """La tolérance de la marée."""
+    """La tolérance en minutes pour les données de marée à récupérer pour le géoréférencement."""
 
 
 def get_data_config(
