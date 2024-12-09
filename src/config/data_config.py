@@ -18,8 +18,8 @@ LOGGER = logger.bind(name="CSB-Pipeline.Config.DataConfig")
 
 CONFIG_FILE: Path = Path(__file__).parent.parent / "CONFIG_csb-processing.toml"
 
-DataFilterDict = dict[str, int | float]
-DataConfigDict = dict[str, dict[str, DataFilterDict]]
+DataDict = dict[str, int | float]
+DataConfigDict = dict[str, dict[str, DataDict]]
 
 
 MIN_LATITUDE: int | float = -90
@@ -116,14 +116,28 @@ class DataFilterConfig(BaseModel):
         return value
 
 
-def get_data_config(config_file: Optional[Path] = CONFIG_FILE) -> DataFilterConfig:
+class DataGeoreferenceConfig(BaseModel):
     """
-    Retournes la configuration pour la transformation des données.
+    Classe de configuration pour la géoréférencement des données.
+
+    :param water_level_tolerance: Temps tampon en minutes pour les données de marée à récupérer pour le géoréférencement
+    :type water_level_tolerance: int | float
+    """
+
+    water_level_tolerance: int | float
+    """La tolérance de la marée."""
+
+
+def get_data_config(
+    config_file: Optional[Path] = CONFIG_FILE,
+) -> tuple[DataFilterConfig, DataGeoreferenceConfig]:
+    """
+    Retournes la configuration pour la transformation des données et le géoréférencement.
 
     :param config_file: Le chemin du fichier de configuration.
     :type config_file: Optional[Path]
-    :return: La configuration de transformation des données.
-    :rtype: DataFilterConfig
+    :return: La configuration pour la transformation des données et le géoréférencement.
+    :rtype: tuple[DataFilterConfig, DataGeoreferenceConfig]
     """
     config_data: DataConfigDict = load_config(config_file=config_file)["DATA"]
 
@@ -131,29 +145,39 @@ def get_data_config(config_file: Optional[Path] = CONFIG_FILE) -> DataFilterConf
         f"Initialisation de la configuration de pour la transformation des données."
     )
 
-    data_filter: DataFilterDict = config_data["Transformation"]["filter"]
+    data_filter: DataDict = config_data["Transformation"]["filter"]
+    data_georef: DataDict = config_data["Georeference"]["tide"]
 
-    return DataFilterConfig(
-        min_latitude=(
-            data_filter["min_latitude"]
-            if "min_latitude" in data_filter
-            else MIN_LATITUDE
+    return (
+        DataFilterConfig(
+            min_latitude=(
+                data_filter["min_latitude"]
+                if "min_latitude" in data_filter
+                else MIN_LATITUDE
+            ),
+            max_latitude=(
+                data_filter["max_latitude"]
+                if "max_latitude" in data_filter
+                else MAX_LATITUDE
+            ),
+            min_longitude=(
+                data_filter["min_longitude"]
+                if "min_longitude" in data_filter
+                else MIN_LONGITUDE
+            ),
+            max_longitude=(
+                data_filter["max_longitude"]
+                if "max_longitude" in data_filter
+                else MAX_LONGITUDE
+            ),
+            min_depth=(
+                data_filter["min_depth"] if "min_depth" in data_filter else MIN_DEPTH
+            ),
+            max_depth=(
+                data_filter["max_depth"] if "max_depth" in data_filter else MAX_DEPTH
+            ),
         ),
-        max_latitude=(
-            data_filter["max_latitude"]
-            if "max_latitude" in data_filter
-            else MAX_LATITUDE
+        DataGeoreferenceConfig(
+            water_level_tolerance=data_georef["water_level_tolerance"]
         ),
-        min_longitude=(
-            data_filter["min_longitude"]
-            if "min_longitude" in data_filter
-            else MIN_LONGITUDE
-        ),
-        max_longitude=(
-            data_filter["max_longitude"]
-            if "max_longitude" in data_filter
-            else MAX_LONGITUDE
-        ),
-        min_depth=data_filter["min_depth"] if "min_depth" in data_filter else MIN_DEPTH,
-        max_depth=data_filter["max_depth"] if "max_depth" in data_filter else MAX_DEPTH,
     )
