@@ -1,3 +1,4 @@
+from functools import lru_cache
 from pathlib import Path
 from typing import Optional
 
@@ -8,6 +9,7 @@ import toml
 LOGGER = logger.bind(name="CSB-Pipeline.Config.LoadConfig")
 
 
+@lru_cache
 def load_config(config_file: Optional[Path]) -> dict:
     """
     Retournes les données de configuration du fichier TOML.
