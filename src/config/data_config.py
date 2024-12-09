@@ -10,15 +10,17 @@ from pydantic import BaseModel, field_validator
 from typing import Optional
 
 from loguru import logger
-import toml
+
+from .helper import load_config
 
 
 LOGGER = logger.bind(name="CSB-Pipeline.Config.DataConfig")
 
-CONFIG_FILE: Path = Path(__file__).parent.parent / "CONFIG_data_transformation.toml"
+CONFIG_FILE: Path = Path(__file__).parent.parent / "CONFIG_csb-processing.toml"
 
 DataFilterDict = dict[str, int | float]
-DataConfigDict = dict[str, dict[str, dict[str, DataFilterDict]]]
+DataConfigDict = dict[str, dict[str, DataFilterDict]]
+
 
 MIN_LATITUDE: int | float = -90
 MAX_LATITUDE: int | float = 90
@@ -114,23 +116,6 @@ class DataFilterConfig(BaseModel):
         return value
 
 
-def load_config(config_file: Optional[Path] = CONFIG_FILE) -> DataConfigDict:
-    """
-    Retournes les données de configuration du fichier TOML.
-
-    :param config_file: Le chemin du fichier de configuration.
-    :type config_file: Optional[Path]
-    :return: Les données de configuration.
-    :rtype: DataConfigDict
-    """
-    LOGGER.debug(f"Chargement du fichier de configuration : '{config_file}'.")
-
-    with open(config_file, "r") as file:
-        data = toml.load(file)
-
-    return data
-
-
 def get_data_config(config_file: Optional[Path] = CONFIG_FILE) -> DataFilterConfig:
     """
     Retournes la configuration pour la transformation des données.
@@ -140,13 +125,13 @@ def get_data_config(config_file: Optional[Path] = CONFIG_FILE) -> DataFilterConf
     :return: La configuration de transformation des données.
     :rtype: DataFilterConfig
     """
-    config_data: DataConfigDict = load_config(config_file=config_file)
+    config_data: DataConfigDict = load_config(config_file=config_file)["DATA"]
 
     LOGGER.debug(
         f"Initialisation de la configuration de pour la transformation des données."
     )
 
-    data_filter: DataFilterDict = config_data["Data"]["Transformation"]["Filter"]
+    data_filter: DataFilterDict = config_data["Transformation"]["filter"]
 
     return DataFilterConfig(
         min_latitude=(
