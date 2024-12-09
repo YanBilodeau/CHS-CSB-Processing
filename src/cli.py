@@ -6,7 +6,6 @@ Il permet de traiter des fichiers de données bathymétriques et de les géoréf
 
 import click
 from pathlib import Path
-import sys
 from typing import Collection
 
 from loguru import logger
@@ -36,9 +35,4 @@ LOGGER = logger.bind(name="CSB-Processing.CLI")
     help="Chemin du répertoire de sortie.",
 )
 def cli(files: Collection[Path], vessel_id: str, output: Path) -> None:
-    LOGGER.info(f"Ligne de commande exécutée : {' '.join(sys.argv)}")
     processing_workflow(files=files, vessel_id=vessel_id, output=Path(output))
-
-
-if __name__ == "__main__":
-    cli()
