@@ -39,7 +39,7 @@ endpoint = "EndpointPublic"
 calls = 15
 period = 1
 
-[Data.Transformation.Filter]
+[DATA.Transformation.filter]
 # Valeurs minimales et maximales de latitude et longitude pour filtrer les données {int, float}.
 # Commenter les lignes suivantes pour utiliser les valeurs par défaut.
 min_latitude = -90
@@ -51,9 +51,9 @@ min_depth = 0
 # Ce paramètre est désactivé par défaut.
 # max_depth = 1000
 
-[Data.Georeference.Tide]
+[DATA.Georeference.tide]
 
 
-[CSB.Processing.Options]
+[CSB.Processing.options]
 # Niveau de log {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 log_level = "INFO"
