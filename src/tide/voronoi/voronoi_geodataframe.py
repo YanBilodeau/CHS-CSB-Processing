@@ -98,21 +98,20 @@ def merge_attributes(
     """
     LOGGER.debug("Fusion des attributs des stations avec les polygones de Voronoi.")
 
-    gdf_voronoi = gdf_voronoi.merge(
-        gdf_joined[
-            [
-                "index_right",
-                schema_ids.ID,
-                schema_ids.CODE,
-                schema_ids.NAME,
-                schema_ids.TIME_SERIES,
-                schema_ids.IS_TIDAL,
-            ]
-        ],
-        left_index=True,
-        right_on="index_right",
+    gdf_voronoi = (
+        gdf_voronoi.merge(
+            gdf_joined,
+            left_index=True,
+            right_on="index_right",
+        )
+        .rename(
+            columns={
+                "geometry_x": schema_ids.GEOMETRY,
+                "geometry_y": schema_ids.STATION_POSITION,
+            }
+        )
+        .drop(columns=["index_right"])
     )
-    gdf_voronoi.drop(columns=["index_right"], inplace=True)
 
     return gdf_voronoi
 
