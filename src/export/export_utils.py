@@ -52,6 +52,7 @@ def transform_additional_geometry_columns_to_wkt(
     ]
 
     if additional_geometry_columns:
+        geodataframe: gpd.GeoDataFrame = geodataframe.copy()
         for col in additional_geometry_columns:
             geodataframe[col] = geodataframe[col].apply(
                 lambda geom: geom.wkt if geom else None
