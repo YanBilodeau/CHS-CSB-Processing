@@ -5,6 +5,7 @@ Ce module contient la classe StationsHandlerPrivate qui permet de récupérer le
 """
 
 from concurrent.futures import ThreadPoolExecutor
+import copy
 from datetime import datetime, UTC
 from itertools import repeat
 from typing import Optional, Collection
@@ -155,8 +156,8 @@ class StationsHandlerPrivate(StationsHandlerABC):
             "Récupération des métadonnées et des séries temporelles des stations."
         )
 
-        stations: list[dict] = self.stations
-        stations_id: list[dict] = [station["id"] for station in self.stations]
+        stations: list[dict] = copy.deepcopy(self.stations)
+        stations_id: list[dict] = [station["id"] for station in stations]
 
         time_series_list: list[dict] = self._get_stations_time_series(
             stations=stations_id, ttl=ttl, api=api

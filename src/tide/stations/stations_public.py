@@ -4,6 +4,7 @@ Module pour récupérer des données des stations de l'API public.
 Ce module contient la classe StationsHandlerPublic qui permet de récupérer des données des stations de l'API public.
 """
 
+import copy
 from datetime import datetime
 from typing import Optional, Collection
 
@@ -99,7 +100,7 @@ class StationsHandlerPublic(StationsHandlerABC):
         """
         LOGGER.debug("Récupération des métadonnées des stations.")
 
-        stations: list[dict] = self.stations
+        stations: list[dict] = copy.deepcopy(self.stations)
         stations_id: list[dict] = [station["id"] for station in stations]
 
         tidal_info_list: list[bool | None] = self._get_stations_tidal_info(
