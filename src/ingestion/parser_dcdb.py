@@ -17,7 +17,6 @@ from .parsing_exception import (
 )
 from .parser_abc import DataParserABC
 from . import parser_ids as ids
-import schema
 from schema import model_ids as schema_ids
 
 
