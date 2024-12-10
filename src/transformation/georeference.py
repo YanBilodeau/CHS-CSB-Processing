@@ -5,7 +5,6 @@ Ce module contient les fonctions de géoréférencement des données de bathymé
 """
 
 from multiprocessing import cpu_count
-from typing import Optional
 
 from cachetools import LRUCache
 import dask_geopandas as dgpd
@@ -109,7 +108,7 @@ def _handle_missing_data(idx_sounding: int, tide_zone_id: str) -> float:
     :return: np.nan
     :rtype: float
     """
-    LOGGER.warning(
+    LOGGER.debug(
         f"Aucune donnée disponible pour la zone de marée {tide_zone_id} (index {idx_sounding})."
     )
 
@@ -152,7 +151,7 @@ def _add_value_within_limit_if_applicable(
     if time_diff <= water_level_tolerance:
         return round(water_level_df.iloc[event_position_wl][schema_ids.VALUE], 3)
 
-    LOGGER.warning(
+    LOGGER.debug(
         f"Pas de données de niveau d'eau suffisantes pour récupérer l'index {idx_sounding} avec une "
         f"tolérance de {water_level_tolerance} minutes : (tide_zone_id={tide_zone_id})."
     )
@@ -311,7 +310,7 @@ def apply_georeference_bathymetry(
             - row[schema_ids.WATER_LEVEL_METER]
             - waterline.z
             + sounder.z  # todo valider la formule, inclure z navigation ?
-        ) or np.nan
+        )
 
     cpu: int = cpu_count()
 
@@ -342,7 +341,7 @@ def compute_tpu(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     def calculate_tpu(row: gpd.GeoSeries) -> float:
         return (
             (row[schema_ids.DEPTH_PROCESSED_METER] * 0.05)
-            + 2  # todo mettre en paramètre (wlo 1 ? et wlp 2 ?)
+            + 2  # todo mettre en paramètre (wlo 1 ? et wlp 2 ?)  Appliquer sur depth_raw_meter ou depth_processed_meter ?
         ) or np.nan
 
     cpu: int = cpu_count()
@@ -406,5 +405,13 @@ def georeference_bathymetry(
 
     LOGGER.info("Calcul du TPU des données de profondeur.")
     data = compute_tpu(data)
+
+    LOGGER.info("Géoréférencement des données bathymétrique terminé.")
+
+    depth_na: np.int64 = data["Depth_processed_meter"].isna().sum()
+    if depth_na > 0:
+        LOGGER.warning(
+            f"Il reste {depth_na} sondes sans valeur de profondeur réduite et sans valeur d'incertitude."
+        )
 
     return data
