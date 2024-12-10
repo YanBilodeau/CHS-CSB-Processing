@@ -408,7 +408,10 @@ def georeference_bathymetry(
     LOGGER.info("Calcul du TPU des données de profondeur.")
     data = compute_tpu(data)
 
-    LOGGER.info("Géoréférencement des données bathymétrique terminé.")
+    LOGGER.info(f"Géoréférencement des données bathymétrique terminé.")
+    LOGGER.success(
+        f"{data['Depth_processed_meter'].notna.sum()} sondes géoréférencées."
+    )
 
     depth_na: np.int64 = data["Depth_processed_meter"].isna().sum()
     if depth_na > 0:
