@@ -6,13 +6,13 @@ Ce module contient les fonctions pour gérer les données de séries temporelles
 
 import concurrent.futures
 from datetime import timedelta, datetime
-from multiprocessing import cpu_count
 from typing import Optional, Any, Collection
 
 from loguru import logger
 import numpy as np
 import pandas as pd
 from scipy.interpolate import CubicSpline
+from shapely.geometry import Point
 
 from .exception_time_serie import (
     get_data_gaps_message,
@@ -769,7 +769,9 @@ def get_threshold_interpolation_filling_value(
 
 
 def finalize_time_serie_dataframe(
-    wl_dataframe: pd.DataFrame, station_id: str
+    wl_dataframe: pd.DataFrame,
+    station_id: str,
+    stations_handler: StationsHandlerProtocol,
 ) -> pd.DataFrame:
     """
     Finalise les données de la série temporelle en les nettoyant, en les triant et en ajoutant les métadonnées.
@@ -778,6 +780,8 @@ def finalize_time_serie_dataframe(
     :type wl_dataframe: pd.DataFrame[schema.WaterLevelSerieDataSchema]
     :param station_id: Identifiant de la station.
     :type station_id: str
+    :param stations_handler: Gestionnaire des stations.
+    :type stations_handler: StationsHandlerProtocol
     :return: Données de la série temporelle finalisées.
     :rtype: pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]
     """
@@ -786,14 +790,47 @@ def finalize_time_serie_dataframe(
     reset_and_sort_index(wl_dataframe=wl_dataframe, drop=True)
     wl_dataframe: pd.DataFrame = wl_dataframe.dropna(subset=[schema_ids.VALUE])
     add_metadata_to_time_serie_dataframe(
-        wl_dataframe=wl_dataframe, station_id=station_id
+        wl_dataframe=wl_dataframe,
+        station_id=station_id,
+        stations_handler=stations_handler,
     )
 
     return wl_dataframe
 
 
+def get_station_position(
+    station_id: str,
+    stations_handler: StationsHandlerProtocol,
+) -> Optional[Point]:
+    """
+    Récupère la position de la station.
+
+    :param station_id: Identifiant de la station.
+    :type station_id: str
+    :param stations_handler: Gestionnaire des stations.
+    :type stations_handler: StationsHandlerProtocol
+    :return: Position de la station.
+    :rtype: Optional[Point]
+    """
+    coords: tuple[Optional[float], Optional[float]] = next(
+        (
+            (station["longitude"], station["latitude"])
+            for station in stations_handler.stations
+            if station[schema_ids.ID] == station_id
+        ),
+        (None, None),
+    )
+
+    if coords == (None, None):
+        return None
+
+    return Point(coords)
+
+
 def add_metadata_to_time_serie_dataframe(
-    wl_dataframe: pd.DataFrame, station_id: str
+    wl_dataframe: pd.DataFrame,
+    station_id: str,
+    stations_handler: StationsHandlerProtocol,
 ) -> pd.DataFrame:
     """
     Ajoute les métadonnées aux données de la série temporelle.
@@ -802,6 +839,8 @@ def add_metadata_to_time_serie_dataframe(
     :type wl_dataframe: pd.DataFrame[schema.WaterLevelSerieDataSchema]
     :param station_id: Identifiant de la station.
     :type station_id: str
+    :param stations_handler: Gestionnaire des stations.
+    :type stations_handler: StationsHandlerProtocol
     :return: Données de la série temporelle avec les métadonnées.
     :rtype: pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]
     """
@@ -814,6 +853,9 @@ def add_metadata_to_time_serie_dataframe(
     )
     wl_dataframe.attrs[schema_ids.END_TIME] = (
         wl_dataframe[schema_ids.EVENT_DATE].iloc[-1] if not wl_dataframe.empty else None
+    )
+    wl_dataframe.attrs[schema_ids.STATION_POSITION] = get_station_position(
+        station_id=station_id, stations_handler=stations_handler
     )
 
     return wl_dataframe
@@ -890,7 +932,9 @@ def get_water_level_data(
             )
 
             return finalize_time_serie_dataframe(
-                wl_dataframe=wl_data, station_id=station_id
+                wl_dataframe=wl_data,
+                station_id=station_id,
+                stations_handler=stations_handler,
             )
 
         gaps_total, _, gaps_to_fill = identify_data_gaps(
@@ -941,7 +985,9 @@ def get_water_level_data(
         )
 
     return finalize_time_serie_dataframe(
-        wl_dataframe=wl_combined, station_id=station_id
+        wl_dataframe=wl_combined,
+        station_id=station_id,
+        stations_handler=stations_handler,
     )
 
 
