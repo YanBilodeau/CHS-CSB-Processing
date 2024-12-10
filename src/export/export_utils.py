@@ -34,7 +34,9 @@ def transform_geodataframe_crs(geodataframe: gpd.GeoDataFrame, to_epsg: int) -> 
         geodataframe.to_crs(epsg=to_epsg, inplace=True)
 
 
-def transform_additional_geometry_columns_to_wkt(geodataframe: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+def transform_additional_geometry_columns_to_wkt(
+    geodataframe: gpd.GeoDataFrame,
+) -> gpd.GeoDataFrame:
     """
     Transforme les colonnes de géométrie supplémentaires en WKT.
 
@@ -43,14 +45,12 @@ def transform_additional_geometry_columns_to_wkt(geodataframe: gpd.GeoDataFrame)
     :return: Le GeoDataFrame avec les colonnes de géométrie supplémentaires transformées en WKT.
     :rtype: gpd.GeoDataFrame
     """
-    # Identifier les colonnes de géométrie
     additional_geometry_columns: list[str] = [
         col
         for col in geodataframe.columns
         if geodataframe[col].dtype == "geometry" and col != geodataframe.geometry.name
     ]
 
-    # Transformer les colonnes de géométrie supplémentaires en WKT
     if additional_geometry_columns:
         for col in additional_geometry_columns:
             geodataframe[col] = geodataframe[col].apply(
@@ -82,7 +82,9 @@ def export_geodataframe(
     LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier {driver} : '{output_path}'.")
 
     transform_geodataframe_crs(geodataframe=geodataframe, to_epsg=to_epsg)
-    geodataframe: gpd.GeoDataFrame = transform_additional_geometry_columns_to_wkt(geodataframe)
+    geodataframe: gpd.GeoDataFrame = transform_additional_geometry_columns_to_wkt(
+        geodataframe
+    )
 
     geodataframe.to_file(str(sanitize_path_name(output_path)), driver=driver, **kwargs)
 
