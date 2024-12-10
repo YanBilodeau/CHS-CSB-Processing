@@ -1,3 +1,9 @@
+"""
+Module de configuration du logger loguru.
+
+Ce module contient la fonction de configuration du logger loguru.
+"""
+
 import sys
 from collections import defaultdict
 from os import getlogin

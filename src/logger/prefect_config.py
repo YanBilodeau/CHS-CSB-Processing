@@ -1,3 +1,9 @@
+"""
+Module de configuration du logger pour Prefect.
+
+Ce module contient la fonction de configuration du logger pour Prefect.
+"""
+
 from os import getlogin
 from pathlib import Path
 from socket import gethostname
