@@ -4,7 +4,6 @@ Module de configuration des données.
 Ce module permet de charger les données de configuration à partir d'un fichier TOML.
 """
 
-
 from functools import lru_cache
 from pathlib import Path
 from typing import Optional
