@@ -234,7 +234,7 @@ def get_name_by_station_id(gdf_voronoi: gpd.GeoDataFrame, station_id: str) -> st
 
 def get_station_position_by_station_id(
     gdf_voronoi: gpd.GeoDataFrame, station_id: str
-) -> str:
+) -> gpd.GeoSeries:
     """
     Récupère la position de la station.
 
@@ -243,13 +243,13 @@ def get_station_position_by_station_id(
     :param station_id: L'identifiant de la station.
     :type station_id: str
     :return: La position de la station.
-    :rtype: str
+    :rtype: gpd.GeoSeries
     """
     LOGGER.debug(f"Récupération de la position de la station '{station_id}'.")
 
     return gdf_voronoi.loc[gdf_voronoi[schema_ids.ID] == station_id][
         schema_ids.STATION_POSITION
-    ].values[0]
+    ]
 
 
 def get_polygon_by_geometry(
