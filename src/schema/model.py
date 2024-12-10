@@ -86,6 +86,7 @@ class WaterLevelSerieDataWithMetaDataSchema(WaterLevelSerieDataSchema):
             schema_ids.STATION_ID,
             schema_ids.START_TIME,
             schema_ids.END_TIME,
+            schema_ids.STATION_POSITION,
         ]
         validated_df = super().validate(df, *args, **kwargs)
 
