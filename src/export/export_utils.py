@@ -34,6 +34,32 @@ def transform_geodataframe_crs(geodataframe: gpd.GeoDataFrame, to_epsg: int) -> 
         geodataframe.to_crs(epsg=to_epsg, inplace=True)
 
 
+def transform_additional_geometry_columns_to_wkt(geodataframe: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    """
+    Transforme les colonnes de géométrie supplémentaires en WKT.
+
+    :param geodataframe: Le GeoDataFrame.
+    :type geodataframe: gpd.GeoDataFrame
+    :return: Le GeoDataFrame avec les colonnes de géométrie supplémentaires transformées en WKT.
+    :rtype: gpd.GeoDataFrame
+    """
+    # Identifier les colonnes de géométrie
+    additional_geometry_columns: list[str] = [
+        col
+        for col in geodataframe.columns
+        if geodataframe[col].dtype == "geometry" and col != geodataframe.geometry.name
+    ]
+
+    # Transformer les colonnes de géométrie supplémentaires en WKT
+    if additional_geometry_columns:
+        for col in additional_geometry_columns:
+            geodataframe[col] = geodataframe[col].apply(
+                lambda geom: geom.wkt if geom else None
+            )
+
+    return geodataframe
+
+
 def export_geodataframe(
     geodataframe: gpd.GeoDataFrame,
     driver: str,
@@ -56,6 +82,8 @@ def export_geodataframe(
     LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier {driver} : '{output_path}'.")
 
     transform_geodataframe_crs(geodataframe=geodataframe, to_epsg=to_epsg)
+    geodataframe: gpd.GeoDataFrame = transform_additional_geometry_columns_to_wkt(geodataframe)
+
     geodataframe.to_file(str(sanitize_path_name(output_path)), driver=driver, **kwargs)
 
 
@@ -132,7 +160,9 @@ def export_geodataframe_to_csv(
     export_dataframe_to_csv(df, output_path)
 
 
-def export_geodataframe_to_parquet(geodataframe: gpd.GeoDataFrame, output_path: Path) -> None:
+def export_geodataframe_to_parquet(
+    geodataframe: gpd.GeoDataFrame, output_path: Path
+) -> None:
     """
     Sauvegarde le GeoDataFrame dans un fichier Parquet.
 
@@ -146,7 +176,9 @@ def export_geodataframe_to_parquet(geodataframe: gpd.GeoDataFrame, output_path: 
     geodataframe.to_parquet(sanitize_path_name(output_path), index=False)
 
 
-def export_geodataframe_to_feather(geodataframe: gpd.GeoDataFrame, output_path: Path) -> None:
+def export_geodataframe_to_feather(
+    geodataframe: gpd.GeoDataFrame, output_path: Path
+) -> None:
     """
     Sauvegarde le GeoDataFrame dans un fichier Feather.
 
