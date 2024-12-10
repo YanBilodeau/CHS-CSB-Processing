@@ -36,7 +36,9 @@ def _validate_and_sort_data(water_level_data: dict[str, pd.DataFrame]) -> None:
             data=water_level_df, schema=schema.WaterLevelSerieDataWithMetaDataSchema
         )
 
-        LOGGER.debug(f"Dataframe {water_level_df.attrs[schema_ids.STATION_ID]} validé.")
+        LOGGER.debug(
+            f"Dataframe des niveaux d'eau validé : {water_level_df.attrs.get(schema_ids.STATION_ID)}."
+        )
 
         water_level_df.sort_values(by=schema_ids.EVENT_DATE, inplace=True)
 
@@ -159,7 +161,7 @@ def _add_value_within_limit_if_applicable(
     return np.nan
 
 
-def _get_water_level(
+def _get_water_level_for_sounding(
     row: pd.Series,
     water_level_data: dict[str, pd.DataFrame],
     water_level_tolerance: int | float,
@@ -191,7 +193,7 @@ def _get_water_level(
         water_level_data[tide_zone_id]
     )
     event_dates_wl: pd.DatetimeIndex[pd.Timestamp] = _get_event_dates(
-        station_id=water_level_df.attrs[schema_ids.STATION_ID],
+        station_id=tide_zone_id,
         water_level_df=water_level_df,
     )
 
@@ -243,7 +245,7 @@ def _get_water_level(
     )
 
 
-def get_water_level(
+def get_water_levels(
     data: gpd.GeoDataFrame,
     water_level_data: dict[str, pd.DataFrame],
     water_level_tolerance: int | float,
@@ -270,7 +272,7 @@ def get_water_level(
     dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=cpu)
     interpolated_values: pd.Series = dask_data.map_partitions(
         lambda df: df.apply(
-            _get_water_level,  #  todo : weighted average ?
+            _get_water_level_for_sounding,  #  todo : weighted average ?
             axis=1,
             water_level_data=water_level_data,
             water_level_tolerance=water_level_tolerance,
@@ -390,7 +392,7 @@ def georeference_bathymetry(
     LOGGER.info("Géoréférencement des données bathymétrique.")
 
     LOGGER.info("Récupération des niveaux d'eau pour les sondes.")
-    data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = get_water_level(
+    data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = get_water_levels(
         data, water_level, water_level_tolerance=water_level_tolerance
     )
 
