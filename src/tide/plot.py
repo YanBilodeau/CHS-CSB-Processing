@@ -153,7 +153,7 @@ def set_initial_visibility(
     :rtype: list[bool]
     """
     initial_visibility = [False] * len(fig.data)
-    for j in range(len(dataframes[0]["time_serie_code"].unique())):
+    for j in range(len(dataframes[0]["time_serie_code"].unique())):  # type: ignore[union-attr]
         initial_visibility[j] = True
 
     return initial_visibility
@@ -263,7 +263,7 @@ def plot_time_series_dataframe(
     )
 
     for i, visible in enumerate(initial_visibility):
-        fig.data[i].visible = visible
+        fig.data[i].visible = visible  # type: ignore[union-attr]
 
     if show_plot:
         fig.show()
