@@ -410,7 +410,7 @@ def georeference_bathymetry(
 
     LOGGER.info(f"Géoréférencement des données bathymétrique terminé.")
     LOGGER.success(
-        f"{data['Depth_processed_meter'].notna.sum()} sondes géoréférencées."
+        f"{data['Depth_processed_meter'].notna().sum()} sondes géoréférencées."
     )
 
     depth_na: np.int64 = data["Depth_processed_meter"].isna().sum()
