@@ -35,6 +35,8 @@ TIME_SERIES: str = "time_series"
 """Valeur de la constante time_series."""
 IS_TIDAL: str = "is_tidal"
 """Valeur de la constante is_tidal."""
+STATION_POSITION: str = "station_position"
+"""Valeur de la constante station_position."""
 
 # Constantes pour les noms des colonnes des données du schéma de données TimeSerieDataSchema.
 EVENT_DATE: str = "event_date"
