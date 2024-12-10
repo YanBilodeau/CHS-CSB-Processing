@@ -127,7 +127,6 @@ class TideZoneProtocolSchema(pa.DataFrameModel):
 
     id: Series[str]
     time_series: Series[object]
-    station_position: GeoSeries
 
     class Config:
         coerce = True
@@ -144,6 +143,7 @@ class TideZoneStationSchema(TideZoneProtocolSchema):
         nullable=True
     )  # On utilise object pour accepter les booléens et les None
     geometry: GeoSeries
+    station_position: GeoSeries
 
 
 class TideZoneInfoSchema(pa.DataFrameModel):
@@ -153,7 +153,6 @@ class TideZoneInfoSchema(pa.DataFrameModel):
 
     Tide_zone_id: Series[str]
     time_series: Series[object]
-    station_position: GeoSeries
     min_time: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
     max_time: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
 
