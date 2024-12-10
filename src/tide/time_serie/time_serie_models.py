@@ -72,6 +72,8 @@ class StationsHandlerProtocol(Protocol):
     Protocole pour les gestionnaires de stations.
     """
 
+    stations: list[dict]
+
     def get_time_series_dataframe(
         self,
         station: str,
