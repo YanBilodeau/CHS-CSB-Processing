@@ -72,8 +72,6 @@ class StationsHandlerProtocol(Protocol):
     Protocole pour les gestionnaires de stations.
     """
 
-    stations: list[dict]
-
     def get_time_series_dataframe(
         self,
         station: str,
@@ -97,5 +95,15 @@ class StationsHandlerProtocol(Protocol):
         :type wlo_qc_flag_filter: list[str]
         :return: Données de marée.
         :rtype: pd.DataFrame
+        """
+        pass
+
+    @property
+    def stations(self) -> list[dict]:
+        """
+        Propriété pour obtenir les stations.
+
+        :return: Stations.
+        :rtype: list[dict]
         """
         pass
