@@ -85,6 +85,7 @@ def _interpolate_water_level(
     time_diff: np.float64 = (
         after_event[schema_ids.EVENT_DATE] - before_event[schema_ids.EVENT_DATE]
     ).total_seconds()
+
     value_diff: float = after_event[schema_ids.VALUE] - before_event[schema_ids.VALUE]
     time_elapsed: float = (
         time_utc - before_event[schema_ids.EVENT_DATE]
@@ -144,15 +145,16 @@ def _add_value_within_limit_if_applicable(
     :return: Valeur du niveau d'eau.
     :rtype: np.float64 | float
     """
-    time_diff_after: float = (
-        event_dates_wl[event_position_wl] - time_utc_sounding
-    ).total_seconds() / 60
+    time_diff: float = (
+        abs(event_dates_wl[event_position_wl] - time_utc_sounding).total_seconds() / 60
+    )
 
-    if time_diff_after <= water_level_tolerance:
+    if time_diff <= water_level_tolerance:
         return round(water_level_df.iloc[event_position_wl][schema_ids.VALUE], 3)
 
     LOGGER.warning(
-        f"Pas de données de niveau d'eau suffisantes pour récupérer l'index {idx_sounding} : (tide_zone_id={tide_zone_id})."
+        f"Pas de données de niveau d'eau suffisantes pour récupérer l'index {idx_sounding} avec une "
+        f"tolérance de {water_level_tolerance} minutes : (tide_zone_id={tide_zone_id})."
     )
 
     return np.nan
@@ -209,16 +211,20 @@ def _get_water_level(
     # Vérifier si position_after est hors des limites
     if position_after >= len(event_dates_wl):
         return _add_value_within_limit_if_applicable(
-            event_position_wl=np.float64(position_after - 1),
+            event_position_wl=np.int64(
+                position_after - 1  # -1 pour récupérer le dernier élément
+            ),
             time_utc_sounding=time_utc_sounding,
             event_dates_wl=event_dates_wl,
             water_level_df=water_level_df,
             idx_sounding=idx_sounding,
             tide_zone_id=tide_zone_id,
             water_level_tolerance=water_level_tolerance,
-        )  # todo tester cas limite
+        )
 
-    position_before: np.int64 = max(np.int64(0), np.int64(position_after - 1))
+    position_before: np.int64 = np.int64(
+        position_after - 1  # -1 pour récupérer l'élément avant la position_after
+    )
     # Vérifier si position_before est hors des limites
     if position_before < 0:
         return _add_value_within_limit_if_applicable(
@@ -229,7 +235,7 @@ def _get_water_level(
             idx_sounding=idx_sounding,
             tide_zone_id=tide_zone_id,
             water_level_tolerance=water_level_tolerance,
-        )  # todo tester cas limite
+        )
 
     return _interpolate_water_level(
         before_event=water_level_df.iloc[position_before],
