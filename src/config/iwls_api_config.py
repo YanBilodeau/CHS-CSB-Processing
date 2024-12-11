@@ -110,6 +110,9 @@ class CacheConfig(BaseModel):
         :type value: Path
         :return: Le répertoire du cache.
         """
+        if not value.is_absolute():
+            value = Path(__file__).parent.parent / value
+
         if not value.exists():
             value.mkdir(parents=True)
 
