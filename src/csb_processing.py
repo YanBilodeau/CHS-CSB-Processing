@@ -105,7 +105,10 @@ def get_api(environment: iwls.APIEnvironment) -> stations.IWLSapiProtocol:
 
 
 def get_stations_handler(
-    endpoint_type: stations.EndpointTypeProtocol, api: stations.IWLSapiProtocol
+    endpoint_type: stations.EndpointTypeProtocol,
+    api: stations.IWLSapiProtocol,
+    ttl: int,
+    cache_path: Path,
 ) -> stations.StationsHandlerABC:
     """
     Récupère le gestionnaire des stations.
@@ -114,10 +117,16 @@ def get_stations_handler(
     :type endpoint_type: EndpointTypeProtocol
     :param api: API IWLS.
     :type api: IWLSapiProtocol
+    :param ttl: Durée de vie du cache.
+    :type ttl: int
+    :param cache_path: Chemin du répertoire du cache.
+    :type cache_path: Path
     :return: Gestionnaire des stations.
     :rtype: StationsHandlerABC
     """
-    return stations.get_stations_factory(enpoint_type=endpoint_type)(api=api)
+    return stations.get_stations_factory(enpoint_type=endpoint_type)(
+        api=api, ttl=ttl, cache_path=cache_path
+    )
 
 
 @schema.validate_schemas(
@@ -358,50 +367,7 @@ def get_sensors(
     return sounder, waterline
 
 
-def is_valid_file(file: Path) -> bool:
-    """
-    Vérifie si le fichier est valide pour le traitement.
-
-    :param file: Chemin du fichier.
-    :type file: Path
-    :return: Vrai si le fichier est valide, faux sinon.
-    :rtype: bool
-    """
-    return file.suffix.lower() in {".csv", ".txt", ".xyz"}
-
-
-def get_files(paths: Collection[Path]) -> list[Path]:
-    """
-    Récupère les fichiers à traiter.
-
-    :param paths: Chemins des fichiers ou répertoires.
-    :type paths: Collection[Path]
-    :return: Liste des fichiers à traiter.
-    :rtype: list[Path]
-    """
-    files: list[Path] = []
-
-    for path in paths:
-        path = Path(path)
-
-        if path.is_file() and is_valid_file(path):
-            files.append(path)
-
-        elif path.is_dir():
-            files.extend(file for file in path.glob("**/*") if is_valid_file(file))
-
-    return files
-
-
 def processing_workflow(files: Collection[Path], vessel_id: str, output: Path) -> None:
-    # Get the files to parse
-    files: list[Path] = get_files(files)  # todo bouger dans cli.py
-
-    # Check if there are files to process
-    if not files:  # todo bouger dans cli.py
-        LOGGER.error("Aucun fichier valide à traiter.")
-        return None
-
     # Get the data structure
     export_data_path, export_tide_path, log_path = get_data_structure(output)
 
@@ -456,7 +422,10 @@ def processing_workflow(files: Collection[Path], vessel_id: str, output: Path) -
     api: stations.IWLSapiProtocol = get_api(environment=api_environment)
     # Get the handler of the stations
     stations_handler: stations.StationsHandlerABC = get_stations_handler(
-        api=api, endpoint_type=api_environment.endpoint.TYPE
+        api=api,
+        endpoint_type=api_environment.endpoint.TYPE,
+        ttl=iwls_api_config.cache.ttl,
+        cache_path=iwls_api_config.cache.cache_path,
     )
 
     # Get the Voronoi diagram of the stations. The stations are selected based on the priority of the time series.
@@ -626,7 +595,4 @@ if __name__ == "__main__":
     processing_workflow(files=files_path, vessel_id="Tuktoyaktuk", output=OUTPUT)
 
     # todo gérer la valeur np.nan dans les configurations des capteurs
-
     # todo dans ce fichier, dans le fichier de configuration CONFIG_csb-processing.toml et dans tide.time_serie.time_serie_dataframe et transformation.georeference
-
-    # todo ajouter ttl pour l'instanciation de StationHandler
