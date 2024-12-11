@@ -29,12 +29,12 @@ class VesselConfigSQLiteManager(VesselConfigManagerABC):
     Classe permettant de gérer la configuration des navires à partir d'une base de données SQLite.
     """
 
-    def __init__(self, sqlite_config_path: Path):
+    def __init__(self, sqlite_config_path: Path | str):
         """
         Initialisation du gestionnaire de configuration des navires à partir d'une base de données SQLite.
 
         :param sqlite_config_path: Chemin de la base de données SQLite.
-        :type sqlite_config_path: Path
+        :type sqlite_config_path: Path | str
         """
         super().__init__()
         self.session: Session = self._connect_to_db(
@@ -52,6 +52,8 @@ class VesselConfigSQLiteManager(VesselConfigManagerABC):
         :rtype: Session
         :raises FileNotFoundError: Le fichier de configuration de la base de données SQLite n'existe pas.
         """
+        sqlite_config_path: Path = Path(sqlite_config_path)
+
         if not sqlite_config_path.exists():
             raise FileNotFoundError(
                 f"Le fichier de configuration de la base de données SQLite n'existe pas : {sqlite_config_path}."

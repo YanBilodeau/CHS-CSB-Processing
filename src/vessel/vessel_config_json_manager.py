@@ -27,12 +27,12 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
     Classe permettant de gérer la configuration des navires à partir d'un fichier JSON.
     """
 
-    def __init__(self, json_config_path: Path):
+    def __init__(self, json_config_path: Path | str):
         """
         Initialisation du gestionnaire de configuration des navires à partir d'un fichier JSON.
 
         :param json_config_path: Chemin du fichier JSON.
-        :type json_config_path: Path
+        :type json_config_path: Path | str
         """
         super().__init__()
         self._vessel_configs = self._load_vessel_configs_file(
@@ -52,6 +52,8 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
         :rtype: dict[str, VesselConfig]
         :raises FileNotFoundError: Si le fichier de configuration des navires n'existe pas.
         """
+        json_config_path: Path = Path(json_config_path)
+
         LOGGER.debug(
             f"Chargement du fichier de configuration des navires : {json_config_path}."
         )
