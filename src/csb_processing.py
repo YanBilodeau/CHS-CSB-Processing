@@ -54,6 +54,10 @@ def get_data_structure(output_path: Path) -> tuple[Path, Path, Path]:
     :return: Chemin des répertoires pour les données.
     :rtype: tuple[Path, Path, Path]
     """
+    LOGGER.info(
+        f"Initialisation de la structure de répertoires pour les données : {output_path}."
+    )
+
     data_path: Path = output_path / "Data"
     tide_path: Path = output_path / "Tide"
     log_path: Path = output_path / "Log"
@@ -372,8 +376,20 @@ def processing_workflow(
     files: Collection[Path],
     vessel_id: str,
     output: Path,
-    config_path: Path = CONFIG_FILE,
+    config_path: Optional[Path] = CONFIG_FILE,
 ) -> None:
+    """
+    Workflow de traitement des données.
+
+    :param files: Liste des fichiers à traiter.
+    :type files: Collection[Path]
+    :param vessel_id: Identifiant du navire.
+    :type vessel_id: str
+    :param output: Chemin du répertoire de sortie.
+    :type output: Path
+    :param config_path: Chemin du fichier de configuration.
+    :type config_path: Optional[Path]
+    """
     # Get the data structure
     export_data_path, export_tide_path, log_path = get_data_structure(output)
 
