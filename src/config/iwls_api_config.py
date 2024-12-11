@@ -81,6 +81,57 @@ class TimeSeriesConfig(BaseModel):
         return value
 
 
+class CacheConfig(BaseModel):
+    """
+    Classe de configuration pour le cache.
+
+    :param cache_path: Le répertoire du cache.
+    :type cache_path: Path
+    :param ttl: Le temps de vie du cache en secondes.
+    :type ttl: int
+    """
+
+    cache_path: Optional[Path]
+    """Le répertoire du cache."""
+    ttl: Optional[int] = 86400  # 24 heures
+    """Le temps de vie du cache en secondes."""
+
+    def __init__(self, **data):
+        if "cache_path" not in data:
+            data["cache_path"] = Path(__file__).parent.parent / "cache"
+        super().__init__(**data)
+
+    @field_validator("cache_path")
+    def validate_cache_path(cls, value: Path) -> Path:
+        """
+        Valide le répertoire du cache.
+
+        :param value: Le répertoire du cache.
+        :type value: Path
+        :return: Le répertoire du cache.
+        """
+        if not value.exists():
+            value.mkdir(parents=True)
+
+        return value
+
+    @field_validator("ttl")
+    def validate_ttl(cls, value: int) -> int:
+        """
+        Valide le temps de vie de la cache.
+
+        :param value: Le temps de vie du cache.
+        :type value: int
+        :return: Le temps de vie du cache.
+        :rtype: int
+        :raises ValueError: Si le temps de vie du cache est négatif.
+        """
+        if value < 0:
+            raise ValueError("Le temps de vie du cache doit être positif.")
+
+        return value
+
+
 class IWLSAPIConfig(BaseModel):
     """
     Classe de configuration pour l'API IWLS.
@@ -95,6 +146,8 @@ class IWLSAPIConfig(BaseModel):
     :type time_series: TimeSeriesConfig
     :param profile: Le profil actif de l'API.
     :type profile: iwls.APIProfile
+    :param cache: La configuration du cache.
+    :type cache: CacheConfig
     """
 
     dev: Optional[iwls.APIEnvironment]
@@ -107,6 +160,8 @@ class IWLSAPIConfig(BaseModel):
     """Configuration des séries temporelles."""
     profile: iwls.APIProfile
     """Profil actif de l'API."""
+    cache: CacheConfig
+    """Configuration du cache."""
 
 
 def get_api_config(config_file: Optional[Path] = CONFIG_FILE) -> IWLSAPIConfig:
@@ -140,4 +195,9 @@ def get_api_config(config_file: Optional[Path] = CONFIG_FILE) -> IWLSAPIConfig:
             buffer_time=config_data["IWLS"]["API"]["TimeSeries"].get("buffer_time"),
         ),
         profile=iwls.APIProfile(**config_data["IWLS"]["API"]["Profile"]),
+        cache=(
+            CacheConfig(**config_data["IWLS"]["API"]["Cache"])
+            if "Cache" in config_data["IWLS"]["API"]
+            else CacheConfig()
+        ),
     )
