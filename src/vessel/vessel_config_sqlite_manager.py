@@ -50,7 +50,13 @@ class VesselConfigSQLiteManager(VesselConfigManagerABC):
         :type sqlite_config_path: Path
         :return: Session de la base de données SQLite.
         :rtype: Session
+        :raises FileNotFoundError: Le fichier de configuration de la base de données SQLite n'existe pas.
         """
+        if not sqlite_config_path.exists():
+            raise FileNotFoundError(
+                f"Le fichier de configuration de la base de données SQLite n'existe pas : {sqlite_config_path}."
+            )
+
         LOGGER.debug(f"Connexion à la base de données SQLite : {sqlite_config_path}.")
 
         engine: Engine = create_engine(f"sqlite:///{sqlite_config_path}")
