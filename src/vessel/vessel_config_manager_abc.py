@@ -5,6 +5,7 @@ Ce module contient la classe abstraite VesselConfigManagerABC qui définit les m
 """
 
 from abc import ABC, abstractmethod
+from typing import Any
 
 from loguru import logger
 
@@ -18,7 +19,7 @@ class VesselConfigManagerABC(ABC):
     Classe abstraite définissant les méthodes pour gérer la configuration des navires.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any):
         """
         Initialisation du gestionnaire de configuration des navires.
 
