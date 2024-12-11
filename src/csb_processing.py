@@ -54,7 +54,7 @@ def get_data_structure(output_path: Path) -> tuple[Path, Path, Path]:
     :return: Chemin des répertoires pour les données.
     :rtype: tuple[Path, Path, Path]
     """
-    LOGGER.info(
+    LOGGER.debug(
         f"Initialisation de la structure de répertoires pour les données : {output_path}."
     )
 
@@ -424,10 +424,12 @@ def processing_workflow(
     # Export the parsed data
     export.export_geodataframe_to_gpkg(data, export_data_path / "ParsedData.gpkg")
 
-    # Get the vessel configuration
-    vessel_config_manager = vessel.VesselConfigJsonManager(
-        json_config_path=VESSEL_JSON_PATH
-    )  # todo : changer pour le factory
+    # Get the vessel configuration manager and the vessel configuration
+    vessel_config_manager: vessel.VesselConfigManagerABC = (
+        vessel.get_vessel_config_manager_factory(
+            manager_type=processing_config.vessel_manager.manager_type
+        )(**processing_config.vessel_manager.kwargs)
+    )
 
     LOGGER.info(f"Récupération de la configuration du navire {vessel_id}.")
     tuktoyaktuk_vessel: vessel.VesselConfig = vessel_config_manager.get_vessel_config(
