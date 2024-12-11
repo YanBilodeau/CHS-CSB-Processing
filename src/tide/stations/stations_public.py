@@ -84,13 +84,11 @@ class StationsHandlerPublic(StationsHandlerABC):
         ]
 
     def _get_stations_with_metadata(
-        self, ttl: int, api: str = "public", column_name_tidal: str = "isTidal"
+        self, api: str = "public", column_name_tidal: str = "isTidal"
     ) -> list[dict]:
         """
         Récupère les données des stations avec les séries temporelles.
 
-        :param ttl: Durée de vie du cache en secondes.
-        :type ttl: int
         :param api: Nom de l'API.
         :type api: str
         :param column_name_tidal: Nom de la colonne pour les informations sur les marées.
@@ -104,7 +102,7 @@ class StationsHandlerPublic(StationsHandlerABC):
         stations_id: list[dict] = [station["id"] for station in stations]
 
         tidal_info_list: list[bool | None] = self._get_stations_tidal_info(
-            stations=stations_id, ttl=ttl, api=api, column_name=column_name_tidal
+            stations=stations_id, api=api, column_name=column_name_tidal
         )
 
         for station, is_tidal in zip(stations, tidal_info_list):
@@ -117,7 +115,6 @@ class StationsHandlerPublic(StationsHandlerABC):
         filter_time_series: Collection[TimeSeriesProtocol] | None,
         excluded_stations: Collection[str] | None = None,
         station_name_key: Optional[str] = "officialName",
-        ttl: Optional[int] = 86400,
     ) -> gpd.GeoDataFrame:
         """
         Récupère les données des stations sous forme de GeoDataFrame.
@@ -128,13 +125,11 @@ class StationsHandlerPublic(StationsHandlerABC):
         :type excluded_stations: Collection[str] | None
         :param station_name_key: Clé du nom de la station.
         :type station_name_key: Optional[str]
-        :param ttl: Durée de vie du cache en secondes.
-        :type ttl: Optional[int]
         :return: Données des stations sous forme de GeoDataFrame.
         :rtype: gpd.GeoDataFrame
         """
         return self._get_stations_geodataframe(
-            stations=self._get_stations_with_metadata(ttl=ttl),
+            stations=self._get_stations_with_metadata(),
             filter_time_series=filter_time_series,
             excluded_stations=excluded_stations,
             station_name_key=station_name_key,

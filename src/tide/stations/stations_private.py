@@ -90,36 +90,30 @@ class StationsHandlerPrivate(StationsHandlerABC):
             if ts["code"] in index_map.keys() and ts["active"]
         ]
 
-    def _fetch_time_series(self, station_id: str, ttl: int, api: str) -> dict:
+    def _fetch_time_series(self, station_id: str, api: str) -> dict:
         """
         Récupère les séries temporelles de la station.
 
         :param station_id: Identifiant de la station.
         :type station_id: str
-        :param ttl: Durée de vie du cache en secondes.
-        :type ttl: int
         :param api: Type d'API.
         :type api: str
         :return: Données de la station avec les séries temporelles.
         :rtype: dict
         """
 
-        @cache_result(ttl=ttl)
+        @cache_result(ttl=self.ttl)
         def _get_time_series_station(station_id_: str, **kwargs) -> list[dict]:
             return self.api.get_time_series_station(station=station_id_).data
 
         return _get_time_series_station(station_id_=station_id, api=api)  # type: ignore[arg-type]
 
-    def _get_stations_time_series(
-        self, stations: list[dict], ttl: int, api: str
-    ) -> list[dict]:
+    def _get_stations_time_series(self, stations: list[dict], api: str) -> list[dict]:
         """
         Récupère les séries temporelles des stations.
 
         :param stations: Liste des stations.
         :type stations: list[dict]
-        :param ttl: Durée de vie du cache en secondes.
-        :type ttl: int
         :param api: ype d'API.
         :type api: str
         :return: Liste des stations avec les séries temporelles.
@@ -130,7 +124,6 @@ class StationsHandlerPrivate(StationsHandlerABC):
                 executor.map(
                     self._fetch_time_series,
                     stations,
-                    repeat(ttl),
                     repeat(api),
                 )
             )
@@ -138,13 +131,11 @@ class StationsHandlerPrivate(StationsHandlerABC):
         return time_series_list
 
     def _get_stations_with_metadata(
-        self, ttl: int, api: str = "private", column_name_tidal: str = "tidal"
+        self, api: str = "private", column_name_tidal: str = "tidal"
     ) -> list[dict]:
         """
         Récupère les données des stations avec les séries temporelles.
 
-        :param ttl: Durée de vie du cache en secondes.
-        :type ttl: int
         :param api: Nom de l'API.
         :type api: str
         :param column_name_tidal: Nom de la colonne pour les informations de marée.
@@ -160,11 +151,11 @@ class StationsHandlerPrivate(StationsHandlerABC):
         stations_id: list[dict] = [station["id"] for station in stations]
 
         time_series_list: list[dict] = self._get_stations_time_series(
-            stations=stations_id, ttl=ttl, api=api
+            stations=stations_id, api=api
         )
 
         tidal_info_list: list[bool | None] = self._get_stations_tidal_info(
-            stations=stations_id, ttl=ttl, api=api, column_name=column_name_tidal
+            stations=stations_id, api=api, column_name=column_name_tidal
         )
 
         for station, ts, is_tidal in zip(stations, time_series_list, tidal_info_list):
@@ -178,7 +169,6 @@ class StationsHandlerPrivate(StationsHandlerABC):
         filter_time_series: Collection[TimeSeriesProtocol] | None,
         excluded_stations: Collection[str] | None = None,
         station_name_key: str = "name",
-        ttl: Optional[int] = 86400,
     ) -> gpd.GeoDataFrame:
         """
         Récupère les données des stations sous forme de GeoDataFrame.
@@ -189,13 +179,11 @@ class StationsHandlerPrivate(StationsHandlerABC):
         :type excluded_stations: Collection[str] | None
         :param station_name_key: Clé du nom de la station.
         :type station_name_key: str
-        :param ttl: Durée de vie du cache en secondes.
-        :type ttl: int
         :return: Données des stations sous forme de GeoDataFrame.
         :rtype: gpd.GeoDataFrame
         """
         return self._get_stations_geodataframe(
-            stations=self._get_stations_with_metadata(ttl=ttl),
+            stations=self._get_stations_with_metadata(),
             filter_time_series=filter_time_series,
             excluded_stations=excluded_stations,
             station_name_key=station_name_key,

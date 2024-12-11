@@ -29,16 +29,19 @@ class StationsHandlerABC(ABC):
     Classe abstraite pour récupérer des données stations de marée.
     """
 
-    def __init__(self, api: IWLSapiProtocol):
+    def __init__(self, api: IWLSapiProtocol, ttl: int = 86400):
         """
         Initialisation de la classe abstraite `StationsHandlerABC`.
 
         :param api: API pour récupérer les données des stations.
         :type api: IWLSapiProtocol
+        :param ttl: Durée de vie du cache en secondes.
+        :type ttl: int
         """
         LOGGER.debug(f"Initialisation d'un objet {self.__class__.__name__}.")
 
         self.api: IWLSapiProtocol = api
+        self.ttl: int = ttl
 
     @property
     def stations(self) -> list[dict]:
@@ -169,15 +172,13 @@ class StationsHandlerABC(ABC):
         ]
 
     def _fetch_is_tidal_station(
-        self, sation_id: str, ttl: int, api: str, column_name: str
+        self, sation_id: str, api: str, column_name: str
     ) -> bool | None:
         """
         Récupère l'information si la station est une station de marée.
 
         :param sation_id: dentifiant de la station.
         :type sation_id: str
-        :param ttl: Durée de vie du cache en secondes.
-        :type ttl: int
         :param api: Type de l'API.
         :type api: str
         :param column_name: Nom de la colonne.
@@ -186,7 +187,7 @@ class StationsHandlerABC(ABC):
         :rtype: bool | None
         """
 
-        @cache_result(ttl=ttl)
+        @cache_result(ttl=self.ttl)
         def _is_tidal_station(station_id_: str, **kwargs) -> bool | None:
             metadata: dict = self.api.get_metadata_station(  # type: ignore[arg-type]
                 station=station_id_
@@ -200,15 +201,13 @@ class StationsHandlerABC(ABC):
         return _is_tidal_station(station_id_=sation_id, api=api)
 
     def _get_stations_tidal_info(
-        self, stations: list[dict], ttl: int, api: str, column_name: str
+        self, stations: list[dict], api: str, column_name: str
     ) -> list[bool | None]:
         """
         Récupère les informations sur les stations de marée.
 
         :param stations: Liste des stations.
         :type stations: list[dict]
-        :param ttl: Durée de vie du cache en secondes.
-        :type ttl: int
         :param api: Type de l'API.
         :type api: str
         :param column_name: Nom de la colonne.
@@ -221,7 +220,6 @@ class StationsHandlerABC(ABC):
                 executor.map(
                     self._fetch_is_tidal_station,
                     stations,
-                    repeat(ttl),
                     repeat(api),
                     repeat(column_name),
                 )
@@ -292,7 +290,6 @@ class StationsHandlerABC(ABC):
         filter_time_series: Collection[TimeSeriesProtocol] | None,
         excluded_stations: Collection[str] | None = None,
         station_name_key: Optional[str] = "officialName",
-        ttl: Optional[int] = 86400,
     ) -> gpd.GeoDataFrame:
         """
         Récupère les données des stations sous forme de GeoDataFrame.
@@ -303,8 +300,6 @@ class StationsHandlerABC(ABC):
         :type excluded_stations: Collection[str] | None
         :param station_name_key: Clé du nom de la station.
         :type station_name_key: str
-        :param ttl: Durée de vie du cache en secondes.
-        :type ttl: int
         :return: Données des stations sous forme de GeoDataFrame.
         :rtype: gpd.GeoDataFrame[schema.StationsSchema]
         """
