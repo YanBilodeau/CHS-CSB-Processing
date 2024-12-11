@@ -12,6 +12,8 @@ from .vessel_config import (
 )
 from .vessel_config_json_manager import VesselConfigJsonManager
 from .vessel_config_sqlite_manager import VesselConfigSQLiteManager
+from .vessel_config_manager_abc import VesselConfigManagerABC
+from .factory_vessel_config_manager import VesselConfigManagerType, get_vessel_config_manager_factory
 
 
 __all__ = [
@@ -23,4 +25,8 @@ __all__ = [
     "SoundSpeedProfile",
     "VesselConfigJsonManager",
     "VesselConfigSQLiteManager",
+    "VesselConfigManagerABC",
+    "VesselConfigManagerType",
+    "get_vessel_config_manager_factory",
+
 ]
