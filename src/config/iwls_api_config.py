@@ -17,8 +17,6 @@ import iwls_api_request as iwls
 
 LOGGER = logger.bind(name="CSB-Pipeline.Config.IWLSAPIConfig")
 
-CONFIG_FILE: Path = Path(__file__).parent.parent / "CONFIG_csb-processing.toml"
-
 TimeSeriesDict = dict[str, list[str]]
 IWLSapiDict = dict[
     str, dict[str, TimeSeriesDict | iwls.EnvironmentDict | iwls.ProfileDict]
@@ -167,7 +165,7 @@ class IWLSAPIConfig(BaseModel):
     """Configuration du cache."""
 
 
-def get_api_config(config_file: Optional[Path] = CONFIG_FILE) -> IWLSAPIConfig:
+def get_api_config(config_file: Path) -> IWLSAPIConfig:
     """
     Retournes la configuration de l'API IWLS
 
