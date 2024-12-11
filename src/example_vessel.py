@@ -45,7 +45,7 @@ if __name__ == "__main__":
     attribute: vessel.BDBattribute = frosti.get_attribute(timestamp=time_stamp)
     print(attribute)
 
-    vessel_config_sqlite_manager: vessel.VesselConfigSQLiteManager = vessel.VesselConfigSQLiteManager(
-        sqlite_config_path=VESSEL_SQLITE_PATH
+    vessel_config_sqlite_manager: vessel.VesselConfigSQLiteManager = (
+        vessel.VesselConfigSQLiteManager(sqlite_config_path=VESSEL_SQLITE_PATH)
     )
     print(vessel_config_sqlite_manager)

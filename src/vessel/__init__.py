@@ -11,6 +11,7 @@ from .vessel_config import (
     SoundSpeedProfile,
 )
 from .vessel_config_json_manager import VesselConfigJsonManager
+from .vessel_config_sqlite_manager import VesselConfigSQLiteManager
 
 
 __all__ = [
@@ -21,4 +22,5 @@ __all__ = [
     "Waterline",
     "SoundSpeedProfile",
     "VesselConfigJsonManager",
+    "VesselConfigSQLiteManager",
 ]
