@@ -53,6 +53,8 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
         :raises FileNotFoundError: Si le fichier de configuration des navires n'existe pas.
         """
         json_config_path: Path = Path(json_config_path)
+        if not json_config_path.is_absolute():
+            json_config_path = Path(__file__).parent.parent / json_config_path
 
         LOGGER.debug(
             f"Chargement du fichier de configuration des navires : {json_config_path}."

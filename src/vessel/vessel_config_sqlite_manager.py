@@ -53,6 +53,8 @@ class VesselConfigSQLiteManager(VesselConfigManagerABC):
         :raises FileNotFoundError: Le fichier de configuration de la base de données SQLite n'existe pas.
         """
         sqlite_config_path: Path = Path(sqlite_config_path)
+        if not sqlite_config_path.is_absolute():
+            sqlite_config_path = Path(__file__).parent.parent / sqlite_config_path
 
         if not sqlite_config_path.exists():
             raise FileNotFoundError(
