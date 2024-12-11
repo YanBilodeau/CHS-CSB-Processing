@@ -6,10 +6,10 @@ import vessel
 
 ROOT: Path = Path(__file__).parent
 
-VESSEL_JSON_PATH: Path = ROOT / "vessel" / "TCSB_VESSELSLIST.json"
-VESSEL_JSON_UPDATE_PATH: Path = ROOT / "vessel" / "TCSB_VESSELSLIST_UPDATE.json"
+VESSEL_JSON_PATH: Path = ROOT / "TCSB_VESSELSLIST.json"
+VESSEL_JSON_UPDATE_PATH: Path = ROOT / "TCSB_VESSELSLIST_UPDATE.json"
 
-VESSEL_SQLITE_PATH: Path = ROOT / "vessel" / "vessel_config.db"
+VESSEL_SQLITE_PATH: Path = ROOT / "vessel_config.db"
 
 
 if __name__ == "__main__":
