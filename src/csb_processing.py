@@ -1,8 +1,6 @@
-import click
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-import sys
 from typing import Optional, Collection
 
 import geopandas as gpd
@@ -190,7 +188,7 @@ def get_intersected_tide_zone_info(
     :rtype: pd.DataFrame[schema.TideZoneInfoSchema]
     """
 
-    def get_time_series_for_station(station_id: str) -> list[iwls.TimeSeries]:
+    def get_station_time_series(station_id: str) -> list[iwls.TimeSeries]:
         return [
             iwls.TimeSeries.from_str(ts)
             for ts in voronoi.get_time_series_by_station_id(
@@ -207,9 +205,10 @@ def get_intersected_tide_zone_info(
         .agg(min_time="min", max_time="max")
         .reset_index()
     )
+
     tide_zone_info[schema_ids.TIME_SERIES] = tide_zone_info[
         schema_ids.TIDE_ZONE_ID
-    ].apply(get_time_series_for_station)
+    ].apply(get_station_time_series)
 
     return tide_zone_info
 
@@ -394,12 +393,12 @@ def get_files(paths: Collection[Path]) -> list[Path]:
     return files
 
 
-def main(files: Collection[Path], vessel_id: str, output: Path) -> None:
+def processing_workflow(files: Collection[Path], vessel_id: str, output: Path) -> None:
     # Get the files to parse
-    files: list[Path] = get_files(files)
+    files: list[Path] = get_files(files)  # todo bouger dans cli.py
 
     # Check if there are files to process
-    if not files:
+    if not files:  # todo bouger dans cli.py
         LOGGER.error("Aucun fichier valide à traiter.")
         return None
 
@@ -409,7 +408,7 @@ def main(files: Collection[Path], vessel_id: str, output: Path) -> None:
     # Configure the logger
     configure_logger(
         log_path / f"{datetime.now().strftime('%Y-%m-%d')}_CSB-Processing.log",
-        std_level="DEBUG",
+        std_level="INFO",
         log_file_level="DEBUG",
     )
 
@@ -489,9 +488,11 @@ def main(files: Collection[Path], vessel_id: str, output: Path) -> None:
         tide_zone=gdf_voronoi,
     )
 
-    for zone, min_time, max_time, ts in tide_zonde_info.itertuples(index=False):
+    for zone, min_time, max_time, time_series in tide_zonde_info.itertuples(
+        index=False
+    ):
         LOGGER.info(
-            f"Zone de marée {zone} : temps minimum - {min_time}, temps maximum - {max_time}, séries temporelles - {ts}."
+            f"Zone de marée {zone} : temps minimum - {min_time}, temps maximum - {max_time}, séries temporelles - {time_series}."
         )
 
     tide_zonde_info[schema_ids.MAX_TIME].max()
@@ -563,36 +564,17 @@ def main(files: Collection[Path], vessel_id: str, output: Path) -> None:
     # Export the processed data
     output_path: Path = export_data_path / "ProcessedData.gpkg"
     LOGGER.info(f"Exportation des données traitées : {output_path}.")
-    export.export_geodataframe_to_gpkg(gdf=processed_data, output_path=output_path)
-
-
-@click.command(
-    help="""Ce script permet de traiter des fichiers de données bathymétriques et de les géoréférencer."""
-)
-@click.option(
-    "--files",
-    type=click.Path(exists=False),
-    multiple=True,
-    help="Chemins des fichiers ou répertoires à traiter.",
-)
-@click.option(
-    "--vessel_id",
-    type=str,
-    help="Identifiant du navire.",
-)
-@click.option(
-    "--output",
-    type=click.Path(),
-    help="Chemin du répertoire de sortie.",
-)
-def cli(files: Collection[Path], vessel_id: str, output: Path) -> None:
-    command_line_args = " ".join(sys.argv)
-    LOGGER.info(f"Ligne de commande exécutée : {command_line_args}")
-    main(files=files, vessel_id=vessel_id, output=Path(output))
+    export.export_geodataframe_to_gpkg(
+        geodataframe=processed_data, output_path=output_path
+    )
 
 
 if __name__ == "__main__":
+    import sys
+    from cli import cli
+
     if sys.argv[1:]:
+        LOGGER.info(f"Ligne de commande exécutée : {' '.join(sys.argv)}")
         cli()
 
     def get_ofm_files() -> list[Path]:
@@ -641,4 +623,10 @@ if __name__ == "__main__":
     #     + get_actisense_files()
     # )
 
-    main(files=files_path, vessel_id="Tuktoyaktuk", output=OUTPUT)
+    processing_workflow(files=files_path, vessel_id="Tuktoyaktuk", output=OUTPUT)
+
+    # todo gérer la valeur np.nan dans les configurations des capteurs
+
+    # todo dans ce fichier, dans le fichier de configuration CONFIG_csb-processing.toml et dans tide.time_serie.time_serie_dataframe et transformation.georeference
+
+    # todo ajouter ttl pour l'instanciation de StationHandler
