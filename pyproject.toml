@@ -27,6 +27,7 @@ tenacity = "^9.0.0"
 shapely = "^2.0.6"
 python-dateutil = "^2.9.0"
 click = "^8.1.7"
+sqlalchemy = "^2.0.35"
 
 [build-system]
 requires = ["poetry-core"]

@@ -19,3 +19,4 @@ shapely
 python-dateutil
 sphinx-rtd-theme
 click
+sqlalchemy
