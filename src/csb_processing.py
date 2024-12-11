@@ -7,8 +7,7 @@ import geopandas as gpd
 from loguru import logger
 import pandas as pd
 
-from config import data_config as data_config
-from config import iwls_api_config as iwls_config
+import config
 import export.export_utils as export
 from ingestion import factory_parser
 import iwls_api_request as iwls
@@ -28,7 +27,9 @@ LOGGER = logger.bind(name="CSB-Processing.WorkFlow")
 
 ROOT: Path = Path(__file__).parent
 OUTPUT: Path = ROOT.parent / "Output"
-VESSEL_JSON_PATH: Path = ROOT / "vessel" / "TCSB_VESSELSLIST.json"
+VESSEL_JSON_PATH: Path = ROOT / "TCSB_VESSELSLIST.json"
+
+CONFIG_FILE: Path = Path(__file__).parent / "CONFIG_csb-processing.toml"
 
 
 @dataclass(frozen=True)
@@ -68,7 +69,7 @@ def get_data_structure(output_path: Path) -> tuple[Path, Path, Path]:
     return data_path, tide_path, log_path
 
 
-def get_iwls_environment(config: iwls_config.IWLSAPIConfig) -> iwls.APIEnvironment:
+def get_iwls_environment(config: config.IWLSAPIConfig) -> iwls.APIEnvironment:
     """
     Réccupère l'environnement de l'API IWLS à partir du fichier de configuration.
 
@@ -367,7 +368,12 @@ def get_sensors(
     return sounder, waterline
 
 
-def processing_workflow(files: Collection[Path], vessel_id: str, output: Path) -> None:
+def processing_workflow(
+    files: Collection[Path],
+    vessel_id: str,
+    output: Path,
+    config_path: Path = CONFIG_FILE,
+) -> None:
     # Get the data structure
     export_data_path, export_tide_path, log_path = get_data_structure(output)
 
@@ -379,7 +385,7 @@ def processing_workflow(files: Collection[Path], vessel_id: str, output: Path) -
     )
 
     # Read the configuration file 'data_config.toml'
-    data_filter_config, data_georef_config = data_config.get_data_config()
+    processing_config: config.CSBprocessingConfig = config.get_data_config()
 
     # Get the parser and the parsed data
     LOGGER.info(f"Récupération des données brutes des fichiers : {files}.")
@@ -395,7 +401,7 @@ def processing_workflow(files: Collection[Path], vessel_id: str, output: Path) -
 
     # Clean the data
     LOGGER.info(f"Nettoyage et filtrage des données.")
-    data = cleaner.clean_data(data, data_filter=data_filter_config)
+    data = cleaner.clean_data(data, data_filter=processing_config.filter)
 
     LOGGER.success(f"{len(data)} sondes valides récupérées.")
 
@@ -405,7 +411,7 @@ def processing_workflow(files: Collection[Path], vessel_id: str, output: Path) -
     # Get the vessel configuration
     vessel_config_manager = vessel.VesselConfigJsonManager(
         json_config_path=VESSEL_JSON_PATH
-    )
+    )  # todo : changer pour le factory
 
     LOGGER.info(f"Récupération de la configuration du navire {vessel_id}.")
     tuktoyaktuk_vessel: vessel.VesselConfig = vessel_config_manager.get_vessel_config(
@@ -413,8 +419,8 @@ def processing_workflow(files: Collection[Path], vessel_id: str, output: Path) -
     )
 
     # Read the configuration file 'iwls_API_config.toml'
-    iwls_api_config: iwls_config.IWLSAPIConfig = iwls_config.get_api_config(
-        config_file=iwls_config.CONFIG_FILE
+    iwls_api_config: config.IWLSAPIConfig = config.get_api_config(
+        config_file=config_path
     )
     # Get the environment of the API IWLS from the configuration file and the active profile
     api_environment: iwls.APIEnvironment = get_iwls_environment(config=iwls_api_config)
@@ -522,7 +528,7 @@ def processing_workflow(files: Collection[Path], vessel_id: str, output: Path) -
             water_level=wl_combineds,
             waterline=waterline,
             sounder=sounder,
-            water_level_tolerance=data_georef_config.water_level_tolerance,
+            water_level_tolerance=processing_config.georeference.water_level_tolerance,
         )
     )
 
