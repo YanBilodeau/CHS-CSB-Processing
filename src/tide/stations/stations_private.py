@@ -26,9 +26,12 @@ class StationsHandlerPrivate(StationsHandlerABC):
     Classe récupérer des données stations de l'API privé.
     """
 
-    def __init__(self, api: IWLSapiProtocol,
-                 ttl: int = 86400,
-        cache_path: Optional[Path] = Path(__file__).parent / "cache",):
+    def __init__(
+        self,
+        api: IWLSapiProtocol,
+        ttl: int = 86400,
+        cache_path: Optional[Path] = Path(__file__).parent / "cache",
+    ):
         """
         Constructeur de la classe StationsHandlerPrivate.
 
