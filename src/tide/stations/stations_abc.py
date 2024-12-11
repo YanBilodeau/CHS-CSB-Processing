@@ -8,6 +8,7 @@ from abc import ABC, abstractmethod
 from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta, datetime
 from itertools import repeat
+from pathlib import Path
 from typing import Optional, Collection
 
 import geopandas as gpd
@@ -15,7 +16,7 @@ import pandas as pd
 from loguru import logger
 from shapely.geometry import Point
 
-from .cache_wrapper import cache_result
+from .cache_wrapper import cache_result, init_cache
 from .exception_stations import StationsError
 from .stations_models import TimeSeriesProtocol, ResponseProtocol, IWLSapiProtocol
 import schema
@@ -29,7 +30,12 @@ class StationsHandlerABC(ABC):
     Classe abstraite pour récupérer des données stations de marée.
     """
 
-    def __init__(self, api: IWLSapiProtocol, ttl: int = 86400):
+    def __init__(
+        self,
+        api: IWLSapiProtocol,
+        ttl: int = 86400,
+        cache_path: Optional[Path] = Path(__file__).parent / "cache",
+    ):
         """
         Initialisation de la classe abstraite `StationsHandlerABC`.
 
@@ -37,11 +43,14 @@ class StationsHandlerABC(ABC):
         :type api: IWLSapiProtocol
         :param ttl: Durée de vie du cache en secondes.
         :type ttl: int
+        :param cache_path: Chemin du cache.
+        :type cache_path: Path
         """
         LOGGER.debug(f"Initialisation d'un objet {self.__class__.__name__}.")
 
         self.api: IWLSapiProtocol = api
         self.ttl: int = ttl
+        init_cache(cache_path=cache_path)
 
     @property
     def stations(self) -> list[dict]:
