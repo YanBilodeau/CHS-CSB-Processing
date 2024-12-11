@@ -8,6 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 import copy
 from datetime import datetime, UTC
 from itertools import repeat
+from pathlib import Path
 from typing import Optional, Collection
 
 import geopandas as gpd
@@ -25,14 +26,20 @@ class StationsHandlerPrivate(StationsHandlerABC):
     Classe récupérer des données stations de l'API privé.
     """
 
-    def __init__(self, api: IWLSapiProtocol):
+    def __init__(self, api: IWLSapiProtocol,
+                 ttl: int = 86400,
+        cache_path: Optional[Path] = Path(__file__).parent / "cache",):
         """
         Constructeur de la classe StationsHandlerPrivate.
 
         :param api: Instance de l'API.
         :type api: IWLSapiProtocol
+        :param ttl: Durée de vie du cache en secondes.
+        :type ttl: int
+        :param cache_path: Chemin du cache.
+        :type cache_path: Optional[Path]
         """
-        super().__init__(api=api)
+        super().__init__(api=api, ttl=ttl, cache_path=cache_path)
 
     @staticmethod
     def _filter_stations(
