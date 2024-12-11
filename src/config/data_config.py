@@ -5,9 +5,10 @@ Ce module contient les classes et fonctions nécessaires pour charger et valider
 les configurations de filtrage des données.
 """
 
+from enum import StrEnum
 from pathlib import Path
 from pydantic import BaseModel, field_validator
-from typing import Optional
+from typing import Optional, Any
 
 from loguru import logger
 
@@ -18,8 +19,8 @@ LOGGER = logger.bind(name="CSB-Pipeline.Config.DataConfig")
 
 CONFIG_FILE: Path = Path(__file__).parent.parent / "CONFIG_csb-processing.toml"
 
-DataDict = dict[str, int | float]
-DataConfigDict = dict[str, dict[str, DataDict]]
+ConfigDict = dict[str, int | float | str]
+CSBconfigDict = dict[str, dict[str, dict[str, ConfigDict]]]
 
 
 MIN_LATITUDE: int | float = -90
@@ -120,7 +121,8 @@ class DataGeoreferenceConfig(BaseModel):
     """
     Classe de configuration pour le géoréférencement des données.
 
-    :param water_level_tolerance: Temps tampon en minutes pour les données de niveau d'eau à récupérer.
+    :param water_level_tolerance: Écart maximal en minutes entre les données et les niveaux d'eau à
+                                récupérer pour le géoréférencement.
     :type water_level_tolerance: int | float
     """
 
@@ -128,9 +130,40 @@ class DataGeoreferenceConfig(BaseModel):
     """La tolérance en minutes pour les données de marée à récupérer pour le géoréférencement."""
 
 
+class VesselConfigManagerType(StrEnum):
+    """
+    Enumération des types de gestionnaire de configuration de navires.
+    """
+
+    VesselConfigJsonManager = "VesselConfigJsonManager"
+    """Gestionnaire de configuration de navires en JSON."""
+    VesselConfigSQLiteManager = "VesselConfigSQLiteManager"
+    """Gestionnaire de configuration de navires en SQLite."""
+
+
+class VesselManagerConfig(BaseModel):
+    """
+    Classe de configuration pour le gestionnaire de navires.
+
+    :param manager_type: Le type de gestionnaire de configuration de navires.
+    :type manager_type: VesselConfigManagerType
+    :param kwargs: Les arguments pour le gestionnaire de configuration de navires.
+    :type kwargs: dict[str, Any]
+    """
+
+    manager_type: VesselConfigManagerType
+    kwargs: dict[str, Any]
+
+
+class CSBprocessingConfig(BaseModel):
+    filter: DataFilterConfig
+    georeference: DataGeoreferenceConfig
+    vessel_manager: Optional[VesselManagerConfig]
+
+
 def get_data_config(
     config_file: Optional[Path] = CONFIG_FILE,
-) -> tuple[DataFilterConfig, DataGeoreferenceConfig]:
+) -> CSBprocessingConfig:
     """
     Retournes la configuration pour la transformation des données et le géoréférencement.
 
@@ -139,17 +172,18 @@ def get_data_config(
     :return: La configuration pour la transformation des données et le géoréférencement.
     :rtype: tuple[DataFilterConfig, DataGeoreferenceConfig]
     """
-    config_data: DataConfigDict = load_config(config_file=config_file)["DATA"]
+    config_data: CSBconfigDict = load_config(config_file=config_file)
 
     LOGGER.debug(
         f"Initialisation de la configuration de pour la transformation des données."
     )
 
-    data_filter: DataDict = config_data["Transformation"]["filter"]
-    data_georef: DataDict = config_data["Georeference"]["tide"]
+    data_filter: ConfigDict = config_data["DATA"]["Transformation"]["filter"]
+    data_georef: ConfigDict = config_data["DATA"]["Georeference"]["tide"]
+    vessel_config: ConfigDict = config_data["CSB"]["Processing"]["vessel"]
 
-    return (
-        DataFilterConfig(
+    return CSBprocessingConfig(
+        filter=DataFilterConfig(
             min_latitude=(
                 data_filter["min_latitude"]
                 if "min_latitude" in data_filter
@@ -177,7 +211,15 @@ def get_data_config(
                 data_filter["max_depth"] if "max_depth" in data_filter else MAX_DEPTH
             ),
         ),
-        DataGeoreferenceConfig(
+        georeference=DataGeoreferenceConfig(
             water_level_tolerance=data_georef["water_level_tolerance"]
+        ),
+        vessel_manager=VesselManagerConfig(
+            manager_type=VesselConfigManagerType(vessel_config["manager_type"]),
+            kwargs={
+                key: value
+                for key, value in vessel_config.items()
+                if key != "manager_type"
+            },
         ),
     )
