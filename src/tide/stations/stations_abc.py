@@ -33,8 +33,8 @@ class StationsHandlerABC(ABC):
     def __init__(
         self,
         api: IWLSapiProtocol,
-        ttl: int = 86400,
-        cache_path: Optional[Path] = Path(__file__).parent / "cache",
+        ttl: int,
+        cache_path: Path,
     ):
         """
         Initialisation de la classe abstraite `StationsHandlerABC`.
