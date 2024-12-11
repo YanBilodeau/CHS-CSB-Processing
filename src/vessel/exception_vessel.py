@@ -64,9 +64,13 @@ class VesselConfigNotFoundError(Exception):
 class VesselConfigManagerIdentifierError(Exception):
     """
     Exception levée lorsqu'une erreur survient lors de l'identification du gestionnaire de configuration de navires.
+
+    :param manager_type: Le type de gestionnaire de navire.
+    :type manager_type: str
     """
 
     manager_type: str
+    """Le type de gestionnaire de navire."""
 
     def __str__(self) -> str:
         return f"Le type de gestionnaire de navire '{self.manager_type}' n'existe pas."
