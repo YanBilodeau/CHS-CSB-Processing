@@ -58,3 +58,15 @@ class VesselConfigNotFoundError(Exception):
 
     def __str__(self) -> str:
         return f"La configuration du navire {self.vessel_id} n'existe pas."
+
+
+@dataclass(frozen=True)
+class VesselConfigManagerIdentifierError(Exception):
+    """
+    Exception levée lorsqu'une erreur survient lors de l'identification du gestionnaire de configuration de navires.
+    """
+
+    manager_type: str
+
+    def __str__(self) -> str:
+        return f"Le type de gestionnaire de navire '{self.manager_type}' n'existe pas."
