@@ -6,6 +6,7 @@ Ce module contient la classe StationsHandlerPublic qui permet de récupérer des
 
 import copy
 from datetime import datetime
+from pathlib import Path
 from typing import Optional, Collection
 
 from dateutil import parser
@@ -23,14 +24,23 @@ class StationsHandlerPublic(StationsHandlerABC):
     Classe récupérer des données des stations de l'API public.
     """
 
-    def __init__(self, api: IWLSapiProtocol):
+    def __init__(
+        self,
+        api: IWLSapiProtocol,
+        ttl: int = 86400,
+        cache_path: Optional[Path] = Path(__file__).parent / "cache",
+    ):
         """
         Constructeur de la classe StationsHandlerPublic.
 
         :param api: Instance de l'API.
         :type api: IWLSapiProtocol
+        :param ttl: Durée de vie du cache en secondes.
+        :type ttl: int
+        :param cache_path: Chemin du cache.
+        :type cache_path: Optional[Path]
         """
-        super().__init__(api=api)
+        super().__init__(api=api, ttl=ttl, cache_path=cache_path)
 
     @staticmethod
     def _filter_stations(
