@@ -2,7 +2,7 @@
 Ce package contient les configurations nécessaires pour l'application.
 """
 
-from .data_config import (
+from .processing_config import (
     DataFilterConfig,
     DataGeoreferenceConfig,
     VesselManagerConfig,
