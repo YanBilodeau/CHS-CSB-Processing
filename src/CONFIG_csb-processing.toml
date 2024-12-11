@@ -17,7 +17,7 @@ buffer_time = 24
 
 [IWLS.API.Profile]
 # {"dev", "prod", "public"}
-active = "public"
+active = "prod"
 
 [IWLS.API.Environment.dev]
 name = "DEV"
@@ -39,6 +39,13 @@ endpoint = "EndpointPublic"
 calls = 15
 period = 1
 
+[IWLS.API.Cache]
+# Durée de vie maximale des données en secondes {int}.
+ttl = 86400
+# Répertoire de stockage des données dans le cache {str}. Il est possible de spécifier un chemin absolu ou relatif.
+# Exemple de chemin relatif : "./cache" pour un répertoire "cache" à la racine du projet.
+cache_path = "./cache"
+
 [DATA.Transformation.filter]
 # Valeurs minimales et maximales de latitude et longitude pour filtrer les données {int, float}.
 # Commenter les lignes suivantes pour utiliser les valeurs par défaut.
@@ -55,6 +62,18 @@ min_depth = 0
 # Temps tampon en minutes pour les données de niveau d'eau à récupérer pour le géoréférencement {int, float}.
 water_level_tolerance = 15
 
-[CSB.Processing.options]
+[DATA.Georeference.tpu]  # todo à ajouter au BaseModel ?
+base_tpu_wlo = 1
+base_tpu_wlp = 2
+
+[CSB.Processing.vessel]  # todo à ajouter au BaseModel
+# Nom du gestionnaire de configuration des navires {"VesselConfigJsonManager"}
+manager = "VesselConfigJsonManager"
+# Chemin du fichier de configuration des navires {str}.
+json_file_path = ""
+
+[CSB.Processing.options]  # todo à ajouter au BaseModel
 # Niveau de log {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 log_level = "INFO"
+
+# todo ajouter les paramètres de configuration pour la cache
