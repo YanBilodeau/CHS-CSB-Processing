@@ -6,11 +6,12 @@ Il permet de traiter des fichiers de données bathymétriques et de les géoréf
 
 import click
 from pathlib import Path
-from typing import Collection
+from typing import Collection, Optional
 
 from loguru import logger
 
 from csb_processing import processing_workflow
+from vessel import UNKNOWN_VESSEL_CONFIG
 
 LOGGER = logger.bind(name="CSB-Processing.CLI")
 
@@ -51,25 +52,39 @@ def get_files(paths: Collection[Path]) -> list[Path]:
 
 
 @click.command(
-    help="Ce script permet de traiter des fichiers de données bathymétriques et de les géoréférencer."
+    help="""
+    Ce script permet de traiter des fichiers de données bathymétriques et de les géoréférencer.\n
+    This script allows to process bathymetric data files and georeference them.
+    """
 )
 @click.option(
     "--files",
     type=click.Path(exists=False),
     multiple=True,
-    help="Chemins des fichiers ou répertoires à traiter.",
-)
-@click.option(
-    "--vessel_id",
-    type=str,
-    help="Identifiant du navire.",
+    help="""
+    Chemins des fichiers ou répertoires à traiter.\n
+    Paths of the files or directories to process.
+    """,
 )
 @click.option(
     "--output",
     type=click.Path(),
-    help="Chemin du répertoire de sortie.",
+    help="""
+    Chemin du répertoire de sortie.\n
+    Path of the output directory.
+    """,
 )
-def cli(files: Collection[Path], vessel_id: str, output: Path) -> None:
+@click.option(
+    "--vessel",
+    type=str,
+    required=False,
+    help="""
+    Identifiant du navire. Si aucun identifiant de navire est utilisé, un navire par défaut
+    avec des bras de levier à 0 sera utilisé.\n
+    Vessel identifier. If no vessel identifier is used, a default vessel with lever arms at 0 will be used.
+    """,
+)
+def cli(files: Collection[Path], output: Path, vessel: Optional[str]) -> None:
     # Get the files to parse
     files: list[Path] = get_files(files)
 
@@ -78,4 +93,10 @@ def cli(files: Collection[Path], vessel_id: str, output: Path) -> None:
         LOGGER.error("Aucun fichier valide à traiter.")
         return None
 
-    processing_workflow(files=files, vessel_id=vessel_id, output=Path(output))
+    if not vessel:
+        LOGGER.warning(
+            "Aucun identifiant de navire n'a été fourni. Un navire par défaut sera utilisé."
+        )
+        vessel = UNKNOWN_VESSEL_CONFIG
+
+    processing_workflow(files=files, vessel=vessel, output=Path(output))
