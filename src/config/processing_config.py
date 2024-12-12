@@ -208,36 +208,12 @@ def get_data_config(
     return CSBprocessingConfig(
         filter=(
             DataFilterConfig(
-                min_latitude=(
-                    data_filter["min_latitude"]
-                    if "min_latitude" in data_filter
-                    else MIN_LATITUDE
-                ),
-                max_latitude=(
-                    data_filter["max_latitude"]
-                    if "max_latitude" in data_filter
-                    else MAX_LATITUDE
-                ),
-                min_longitude=(
-                    data_filter["min_longitude"]
-                    if "min_longitude" in data_filter
-                    else MIN_LONGITUDE
-                ),
-                max_longitude=(
-                    data_filter["max_longitude"]
-                    if "max_longitude" in data_filter
-                    else MAX_LONGITUDE
-                ),
-                min_depth=(
-                    data_filter["min_depth"]
-                    if "min_depth" in data_filter
-                    else MIN_DEPTH
-                ),
-                max_depth=(
-                    data_filter["max_depth"]
-                    if "max_depth" in data_filter
-                    else MAX_DEPTH
-                ),
+                min_latitude=(data_filter.get("min_latitude") or MIN_LATITUDE),
+                max_latitude=(data_filter.get("max_latitude") or MAX_LATITUDE),
+                min_longitude=(data_filter.get("min_longitude") or MIN_LONGITUDE),
+                max_longitude=(data_filter.get("max_longitude") or MAX_LONGITUDE),
+                min_depth=(data_filter.get("min_depth") or MIN_DEPTH),
+                max_depth=(data_filter.get("max_depth") or MAX_DEPTH),
             )
             if data_filter
             else DataFilterConfig()
