@@ -1,12 +1,12 @@
 [IWLS.API.TimeSeries]
 # Liste des séries temporelles à récupérer selon leur priorité d'utilisation. {"wlo", "wlp"}
 priority = ["wlo", "wlp"]
-# Intervalle de temps maximal sans données avant de déclencher le remplissage de données manquantes
-# avec des valeurs de la série temporelle suivante. Laisser vide "" pour désactiver.
-# {format str "<number> <min|h>"}
+# Intervalle de temps maximal sans données avant de déclencher l'intepolation et le remplissage des données.
+# Laisser vide "" pour désactiver. {format str "<number> <min|h>"}
 max_time_gap = "1 min"
 # Seuil en dessous duquel les données manquantes sont interpolées et au-dessus desquelles elles sont remplies par
-# la time serie suivante. {format str "<number> <min|h>"}
+# la time serie suivante. Laisser vide "" pour désactiver, seulement le remplissge sera alors effectué.
+# {format str "<number> <min|h>"}
 threshold_interpolation-filling = "4 h"
 # Liste des valeurs de qualité à filtrer pour wlo.
 # Flag de l'API privée {"GOOD", "NOT_EVAL", "QUESTIONABLE", "BAD", "MISSING"}.
@@ -58,7 +58,7 @@ min_depth = 0
 # Ce paramètre est désactivé par défaut.
 # max_depth = 1000
 
-[DATA.Georeference.tide]
+[DATA.Georeference.water_level]
 # Écart maximal en minutes entre les données et les niveaux d'eau à récupérer pour le géoréférencement {int, float}.
 water_level_tolerance = 15
 
@@ -73,6 +73,6 @@ manager_type = "VesselConfigJsonManager"
 # Exemple de chemin relatif : "./TCSB_VESSELSLIST.json" pour un fichier "TCSB_VESSELSLIST.json" à la racine du projet.
 json_config_path = "./TCSB_VESSELSLIST.json"
 
-[CSB.Processing.options]  # todo à ajouter au BaseModel
+[CSB.Processing.options]
 # Niveau de log {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
-log_level = "INFO"
+log_level = "DEBUG"
