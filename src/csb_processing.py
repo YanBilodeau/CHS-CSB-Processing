@@ -1,5 +1,13 @@
+"""
+Module principal pour le traitement des données des capteurs à bord des navires.
+
+Ce module contient le workflow de traitement des données des capteurs à bord des navires. Les données des capteurs sont
+récupérées à partir de fichiers bruts, nettoyées, filtrées, géoréférencées et exportées dans un format standardisé.
+"""
+
 from dataclasses import dataclass
 from datetime import datetime
+from functools import singledispatch
 from pathlib import Path
 from typing import Optional, Collection
 
@@ -20,7 +28,7 @@ import tide.voronoi as voronoi
 import tide.time_serie as time_serie
 import transformation.data_cleaning as cleaner
 import transformation.georeference as georeference
-import vessel
+import vessel as vessel_manager
 
 
 LOGGER = logger.bind(name="CSB-Processing.WorkFlow")
@@ -317,17 +325,86 @@ def plot_water_level_data(
     )
 
 
+@singledispatch
+def get_vessel_config(
+    vessel: str | vessel_manager.VesselConfig,
+    vessel_config_manager: config.VesselManagerConfig,
+    /,
+) -> vessel_manager.VesselConfig:
+    """
+    Récupère la configuration du navire.
+
+    :param vessel: Identifiant du navire ou configuration du navire.
+    :type vessel: str | vessel_manager.VesselConfig
+    :param vessel_config_manager: Gestionnaire de configuration du navire.
+    :type vessel_config_manager: config.VesselManagerConfig
+    :return: Configuration du navire.
+    :rtype: vessel_manager.VesselConfig
+    """
+    raise TypeError(
+        f"Type non supporté pour la récupération de la configuration du navire : {type(vessel).__name__}."
+    )
+
+
+@get_vessel_config.register
+def _(
+    vessel: vessel_manager.VesselConfig,
+    vessel_config_manager_: config.VesselManagerConfig,
+) -> vessel_manager.VesselConfig:
+    """
+    Récupère la configuration du navire.
+
+    :param vessel: Configuration du navire.
+    :type vessel: vessel_manager.VesselConfig
+    :return: Configuration du navire.
+    :rtype: vessel_manager.VesselConfig
+    """
+    LOGGER.debug(f"Configuration du navire : {vessel}.")
+
+    return vessel
+
+
+@get_vessel_config.register
+def _(
+    vessel: str,
+    vessel_config_manager: config.VesselManagerConfig,
+) -> vessel_manager.VesselConfig:
+    """
+    Récupère la configuration du navire.
+
+    :param vessel: Identifiant du navire.
+    :type vessel: str
+    :param vessel_config_manager: Gestionnaire de configuration du navire.
+    :type vessel_config_manager: config.VesselManagerConfig
+    :return: Configuration du navire.
+    :rtype: vessel_manager.VesselConfig
+    """
+    vessel_config_manager: vessel_manager.VesselConfigManagerABC = (
+        vessel_manager.get_vessel_config_manager_factory(
+            manager_type=vessel_config_manager.manager_type
+        )(**vessel_config_manager.kwargs)
+    )
+
+    vessel_config: vessel_manager.VesselConfig = (
+        vessel_config_manager.get_vessel_config(vessel_id=vessel)
+    )
+
+    LOGGER.debug(f"Configuration du navire : {vessel_config}.")
+
+    return vessel_config
+
+
 def get_sensor_with_validation(
-    vessel_config: vessel.VesselConfig,
+    vessel_config: vessel_manager.VesselConfig,
     sensor_type: str,
     min_time: datetime,
     max_time: datetime,
-) -> vessel.Sensor | vessel.Waterline:
+) -> vessel_manager.Sensor | vessel_manager.Waterline:
     """
     Récupère et valide les capteurs pour une période de temps donnée.
 
     :param vessel_config: Configuration du navire.
-    :type vessel_config: vessel.VesselConfig
+    :type vessel_config: vessel_manager.VesselConfig
     :param sensor_type: Type de capteur à récupérer.
     :type sensor_type: str
     :param min_time: Date et heure minimale.
@@ -335,7 +412,7 @@ def get_sensor_with_validation(
     :param max_time: Date et heure maximale.
     :type max_time: datetime
     :return: Capteur pour le moment donné.
-    :rtype: vessel.Sensor | vessel.Waterline
+    :rtype: vessel_manager.Sensor | vessel_manager.Waterline
     :raises SensorConfigurationError: Si la configuration du capteur change durant la période de temps couverte par les données.
     """
     min_time_sensor = getattr(vessel_config, f"get_{sensor_type}")(timestamp=min_time)
@@ -348,24 +425,24 @@ def get_sensor_with_validation(
 
 
 def get_sensors(
-    vessel_config: vessel.VesselConfig, min_time: datetime, max_time: datetime
-) -> tuple[vessel.Sensor, vessel.Waterline]:
+    vessel_config: vessel_manager.VesselConfig, min_time: datetime, max_time: datetime
+) -> tuple[vessel_manager.Sensor, vessel_manager.Waterline]:
     """
     Méthode pour récupérer les données des capteurs et valider que la configuration du navire couvre la période de temps.
 
     :param vessel_config: Configuration du navire.
-    :type vessel_config: vessel.VesselConfig
+    :type vessel_config: vessel_manager.VesselConfig
     :param min_time: Date et heure minimale.
     :type min_time: datetime
     :param max_time: Date et heure maximale.
     :type max_time: datetime
     :return: Données des capteurs pour le moment donné.
-    :rtype: tuple[vessel.Sensor, vessel.Waterline]
+    :rtype: tuple[vessel_manager.Sensor, vessel_manager.Waterline]
     """
-    sounder: vessel.Sensor = get_sensor_with_validation(
+    sounder: vessel_manager.Sensor = get_sensor_with_validation(
         vessel_config, "sounder", min_time, max_time
     )
-    waterline: vessel.Waterline = get_sensor_with_validation(
+    waterline: vessel_manager.Waterline = get_sensor_with_validation(
         vessel_config, "waterline", min_time, max_time
     )
 
@@ -374,7 +451,7 @@ def get_sensors(
 
 def processing_workflow(
     files: Collection[Path],
-    vessel_id: str,
+    vessel: str | vessel_manager.VesselConfig,
     output: Path,
     config_path: Optional[Path] = CONFIG_FILE,
 ) -> None:
@@ -383,13 +460,14 @@ def processing_workflow(
 
     :param files: Liste des fichiers à traiter.
     :type files: Collection[Path]
-    :param vessel_id: Identifiant du navire.
-    :type vessel_id: str
+    :param vessel: Identifiant du navire ou configuration du navire.
+    :type vessel: str | vessel_manager.VesselConfig
     :param output: Chemin du répertoire de sortie.
     :type output: Path
     :param config_path: Chemin du fichier de configuration.
     :type config_path: Optional[Path]
     """
+    # todo log en info pour débuter
     # Get the data structure
     export_data_path, export_tide_path, log_path = get_data_structure(output)
 
@@ -425,24 +503,20 @@ def processing_workflow(
     export.export_geodataframe_to_gpkg(data, export_data_path / "ParsedData.gpkg")
 
     # Get the vessel configuration manager and the vessel configuration
-
     if (
         processing_config.vessel_manager is None
         or processing_config.vessel_manager.manager_type is None
-    ):
-        raise ValueError("La configuration du gestionnaire de navires est manquante.")
+        or not processing_config.vessel_manager.kwargs
+    ) and isinstance(vessel, str):
+        raise ValueError(
+            f"La configuration du gestionnaire de navires est manquante pour récupérer la configuration du navire : {vessel}."
+        )
     # todo error custom
-    # todo valider si vessel_id est str ou type VesselConfig
-
-    vessel_config_manager: vessel.VesselConfigManagerABC = (
-        vessel.get_vessel_config_manager_factory(
-            manager_type=processing_config.vessel_manager.manager_type
-        )(**processing_config.vessel_manager.kwargs)
+    LOGGER.info(
+        f"Récupération de la configuration du navire {vessel.id if isinstance(vessel, vessel_manager.VesselConfig) else vessel}."
     )
-
-    LOGGER.info(f"Récupération de la configuration du navire {vessel_id}.")
-    vessel_config: vessel.VesselConfig = vessel_config_manager.get_vessel_config(
-        vessel_id=vessel_id
+    vessel_config: vessel_manager.VesselConfig = get_vessel_config(
+        vessel, processing_config.vessel_manager
     )
 
     # Read the configuration file 'iwls_API_config.toml'
@@ -627,12 +701,11 @@ if __name__ == "__main__":
 
     processing_workflow(
         files=files_path,
-        vessel_id="Tuktoyaktuk",
+        vessel="Tuktoyaktuk",  # vessel_manager.UNKNOWN_VESSEL_CONFIG,
         output=OUTPUT,
         config_path=CONFIG_FILE,
     )
 
     # todo gérer la valeur np.nan dans les configurations des capteurs
-    # todo gérer vessel Unknown dans cli
 
     # todo dans ce fichier, dans le fichier de configuration CONFIG_csb-processing.toml et dans tide.time_serie.time_serie_dataframe et transformation.georeference
