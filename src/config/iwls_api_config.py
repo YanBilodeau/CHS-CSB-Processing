@@ -24,6 +24,10 @@ IWLSapiDict = dict[
 
 
 PRIORITY = ["wlo", "wlp"]
+ENVIRONMENT_PUBLIC: iwls.APIEnvironment = iwls.APIEnvironment(
+    name="PUBLIC", endpoint=iwls.EndpointPublic(), calls=15, period=1
+)
+PROFILE_PUBLIC: iwls.APIProfile = iwls.APIProfile(active="public")
 
 
 class TimeSeriesConfig(BaseModel):
@@ -158,11 +162,11 @@ class IWLSAPIConfig(BaseModel):
     """Environnement de développement."""
     prod: Optional[iwls.APIEnvironment]
     """Environnement de production."""
-    public: Optional[iwls.APIEnvironment]
+    public: Optional[iwls.APIEnvironment] = ENVIRONMENT_PUBLIC
     """Environnement public."""
     time_series: TimeSeriesConfig
     """Configuration des séries temporelles."""
-    profile: iwls.APIProfile
+    profile: Optional[iwls.APIProfile] = PROFILE_PUBLIC
     """Profil actif de l'API."""
     cache: CacheConfig
     """Configuration du cache."""
@@ -182,16 +186,21 @@ def get_api_config(config_file: Path) -> IWLSAPIConfig:
     time_series_config: dict[str, str | int | list[str]] = (
         config_data.get("IWLS", {}).get("API", {}).get("TimeSeries")
     )
-    environments: iwls.EnvironmentDict = iwls.get_environment_config(
-        config_data["IWLS"]["API"]["Environment"]
+    environments_config = config_data.get("IWLS", {}).get("API", {}).get("Environment")
+    environments: iwls.EnvironmentDict = (
+        iwls.get_environment_config(environments_config)
+        if environments_config
+        else None
     )
+    cache_config = config_data.get("IWLS", {}).get("API", {}).get("Cache")
+    profile_config = config_data.get("IWLS", {}).get("API", {}).get("Profile")
 
     LOGGER.debug(f"Initialisation de la configuration de l'API IWLS.")
 
     return IWLSAPIConfig(
-        dev=environments["dev"] if "dev" in environments else None,
-        prod=environments["prod"] if "prod" in environments else None,
-        public=environments["public"] if "public" in environments else None,
+        dev=environments.get("dev") if environments else None,
+        prod=environments.get("prod") if environments else None,
+        public=environments.get("public") if environments else ENVIRONMENT_PUBLIC,
         time_series=(
             TimeSeriesConfig(
                 priority=time_series_config.get("priority") or PRIORITY,
@@ -205,10 +214,8 @@ def get_api_config(config_file: Path) -> IWLSAPIConfig:
             if time_series_config
             else TimeSeriesConfig()
         ),
-        profile=iwls.APIProfile(**config_data["IWLS"]["API"]["Profile"]),
-        cache=(
-            CacheConfig(**config_data["IWLS"]["API"]["Cache"])
-            if "Cache" in config_data["IWLS"]["API"]
-            else CacheConfig()
+        profile=(
+            iwls.APIProfile(**profile_config) if profile_config else PROFILE_PUBLIC
         ),
+        cache=(CacheConfig(**cache_config) if cache_config else CacheConfig()),
     )
