@@ -393,15 +393,15 @@ def processing_workflow(
     # Get the data structure
     export_data_path, export_tide_path, log_path = get_data_structure(output)
 
+    # Read the configuration file 'data_config.toml'
+    processing_config: config.CSBprocessingConfig = config.get_data_config()
+
     # Configure the logger
     configure_logger(
         log_path / f"{datetime.now().strftime('%Y-%m-%d')}_CSB-Processing.log",
-        std_level="INFO",
+        std_level=processing_config.options.log_level,
         log_file_level="DEBUG",
     )
-
-    # Read the configuration file 'data_config.toml'
-    processing_config: config.CSBprocessingConfig = config.get_data_config()
 
     # Get the parser and the parsed data
     LOGGER.info(f"Récupération des données brutes des fichiers : {files}.")
@@ -425,6 +425,15 @@ def processing_workflow(
     export.export_geodataframe_to_gpkg(data, export_data_path / "ParsedData.gpkg")
 
     # Get the vessel configuration manager and the vessel configuration
+
+    if (
+        processing_config.vessel_manager is None
+        or processing_config.vessel_manager.manager_type is None
+    ):
+        raise ValueError("La configuration du gestionnaire de navires est manquante.")
+    # todo error custom
+    # todo valider si vessel_id est str ou type VesselConfig
+
     vessel_config_manager: vessel.VesselConfigManagerABC = (
         vessel.get_vessel_config_manager_factory(
             manager_type=processing_config.vessel_manager.manager_type
@@ -432,7 +441,7 @@ def processing_workflow(
     )
 
     LOGGER.info(f"Récupération de la configuration du navire {vessel_id}.")
-    tuktoyaktuk_vessel: vessel.VesselConfig = vessel_config_manager.get_vessel_config(
+    vessel_config: vessel.VesselConfig = vessel_config_manager.get_vessel_config(
         vessel_id=vessel_id
     )
 
@@ -493,7 +502,7 @@ def processing_workflow(
 
     # Get the sensors for the vessel
     sounder, waterline = get_sensors(
-        vessel_config=tuktoyaktuk_vessel,
+        vessel_config=vessel_config,
         min_time=tide_zonde_info[schema_ids.MIN_TIME].min(),
         max_time=tide_zonde_info[schema_ids.MAX_TIME].max(),
     )
@@ -616,7 +625,14 @@ if __name__ == "__main__":
     #     + get_actisense_files()
     # )
 
-    processing_workflow(files=files_path, vessel_id="Tuktoyaktuk", output=OUTPUT)
+    processing_workflow(
+        files=files_path,
+        vessel_id="Tuktoyaktuk",
+        output=OUTPUT,
+        config_path=CONFIG_FILE,
+    )
 
     # todo gérer la valeur np.nan dans les configurations des capteurs
+    # todo gérer vessel Unknown dans cli
+
     # todo dans ce fichier, dans le fichier de configuration CONFIG_csb-processing.toml et dans tide.time_serie.time_serie_dataframe et transformation.georeference
