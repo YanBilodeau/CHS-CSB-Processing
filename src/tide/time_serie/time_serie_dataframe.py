@@ -5,8 +5,10 @@ Ce module contient les fonctions pour gérer les données de séries temporelles
 """
 
 import concurrent.futures
+from collections.abc import Callable
 from datetime import timedelta, datetime
-from typing import Optional, Any, Collection
+import operator
+from typing import Optional, Any, Collection, Literal
 
 from loguru import logger
 import numpy as np
@@ -623,6 +625,39 @@ def clean_time_series_data(
     return wl_dataframe
 
 
+def get_buffered_time(
+    time: str | datetime, buffer_time: Optional[timedelta], operation: Literal["-", "+"]
+) -> str:
+    """
+    Calcul le temps avec un tampon à partir d'une date.
+
+    :param time: Date en format ISO 8601 ou objet datetime.
+    :type time: str | datetime
+    :param buffer_time: Temps tampon à ajouter au début et à la fin de la période de données.
+    :type buffer_time: Optional[timedelta]
+    :param operation: Opération à effectuer.
+    :type operation: Literal['-', '+']
+    :return: Date avec le temps tampon.
+    :rtype: str
+    """
+    if not buffer_time:
+        return time if isinstance(time, str) else get_iso8601_from_datetime(time)
+
+    operation: Callable = operator.sub if operation == "-" else operator.add
+
+    LOGGER.debug(
+        f"Application d'un temps tampon de {buffer_time} à la date {time}: {operation.__name__}."
+    )
+
+    return get_iso8601_from_datetime(
+        (
+            operation(get_datetime_from_iso8601(time), buffer_time)
+            if isinstance(time, str)
+            else operation(time, buffer_time)
+        )
+    )
+
+
 def get_water_level_time_serie(
     stations_handler: StationsHandlerProtocol,
     station_id: str,
@@ -652,28 +687,16 @@ def get_water_level_time_serie(
     :return: Données de la série temporelle.
     :rtype: pd.DataFrame[schema.WaterLevelSerieDataSchema] | None
     """
-    if buffer_time:
-        LOGGER.debug(
-            f"Récupération des données de la série temporelle {time_serie_code} pour la station {station_id} "
-            f"de {from_time} à {to_time} avec un temps tampon de {buffer_time}."
-        )
-    from_time_buffered: str = (
-        get_iso8601_from_datetime(
-            get_datetime_from_iso8601(from_time)
-            if isinstance(from_time, str)
-            else from_time - buffer_time
-        )
-        if buffer_time
-        else from_time
+    LOGGER.debug(
+        f"Récupération des données de la série temporelle {time_serie_code} pour la station {station_id} "
+        f"de {from_time} à {to_time}."
     )
-    to_time_buffered: str = (
-        get_iso8601_from_datetime(
-            get_datetime_from_iso8601(to_time)
-            if isinstance(to_time, str)
-            else to_time + buffer_time
-        )
-        if buffer_time
-        else to_time
+
+    from_time_buffered: str = get_buffered_time(
+        time=from_time, buffer_time=buffer_time, operation="-"
+    )
+    to_time_buffered: str = get_buffered_time(
+        time=to_time, buffer_time=buffer_time, operation="+"
     )
 
     wl_data: pd.DataFrame[schema.WaterLevelSerieDataSchema] = (
@@ -1123,6 +1146,3 @@ def get_water_level_data_for_stations(
 # todo récupérer isTidal pour savoir si on doit interpoler linéairement ou avec une spline cubique
 
 # todo problème avec l'interpolation si les données sont manquantes à la fin ou au début de la période NaN -> refaire les polygones sans cette station
-
-# todo Valider qu' il y a au moins x heure de part et d autre pour faire l interpolation, sinon raise exception
-# info : le holding n'enlève pas les trous de moins de 10 jours et c'est seulement pour wlo dans l'API public !
