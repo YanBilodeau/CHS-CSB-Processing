@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from functools import singledispatch
 from pathlib import Path
+import sys
 from typing import Optional, Collection
 
 import geopandas as gpd
@@ -32,6 +33,7 @@ import vessel as vessel_manager
 
 
 LOGGER = logger.bind(name="CSB-Processing.WorkFlow")
+logger.configure(handlers=[{"sink": sys.stdout, "level": "INFO"}])
 
 ROOT: Path = Path(__file__).parent
 OUTPUT: Path = ROOT.parent / "Output"
@@ -467,7 +469,6 @@ def processing_workflow(
     :param config_path: Chemin du fichier de configuration.
     :type config_path: Optional[Path]
     """
-    # todo log en info pour débuter
     # Get the data structure
     export_data_path, export_tide_path, log_path = get_data_structure(output)
 
