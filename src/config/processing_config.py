@@ -193,7 +193,7 @@ def get_data_config(
     )
 
     data_filter: ConfigDict = (
-        config_data.get("DATA", {}).get("Georeference", {}).get("filter")
+        config_data.get("DATA", {}).get("Transformation", {}).get("filter")
     )
     data_georef: ConfigDict = (
         config_data.get("DATA", {}).get("Georeference", {}).get("water_level")
