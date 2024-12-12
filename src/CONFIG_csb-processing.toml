@@ -75,4 +75,4 @@ json_config_path = "./TCSB_VESSELSLIST.json"
 
 [CSB.Processing.options]
 # Niveau de log {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
-log_level = "DEBUG"
+log_level = "INFO"
