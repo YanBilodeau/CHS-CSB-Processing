@@ -84,7 +84,7 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
 
         def default_serializer(object_):
             if isinstance(object_, datetime):
-                return object_.strftime("%Y-%m-%dT%H:%M:%SZ")
+                return object_.strftime("%Y-%m-%dT%H:%M:%S%z")
 
             raise TypeError(
                 f"Les objets de type {object_.__class__.__name__} ne sont pas sérialisables."
