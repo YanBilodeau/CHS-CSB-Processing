@@ -23,7 +23,8 @@ if __name__ == "__main__":
     # vessel_config_manager.delete_vessel_config("Frosti")
     # vessel_config_manager.commit_vessel_configs(VESSEL_JSON_UPDATE_PATH)
 
-    frosti: vessel.VesselConfig = vessel_config_manager.get_vessel_config("Frosti")
+    # frosti: vessel.VesselConfig = vessel_config_manager.get_vessel_config("Frosti")
+    frosti: vessel.VesselConfig = vessel.UNKNOWN_VESSEL_CONFIG
     print(frosti)
 
     time_stamp: datetime = parser.isoparse("2024-09-25T00:00:00Z")
@@ -45,7 +46,7 @@ if __name__ == "__main__":
     attribute: vessel.BDBattribute = frosti.get_attribute(timestamp=time_stamp)
     print(attribute)
 
-    vessel_config_sqlite_manager: vessel.VesselConfigSQLiteManager = (
-        vessel.VesselConfigSQLiteManager(sqlite_config_path=VESSEL_SQLITE_PATH)
-    )
-    print(vessel_config_sqlite_manager)
+    # vessel_config_sqlite_manager: vessel.VesselConfigSQLiteManager = (
+    #     vessel.VesselConfigSQLiteManager(sqlite_config_path=VESSEL_SQLITE_PATH)
+    # )
+    # print(vessel_config_sqlite_manager)
