@@ -30,6 +30,10 @@ MAX_LONGITUDE: int | float = 180
 MIN_DEPTH: int | float = 0
 MAX_DEPTH: int | float | None = None
 
+WATER_LEVEL_TOLERANCE: int | float = 15
+
+INFO: str = "INFO"
+
 
 class DataFilterConfig(BaseModel):
     """
@@ -126,7 +130,7 @@ class DataGeoreferenceConfig(BaseModel):
     :type water_level_tolerance: int | float
     """
 
-    water_level_tolerance: int | float
+    water_level_tolerance: int | float = WATER_LEVEL_TOLERANCE
     """La tolérance en minutes pour les données de marée à récupérer pour le géoréférencement."""
 
 
@@ -151,14 +155,24 @@ class VesselManagerConfig(BaseModel):
     :type kwargs: dict[str, Any]
     """
 
-    manager_type: VesselConfigManagerType
-    kwargs: dict[str, Any]
+    manager_type: Optional[VesselConfigManagerType]
+    kwargs: Optional[dict[str, Any]] = None
+
+
+class OptionsConfig(BaseModel):
+    """
+    Classe de configuration pour les options de traitement.
+    """
+
+    log_level: str = INFO
+    """Le niveau de log."""
 
 
 class CSBprocessingConfig(BaseModel):
     filter: DataFilterConfig
     georeference: DataGeoreferenceConfig
     vessel_manager: Optional[VesselManagerConfig]
+    options: OptionsConfig = OptionsConfig()
 
 
 def get_data_config(
@@ -178,48 +192,78 @@ def get_data_config(
         f"Initialisation de la configuration de pour la transformation des données."
     )
 
-    data_filter: ConfigDict = config_data["DATA"]["Transformation"]["filter"]
-    data_georef: ConfigDict = config_data["DATA"]["Georeference"]["tide"]
-    vessel_config: ConfigDict = config_data["CSB"]["Processing"]["vessel"]
+    data_filter: ConfigDict = (
+        config_data.get("DATA", {}).get("Georeference", {}).get("filter")
+    )
+    data_georef: ConfigDict = (
+        config_data.get("DATA", {}).get("Georeference", {}).get("water_level")
+    )
+    vessel_config: ConfigDict = (
+        config_data.get("CSB", {}).get("Processing", {}).get("vessel")
+    )
+    options_config: ConfigDict = (
+        config_data.get("CSB", {}).get("Processing", {}).get("options")
+    )
 
     return CSBprocessingConfig(
-        filter=DataFilterConfig(
-            min_latitude=(
-                data_filter["min_latitude"]
-                if "min_latitude" in data_filter
-                else MIN_LATITUDE
-            ),
-            max_latitude=(
-                data_filter["max_latitude"]
-                if "max_latitude" in data_filter
-                else MAX_LATITUDE
-            ),
-            min_longitude=(
-                data_filter["min_longitude"]
-                if "min_longitude" in data_filter
-                else MIN_LONGITUDE
-            ),
-            max_longitude=(
-                data_filter["max_longitude"]
-                if "max_longitude" in data_filter
-                else MAX_LONGITUDE
-            ),
-            min_depth=(
-                data_filter["min_depth"] if "min_depth" in data_filter else MIN_DEPTH
-            ),
-            max_depth=(
-                data_filter["max_depth"] if "max_depth" in data_filter else MAX_DEPTH
-            ),
+        filter=(
+            DataFilterConfig(
+                min_latitude=(
+                    data_filter["min_latitude"]
+                    if "min_latitude" in data_filter
+                    else MIN_LATITUDE
+                ),
+                max_latitude=(
+                    data_filter["max_latitude"]
+                    if "max_latitude" in data_filter
+                    else MAX_LATITUDE
+                ),
+                min_longitude=(
+                    data_filter["min_longitude"]
+                    if "min_longitude" in data_filter
+                    else MIN_LONGITUDE
+                ),
+                max_longitude=(
+                    data_filter["max_longitude"]
+                    if "max_longitude" in data_filter
+                    else MAX_LONGITUDE
+                ),
+                min_depth=(
+                    data_filter["min_depth"]
+                    if "min_depth" in data_filter
+                    else MIN_DEPTH
+                ),
+                max_depth=(
+                    data_filter["max_depth"]
+                    if "max_depth" in data_filter
+                    else MAX_DEPTH
+                ),
+            )
+            if data_filter
+            else DataFilterConfig()
         ),
-        georeference=DataGeoreferenceConfig(
-            water_level_tolerance=data_georef["water_level_tolerance"]
+        georeference=(
+            DataGeoreferenceConfig(**data_georef)
+            if data_georef
+            else DataGeoreferenceConfig()
         ),
-        vessel_manager=VesselManagerConfig(
-            manager_type=VesselConfigManagerType(vessel_config["manager_type"]),
-            kwargs={
-                key: value
-                for key, value in vessel_config.items()
-                if key != "manager_type"
-            },
+        vessel_manager=(
+            VesselManagerConfig(
+                manager_type=(
+                    VesselConfigManagerType(vessel_config["manager_type"])
+                    if "manager_type" in vessel_config
+                    else None
+                ),
+                kwargs={
+                    key: value
+                    for key, value in vessel_config.items()
+                    if key != "manager_type"
+                },
+            )
+            if vessel_config
+            else None
+        ),
+        options=(
+            OptionsConfig(**options_config) if options_config else OptionsConfig()
         ),
     )
