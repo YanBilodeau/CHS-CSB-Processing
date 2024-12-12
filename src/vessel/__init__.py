@@ -2,6 +2,7 @@
 Ce package contient les classes et les fonctions qui permettent de manipuler les données des navires.
 """
 
+from .unknown_vessel_config import UNKNOWN_VESSEL_CONFIG
 from .vessel_config import (
     VesselConfig,
     AxisConvention,
@@ -31,4 +32,5 @@ __all__ = [
     "VesselConfigManagerABC",
     "VesselConfigManagerType",
     "get_vessel_config_manager_factory",
+    "UNKNOWN_VESSEL_CONFIG",
 ]
