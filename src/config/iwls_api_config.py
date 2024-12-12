@@ -23,6 +23,9 @@ IWLSapiDict = dict[
 ]
 
 
+PRIORITY = ["wlo", "wlp"]
+
+
 class TimeSeriesConfig(BaseModel):
     """
     Classe de configuration pour les séries temporelles.
@@ -30,24 +33,24 @@ class TimeSeriesConfig(BaseModel):
     :param priority: La liste des séries temporelles à garder par ordre de priorité.
     :type priority: list[iwls.TimeSeries]
     :param max_time_gap: Le temps maximal permit entre deux points.
-    :type max_time_gap: str | None
+    :type max_time_gap: Optional[str]
     :param threshold_interpolation_filling: Le seuil de remplissage ou d'interpolation.
-    :type threshold_interpolation_filling: str | None
+    :type threshold_interpolation_filling: Optional[str]
     :param wlo_qc_flag_filter: Les filtres de qualité à filtrer.
-    :type wlo_qc_flag_filter: list[str] | None
+    :type wlo_qc_flag_filter: Optional[list[str]]
     :param buffer_time: Le temps de buffer à ajouter s'il manque des données pour l'interpolation.
-    :type buffer_time: timedelta | None
+    :type buffer_time: Optional[timedelta]
     """
 
-    priority: list[iwls.TimeSeries]
+    priority: list[iwls.TimeSeries] = PRIORITY
     """La liste des séries temporelles à garder par ordre de priorité."""
-    max_time_gap: str | None
+    max_time_gap: Optional[str] = None
     """Le temps maximal permit entre deux points."""
-    threshold_interpolation_filling: str | None
+    threshold_interpolation_filling: Optional[str] = None
     """Le seuil de remplissage ou d'interpolation."""
-    wlo_qc_flag_filter: list[str] | None
+    wlo_qc_flag_filter: Optional[list[str]] = None
     """Les filtres de qualité à filtrer."""
-    buffer_time: timedelta | None
+    buffer_time: Optional[timedelta] = None
     """Le temps de buffer à ajouter s'il manque des données pour l'interpolation."""
 
     def __init__(self, **data):
@@ -175,25 +178,32 @@ def get_api_config(config_file: Path) -> IWLSAPIConfig:
     :rtype: APIConfig
     """
     config_data: IWLSapiDict = iwls.load_config(config_file=config_file)
+
+    time_series_config: dict[str, str | int | list[str]] = (
+        config_data.get("IWLS", {}).get("API", {}).get("TimeSeries")
+    )
     environments: iwls.EnvironmentDict = iwls.get_environment_config(
         config_data["IWLS"]["API"]["Environment"]
     )
+
     LOGGER.debug(f"Initialisation de la configuration de l'API IWLS.")
 
     return IWLSAPIConfig(
         dev=environments["dev"] if "dev" in environments else None,
         prod=environments["prod"] if "prod" in environments else None,
         public=environments["public"] if "public" in environments else None,
-        time_series=TimeSeriesConfig(
-            priority=config_data["IWLS"]["API"]["TimeSeries"]["priority"],
-            max_time_gap=config_data["IWLS"]["API"]["TimeSeries"].get("max_time_gap"),
-            threshold_interpolation_filling=config_data["IWLS"]["API"][
-                "TimeSeries"
-            ].get("threshold_interpolation-filling"),
-            wlo_qc_flag_filter=config_data["IWLS"]["API"]["TimeSeries"].get(
-                "wlo_qc_flag_filter"
-            ),
-            buffer_time=config_data["IWLS"]["API"]["TimeSeries"].get("buffer_time"),
+        time_series=(
+            TimeSeriesConfig(
+                priority=time_series_config.get("priority") or PRIORITY,
+                max_time_gap=time_series_config.get("max_time_gap"),
+                threshold_interpolation_filling=time_series_config.get(
+                    "threshold_interpolation-filling"
+                ),
+                wlo_qc_flag_filter=time_series_config.get("wlo_qc_flag_filter"),
+                buffer_time=time_series_config.get("buffer_time"),
+            )
+            if time_series_config
+            else TimeSeriesConfig()
         ),
         profile=iwls.APIProfile(**config_data["IWLS"]["API"]["Profile"]),
         cache=(
