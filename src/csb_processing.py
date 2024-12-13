@@ -502,7 +502,7 @@ def processing_workflow(
         log_file_level="DEBUG",
     )
 
-    # Get the vessel configuration manager and the vessel configuration
+    # Check if the vessel configuration is missing
     if (
         processing_config.vessel_manager is None
         or processing_config.vessel_manager.manager_type is None
@@ -514,6 +514,7 @@ def processing_workflow(
             vessel_id=vessel, vessel_config_manager=processing_config.vessel_manager
         )
 
+    # Get the vessel configuration
     LOGGER.info(
         f"Récupération de la configuration du navire {vessel.id if isinstance(vessel, vessel_manager.VesselConfig) else vessel}."
     )
