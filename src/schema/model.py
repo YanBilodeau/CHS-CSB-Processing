@@ -17,7 +17,7 @@ from pandera.typing.geopandas import GeoSeries
 
 from . import model_ids as schema_ids
 
-LOGGER = logger.bind(name="CSB-Pipeline.Schema")
+LOGGER = logger.bind(name="CSB-Processing.Schema")
 
 
 class DataLoggerSchema(pa.DataFrameModel):

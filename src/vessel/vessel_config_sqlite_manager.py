@@ -21,7 +21,7 @@ from .vessel_config import (
 )
 from . import vessel_ids as ids
 
-LOGGER = logger.bind(name="CSB-Pipeline.VesselConfigManager.SQLite")
+LOGGER = logger.bind(name="CSB-Processing.VesselConfigManager.SQLite")
 
 
 class VesselConfigSQLiteManager(VesselConfigManagerABC):

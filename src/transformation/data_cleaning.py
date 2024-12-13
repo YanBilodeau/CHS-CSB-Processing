@@ -15,7 +15,7 @@ from .transformation_models import DataFilterConfigProtocol
 import schema
 from schema import model_ids as schema_ids
 
-LOGGER = logger.bind(name="CSB-Pipeline.Transformation.DataCleaning")
+LOGGER = logger.bind(name="CSB-Processing.Transformation.DataCleaning")
 
 DataCleaningFunction = Callable[[gpd.GeoDataFrame, Any], gpd.GeoDataFrame]
 

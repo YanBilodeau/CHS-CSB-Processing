@@ -17,7 +17,7 @@ from .transformation_models import SensorProtocol, WaterlineProtocol
 import schema
 from schema import model_ids as schema_ids
 
-LOGGER = logger.bind(name="CSB-Pipeline.Transformation.Georeferencing")
+LOGGER = logger.bind(name="CSB-Processing.Transformation.Georeferencing")
 
 event_dates_cache = LRUCache(maxsize=128)
 
