@@ -272,7 +272,7 @@ def get_water_levels(
     dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=cpu)
     interpolated_values: pd.Series = dask_data.map_partitions(
         lambda gdf: gdf.apply(
-            _get_water_level_for_sounding,  #  todo : weighted average ?
+            _get_water_level_for_sounding,  #  todo : weighted average selon la distance?
             axis=1,
             water_level_data=water_level_data,
             water_level_tolerance=water_level_tolerance,
