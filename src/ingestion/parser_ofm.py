@@ -20,7 +20,7 @@ from . import parser_ids as ids
 from schema import model_ids as schema_ids
 
 
-LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.OFM")
+LOGGER = logger.bind(name="CSB-Processing.Ingestion.Parser.OFM")
 
 DTYPE_DICT: dict[str, str] = {
     ids.LATITUDE_OFM: ids.FLOAT64,

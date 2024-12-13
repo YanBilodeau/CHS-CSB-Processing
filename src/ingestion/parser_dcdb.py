@@ -20,7 +20,7 @@ from . import parser_ids as ids
 from schema import model_ids as schema_ids
 
 
-LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.DCDB")
+LOGGER = logger.bind(name="CSB-Processing.Ingestion.Parser.DCDB")
 
 DTYPE_DICT: dict[str, str] = {
     ids.LATITUDE_DCDB: ids.FLOAT64,

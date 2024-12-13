@@ -17,7 +17,7 @@ from .warning_capture import WarningCapture
 import schema
 from schema import model_ids as schema_ids
 
-LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.ABC")
+LOGGER = logger.bind(name="CSB-Processing.Ingestion.Parser.ABC")
 
 
 @dataclass

@@ -17,7 +17,7 @@ from .parser_lowrance import DataParserLowrance
 from .parser_ofm import DataParserOFM
 from .parser_exception import ParserIdentifierError, MultipleParsersError, DataParserABC
 
-LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.Factory")
+LOGGER = logger.bind(name="CSB-Processing.Ingestion.Parser.Factory")
 
 Header = tuple[str, ...]
 """Alias pour un tuple de str représentant une entête."""

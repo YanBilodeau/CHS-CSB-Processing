@@ -21,7 +21,7 @@ from . import parser_ids as ids
 import schema
 from schema import model_ids as schema_ids
 
-LOGGER = logger.bind(name="CSB-Pipeline.Ingestion.Parser.Lowrance")
+LOGGER = logger.bind(name="CSB-Processing.Ingestion.Parser.Lowrance")
 
 DTYPE_DICT: dict[str, str] = {
     ids.LONGITUDE_LOWRANCE: ids.FLOAT64,
