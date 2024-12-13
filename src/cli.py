@@ -6,11 +6,13 @@ Il permet de traiter des fichiers de données bathymétriques et de les géoréf
 
 import click
 from pathlib import Path
+import sys
 from typing import Collection, Optional
 
 from loguru import logger
 
 from csb_processing import processing_workflow
+from logger.loguru_config import configure_logger
 from vessel import UNKNOWN_VESSEL_CONFIG
 
 LOGGER = logger.bind(name="CSB-Processing.CLI")
@@ -85,6 +87,10 @@ def get_files(paths: Collection[Path]) -> list[Path]:
     """,
 )
 def cli(files: Collection[Path], output: Path, vessel: Optional[str]) -> None:
+    configure_logger()
+
+    LOGGER.info(f"Ligne de commande exécutée : python {' '.join(sys.argv)}")
+
     # Get the files to parse
     files: list[Path] = get_files(files)
 
