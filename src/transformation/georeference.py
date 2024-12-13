@@ -372,6 +372,7 @@ def georeference_bathymetry(
     waterline: WaterlineProtocol,
     sounder: SensorProtocol,
     water_level_tolerance: int | float = 15,
+    overwrite: bool = False,
 ) -> gpd.GeoDataFrame:
     """
     Géoréférence les données de bathymétrie.
@@ -386,37 +387,53 @@ def georeference_bathymetry(
     :type sounder: SensorProtocol
     :param water_level_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
     :type water_level_tolerance: int | float
+    :param overwrite: Géoréférencer les données de profondeur même si elles ont déjà été géoréférencées.
+    :type overwrite: bool
     :return: Données de profondeur avec le niveau d'eau.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
-    LOGGER.info("Géoréférencement des données bathymétrique.")
+    data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
+        data if overwrite else data[data[schema_ids.DEPTH_PROCESSED_METER].isna()]
+    )
+
+    LOGGER.info(
+        f"Géoréférencement des données bathymétriques : {len(data_to_process)} sondes à traiter."
+    )
 
     LOGGER.info("Récupération des niveaux d'eau pour les sondes.")
-    data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = get_water_levels(
-        data, water_level, water_level_tolerance=water_level_tolerance
+    data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
+        get_water_levels(
+            data=data_to_process,
+            water_level_data=water_level,
+            water_level_tolerance=water_level_tolerance,
+        )
     )
+
+    LOGGER.info("Application des niveaux d'eau et des bras de levier aux sondes.")
+    data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
+        apply_georeference_bathymetry(
+            data=data_to_process, waterline=waterline, sounder=sounder
+        )
+    )
+
+    LOGGER.info("Calcul du TPU des données de profondeur.")
+    data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
+        compute_tpu(data_to_process)
+    )
+
+    LOGGER.info(f"Géoréférencement des données bathymétrique terminé.")
+    LOGGER.success(
+        f"{data_to_process['Depth_processed_meter'].notna().sum()} sondes géoréférencées."
+    )
+
+    data.update(data_to_process)
 
     data: gpd.GeoDataFrame[schema.DataLoggerSchema] = data.drop(
         columns=[schema_ids.TIDE_ZONE_ID]
     )
 
-    LOGGER.info("Application des niveaux d'eau et des bras de levier aux sondes.")
-    data = apply_georeference_bathymetry(
-        data=data, waterline=waterline, sounder=sounder
-    )
-
-    LOGGER.info("Calcul du TPU des données de profondeur.")
-    data = compute_tpu(data)
-
-    LOGGER.info(f"Géoréférencement des données bathymétrique terminé.")
-    LOGGER.success(
-        f"{data['Depth_processed_meter'].notna().sum()} sondes géoréférencées."
-    )
-
-    depth_na: np.int64 = data["Depth_processed_meter"].isna().sum()
+    depth_na: np.int64 = data[schema_ids.DEPTH_PROCESSED_METER].isna().sum()
     if depth_na > 0:
-        LOGGER.warning(
-            f"Il reste {depth_na} sondes sans valeur de profondeur réduite et sans valeur d'incertitude."
-        )
+        LOGGER.warning(f"Il reste {depth_na} sondes sans valeur de profondeur réduite.")
 
     return data
