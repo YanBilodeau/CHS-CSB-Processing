@@ -164,15 +164,15 @@ def _add_value_within_limit_if_applicable(
 
 
 def _get_water_level_for_sounding(
-    row: pd.Series,
+    sounding: pd.Series,
     water_level_data: dict[str, pd.DataFrame],
     water_level_tolerance: int | float,
 ) -> np.float64 | float:
     """
     Récupère la valeur du niveau d'eau pour une sonde.
 
-    :param row: Ligne de données de sonde.
-    :type row: pd.Series[schema.DataLoggerWithTideZoneSchema]
+    :param sounding: Série temporelle de la sonde.
+    :type sounding: pd.Series[schema.DataLoggerWithTideZoneSchema]
     :param water_level_data: Les séries temporelles des niveaux d'eau.
     :type water_level_data: dict[str, pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]
     :param water_level_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
@@ -180,9 +180,9 @@ def _get_water_level_for_sounding(
     :return: Valeur du niveau d'eau.
     :rtype: np.float64 | float
     """
-    tide_zone_id: str = row.get(schema_ids.TIDE_ZONE_ID)
-    time_utc_sounding: pd.Timestamp = row.get(schema_ids.TIME_UTC)
-    idx_sounding: int = row.name  # type: ignore[union-attr]
+    tide_zone_id: str = sounding.get(schema_ids.TIDE_ZONE_ID)
+    time_utc_sounding: pd.Timestamp = sounding.get(schema_ids.TIME_UTC)
+    idx_sounding: int = sounding.name  # type: ignore[union-attr]
 
     if (
         tide_zone_id not in water_level_data
@@ -306,43 +306,41 @@ def apply_georeference_bathymetry(
     :return: Données de profondeur géoréférencées.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
-
-    def calculate_depth(row: gpd.GeoSeries) -> float:
-        return (
-            row[schema_ids.DEPTH_RAW_METER]
-            - row[schema_ids.WATER_LEVEL_METER]
-            - waterline.z
-            + sounder.z  # todo valider la formule, inclure z navigation ?
-        )
-
     LOGGER.debug(
         f"Application des niveaux d'eau et des bras de levier aux sondes avec {CPU_COUNT} processus en parallèle."
     )
 
     dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=CPU_COUNT)
 
-    dask_data[schema_ids.DEPTH_PROCESSED_METER] = dask_data.map_partitions(
-        lambda gdf: gdf.apply(calculate_depth, axis=1),
-        meta=(schema_ids.DEPTH_PROCESSED_METER, "f8"),
-    )
+    def caculate_depth(gdf: gpd.GeoDataFrame):
+        gdf[schema_ids.DEPTH_PROCESSED_METER] = (
+            gdf[schema_ids.DEPTH_RAW_METER]
+            - gdf[schema_ids.WATER_LEVEL_METER]
+            - waterline.z
+            + sounder.z
+        )
+        return gdf
+
+    dask_data = dask_data.map_partitions(caculate_depth)
 
     return dask_data.compute().pipe(gpd.GeoDataFrame)
 
 
-def compute_tpu(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+def compute_tpu(
+    data: gpd.GeoDataFrame, depth_coeficient_tpu: float = 0.5, constant_tpu: float = 2.0
+) -> gpd.GeoDataFrame:
     """
     Calcule le TPU des données de bathymétrie.
 
     :param data: Données brut de profondeur.
     :type data: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :param depth_coeficient_tpu: Coefficient de profondeur.
+    :type depth_coeficient_tpu: float
+    :param constant_tpu: Constante du TPU.
+    :type constant_tpu: float
     :return: Données de profondeur avec le TPU.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
-
-    def calculate_tpu(depth: pd.Series) -> float:
-        return (depth * 0.05) + 2
-
-    # todo mettre en paramètre (wlo 1 ? et wlp 2 ?), mettre le coefficient et la constante en paramètre
 
     LOGGER.debug(
         f"Calcul du TPU des données de profondeur avec {CPU_COUNT} processus en parallèle."
@@ -350,13 +348,15 @@ def compute_tpu(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
 
     dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=CPU_COUNT)
 
-    dask_data[schema_ids.UNCERTAINTY] = dask_data[
-        schema_ids.DEPTH_RAW_METER
-    ].map_partitions(
-        calculate_tpu,
-        meta=(schema_ids.UNCERTAINTY, "f8"),
-    )
+    def calculate_uncertainty(gdf: gpd.GeoDataFrame):
+        gdf[schema_ids.UNCERTAINTY] = (
+            gdf[schema_ids.DEPTH_RAW_METER] * depth_coeficient_tpu
+        ) + constant_tpu
+        return gdf
+
+    # todo mettre en paramètre (wlo 1 ? et wlp 2 ?), mettre le coefficient et la constante en paramètre
     # todo Appliquer sur depth_raw_meter ou depth_processed_meter ?
+    dask_data = dask_data.map_partitions(calculate_uncertainty)
 
     return dask_data.compute().pipe(gpd.GeoDataFrame)
 
@@ -431,8 +431,10 @@ def georeference_bathymetry(
         columns=[schema_ids.TIDE_ZONE_ID]
     )
 
-    depth_na: np.int64 = data[schema_ids.DEPTH_PROCESSED_METER].isna().sum()
-    if depth_na > 0:
-        LOGGER.warning(f"Il reste {depth_na} sondes sans valeur de profondeur réduite.")
+    depth_nan: np.int64 = data[schema_ids.DEPTH_PROCESSED_METER].isna().sum()
+    if depth_nan > 0:
+        LOGGER.warning(
+            f"Il reste {depth_nan} sondes sans valeur de profondeur réduite."
+        )
 
     return data
