@@ -391,6 +391,7 @@ def georeference_bathymetry(
     :return: Données de profondeur avec le niveau d'eau.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
+    # Réinitialisation du cache des dates des événements pour chaque station. Cela permet de respecter les index.
     event_dates_cache.clear()
 
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
