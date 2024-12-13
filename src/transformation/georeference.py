@@ -21,6 +21,8 @@ LOGGER = logger.bind(name="CSB-Processing.Transformation.Georeferencing")
 
 event_dates_cache = LRUCache(maxsize=128)
 
+CPU_COUNT: int = cpu_count()
+
 
 def _validate_and_sort_data(water_level_data: dict[str, pd.DataFrame]) -> None:
     """
@@ -264,12 +266,11 @@ def get_water_levels(
     """
     _validate_and_sort_data(water_level_data)
 
-    cpu: int = cpu_count()
     LOGGER.debug(
-        f"Récupération des niveaux d'eau pour les {len(data)} sondes avec {cpu} processus en parallèle."
+        f"Récupération des niveaux d'eau pour les {len(data)} sondes avec {CPU_COUNT} processus en parallèle."
     )
 
-    dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=cpu)
+    dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=CPU_COUNT)
     interpolated_values: pd.Series = dask_data.map_partitions(
         lambda gdf: gdf.apply(
             _get_water_level_for_sounding,  #  todo : weighted average selon la distance?
@@ -314,13 +315,11 @@ def apply_georeference_bathymetry(
             + sounder.z  # todo valider la formule, inclure z navigation ?
         )
 
-    cpu: int = cpu_count()
-
     LOGGER.debug(
-        f"Application des niveaux d'eau et des bras de levier aux sondes avec {cpu} processus en parallèle."
+        f"Application des niveaux d'eau et des bras de levier aux sondes avec {CPU_COUNT} processus en parallèle."
     )
 
-    dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=cpu)
+    dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=CPU_COUNT)
 
     dask_data[schema_ids.DEPTH_PROCESSED_METER] = dask_data.map_partitions(
         lambda gdf: gdf.apply(calculate_depth, axis=1),
@@ -340,24 +339,24 @@ def compute_tpu(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
 
-    def calculate_tpu(row: gpd.GeoSeries) -> float:
-        return (
-            (row[schema_ids.DEPTH_PROCESSED_METER] * 0.05)
-            + 2  # todo mettre en paramètre (wlo 1 ? et wlp 2 ?)  Appliquer sur depth_raw_meter ou depth_processed_meter ?
-        ) or np.nan
+    def calculate_tpu(depth: pd.Series) -> float:
+        return (depth * 0.05) + 2
 
-    cpu: int = cpu_count()
+    # todo mettre en paramètre (wlo 1 ? et wlp 2 ?), mettre le coefficient et la constante en paramètre
 
     LOGGER.debug(
-        f"Calcul du TPU des données de profondeur avec {cpu} processus en parallèle."
+        f"Calcul du TPU des données de profondeur avec {CPU_COUNT} processus en parallèle."
     )
 
-    dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=cpu)
+    dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=CPU_COUNT)
 
-    dask_data[schema_ids.UNCERTAINTY] = dask_data.map_partitions(
-        lambda gdf: gdf.apply(calculate_tpu, axis=1),
+    dask_data[schema_ids.UNCERTAINTY] = dask_data[
+        schema_ids.DEPTH_RAW_METER
+    ].map_partitions(
+        calculate_tpu,
         meta=(schema_ids.UNCERTAINTY, "f8"),
     )
+    # todo Appliquer sur depth_raw_meter ou depth_processed_meter ?
 
     return dask_data.compute().pipe(gpd.GeoDataFrame)
 
