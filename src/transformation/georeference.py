@@ -279,7 +279,7 @@ def get_water_levels(
             water_level_tolerance=water_level_tolerance,
         ),
         meta=("x", "f8"),
-    ).compute()
+    ).compute()  # todo optimiser le calcul de manière vectorisée
 
     # Ajouter les valeurs interpolées à la colonne correspondante
     data[schema_ids.WATER_LEVEL_METER] = interpolated_values
