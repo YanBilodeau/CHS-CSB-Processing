@@ -87,7 +87,7 @@ def _interpolate_water_level(
     # Interpolation linéaire
     time_diff: np.float64 = (
         after_event[schema_ids.EVENT_DATE] - before_event[schema_ids.EVENT_DATE]
-    ).total_seconds()
+    ).total_seconds()  # todo ne pas interpoler si le temps est trop grand
 
     value_diff: float = after_event[schema_ids.VALUE] - before_event[schema_ids.VALUE]
     time_elapsed: float = (
@@ -391,6 +391,8 @@ def georeference_bathymetry(
     :return: Données de profondeur avec le niveau d'eau.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
+    event_dates_cache.clear()
+
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
         data if overwrite else data[data[schema_ids.DEPTH_PROCESSED_METER].isna()]
     )
