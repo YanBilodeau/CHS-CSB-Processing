@@ -63,7 +63,7 @@ class VesselConfigManagerError(Exception):
 
     vessel_id: str
     """L'identifiant du navire."""
-    vessel_config_manager: config.VesselManagerConfig
+    vessel_config_manager: Optional[config.VesselManagerConfig]
     """La configuration du gestionnaire de navires."""
 
     def __str__(self) -> str:
