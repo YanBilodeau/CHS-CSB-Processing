@@ -15,7 +15,7 @@ from pydantic import BaseModel, field_validator
 
 import iwls_api_request as iwls
 
-LOGGER = logger.bind(name="CSB-Pipeline.Config.IWLSAPIConfig")
+LOGGER = logger.bind(name="Config.IWLSAPIConfig")
 
 TimeSeriesDict = dict[str, list[str]]
 IWLSapiDict = dict[

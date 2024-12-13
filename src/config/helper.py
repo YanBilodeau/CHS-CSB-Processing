@@ -12,7 +12,7 @@ from loguru import logger
 import toml
 
 
-LOGGER = logger.bind(name="CSB-Pipeline.Config.LoadConfig")
+LOGGER = logger.bind(name="Config.LoadConfig")
 
 
 @lru_cache
