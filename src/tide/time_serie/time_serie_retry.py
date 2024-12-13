@@ -21,7 +21,7 @@ from tenacity import (
 from .exception_time_serie import InterpolationValueError
 from ..voronoi.voronoi_models import TimeSeriesProtocol
 
-LOGGER = logger.bind(name="CSB-Pipeline.TimeSerie.Retry")
+LOGGER = logger.bind(name="CSB-Processing.TimeSerie.Retry")
 
 
 def double_buffer_time(retry_state: RetryCallState) -> None:

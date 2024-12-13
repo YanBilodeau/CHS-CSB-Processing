@@ -11,7 +11,7 @@ from .stations_models import EndpointTypeProtocol
 from .stations_private import StationsHandlerPrivate
 from .stations_public import StationsHandlerPublic
 
-LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station.Factory")
+LOGGER = logger.bind(name="CSB-Processing.Tide.Station.Factory")
 
 
 STATIONS_FACTORY: dict[EndpointTypeProtocol, type[StationsHandlerABC]] = {

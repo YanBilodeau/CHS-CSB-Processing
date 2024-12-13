@@ -11,7 +11,7 @@ from shapely import (
     voronoi_polygons,
 )
 
-LOGGER = logger.bind(name="CSB-Pipeline.Tide.Voronoi.Algorithm")
+LOGGER = logger.bind(name="CSB-Processing.Tide.Voronoi.Algorithm")
 
 
 def create_voronoi_polygons(

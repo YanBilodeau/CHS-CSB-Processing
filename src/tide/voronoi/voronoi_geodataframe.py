@@ -22,7 +22,7 @@ from .voronoi_models import TimeSeriesProtocol, StationsHandlerProtocol
 import schema
 from schema import model_ids as schema_ids
 
-LOGGER = logger.bind(name="CSB-Pipeline.Tide.Voronoi.Geodataframe")
+LOGGER = logger.bind(name="CSB-Processing.Tide.Voronoi.Geodataframe")
 WGS84: int = 4326
 """EPSG code pouur le système de coordonnées WGS84."""
 

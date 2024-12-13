@@ -22,7 +22,7 @@ from .stations_models import TimeSeriesProtocol, ResponseProtocol, IWLSapiProtoc
 import schema
 from schema import model_ids as schema_ids, validate_schemas
 
-LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station.ABC")
+LOGGER = logger.bind(name="CSB-Processing.Tide.Station.ABC")
 
 
 class StationsHandlerABC(ABC):

@@ -29,7 +29,7 @@ from .time_serie_retry import interpolation_retry
 import schema
 from schema import model_ids as schema_ids
 
-LOGGER = logger.bind(name="CSB-Pipeline.TimeSerie")
+LOGGER = logger.bind(name="CSB-Processing.TimeSerie.Dataframe")
 NanDateRow = dict[str, Any]
 """Dictionnaire pour une ligne de données avec une valeur de NaN."""
 

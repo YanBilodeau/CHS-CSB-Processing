@@ -16,7 +16,7 @@ from loguru import logger
 from .stations_abc import StationsHandlerABC
 from .stations_models import TimeSeriesProtocol, IWLSapiProtocol
 
-LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station.Public")
+LOGGER = logger.bind(name="CSB-Processing.Tide.Station.Public")
 
 
 class StationsHandlerPublic(StationsHandlerABC):

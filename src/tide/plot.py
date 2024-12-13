@@ -11,7 +11,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from loguru import logger
 
-LOGGER = logger.bind(name="CSB-Pipeline.Tide.Plot")
+LOGGER = logger.bind(name="CSB-Processing.Tide.Plot")
 
 
 def create_scatter_traces(dataframe: pd.DataFrame) -> list[go.Scatter]:

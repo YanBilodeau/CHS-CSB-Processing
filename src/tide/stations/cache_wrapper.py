@@ -12,7 +12,7 @@ from diskcache import Cache
 from loguru import logger
 
 
-LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station.Cache")
+LOGGER = logger.bind(name="CSB-Processing.Tide.Station.Cache")
 cache: Cache | None = None
 
 

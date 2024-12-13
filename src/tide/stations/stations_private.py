@@ -18,7 +18,7 @@ from .cache_wrapper import cache_result
 from .stations_abc import StationsHandlerABC
 from .stations_models import TimeSeriesProtocol, IWLSapiProtocol
 
-LOGGER = logger.bind(name="CSB-Pipeline.Tide.Station.Private")
+LOGGER = logger.bind(name="CSB-Processing.Tide.Station.Private")
 
 
 class StationsHandlerPrivate(StationsHandlerABC):
