@@ -15,7 +15,7 @@ from loguru import logger
 from .helper import load_config
 
 
-LOGGER = logger.bind(name="Config.ProcessingConfig")
+LOGGER = logger.bind(name="CSB-Processing.Config.ProcessingConfig")
 
 CONFIG_FILE: Path = Path(__file__).parent.parent / "CONFIG_csb-processing.toml"
 
