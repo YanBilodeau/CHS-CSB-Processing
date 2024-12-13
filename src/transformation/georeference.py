@@ -271,7 +271,7 @@ def get_water_levels(
 
     dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=cpu)
     interpolated_values: pd.Series = dask_data.map_partitions(
-        lambda df: df.apply(
+        lambda gdf: gdf.apply(
             _get_water_level_for_sounding,  #  todo : weighted average ?
             axis=1,
             water_level_data=water_level_data,
@@ -323,7 +323,7 @@ def apply_georeference_bathymetry(
     dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=cpu)
 
     dask_data[schema_ids.DEPTH_PROCESSED_METER] = dask_data.map_partitions(
-        lambda df: df.apply(calculate_depth, axis=1),
+        lambda gdf: gdf.apply(calculate_depth, axis=1),
         meta=(schema_ids.DEPTH_PROCESSED_METER, "f8"),
     )
 
@@ -355,7 +355,7 @@ def compute_tpu(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=cpu)
 
     dask_data[schema_ids.UNCERTAINTY] = dask_data.map_partitions(
-        lambda df: df.apply(calculate_tpu, axis=1),
+        lambda gdf: gdf.apply(calculate_tpu, axis=1),
         meta=(schema_ids.UNCERTAINTY, "f8"),
     )
 
