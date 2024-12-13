@@ -11,7 +11,7 @@ from loguru import logger
 
 from .vessel_config import VesselConfig
 
-LOGGER = logger.bind(name="CSB-Processing.VesselConfigManager.ABC")
+LOGGER = logger.bind(name="CSB-Processing.Vessel.VesselConfigManager.ABC")
 
 
 class VesselConfigManagerABC(ABC):

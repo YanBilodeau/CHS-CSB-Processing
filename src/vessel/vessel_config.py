@@ -15,7 +15,7 @@ from . import vessel_ids as ids
 from .vessel_models import VesselConfigDict
 
 
-LOGGER = logger.bind(name="CSB-Pipeline.VesselConfig.BaseModel")
+LOGGER = logger.bind(name="CSB-Pipeline.Vessel.VesselConfig")
 
 
 class AxisConvention(StrEnum):
