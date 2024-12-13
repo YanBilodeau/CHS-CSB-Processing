@@ -55,6 +55,24 @@ class SensorConfigurationError(Exception):
         return f"La configuration du capteur {self.sensor_type} a changé durant la période de temps couverte par les données."
 
 
+@dataclass(frozen=True)
+class VesselConfigManagerError(Exception):
+    """
+    Exception levée lorsque la configuration du gestionnaire de navires est manquante pour récupérer la configuration du navire.
+    """
+
+    vessel_id: str
+    """L'identifiant du navire."""
+    vessel_config_manager: config.VesselManagerConfig
+    """La configuration du gestionnaire de navires."""
+
+    def __str__(self) -> str:
+        return (
+            f"La configuration du gestionnaire de navires [{self.vessel_config_manager}] est "
+            f"manquante ou incomplète pour récupérer la configuration du navire : {self.vessel_id}."
+        )
+
+
 def get_data_structure(output_path: Path) -> tuple[Path, Path, Path]:
     """
     Récupère la structure de répertoires pour les données.
@@ -83,20 +101,22 @@ def get_data_structure(output_path: Path) -> tuple[Path, Path, Path]:
     return data_path, tide_path, log_path
 
 
-def get_iwls_environment(config: config.IWLSAPIConfig) -> iwls.APIEnvironment:
+def get_iwls_environment(iwls_config: config.IWLSAPIConfig) -> iwls.APIEnvironment:
     """
     Réccupère l'environnement de l'API IWLS à partir du fichier de configuration.
 
-    :param config: Configuration de l'API IWLS.
-    :type config: IWLSAPIConfig
+    :param iwls_config: Configuration de l'API IWLS.
+    :type iwls_config: IWLSAPIConfig
     :return: Environnement de l'API IWLS.
     :rtype: APIEnvironment
     """
-    activated_profile: iwls.EnvironmentType = config.profile.active
-    activated_environment: iwls.APIEnvironment = config.__dict__.get(activated_profile)
+    activated_profile: iwls.EnvironmentType = iwls_config.profile.active
+    activated_environment: iwls.APIEnvironment = iwls_config.__dict__.get(
+        activated_profile
+    )
 
     LOGGER.debug(
-        f"Chargement du profil '{config.profile.active}' pour l'API IWLS. [{activated_environment}]."
+        f"Chargement du profil '{iwls_config.profile.active}' pour l'API IWLS. [{activated_environment}]."
     )
 
     return activated_environment
@@ -482,6 +502,25 @@ def processing_workflow(
         log_file_level="DEBUG",
     )
 
+    # Get the vessel configuration manager and the vessel configuration
+    if (
+        processing_config.vessel_manager is None
+        or processing_config.vessel_manager.manager_type is None
+        or not processing_config.vessel_manager.kwargs
+    ) and isinstance(vessel, str):
+        LOGGER.error(f"La configuration du gestionnaire de navires est manquante.")
+
+        raise VesselConfigManagerError(
+            vessel_id=vessel, vessel_config_manager=processing_config.vessel_manager
+        )
+
+    LOGGER.info(
+        f"Récupération de la configuration du navire {vessel.id if isinstance(vessel, vessel_manager.VesselConfig) else vessel}."
+    )
+    vessel_config: vessel_manager.VesselConfig = get_vessel_config(
+        vessel, processing_config.vessel_manager
+    )
+
     # Get the parser and the parsed data
     LOGGER.info(f"Récupération des données brutes des fichiers : {files}.")
     parser_files: factory_parser.ParserFiles = factory_parser.get_files_parser(
@@ -503,29 +542,14 @@ def processing_workflow(
     # Export the parsed data
     export.export_geodataframe_to_gpkg(data, export_data_path / "ParsedData.gpkg")
 
-    # Get the vessel configuration manager and the vessel configuration
-    if (
-        processing_config.vessel_manager is None
-        or processing_config.vessel_manager.manager_type is None
-        or not processing_config.vessel_manager.kwargs
-    ) and isinstance(vessel, str):
-        raise ValueError(
-            f"La configuration du gestionnaire de navires est manquante pour récupérer la configuration du navire : {vessel}."
-        )
-    # todo error custom
-    LOGGER.info(
-        f"Récupération de la configuration du navire {vessel.id if isinstance(vessel, vessel_manager.VesselConfig) else vessel}."
-    )
-    vessel_config: vessel_manager.VesselConfig = get_vessel_config(
-        vessel, processing_config.vessel_manager
-    )
-
     # Read the configuration file 'iwls_API_config.toml'
     iwls_api_config: config.IWLSAPIConfig = config.get_api_config(
         config_file=config_path
     )
     # Get the environment of the API IWLS from the configuration file and the active profile
-    api_environment: iwls.APIEnvironment = get_iwls_environment(config=iwls_api_config)
+    api_environment: iwls.APIEnvironment = get_iwls_environment(
+        iwls_config=iwls_api_config
+    )
     # Get the API IWLS from the environment
     api: stations.IWLSapiProtocol = get_api(environment=api_environment)
     # Get the handler of the stations
@@ -571,9 +595,6 @@ def processing_workflow(
         LOGGER.info(
             f"Zone de marée {zone} : temps minimum - {min_time}, temps maximum - {max_time}, séries temporelles - {time_series}."
         )
-
-    tide_zonde_info[schema_ids.MAX_TIME].max()
-    tide_zonde_info[schema_ids.MIN_TIME].min()
 
     # Get the sensors for the vessel
     sounder, waterline = get_sensors(
