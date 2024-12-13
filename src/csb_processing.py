@@ -9,7 +9,6 @@ from dataclasses import dataclass
 from datetime import datetime
 from functools import singledispatch
 from pathlib import Path
-import sys
 from typing import Optional, Collection
 
 import geopandas as gpd
@@ -33,7 +32,7 @@ import vessel as vessel_manager
 
 
 LOGGER = logger.bind(name="CSB-Processing.WorkFlow")
-logger.configure(handlers=[{"sink": sys.stdout, "level": "INFO"}])
+configure_logger()
 
 ROOT: Path = Path(__file__).parent
 OUTPUT: Path = ROOT.parent / "Output"
@@ -197,16 +196,19 @@ def add_tide_zone_id_to_geodataframe(
         schema_ids.ID,
     ]
 
-    gdf_data_time_zone: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
-        gpd.sjoin(
-            data_geodataframe,
-            tide_zone,
-            how="left",
-            predicate="within",
-        )[
-            columns
-        ].rename(columns={schema_ids.ID: schema_ids.TIDE_ZONE_ID})
-    )
+    gdf_data_time_zone: gpd.GeoDataFrame[
+        schema.DataLoggerWithTideZoneSchema
+    ] = gpd.sjoin(
+        data_geodataframe,
+        tide_zone,
+        how="left",
+        predicate="within",
+    )[
+        columns
+    ].rename(
+        columns={schema_ids.ID: schema_ids.TIDE_ZONE_ID}
+    )  # todo drop la colonne avant de renommer ?
+    # todo seulement sur les rangées NAN de DEPTH_PROCESSED_METER ?
 
     return gdf_data_time_zone
 
@@ -321,7 +323,7 @@ def export_station_water_levels(
 
 
 def plot_water_level_data(
-    wl_combineds: dict[str, pd.DataFrame],
+    wl_combineds: list[pd.DataFrame],
     station_titles: list[str],
     export_path: Path,
 ) -> None:
@@ -329,7 +331,7 @@ def plot_water_level_data(
     Trace les données de niveaux d'eau pour chaque station et les enregistre dans un fichier HTML.
 
     :param wl_combineds: Dictionnaire contenant les DataFrames des niveaux d'eau par station.
-    :type wl_combineds: dict[str, pd.DataFrame]
+    :type wl_combineds: list[pd.DataFrame]
     :param station_titles: Liste des titres des stations.
     :type station_titles: list[str]
     :param export_path: Chemin du répertoire d'exportation des fichiers HTML.
@@ -340,7 +342,7 @@ def plot_water_level_data(
     )
 
     plot_time_series_dataframe(
-        dataframes=list(wl_combineds.values()),
+        dataframes=wl_combineds,
         titles=station_titles,
         show_plot=False,  # Afficher le graphique dans un navigateur web
         output_path=export_path,  # Exporter le graphique dans un fichier HTML
@@ -499,7 +501,6 @@ def processing_workflow(
     configure_logger(
         log_path / f"{datetime.now().strftime('%Y-%m-%d')}_CSB-Processing.log",
         std_level=processing_config.options.log_level,
-        log_file_level="DEBUG",
     )
 
     # Check if the vessel configuration is missing
@@ -561,111 +562,145 @@ def processing_workflow(
         cache_path=iwls_api_config.cache.cache_path,
     )
 
-    # Get the Voronoi diagram of the stations. The stations are selected based on the priority of the time series.
-    # The time series priority is defined in the configuration file.
-    LOGGER.info("Récupération des zones de marée (diagramme de Voronoi).")
-    gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema] = (
-        voronoi.get_voronoi_geodataframe(
-            stations_handler=stations_handler,
-            time_series=iwls_api_config.time_series.priority,
-        )
-    )
-    # Export the Voronoi diagram to a GeoJSON file
-    export.export_geodataframe_to_geojson(
-        geodataframe=gdf_voronoi,
-        output_path=export_tide_path / "voronoi_merged.geojson",
-    )
+    # todo à partir d'ici une boucle sur les NAN et concat à la fin
+    excluded_stations: list[str] = []
+    wl_combineds_list: list[
+        pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]
+    ] = []
+    station_titles_list: list[str] = []
+    run: int = 1
 
-    # Add the tide zone to the data
-    gdf_data_tide_zone: gpd.GeoDataFrame = add_tide_zone_id_to_geodataframe(
-        data_geodataframe=data, tide_zone=gdf_voronoi
-    )
-
-    # Get the time and tide zone
-    LOGGER.info(
-        "Récupération des information sur les zones de marées qui intersetent les données brutes."
-    )
-    tide_zonde_info: pd.DataFrame = get_intersected_tide_zone_info(
-        data_geodataframe=gdf_data_tide_zone,
-        tide_zone=gdf_voronoi,
-    )
-
-    for zone, min_time, max_time, time_series in tide_zonde_info.itertuples(
-        index=False
-    ):
+    while True:
         LOGGER.info(
-            f"Zone de marée {zone} : temps minimum - {min_time}, temps maximum - {max_time}, séries temporelles - {time_series}."
+            f"Transformation des données : #{run}. Stations exclues : {excluded_stations}."
+        )
+        # Get the Voronoi diagram of the stations. The stations are selected based on the priority of the time series.
+        # The time series priority is defined in the configuration file.
+        LOGGER.info("Récupération des zones de marée (diagramme de Voronoi).")
+        gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema] = (
+            voronoi.get_voronoi_geodataframe(
+                stations_handler=stations_handler,
+                time_series=iwls_api_config.time_series.priority,
+                excluded_stations=excluded_stations,
+            )
         )
 
-    # Get the sensors for the vessel
-    sounder, waterline = get_sensors(
-        vessel_config=vessel_config,
-        min_time=tide_zonde_info[schema_ids.MIN_TIME].min(),
-        max_time=tide_zonde_info[schema_ids.MAX_TIME].max(),
-    )
+        # Add the tide zone to the data
+        data: gpd.GeoDataFrame = add_tide_zone_id_to_geodataframe(
+            data_geodataframe=data, tide_zone=gdf_voronoi
+        )
 
-    # Get the water level data for each station
-    LOGGER.info(
-        "Récupération des données de niveaux d'eau pour chaque station touchant les données brutes."
-    )
-    wl_combineds, wl_exceptions = time_serie.get_water_level_data_for_stations(
-        # Stations handler to retrieve the water level data.
-        stations_handler=stations_handler,
-        # Tide zone information for the water level data. Tide zone id, start time, end time and time series.
-        tide_zonde_info=tide_zonde_info,
-        # Quality control flag filter for the wlo time series.
-        wlo_qc_flag_filter=iwls_api_config.time_series.wlo_qc_flag_filter,
-        # Buffer time to add before and after the requested time range for the interpolation.
-        buffer_time=iwls_api_config.time_series.buffer_time,
-        # Maximum time gap allowed for the data. The maximum time gap is defined in the configuration file.
-        # If the gap is greater than this value, data from the next time series will be retrieved to fill
-        # the gaps. For example, if the time series priority is [wlo, wlp] and the maximum time gap is 1 hour, the
-        # data for the time series wlo will be retrieved first. If the gap between two consecutive
-        # data points is greater than 1 hour, the data for the time series wlp will be retrieved to fill the gap.
-        max_time_gap=iwls_api_config.time_series.max_time_gap,
-        # Threshold for the interpolation versus filling of the gaps in the data.
-        threshold_interpolation_filling=iwls_api_config.time_series.threshold_interpolation_filling,
-    )
+        # Get the time and tide zone
+        LOGGER.info(
+            "Récupération des information sur les zones de marées qui intersetent les données brutes."
+        )
+        tide_zonde_info: pd.DataFrame = get_intersected_tide_zone_info(
+            data_geodataframe=data,
+            tide_zone=gdf_voronoi,
+        )
 
-    # Export the water level data for each station
-    station_titles: list[str] = export_station_water_levels(
-        wl_combineds=wl_combineds,
-        gdf_voronoi=gdf_voronoi,
-        export_tide_path=export_tide_path,
-    )
+        for zone, min_time, max_time, time_series in tide_zonde_info.itertuples(
+            index=False
+        ):
+            LOGGER.info(
+                f"Zone de marée {zone} : temps minimum - {min_time}, temps maximum - {max_time}, séries temporelles - {time_series}."
+            )
+
+        # Get the sensors for the vessel
+        sounder, waterline = get_sensors(
+            vessel_config=vessel_config,
+            min_time=tide_zonde_info[schema_ids.MIN_TIME].min(),
+            max_time=tide_zonde_info[schema_ids.MAX_TIME].max(),
+        )
+
+        # Get the water level data for each station
+        LOGGER.info(
+            "Récupération des données de niveaux d'eau pour chaque station touchant les données brutes."
+        )
+        wl_combineds, wl_exceptions = time_serie.get_water_level_data_for_stations(
+            # Stations handler to retrieve the water level data.
+            stations_handler=stations_handler,
+            # Tide zone information for the water level data. Tide zone id, start time, end time and time series.
+            tide_zonde_info=tide_zonde_info,
+            # Quality control flag filter for the wlo time series.
+            wlo_qc_flag_filter=iwls_api_config.time_series.wlo_qc_flag_filter,
+            # Buffer time to add before and after the requested time range for the interpolation.
+            buffer_time=iwls_api_config.time_series.buffer_time,
+            # Maximum time gap allowed for the data. The maximum time gap is defined in the configuration file.
+            # If the gap is greater than this value, data from the next time series will be retrieved to fill
+            # the gaps. For example, if the time series priority is [wlo, wlp] and the maximum time gap is 1 hour, the
+            # data for the time series wlo will be retrieved first. If the gap between two consecutive
+            # data points is greater than 1 hour, the data for the time series wlp will be retrieved to fill the gap.
+            max_time_gap=iwls_api_config.time_series.max_time_gap,
+            # Threshold for the interpolation versus filling of the gaps in the data.
+            threshold_interpolation_filling=iwls_api_config.time_series.threshold_interpolation_filling,
+        )
+        # Add the water level data to the list for the plot
+        wl_combineds_list.extend(wl_combineds.values())
+
+        # Export the water level data for each station
+        station_titles: list[str] = export_station_water_levels(
+            wl_combineds=wl_combineds,
+            gdf_voronoi=gdf_voronoi,
+            export_tide_path=export_tide_path,
+        )
+        # Add the station titles to the list for the plot
+        station_titles_list.extend(station_titles)
+
+        # Log the exceptions
+        LOGGER.debug(f"Exceptions : {wl_exceptions}.")
+        LOGGER.debug(wl_combineds)
+
+        if wl_combineds:
+            # Export the Voronoi diagram to a GeoJSON file
+            voronoi_output_path: Path = (
+                export_tide_path / f"StationVoronoi (#{run}).geojson"
+            )
+            LOGGER.info(
+                f"Exportation du diagramme de Voronoi des stations marégraphiques : {voronoi_output_path}."
+            )
+            export.export_geodataframe_to_geojson(
+                geodataframe=gdf_voronoi,
+                output_path=export_tide_path / voronoi_output_path,
+            )
+
+            # Georeference the bathymetry data
+            data: gpd.GeoDataFrame[schema.DataLoggerSchema] = (
+                georeference.georeference_bathymetry(
+                    data=data,
+                    water_level=wl_combineds,
+                    waterline=waterline,
+                    sounder=sounder,
+                    water_level_tolerance=processing_config.georeference.water_level_tolerance,
+                )
+            )
+
+            LOGGER.debug(data)
+            for idx, row in data.head(5).iterrows():
+                LOGGER.debug(row)
+
+        # Check if there are any missing values in the processed data
+        if data[schema_ids.DEPTH_PROCESSED_METER].isna().any():
+            # Add the stations with missing values to the excluded stations
+            excluded_stations.extend(tide_zonde_info[schema_ids.TIDE_ZONE_ID].tolist())
+            run += 1
+        else:
+            break
 
     # Plot the water level data for each station
-    if wl_combineds:
+    if wl_combineds_list:
         plot_water_level_data(
-            wl_combineds=wl_combineds,
-            station_titles=station_titles,
+            wl_combineds=wl_combineds_list,
+            station_titles=station_titles_list,
             export_path=export_tide_path / "WaterLevel.html",
         )
 
-    LOGGER.debug(f"Exceptions : {wl_exceptions}.")
-    LOGGER.debug(wl_combineds)
-
-    # Georeference the bathymetry data
-    processed_data: gpd.GeoDataFrame[schema.DataLoggerSchema] = (
-        georeference.georeference_bathymetry(
-            data=gdf_data_tide_zone,
-            water_level=wl_combineds,
-            waterline=waterline,
-            sounder=sounder,
-            water_level_tolerance=processing_config.georeference.water_level_tolerance,
-        )
-    )
-
-    LOGGER.debug(processed_data)
-    for idx, row in processed_data.head(5).iterrows():
-        LOGGER.debug(row)
-
     # Export the processed data
     output_path: Path = export_data_path / "ProcessedData.gpkg"
-    LOGGER.info(f"Exportation des données traitées : {output_path}.")
-    export.export_geodataframe_to_gpkg(
-        geodataframe=processed_data, output_path=output_path
+    LOGGER.info(
+        f"Exportation des données traitées ({len(data)} sondes) : {output_path}."
     )
+    export.export_geodataframe_to_gpkg(geodataframe=data, output_path=output_path)
 
 
 if __name__ == "__main__":
@@ -673,7 +708,6 @@ if __name__ == "__main__":
     from cli import cli
 
     if sys.argv[1:]:
-        LOGGER.info(f"Ligne de commande exécutée : {' '.join(sys.argv)}")
         cli()
 
     def get_ofm_files() -> list[Path]:
@@ -709,9 +743,9 @@ if __name__ == "__main__":
         ]
 
     # Get the files to parse
-    files_path: list[Path] = get_ofm_files()
+    # files_path: list[Path] = get_ofm_files()
     # files_path: list[Path] = get_dcdb_files()
-    # files_path: list[Path] = get_lowrance_files()
+    files_path: list[Path] = get_lowrance_files()
     # files_path: list[Path] = get_blackbox_files()
     # files_path: list[Path] = get_actisense_files()
     # files_path: list[Path] = (
