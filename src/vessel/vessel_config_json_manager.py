@@ -19,7 +19,7 @@ from .vessel_config import (
 )
 from . import vessel_ids as ids
 
-LOGGER = logger.bind(name="CSB-Pipeline.VesselConfigManager.JSON")
+LOGGER = logger.bind(name="CSB-Processing.VesselConfigManager.JSON")
 
 
 class VesselConfigJsonManager(VesselConfigManagerABC):
