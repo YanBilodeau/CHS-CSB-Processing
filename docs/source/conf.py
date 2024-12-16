@@ -30,13 +30,16 @@ extensions = [
     "sphinx.ext.autosummary",  # Permet de générer des résumés de documentation
     "sphinx.ext.inheritance_diagram",  # Permet de générer des diagrammes d'héritage
     "sphinx_click",
-    "sphinx_intl",
 ]
 
 templates_path = ["_templates"]
 exclude_patterns = []
 
 language = "fr"
+
+# Chemin des fichiers de traduction
+locale_dirs = [Path("../locale").resolve()]
+gettext_compact = False
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
