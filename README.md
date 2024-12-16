@@ -251,7 +251,7 @@ python cli.py /data/fichier1.csv /data/dossier --output /data/output --vessel NA
 
 # CHS-CSB-Processing
 
-You can visit the [documentation](https://chs-csb-processing.readthedocs.io/fr/latest/) for more information.
+You can visit the [documentation](https://chs-csb-processing.readthedocs.io/en/latest/) for more information.
 
 ---
 # Command-Line Interface Tutorial for Bathymetric File Processing
