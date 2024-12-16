@@ -59,14 +59,11 @@ def get_files(paths: Collection[Path]) -> list[Path]:
     This script allows to process bathymetric data files and georeference them.
     """
 )
-@click.option(
-    "--files",
-    type=click.Path(exists=False),
-    multiple=True,
-    help="""
-    Chemins des fichiers ou répertoires à traiter.\n
-    Paths of the files or directories to process.
-    """,
+@click.argument(
+    "files",
+    type=click.Path(exists=True),
+    required=True,
+    nargs=-1,
 )
 @click.option(
     "--output",
@@ -88,7 +85,7 @@ def get_files(paths: Collection[Path]) -> list[Path]:
 )
 @click.option(
     "--config",
-    type=click.Path(),
+    type=click.Path(exists=True),
     required=False,
     help="""
     Chemin du fichier de configuration. si aucun fichier de configuration n'est fourni, le fichier de configuration
@@ -114,7 +111,7 @@ def cli(
     configure_logger()
 
     LOGGER.info(f"Ligne de commande exécutée : python {' '.join(sys.argv)}")
-
+    print(files)
     # Get the files to parse
     files: list[Path] = get_files(files)
 
