@@ -135,3 +135,7 @@ def cli(
     processing_workflow(
         files=files, vessel=vessel, output=Path(output), config_path=Path(config)
     )
+
+
+if __name__ == "__main__":
+    cli()
