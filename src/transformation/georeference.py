@@ -57,7 +57,8 @@ def _get_event_dates(station_id: str, water_level_df: pd.DataFrame) -> pd.Dateti
     :rtype: pd.DatetimeIndex[pd.Timestamp]
     """
     cache_key: str = (
-        f"{station_id}-{water_level_df.attrs[schema_ids.START_TIME]}-{water_level_df.attrs[schema_ids.END_TIME]}-{len(water_level_df)}"
+        f"{station_id}-{water_level_df.attrs[schema_ids.START_TIME]}"
+        f"-{water_level_df.attrs[schema_ids.END_TIME]}-{len(water_level_df)}"
     )
     # Mise en cache des dates des événements
     if cache_key not in event_dates_cache:
