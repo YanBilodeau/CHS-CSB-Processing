@@ -26,7 +26,7 @@ msgstr ""
 
 #: cli:1 of
 msgid "Ce module contient la fonction principale de la ligne de commande."
-msgstr ""
+msgstr "This module contains the main function of the command line."
 
 #: cli:3 of
 msgid ""
