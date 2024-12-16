@@ -21,19 +21,19 @@ Ce module est conçu pour automatiser le traitement des fichiers de données bat
 ## Commande principale
 
 ```bash
-python cli.py --files <chemin> [options]
+python cli.py <files> [options] 
 ```
 
 ### Options disponibles
 
-#### `--files`
+#### `files`
 - **Description** : Spécifie les chemins des fichiers ou des répertoires à traiter.
 - **Type** : `Collection[Path]`
 - **Obligatoire** : Oui
 - **Détails** : Vous pouvez fournir un ou plusieurs chemins. Si un répertoire est spécifié, tous les fichiers valides qu'il contient seront inclus.
 - **Exemple** :
   ```bash
-  python cli.py --files /data/fichier1.csv /data/dossier
+  python cli.py /data/fichier1.csv /data/dossier
   ```
 
 #### `--output`
@@ -43,7 +43,7 @@ python cli.py --files <chemin> [options]
 - **Détails** : Si ce paramètre n'est pas défini, le script ne pourra pas enregistrer les fichiers traités.
 - **Exemple** :
   ```bash
-  python cli.py --files /data/fichier1.csv --output /data/output
+  python cli.py /data/fichier1.csv --output /data/output
   ```
 
 #### `--vessel`
@@ -53,7 +53,7 @@ python cli.py --files <chemin> [options]
 - **Détails** : Si aucun identifiant n'est fourni, un navire par défaut avec des bras de levier à 0 sera utilisé.
 - **Exemple** :
   ```bash
-  python cli.py --files /data/fichier1.csv --vessel NAVIRE123
+  python cli.py /data/fichier1.csv --vessel NAVIRE123
   ```
 
 #### `--config`
@@ -63,7 +63,7 @@ python cli.py --files <chemin> [options]
 - **Détails** : Si ce paramètre est omis, un fichier de configuration par défaut sera utilisé.
 - **Exemple** :
   ```bash
-  python cli.py --files /data/fichier1.csv --config /config/config.toml
+  python cli.py /data/fichier1.csv --config /config/config.toml
   ```
 
 ---
@@ -227,7 +227,7 @@ Le module inclut une gestion robuste des erreurs pour éviter les interruptions 
   ```
 
 ### Paramètres manquants
-- **Problème** : Si un paramètre obligatoire comme `--files` ou `--output` est omis.
+- **Problème** : Si un paramètre obligatoire comme `--output` est omis ou qu'il n'y a pas de fichiers à traiter.
 - **Solution** : Le script affiche un message d'erreur expliquant le paramètre manquant.
   ```bash
   [ERROR] Le paramètre --output est obligatoire.
@@ -238,11 +238,7 @@ Le module inclut une gestion robuste des erreurs pour éviter les interruptions 
 
 ### Commande
 ```bash
-python cli.py \
-  --files /data/fichier1.csv /data/dossier \
-  --output /data/output \
-  --vessel NAVIRE123 \
-  --config /config/config.toml
+python cli.py /data/fichier1.csv /data/dossier --output /data/output --vessel NAVIRE123 --config /config/config.toml
 ```
 
 ### Étapes détaillées
@@ -276,19 +272,19 @@ This module is designed to automate the processing of bathymetric data files. It
 ## Main Command
 
 ```bash
-python cli.py --files <path> [options]
+python cli.py <files> [options]
 ```
 
 ### Available Options
 
-#### `--files`
+#### `files`
 - **Description**: Specifies the paths of the files or directories to be processed.
 - **Type**: `Collection[Path]`
 - **Required**: Yes
 - **Details**: You can provide one or multiple paths. If a directory is specified, all valid files it contains will be included.
 - **Example**:
   ```bash
-  python cli.py --files /data/file1.csv /data/folder
+  python cli.py /data/file1.csv /data/folder
   ```
 
 #### `--output`
@@ -298,7 +294,7 @@ python cli.py --files <path> [options]
 - **Details**: If this parameter is not set, the script will not save the processed files.
 - **Example**:
   ```bash
-  python cli.py --files /data/file1.csv --output /data/output
+  python cli.py /data/file1.csv --output /data/output
   ```
 
 #### `--vessel`
@@ -308,7 +304,7 @@ python cli.py --files <path> [options]
 - **Details**: If no identifier is provided, a default vessel with lever arms set to 0 will be used.
 - **Example**:
   ```bash
-  python cli.py --files /data/file1.csv --vessel VESSEL123
+  python cli.py /data/file1.csv --vessel VESSEL123
   ```
 
 #### `--config`
@@ -318,7 +314,7 @@ python cli.py --files <path> [options]
 - **Details**: If this parameter is omitted, a default configuration file will be used.
 - **Example**:
   ```bash
-  python cli.py --files /data/file1.csv --config /config/config.toml
+  python cli.py /data/file1.csv --config /config/config.toml
   ```
 
 ---
@@ -482,7 +478,7 @@ The module includes robust error handling to avoid unexpected interruptions. Bel
   ```
 
 ### Missing Parameters
-- **Issue**: If a required parameter such as `--files` or `--output` is missing.
+- **Issue**: If a required parameter such as `--output` is missing.
 - **Solution**: The script displays an error message explaining the missing parameter.
   ```bash
   [ERROR] The --output parameter is required.
@@ -493,11 +489,7 @@ The module includes robust error handling to avoid unexpected interruptions. Bel
 
 ### Command
 ```bash
-python cli.py \
-  --files /data/file1.csv /data/folder \
-  --output /data/output \
-  --vessel VESSEL123 \
-  --config /config/config.toml
+python cli.py /data/file1.csv /data/folder --output /data/output --vessel VESSEL123 --config /config/config.toml
 ```
 
 ### Detailed Steps
