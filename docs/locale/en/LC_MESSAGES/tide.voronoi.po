@@ -1,0 +1,351 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, Yan Bilodeau
+# This file is distributed under the same license as the CHS-CSB-Processing
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: CHS-CSB-Processing \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-16 15:32-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: ../../source/tide.voronoi.rst:2
+msgid "tide.voronoi package"
+msgstr ""
+
+#: ../../source/tide.voronoi.rst:5
+msgid "Submodules"
+msgstr ""
+
+#: ../../source/tide.voronoi.rst:8
+msgid "tide.voronoi.voronoi\\_algorithm module"
+msgstr ""
+
+#: of tide.voronoi.voronoi_algorithm:1
+msgid "Module qui contient l'algorithme de création des polygones de Voronoi."
+msgstr ""
+
+#: of tide.voronoi.voronoi_algorithm.create_voronoi_polygons:1
+msgid ""
+"Fonction qui crée des polygones de Voronoi à partir d'un ensemble de "
+"points. "
+"https://shapely.readthedocs.io/en/stable/reference/shapely.voronoi_polygons.html"
+msgstr ""
+
+#: ../../source/tide.voronoi.rst
+msgid "Paramètres"
+msgstr ""
+
+#: of tide.voronoi.voronoi_algorithm.create_voronoi_polygons:4
+msgid "Géométrie des objets."
+msgstr ""
+
+#: of tide.voronoi.voronoi_algorithm.create_voronoi_polygons:6
+msgid "La tolérance pour l'intersection des lignes."
+msgstr ""
+
+#: of tide.voronoi.voronoi_algorithm.create_voronoi_polygons:8
+msgid "L'étendue de la géométrie des polygones de Voronoi."
+msgstr ""
+
+#: of tide.voronoi.voronoi_algorithm.create_voronoi_polygons:10
+msgid "Création de polylignes plutôt que des polygones."
+msgstr ""
+
+#: of tide.voronoi.voronoi_algorithm.create_voronoi_polygons:12
+msgid "Autres paramètres."
+msgstr ""
+
+#: ../../source/tide.voronoi.rst
+msgid "Renvoie"
+msgstr ""
+
+#: of tide.voronoi.voronoi_algorithm.create_voronoi_polygons:14
+msgid "Collection de polygones de Voronoi."
+msgstr ""
+
+#: ../../source/tide.voronoi.rst
+msgid "Type renvoyé"
+msgstr ""
+
+#: ../../source/tide.voronoi.rst:16
+msgid "tide.voronoi.voronoi\\_geodataframe module"
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe:1
+msgid ""
+"Module qui contient les fonctions pour manipuler les GeoDataFrame des "
+"polygones de Voronoi."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe:3
+msgid ""
+"Les fonctions permettent de créer les polygones de Voronoi, de les "
+"joindre avec les stations et de fusionner les attributs."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.create_voronoi_gdf:1
+msgid ""
+"Crée un GeoDataFrame de polygone de Voronoi à partir d'une geometrie "
+"Shapely."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.create_voronoi_gdf:3
+msgid "La géométrie Shapely à utiliser pour créer les polygones de Voronoi."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.create_voronoi_gdf:5
+msgid "Le GeoDataFrame contenant les polygones de Voronoi."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.from_shapely_object_to_geodataframe:1
+msgid "Fonction qui transforme un objet Shapely en GeoDataFrame."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.from_shapely_object_to_geodataframe:3
+msgid "La géométrie Shapely à transformer."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.from_shapely_object_to_geodataframe:5
+msgid "Le code EPSG du CRS à utiliser."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.from_shapely_object_to_geodataframe:7
+msgid "Le GeoDataFrame."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_code_by_station_id:1
+msgid "Récupère le code de la station."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_code_by_station_id:3
+#: tide.voronoi.voronoi_geodataframe.get_name_by_station_id:3
+#: tide.voronoi.voronoi_geodataframe.get_polygon_by_geometry:3
+#: tide.voronoi.voronoi_geodataframe.get_polygon_by_station_id:3
+#: tide.voronoi.voronoi_geodataframe.get_station_position_by_station_id:3
+#: tide.voronoi.voronoi_geodataframe.get_time_series_by_station_id:3
+#: tide.voronoi.voronoi_geodataframe.get_voronoi_geodataframe:9
+#: tide.voronoi.voronoi_geodataframe.join_stations_voronoi:5
+#: tide.voronoi.voronoi_geodataframe.merge_attributes:3
+msgid "Le GeoDataFrame des polygones de Voronoi."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_code_by_station_id:5
+#: tide.voronoi.voronoi_geodataframe.get_name_by_station_id:5
+#: tide.voronoi.voronoi_geodataframe.get_polygon_by_station_id:5
+#: tide.voronoi.voronoi_geodataframe.get_station_position_by_station_id:5
+#: tide.voronoi.voronoi_geodataframe.get_time_series_by_station_id:5
+msgid "L'identifiant de la station."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_code_by_station_id:7
+msgid "Le code de la station."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_concave_hull:1
+msgid "Récupère l'enveloppe concave des polygones de Voronoi."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_concave_hull:3
+msgid "La géométrie a utilisé pour l'enveloppe concave."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_concave_hull:5
+msgid "Le ratio de l'enveloppe concave."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_concave_hull:7
+msgid "Autorise les trous dans l'enveloppe concave."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_concave_hull:9
+msgid "L'enveloppe concave des polygones."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_name_by_station_id:1
+msgid "Récupère le nom de la station."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_name_by_station_id:7
+msgid "Le nom de la station."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_polygon_by_geometry:1
+msgid "Récupère les polygones de Voronoi qui intersectent les géométries données."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_polygon_by_geometry:5
+msgid "La géométrie a utilisé pour l'intersection."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_polygon_by_geometry:7
+msgid "Le GeoDataFrame des polygones de Voronoi qui intersectent les géométries."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_polygon_by_station_id:1
+msgid "Récupère le polygone de Voronoi pour une station donnée."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_polygon_by_station_id:7
+msgid "Le polygone de Voronoi de la station."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_station_position_by_station_id:1
+msgid "Récupère la position de la station."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_station_position_by_station_id:7
+msgid "La position de la station."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_time_series_by_station_id:1
+msgid "Récupère les séries temporelles pour une station donnée."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_time_series_by_station_id:7
+msgid "Les séries temporelles de la station."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_voronoi_geodataframe:1
+msgid "Récupère le GeoDataFrame des polygones de Voronoi."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_voronoi_geodataframe:3
+msgid "Gestionnaire des stations."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_voronoi_geodataframe:5
+#: tide.voronoi.voronoi_models.StationsHandlerProtocol.get_stations_geodataframe:3
+msgid ""
+"Liste des séries temporelles pour filtrer les stations. Si None, toutes "
+"les stations sont retournées."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.get_voronoi_geodataframe:7
+#: tide.voronoi.voronoi_models.StationsHandlerProtocol.get_stations_geodataframe:5
+msgid "Liste des stations à exclure."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.join_stations_voronoi:1
+msgid "Crée une jointure spatiale entre les stations et les polygones de Voronoi."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.join_stations_voronoi:3
+msgid "Le GeoDataFrame des stations."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.join_stations_voronoi:7
+msgid "Le GeoDataFrame joint."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.merge_attributes:1
+msgid "Fusionne les attributs des stations avec les polygones de Voronoi."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.merge_attributes:5
+msgid ""
+"Le GeoDataFrame avec le geodataframe des stations et des polygones de "
+"Voronoi joins."
+msgstr ""
+
+#: of tide.voronoi.voronoi_geodataframe.merge_attributes:7
+msgid "Le GeoDataFrame avec les attributs fusionnés."
+msgstr ""
+
+#: ../../../docstring of tide.voronoi.voronoi_geodataframe.WGS84:1
+msgid "EPSG code pouur le système de coordonnées WGS84."
+msgstr ""
+
+#: ../../source/tide.voronoi.rst:24
+msgid "tide.voronoi.voronoi\\_models module"
+msgstr ""
+
+#: of tide.voronoi.voronoi_models:1
+msgid ""
+"Module qui contient les modèles et les protocoles pour manipuler les "
+"données des séries temporelles et des stations."
+msgstr ""
+
+#: of tide.voronoi.voronoi_models.StationsHandlerProtocol:1
+#: tide.voronoi.voronoi_models.TimeSeriesProtocol:1
+msgid "Bases : :py:class:`~typing.Protocol`"
+msgstr ""
+
+#: of tide.voronoi.voronoi_models.StationsHandlerProtocol:1
+msgid "Protocole pour définir les méthodes de manipulation des stations."
+msgstr ""
+
+#: of
+#: tide.voronoi.voronoi_models.StationsHandlerProtocol.get_stations_geodataframe:1
+msgid "Méthode pour récupérer le GeoDataFrame des stations."
+msgstr ""
+
+#: of
+#: tide.voronoi.voronoi_models.StationsHandlerProtocol.get_stations_geodataframe:7
+msgid "Durée de vie du cache."
+msgstr ""
+
+#: of
+#: tide.voronoi.voronoi_models.StationsHandlerProtocol.get_stations_geodataframe:9
+msgid "GeoDataFrame des stations."
+msgstr ""
+
+#: of tide.voronoi.voronoi_models.TimeSeriesProtocol:1
+msgid "Protocole pour définir les types des séries temporelles."
+msgstr ""
+
+#: of tide.voronoi.voronoi_models.TimeSeriesProtocol.from_str:1
+msgid "Méthode pour convertir une chaîne de caractères en série temporelle."
+msgstr ""
+
+#: of tide.voronoi.voronoi_models.TimeSeriesProtocol.from_str:3
+msgid "Chaîne de caractères."
+msgstr ""
+
+#: of tide.voronoi.voronoi_models.TimeSeriesProtocol.from_str:5
+msgid "Série temporelle."
+msgstr ""
+
+#: ../../../docstring of tide.voronoi.voronoi_models.TimeSeriesProtocol.WLF:1
+msgid "Water Level Forecast."
+msgstr ""
+
+#: ../../../docstring of
+#: tide.voronoi.voronoi_models.TimeSeriesProtocol.WLF_SPINE:1
+msgid "Water Level Forecast Spine."
+msgstr ""
+
+#: ../../../docstring of
+#: tide.voronoi.voronoi_models.TimeSeriesProtocol.WLF_VTG:1
+msgid "Water Level Forecast VTG."
+msgstr ""
+
+#: ../../../docstring of tide.voronoi.voronoi_models.TimeSeriesProtocol.WLO:1
+msgid "Water Level Observed."
+msgstr ""
+
+#: ../../../docstring of tide.voronoi.voronoi_models.TimeSeriesProtocol.WLP:1
+msgid "Water Level Prediction."
+msgstr ""
+
+#: ../../source/tide.voronoi.rst:32
+msgid "Module contents"
+msgstr ""
+
+#: of tide.voronoi:1
+msgid ""
+"Ce package contient les fonctions permettant de générer des polygones de "
+"Voronoi à partir de données de stations de mesures."
+msgstr ""
+

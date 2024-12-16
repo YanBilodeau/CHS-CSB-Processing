@@ -1,0 +1,1430 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, Yan Bilodeau
+# This file is distributed under the same license as the CHS-CSB-Processing
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: CHS-CSB-Processing \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-16 15:32-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: ../../source/iwls_api_request.rst:2
+msgid "iwls\\_api\\_request package"
+msgstr ""
+
+#: ../../source/iwls_api_request.rst:5
+msgid "Subpackages"
+msgstr ""
+
+#: ../../source/iwls_api_request.rst:14
+msgid "Submodules"
+msgstr ""
+
+#: ../../source/iwls_api_request.rst:17
+msgid "iwls\\_api\\_request.api\\_config module"
+msgstr ""
+
+#: iwls_api_request.api_config.APIEnvironment:1
+#: iwls_api_request.api_config.APIProfile:1
+#: iwls_api_request.api_config.IWLSAPIConfig:1 of
+msgid "Bases : :py:class:`~pydantic.main.BaseModel`"
+msgstr ""
+
+#: iwls_api_request.api_config.APIEnvironment.Config:1
+#: iwls_api_request.handler.models_handler.CachedSessionConfig:1
+#: iwls_api_request.handler.models_handler.Response:1
+#: iwls_api_request.handler.models_handler.RetryAdapterConfig:1 of
+msgid "Bases : :py:class:`object`"
+msgstr ""
+
+#: iwls_api_request.api_config.get_api_config:1
+#: iwls_api_request.api_config.load_config:1 of
+msgid "Retournes la configuration de l'API IWLS"
+msgstr ""
+
+#: ../../source/iwls_api_request.rst
+msgid "Paramètres"
+msgstr ""
+
+#: iwls_api_request.api_config.get_api_config:3
+#: iwls_api_request.api_config.load_config:3 of
+msgid "Le fichier de configuration."
+msgstr ""
+
+#: ../../source/iwls_api_request.rst
+msgid "Renvoie"
+msgstr ""
+
+#: iwls_api_request.api_config.get_api_config:5 of
+msgid "Un objet APIConfig."
+msgstr ""
+
+#: ../../source/iwls_api_request.rst
+msgid "Type renvoyé"
+msgstr ""
+
+#: iwls_api_request.api_config.get_environment_config:1 of
+msgid "Retournes les configurations des environnements de l'API IWLS"
+msgstr ""
+
+#: iwls_api_request.api_config.get_environment_config:3
+#: iwls_api_request.api_config.load_config:5 of
+msgid "La configuration de l'API IWLS."
+msgstr ""
+
+#: iwls_api_request.api_config.get_environment_config:5 of
+msgid "Les configurations des environnements de l'API IWLS."
+msgstr ""
+
+#: ../../source/iwls_api_request.rst:25
+msgid "iwls\\_api\\_request.api\\_facade module"
+msgstr ""
+
+#: iwls_api_request.api.models_api.EndpointType:1
+#: iwls_api_request.api.models_api.Regions:1
+#: iwls_api_request.api.models_api.TimeResolution:1
+#: iwls_api_request.api.models_api.TimeSeries:1
+#: iwls_api_request.api.models_api.TimeZone:1
+#: iwls_api_request.api.models_api.TypeTideTable:1
+#: iwls_api_request.api_facade.EnvironmentType:1
+#: iwls_api_request.api_facade.HandlerType:1
+#: iwls_api_request.handler.models_handler.SessionType:1 of
+msgid "Bases : :py:class:`~enum.StrEnum`"
+msgstr ""
+
+#: iwls_api_request.api_facade._configure_session_type:1 of
+msgid "Fonction qui configure le type de session en fonction de la configuration."
+msgstr ""
+
+#: iwls_api_request.api_facade._configure_session_type:3
+#: iwls_api_request.api_facade._get_handler:6 of
+msgid ""
+"(SessionType | CachedSessionConfig) Le type de session ou la "
+"configuration pour la cache."
+msgstr ""
+
+#: iwls_api_request.api_facade._configure_session_type:4 of
+msgid ""
+"(tuple[SessionType, CachedSessionConfig | None]) Le type de session et la"
+" configuration pour la cache."
+msgstr ""
+
+#: iwls_api_request.api_facade._get_handler:1 of
+msgid ""
+"Fonction qui retourne un gestionnaire de requêtes en fonction du type de "
+"gestionnaire."
+msgstr ""
+
+#: iwls_api_request.api_facade._get_handler:3
+#: iwls_api_request.api_facade.get_iwls_api:4 of
+msgid "(HandlerType) Le type de gestionnaire de requêtes."
+msgstr ""
+
+#: iwls_api_request.api_facade._get_handler:4
+#: iwls_api_request.api_facade.get_iwls_api:5 of
+msgid ""
+"(int) Le nombre de requêtes autorisées (nécessaire pour "
+"'HandlerType.RATE_LIMITER)."
+msgstr ""
+
+#: iwls_api_request.api_facade._get_handler:5
+#: iwls_api_request.api_facade.get_iwls_api:6 of
+msgid ""
+"(int) La période de temps pour les requêtes autorisées (nécessaire pour "
+"HandlerType.RATE_LIMITER)."
+msgstr ""
+
+#: iwls_api_request.api_facade._get_handler:7
+#: iwls_api_request.api_facade._mount_retry_adapter:3 of
+msgid "(RequestsHandler) Le gestionnaire de requêtes."
+msgstr ""
+
+#: iwls_api_request.api_facade._mount_retry_adapter:1 of
+msgid ""
+"Fonction qui monte un adaptateur de réessai sur le gestionnaire de "
+"requêtes."
+msgstr ""
+
+#: iwls_api_request.api_facade._mount_retry_adapter:4
+#: iwls_api_request.api_facade.get_iwls_api:9 of
+msgid ""
+"(RetryAdapterConfig | bool) La configuration pour l'adaptateur de réessai"
+" ou un booléen. Si True, une configuration par défaut est utilisé, si "
+"False, aucun adaptateur est utilisé."
+msgstr ""
+
+#: iwls_api_request.api_facade._mount_retry_adapter:7 of
+msgid "(None)"
+msgstr ""
+
+#: iwls_api_request.api_facade.get_api_factory:1 of
+msgid "Retournes la classe de l'API IWLS en fonction du profil."
+msgstr ""
+
+#: iwls_api_request.api_facade.get_api_factory:3
+#: iwls_api_request.api_facade.get_iwls_api:3 of
+msgid "(Endpoint) L'endpoint de l'API IWLS."
+msgstr ""
+
+#: iwls_api_request.api_facade.get_api_factory:4 of
+msgid "(type[IWLSapi]) La classe de l'API IWLS."
+msgstr ""
+
+#: iwls_api_request.api_facade.get_api_factory:5 of
+msgid "La classe de l'API IWLS."
+msgstr ""
+
+#: iwls_api_request.api_facade.get_iwls_api:1 of
+msgid "Fonction qui retourne l'API IWLS."
+msgstr ""
+
+#: iwls_api_request.api_facade.get_iwls_api:7 of
+msgid ""
+"(SessionType) Le type de session ou la configuration pour la cache. Si "
+"une configuration est fourni, le session_type est alors automatiquement "
+"SessionType.CACHE."
+msgstr ""
+
+#: iwls_api_request.api_facade.get_iwls_api:12 of
+msgid "(IWLSapi) L'API IWLS."
+msgstr ""
+
+#: ../../source/iwls_api_request.rst:33
+msgid "Module contents"
+msgstr ""
+
+#: iwls_api_request.api.exceptions_iwls.CoordinatesError:1
+#: iwls_api_request.api.exceptions_iwls.StationsError:1 of
+msgid "Bases : :py:class:`Exception`"
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:1
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC:1 of
+msgid "Bases : :py:class:`~abc.ABC`"
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:1 of
+msgid "Classe abstraite pour les points d'entrés de l'API."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:3 of
+msgid "URL de l'API."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:4 of
+msgid "Type de l'API."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:5 of
+msgid "Point d'entrée pour un repère."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:6 of
+msgid "Point d'entrée pour les repères."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:7 of
+msgid "Point d'entrée pour les métadonnées d'un repère."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:8 of
+msgid "Point d'entrée pour les élévations d'un repère."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:9 of
+msgid "Point d'entrée pour un type de hauteur."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:10 of
+msgid "Point d'entrée pour les types de hauteurs."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:11 of
+msgid "Point d'entrée pour les phénomènes."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:12 of
+msgid "Point d'entrée pour un phénomène."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:13 of
+msgid "Point d'entrée pour une station."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:14 of
+msgid "Point d'entrée pour les stations."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:15 of
+msgid "Point d'entrée pour les données d'une station."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:16 of
+msgid "Point d'entrée pour les métadonnées d'une station."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:17 of
+msgid "Point d'entrée pour une table des marées."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:18 of
+msgid "Point d'entrée pour les tables des marées."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:19 of
+msgid "Point d'entrée pour les définitions de séries temporelles."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:20 of
+msgid "Point d'entrée pour une définition de série temporelle."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:21 of
+msgid "Point d'entrée pour une station GNSS."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:22 of
+msgid "Point d'entrée pour les stations GNSS."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:23 of
+msgid "Point d'entrée pour le sommaire des données GNSS."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:24 of
+msgid "Point d'entrée pour les régions."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:25 of
+msgid "Point d'entrée pour les dernières données d'une station."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:26 of
+msgid "Point d'entrée pour les séries temporelles d'une station."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:27 of
+msgid "Point d'entrée pour les statistiques journalières d'une station."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:28 of
+msgid "Point d'entrée pour les statistiques mensuelles d'une station."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_private.EndpointPrivateDev:1
+#: iwls_api_request.api.endpoint.endpoint_private.EndpointPrivateProd:1 of
+msgid ""
+"Bases : "
+":py:class:`~iwls_api_request.api.endpoint.endpoint_private.EndpointPrivate`"
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_private.EndpointPrivateDev:1 of
+msgid "Classe pour les points d'entrés de l'API privée de développement."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_private.EndpointPrivateProd:1 of
+msgid "Classe pour les points d'entrés de l'API privée de production."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_public.EndpointPublic:1 of
+msgid "Bases : :py:class:`~iwls_api_request.api.endpoint.endpoint_abc.Endpoint`"
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_public.EndpointPublic:1 of
+msgid "Classe pour les points d'entrés de l'API publique."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._aggregate_data:1 of
+msgid "Méthode permettant d'agréger les données de plusieurs requêtes."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._aggregate_data:3 of
+msgid "(Collection) Une liste de futures contenant les données."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._aggregate_data:4
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._fetch_and_aggregate_data:5 of
+msgid "(str) Le code de la série temporelle."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._aggregate_data:5
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._fetch_and_aggregate_data:6
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_info_station:3
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_info_station:5
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_info_station:5 of
+msgid "(str) L'identifiant de la station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._aggregate_data:6 of
+msgid "(tuple) Une liste de données agrégées et une liste d'erreurs."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._construct_url:1 of
+msgid "Méthode permettant de construire l'url de la requête."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._construct_url:3 of
+msgid "(str) Un point d'entré pour la requête."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._construct_url:4 of
+msgid "(str) L'url de la requête."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._fetch_and_aggregate_data:1 of
+msgid ""
+"Méthode permettant de récupérer et d'agréger les données de plusieurs "
+"requêtes."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._fetch_and_aggregate_data:3 of
+msgid "(Callable) La fonction à exécuter."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._fetch_and_aggregate_data:4 of
+msgid "(Generator) Un générateur contenant les intervalles de temps."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._fetch_and_aggregate_data:7
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_serie_block_data:18
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_series_data:8 of
+msgid "(bool) Si les données doivent être triées par date."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._fetch_and_aggregate_data:8 of
+msgid "(Response) Un objet Response contenant les données agrégées."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._validate_coordinates:1 of
+msgid "Méthode permettant de valider la latitude et la longitude."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._validate_coordinates:3 of
+msgid "(Union[float, int]) La latitude de la station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._validate_coordinates:4 of
+msgid "(Union[float, int]) La longitude de la station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._validate_coordinates:5 of
+msgid ""
+"(Tuple[Union[float, int], Union[float, int]]) La latitude et la longitude"
+" validées."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._validate_coordinates
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._validate_iso_date
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._validate_station_id of
+msgid "raise"
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._validate_coordinates:6 of
+msgid "TypeError si les coordonnées sont du mauvais type."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._validate_coordinates:7 of
+msgid "CoordinatesError si les coordonnées sont invalides."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._validate_iso_date:1 of
+msgid "Méthode permettant de valider le format de la date."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._validate_iso_date:3 of
+msgid "(str) La date en format ISO 8601 UTC (ex: 2021-02-13T19:18:00Z)."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._validate_iso_date:4 of
+msgid "(str) La date si est elle valide."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._validate_iso_date:5 of
+msgid "ValueError si la date est invalide."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._validate_query_parameters:1 of
+msgid "Méthode permettant de valider les paramètres de la requête."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._validate_query_parameters:3 of
+msgid "(dict[str, str]) Un dictionnaire contenant les paramètres valides."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._validate_station_id:1 of
+msgid "Méthode permettant de valider l'identifiant d'une station'."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._validate_station_id:3
+#: iwls_api_request.api.iwls_public.IWLSapiPublic._get_benchmarks:5 of
+msgid "(str) L'identifiant d'une station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._validate_station_id:4 of
+msgid "(str) L'identifiant si il est valide."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC._validate_station_id:5 of
+msgid "ValueError si l'identifiant est invalide."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_all_stations:1
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_all_stations:1
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_all_stations:1 of
+msgid ""
+"Méthode permettant de récupérer une liste de stations ainsi que les "
+"informations les concernant."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_all_stations:3
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_all_stations:5
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_all_stations:5 of
+msgid "(str) Le code d'une station. Écrase les autres paramètres."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_all_stations:4
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_stations_by_region:4
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_all_stations:6
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_all_stations:6 of
+msgid "(Regions) Le code d'une région (PAC, CNA, ATL, QUE)."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_all_stations:5
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_serie_block_data:6
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_all_stations:7
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_all_stations:7
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_time_serie_data:6 of
+msgid ""
+"(TimeSeries) Le code de la série temporelle désirée. wlo : Official "
+"quality controlled water level observation wlp: Water level prediction "
+"for the next years wlp-hilo: Tide tables prediction for the next years "
+"wlp-bores : Bores arrival and intensity wcp-slack : Reversing falls wlf :"
+" Water level forecast for the next 48 hours wlf-spine dvcf-spine : "
+"Dynamic vertical clearance forecast under infrastructure like bridges"
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_all_stations:14
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_all_stations:16 of
+msgid ""
+"(Response) Un objet Response contenant les stations ainsi que les "
+"informations les concernant."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_benchmark:1
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_benchmark:1 of
+msgid "Méthode permettant de récupérer un repère."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_benchmark:3
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_benchmark_metadata:3
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_elevations:3
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_benchmark:5
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_benchmark_metadata:5
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_elevations:5
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_benchmark:5
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_benchmark_metadata:5
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_elevations:5 of
+msgid "(str) L'identifiant du repère."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_benchmark:4
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_benchmark:6 of
+msgid "(Response) Un objet Response contenant les informations sur le repère."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_benchmark_metadata:1
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_elevations:1
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_benchmark_metadata:1
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_elevations:1
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_benchmark_metadata:1
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_elevations:1 of
+msgid "Méthode permettant de récupérer les métadonnées d'un repère."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_benchmark_metadata:4
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_elevations:4
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_benchmark_metadata:6
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_elevations:6
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_elevations:6 of
+msgid "(Response) Un objet Response contenant les métadonnées sur le repère."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_benchmarks:1
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._get_benchmarks:1
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_benchmarks:1 of
+msgid "Méthode permettant de récupérer les repères des stations."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_benchmarks:3
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._get_benchmarks:6
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_benchmarks:6
+#: iwls_api_request.api.iwls_public.IWLSapiPublic._fetch_and_aggregate_benchmarks:4
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_benchmarks:5 of
+msgid "(Collection[str]) Une liste contenant les identifiants des stations."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_benchmarks:4
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._get_benchmarks:8
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_benchmarks:7
+#: iwls_api_request.api.iwls_public.IWLSapiPublic._fetch_and_aggregate_benchmarks:5
+#: iwls_api_request.api.iwls_public.IWLSapiPublic._get_benchmarks:6
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_benchmarks:6 of
+msgid "(Response) Un objet Response contenant les informations sur les repères."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_closest_station:1 of
+msgid ""
+"Méthode permettant de récupérer la station la plus près des coordonnées "
+"géographiques."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_closest_station:3 of
+msgid "(Collection[dict]) Une liste des stations."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_closest_station:4 of
+msgid "(Union[float, int]) La latitude en format degré décimal."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_closest_station:5 of
+msgid "(Union[float, int]) La longitude en format degré décimal."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_closest_station:6 of
+msgid ""
+"(dict[str, Any]) Les informations de la station la plus près des "
+"coordonnées géographiques."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_elevations_for_benchmarks:1
+#: of
+msgid ""
+"Méthode permettant de récupérer les élévations concernant une liste de "
+"repères."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_elevations_for_benchmarks:3
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_metadata_for_benchmarks:3
+#: of
+msgid "(Sequence[str]) Une liste contenant les benchmarks."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_elevations_for_benchmarks:4
+#: of
+msgid ""
+"(dict[str, Response]) Un objet Response contenant les élévations des "
+"repères."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_height:1
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_height:1
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_height:1 of
+msgid "Méthode permettant de récupérer un type de hauteur."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_height:3
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_height:5
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_height:5 of
+msgid "(str) L'identifiant de la hauteur."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_height:4
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_height:6
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_height:6 of
+msgid ""
+"(Response) Un objet Response contenant les informations concernant ce "
+"type de hauteur."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_height_types:1
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_height_types:1
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_height_types:1 of
+msgid "Méthode permettant de récupérer les types de hauteur."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_height_types:3
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_height_types:5
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_height_types:5 of
+msgid "(Response) Un objet Response contenant les différents types de hauteur."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_info_station:1
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_info_station:1
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_info_station:1 of
+msgid "Méthode permettant de récupérer les informations concernant une station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_info_station:4
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_info_station:6
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_info_station:6 of
+msgid "(Response) Un objet Response contenant les informations de la station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_metadata_for_benchmarks:1
+#: of
+msgid ""
+"Méthode permettant de récupérer les métadonnées concernant une liste de "
+"repères."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_metadata_for_benchmarks:4
+#: of
+msgid ""
+"(dict[str, Response]) Un objet Response contenant les métadonnées des "
+"repères."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_metadata_station:1
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_metadata_station:1
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_metadata_station:1 of
+msgid "Méthode permettant de récupérer les métadonnées concernant une station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_metadata_station:3
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_station_daily_mean:3
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_station_montly_mean:3
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_serie_block_data:5
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_serie_data:3
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_all_gnss_from_station:5
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_gnss_station:5
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_gnss_station_sum:5
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_metadata_station:5
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_station_daily_mean:3
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_station_montly_mean:3
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_serie_data:5
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_serie_id_from_code:3
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_series_station:5
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_metadata_station:5
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_station_daily_mean:5
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_station_montly_mean:5
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_time_serie_data:5 of
+msgid "(str) Le stationId de la station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_metadata_station:4
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_metadata_station:6
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_metadata_station:6 of
+msgid "(Response) Un objet Response contenant les métadonnées de la station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_metadata_stations:1 of
+msgid ""
+"Méthode permettant de récupérer les métadonnées concernant une liste de "
+"stations."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_metadata_stations:3 of
+msgid "(Sequence[str]) Une liste contenant le stationId des station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_metadata_stations:4 of
+msgid ""
+"(dict[str, Response]) Un objet Response contenant les métadonnées des "
+"stations."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_phenomena:1
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_phenomena:1
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_phenomena:1 of
+msgid "Méthode permettant de récupérer les phénomènes."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_phenomena:3
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_phenomena:5
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_phenomena:5 of
+msgid "(Response) Un objet Response contenant les différents phénomènes."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_phenomenon:1
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_phenomenon:1
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_phenomenon:1 of
+msgid "Méthode permettant de récupérer les informations d'un phénomène."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_phenomenon:3
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_phenomenon:5
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_phenomenon:5 of
+msgid ""
+"(Response) Un objet Response contenant les informations concernant un "
+"phénomène."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_station_daily_mean:1
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_station_daily_mean:1
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_station_daily_mean:1 of
+msgid "Méthode permettant d'obtenir les moyennes journalières pour une station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_station_daily_mean:4
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_station_daily_mean:4
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_station_daily_mean:6 of
+msgid "(str) La date de début en format (ex: 2019-11-13)."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_station_daily_mean:5
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_station_daily_mean:5
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_station_daily_mean:7 of
+msgid "(str) La date de fin en format (ex: 2019-11-13)."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_station_daily_mean:6
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_station_daily_mean:6
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_station_daily_mean:9 of
+msgid ""
+"(Response) Un objet Response contenant les moyenne journalières de la "
+"station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_station_montly_mean:1
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_station_montly_mean:1
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_station_montly_mean:1 of
+msgid "Méthode permettant d'obtenir la moyenne mensuelle pour une station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_station_montly_mean:4
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_station_montly_mean:4
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_station_montly_mean:6 of
+msgid "(str) L'année désirée."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_station_montly_mean:5
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_station_montly_mean:5
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_station_montly_mean:7 of
+msgid "(str) Le mois désiré."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_station_montly_mean:6
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_station_montly_mean:6
+#: of
+msgid "(Response) La moyenne mensuelle de la station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_tide_table:1
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_tide_table:1
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_tide_table:1 of
+msgid "Méthode permettant de recupérer une table de marées."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_tide_table:3
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_tide_table:5
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_tide_table:5 of
+msgid "(str) L'identifiant d'une table de marées."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_tide_table:4
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_tide_table:6
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_tide_table:6 of
+msgid ""
+"(Response) Un objet Response contenant les informations d'une table de "
+"marées."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_tide_tables:1
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_tide_tables:1
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_tide_tables:1 of
+msgid "Méthode permettant de recupérer la liste des tables de marées."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_tide_tables:3
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_tide_tables:5
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_tide_tables:5 of
+msgid "(TypeTideTable) Un type de table. {VOLUME, AREA, SUB_AREA}"
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_tide_tables:4
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_tide_tables:6
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_tide_tables:6 of
+msgid "(str) L'identifiant d'une table."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_tide_tables:5
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_tide_tables:7
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_tide_tables:7 of
+msgid ""
+"(Response) Un objet Response contenant l'ensemble des tables de marées "
+"correspondant aux critères de la recherche."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_serie_block_data:1
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_serie_data:1
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_serie_data:1
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_time_serie_data:1 of
+msgid "Méthode permttant de récupérer des données à partir de l'API de iWLS."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_serie_block_data:3
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_time_serie_data:3 of
+msgid "/api/v1/stations/{stationId}/data"
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_serie_block_data:15
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_serie_data:14
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_serie_data:16
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_time_serie_data:15 of
+msgid "(str) La date de début en format ISO 8601 (ex: 2019-11-13T19:18:00Z)."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_serie_block_data:16
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_serie_data:15
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_serie_data:17 of
+msgid "(str) La date de fin en format ISO 8601 (ex: 2019-11-13T19:18:00Z)."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_serie_block_data:17
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_series_data:7 of
+msgid "(timedelta) L'intervalle de temps maximale pour chaque requête."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_serie_block_data:19
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_time_serie_data:19 of
+msgid ""
+"(Response) Un objet Response contenant les données reçues de l'API de "
+"iWLS."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_serie_data:4
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_serie_data:6 of
+msgid ""
+"(TimeSerie) Le code de la série temporelle désirée. wlo : Official "
+"quality controlled water level observation wlp: Water level prediction "
+"for the next years wlp-hilo: Tide tables prediction for the next years "
+"wlp-bores : Bores arrival and intensity wcp-slack : Reversing falls wlf :"
+" Water level forecast for the next 48 hours wlf-spine dvcf-spine : "
+"Dynamic vertical clearance forecast under infrastructure like bridges ..."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_serie_data:16
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_serie_data:18 of
+msgid "(Response) Un objet Response contenant les données de la série temporelle."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_serie_definition:1
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_time_serie_definition:1
+#: of
+msgid "Méthode permettant de récupérer la définition d'une série temporelle."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_serie_definition:3
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_time_serie_definition:5
+#: of
+msgid "(str) L'identifiant de la série temporelle."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_serie_definition:4
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_time_serie_definition:6
+#: of
+msgid ""
+"(Response) Un objet Response contenant la définition de la série "
+"temporelle."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_series_data:1 of
+msgid ""
+"Méthode permettant de récupérer plusieurs série temporelle pour une "
+"station sur l'API de iWLS."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_series_data:3 of
+msgid "(Sequence[TimeSeries]) La liste des codes des times série."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_series_data:4 of
+msgid "(str) Le code de la station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_series_data:5 of
+msgid "(str) La date de début en format ISO 8601 UTC (ex: 2021-02-13T19:18:00Z)."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_series_data:6 of
+msgid "(str) La date de fin en format ISO 8601 UTC (ex: 2021-02-13T19:18:00Z)."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_series_data:9 of
+msgid "dict[TimeSeries, Response] Les résultats de la requête."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_series_definitions:1
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_series_definitions:1
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_time_series_definitions:1
+#: of
+msgid "Méthode permettant de récupérer les définitions des séries temporelles."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_series_definitions:3
+#: of
+msgid "(TimeSeries) Le code de la série temporelle."
+msgstr ""
+
+#: iwls_api_request.api.iwls_api_abc.IWLSapiABC.get_time_series_definitions:4
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_series_definitions:6
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_time_series_definitions:6
+#: of
+msgid ""
+"(Response) Un objet Response contenant les définitions des séries "
+"temporelles."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate:1
+#: iwls_api_request.api.iwls_public.IWLSapiPublic:1 of
+msgid "Bases : :py:class:`~iwls_api_request.api.iwls_api_abc.IWLSapiABC`"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_station_by_code:1
+#: of
+msgid "Méthode permettant de filtrer les stations selon leur code."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_station_by_code:3
+#: of
+msgid "(Collection[dict]) Une liste de stations à filtrer."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_station_by_code:4
+#: of
+msgid "(str) Le code d'une station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_station_by_code:5
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_stations_by_region:5
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_stations_by_ts:5 of
+msgid "(list[dict]) Une liste contenant les stations filtrées."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_stations_by_region:1
+#: of
+msgid "Méthode permettant de filtrer les stations selon le code d'une région."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_stations_by_region:3
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_stations_by_ts:3 of
+msgid "(list[dict]) Une liste de stations à filtrer."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_stations_by_ts:1 of
+msgid ""
+"Méthode permettant de filtrer les stations selon le code d'une série "
+"temporelle."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_stations_by_ts:4 of
+msgid "(TimeSeries) Le code d'une région (PAC, CNA, ATL, QUE)."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_tables_by_parent:1
+#: of
+msgid "Méthode permettant de filtrer les tables marée selon la table parent."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_tables_by_parent:3
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_tables_by_type:3 of
+msgid "(list[dict]) Une liste de tables."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_tables_by_parent of
+msgid "pram p_parent_tide_table"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_tables_by_parent:4
+#: of
+msgid "(Optional[str]) L'identifiant de la table parent."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_tables_by_parent:5
+#: of
+msgid "(list[dict]) Un liste contenant les tables filtrées selon la table parent."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_tables_by_type:1 of
+msgid "Méthode permettant de filtrer les tables marée selon leur type."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_tables_by_type of
+msgid "pram p_type_table"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_tables_by_type:4 of
+msgid "(Optional[TypeTideTable]) Un type de table."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._filter_tables_by_type:5 of
+msgid "(list[dict]) Un liste contenant les tables filtrées selon le type."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._get_benchmarks:3
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_benchmarks:3 of
+msgid "/rest/benchmarks/"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._get_benchmarks:5
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_benchmarks:5 of
+msgid "(Collection[str]) Une liste contenant les identifiants des repères."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate._get_benchmarks:7 of
+msgid "(int) Le numéro de la page de résultat."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_all_gnss_from_station:1
+#: of
+msgid "Méthode permettant de récupérer la liste des GNSS pour une station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_all_gnss_from_station:3
+#: of
+msgid "/rest/stations/{stationId}/gnss"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_all_gnss_from_station:6
+#: of
+msgid "(Response) Un objet Response contenant la liste des GNSS pour une station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_all_stations:3 of
+msgid "/rest/stations"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_benchmark:3 of
+msgid "/rest/benchmarks/{benchmarkId}"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_benchmark_metadata:3
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_elevations:3 of
+msgid "/rest/benchmarks/{benchmarkId}/metadata"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_benchmarks:1 of
+msgid ""
+"Méthode permettant de récupérer les repères des stations pour toutes les "
+"pages."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_chs_regions:1 of
+msgid "Méthode permettant de récupérer les informations concernant les régions."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_chs_regions:3 of
+msgid "/rest/chsRegions"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_chs_regions:5 of
+msgid ""
+"(Response) Un objet Response des régions ainsi que les informations les "
+"concernant."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_gnss_station:1 of
+msgid "Méthode permettant de récupérer les informations d'une station GNSS."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_gnss_station:3 of
+msgid "/rest/stations/{stationId}/gnss/{gnssId}"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_gnss_station:6
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_gnss_station_sum:6 of
+msgid "(str) L'identifiant d'une station GNSS."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_gnss_station:7 of
+msgid ""
+"(Response) Un objet Response contenant les informations d'une station "
+"GNSS."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_gnss_station_sum:1 of
+msgid "Méthode permettant de récupérer un fichier .sum d'une station GNSS."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_gnss_station_sum:3 of
+msgid "/rest/stations/{stationId}/gnss/{gnssId}/sum"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_gnss_station_sum:7 of
+msgid "(Response) Un objet Response contenant le sum d'une station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_height:3 of
+msgid "/rest/heights/{heightTypeId}"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_height_types:3 of
+msgid "/rest/heights"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_info_station:3 of
+msgid "/rest/stations/{stationId}"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_metadata_station:3 of
+msgid "/rest/stations/{stationId}/metadata"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_phenomena:3 of
+msgid "/rest/phenomena"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_phenomenon:3 of
+msgid "/rest/phenomena/{phenomenonId}"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_tide_table:3 of
+msgid "/rest/tideTables/{tideTableId}"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_tide_tables:3 of
+msgid "/rest/tideTables/"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_serie_data:3 of
+msgid "/rest/stations/{stationId}/time-series/{tsId}/data"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_serie_definition:1
+#: of
+msgid "Méthode permettant de récupérer les définitions d'une série temporelle."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_serie_definition:3
+#: of
+msgid "/rest/time-series-definitions/{id}"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_serie_definition:5
+#: of
+msgid "(str) L'identifiant d'une série temporelle."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_serie_definition:6
+#: of
+msgid ""
+"(Response) Un objet Response contenant les définitions d'une série "
+"temporelle."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_serie_id_from_code:1
+#: of
+msgid ""
+"Méthode permttant de récupérer la liste des times sereies disponibles "
+"pour une station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_serie_id_from_code:4
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_series_definitions:5
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_time_series_definitions:5
+#: of
+msgid "(TimeSeries) Le code de la série temporelle désirée."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_serie_id_from_code:5
+#: of
+msgid "(str) L'identifiant d'une time serie pour une station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_series_definitions:3
+#: of
+msgid "/rest/time-series-definitions/"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_series_station:1
+#: of
+msgid ""
+"Méthode permttant de récupérer la liste des times series disponibles pour"
+" une station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_series_station:3
+#: of
+msgid "/rest/stations/{stationId}/time-series/"
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_series_station:6
+#: of
+msgid "(Response) Un objet Response concernant les times series d'une station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_series_stations:1
+#: of
+msgid ""
+"Méthode permettant de récupérer les séries temporelles concernant une "
+"liste de stations."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_series_stations:3
+#: of
+msgid "(Sequence[str]) Une liste contenant les stations."
+msgstr ""
+
+#: iwls_api_request.api.iwls_private.IWLSapiPrivate.get_time_series_stations:4
+#: of
+msgid ""
+"(dict[str, Response]) Un objet Response contenant les séries temporelles "
+"des stations."
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic._aggregate_benchmarks:1 of
+msgid "Méthode permettant d'agréger les données des repères des stations."
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic._aggregate_benchmarks:3 of
+msgid "(Collection) Une collection de futures."
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic._aggregate_benchmarks:4 of
+msgid ""
+"(tuple) Une liste contenant les données agrégées et une liste contenant "
+"les erreurs."
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic._fetch_and_aggregate_benchmarks:1
+#: of
+msgid ""
+"Méthode permettant de récupérer et d'agréger les données des repères des "
+"stations."
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic._fetch_and_aggregate_benchmarks:3
+#: of
+msgid "(Callable) Une fonction permettant de récupérer les données des repères."
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic._get_benchmarks:1 of
+msgid "Méthode permettant de récupérer les repères d'une station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic._get_benchmarks:3
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_benchmarks:3 of
+msgid "/api/v1/benchmarks"
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_all_stations:3 of
+msgid "/api/v1/stations"
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_all_stations:16 of
+msgid ""
+"(Response) Un objet Response contenant les stations ainsi que les "
+"informations les concernant"
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_benchmark:1 of
+msgid "Méthode permettant de récupérer les informations d'un repère."
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_benchmark:3 of
+msgid "/api/v1/benchmarks/{benchmarkId}"
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_benchmark:6 of
+msgid "(Response) Un objet Response contenant les informations du repère."
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_benchmark_metadata:3 of
+msgid "/api/v1/benchmarks/{benchmarkId}/metadata"
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_benchmark_metadata:6 of
+msgid "(Response) Un objet Response contenant les métadonnées du repère."
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_elevations:3 of
+msgid "/api/v1/benchmarks/{benchmarkId}/elevations"
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_height:3 of
+msgid "/api/v1/height-types/{heightTypeId}"
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_height_types:3 of
+msgid "/api/v1/height-types"
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_info_station:3 of
+msgid "/api/v1/stations/{stationId}"
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_metadata_station:3 of
+msgid "/api/v1/stations/{stationId}/metadata"
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_phenomena:3 of
+msgid "/api/v1/phenomena"
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_phenomenon:3 of
+msgid "/api/v1/phenomena/{phenomenonId}"
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_station_daily_mean:3 of
+msgid "/api/v1/stations/{stationId}/stats/calculate-daily-means"
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_station_daily_mean:8
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_station_montly_mean:8 of
+msgid "(TimeZone) Le fuseau horaire désiré."
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_station_montly_mean:3 of
+msgid "/api/v1/stations/{stationId}/stats/calculate-monthly-mean"
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_station_montly_mean:9 of
+msgid "(Response) Un objet Response contenant la moyenne mensuelle de la station."
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_tide_table:3 of
+msgid "/api/v1/tide-tables/{tideTableId}"
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_tide_tables:3 of
+msgid "/api/v1/tide-tables"
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_time_serie_data:16 of
+msgid ""
+"(str) La date de fin en format ISO 8601 (ex: 2019-11-13T19:18:00Z). La "
+"durée maximale est de 7 jours pour la majorité des TimeSeries."
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_time_serie_data:18 of
+msgid "(TimeResolution) La résolution temporelle désirée."
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_time_serie_definition:3
+#: of
+msgid "/api/v1/time-series-definitions/{timeSeriesDefinitionId}"
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_time_series_definitions:3
+#: of
+msgid "/api/v1/time-series-definitions"
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_wlo_latest_data:1 of
+msgid ""
+"Méthode permettant de récupérer les 20 dernières minutes de données de la"
+" série temporelle WLO pour toutes les stations."
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_wlo_latest_data:4 of
+msgid "/api/v1/stations/data/latest"
+msgstr ""
+
+#: iwls_api_request.api.iwls_public.IWLSapiPublic.get_wlo_latest_data:6 of
+msgid ""
+"(Response) Un objet Response contenant les 20 dernières minutes de "
+"données de la série temporelle WLO."
+msgstr ""
+

@@ -1,0 +1,690 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, Yan Bilodeau
+# This file is distributed under the same license as the CHS-CSB-Processing
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: CHS-CSB-Processing \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-16 15:32-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: ../../source/ingestion.rst:2
+msgid "ingestion package"
+msgstr ""
+
+#: ../../source/ingestion.rst:5
+msgid "Submodules"
+msgstr ""
+
+#: ../../source/ingestion.rst:8
+msgid "ingestion.factory\\_parser module"
+msgstr ""
+
+#: ingestion.factory_parser:1 of
+msgid "Module permettant de récupérer le parser associé à un fichier."
+msgstr ""
+
+#: ingestion.factory_parser:3 of
+msgid ""
+"Ce module contient les fonctions permettant de récupérer le parser "
+"associé à un fichier."
+msgstr ""
+
+#: ingestion.factory_parser.ParserFiles:1
+#: ingestion.parsing_exception.ColumnException:1
+#: ingestion.warning_capture.WarningCapture:1 of
+msgid "Bases : :py:class:`object`"
+msgstr ""
+
+#: ingestion.factory_parser.ParserFiles:1 of
+msgid "Classe permettant de stocker les fichiers et le parser associés."
+msgstr ""
+
+#: ../../source/ingestion.rst
+msgid "Paramètres"
+msgstr ""
+
+#: ../../../docstring ingestion.factory_parser.ParserFiles:3
+#: ingestion.factory_parser.ParserFiles.parser:1 of
+msgid "Le parser associé aux fichiers."
+msgstr ""
+
+#: ../../../docstring ingestion.factory_parser.ParserFiles:5
+#: ingestion.factory_parser.ParserFiles.files:1
+#: ingestion.factory_parser.get_files_parser:3 of
+msgid "Les fichiers à traiter."
+msgstr ""
+
+#: ingestion.factory_parser.get_extension:1 of
+msgid "Fonction permettant de récupérer l'extension d'un fichier."
+msgstr ""
+
+#: ingestion.factory_parser.get_extension:3 of
+msgid "Le fichier a à analyser."
+msgstr ""
+
+#: ../../source/ingestion.rst
+msgid "Renvoie"
+msgstr ""
+
+#: ingestion.factory_parser.get_extension:5 of
+msgid "L'extension du fichier."
+msgstr ""
+
+#: ../../source/ingestion.rst
+msgid "Type renvoyé"
+msgstr ""
+
+#: ingestion.factory_parser.get_files_parser:1 of
+msgid "Fonction permettant de trouver les parsers associés aux fichiers."
+msgstr ""
+
+#: ingestion.factory_parser.get_files_parser:5 of
+msgid "Un objet ParserFiles contenant le parser associés aux fichiers."
+msgstr ""
+
+#: ../../source/ingestion.rst
+msgid "Lève"
+msgstr ""
+
+#: ingestion.factory_parser.get_files_parser:7 of
+msgid "Si une erreur survient lors de l'identification du parser."
+msgstr ""
+
+#: ingestion.factory_parser.get_files_parser:8 of
+msgid "Si plusieurs parsers sont identifiés."
+msgstr ""
+
+#: ingestion.factory_parser.get_header:1 of
+msgid "Fonction permettant de lire l'entête d'un fichier."
+msgstr ""
+
+#: ingestion.factory_parser.get_header:3
+#: ingestion.parser_abc.DataParserABC.read:3
+#: ingestion.parser_dcdb.DataParserBCDB.read:3
+#: ingestion.parser_lowrance.DataParserLowrance.read:3
+#: ingestion.parser_ofm.DataParserOFM.read:3 of
+msgid "Le fichier à lire."
+msgstr ""
+
+#: ingestion.factory_parser.get_header:5 of
+msgid ""
+"Un tuple contenant les noms des colonnes ou None si l'entête n'est pas "
+"trouvé."
+msgstr ""
+
+#: ingestion.factory_parser.get_parser_factory:1 of
+msgid "Fonction permettant de récupérer le parser associé à un fichier."
+msgstr ""
+
+#: ingestion.factory_parser.get_parser_factory:3 of
+msgid "Le fichier à parser."
+msgstr ""
+
+#: ingestion.factory_parser.get_parser_factory:5 of
+msgid "Le parser associé."
+msgstr ""
+
+#: ingestion.factory_parser.get_parser_factory:7 of
+msgid "Si le parser n'est pas trouvé."
+msgstr ""
+
+#: ../../../docstring ingestion.factory_parser.ACTISENSE_HEADER:1 of
+msgid "Entête des fichiers Actisense."
+msgstr ""
+
+#: ../../../docstring ingestion.factory_parser.BLACKBOX_HEADER:1 of
+msgid "Entête des fichiers BlackBox."
+msgstr ""
+
+#: ../../../docstring ingestion.factory_parser.DCDB_HEADER:1 of
+msgid "Entête des fichiers DCDB."
+msgstr ""
+
+#: ../../../docstring ingestion.factory_parser.FACTORY_PARSER:1 of
+msgid "Dictionnaire associant les entêtes et les extensions aux parsers."
+msgstr ""
+
+#: ../../../docstring builtins.tuple:1 of
+msgid "Alias pour un tuple de str représentant une entête."
+msgstr ""
+
+#: ../../../docstring ingestion.factory_parser.LOWRANCE_HEADER:1 of
+msgid "Entête des fichiers Lowrance."
+msgstr ""
+
+#: ../../../docstring ingestion.factory_parser.OFM_HEADER:1 of
+msgid "Entête des fichiers OFM."
+msgstr ""
+
+#: ../../source/ingestion.rst:16
+msgid "ingestion.parser\\_abc module"
+msgstr ""
+
+#: ingestion.parser_abc:1 of
+msgid ""
+"Module permettant de définir une classe abstraite pour les parsers de "
+"données."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC:1 of
+msgid "Bases : :py:class:`~abc.ABC`"
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC:1 of
+msgid "Classe abstraite pour les parsers de données."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.add_empty_columns_to_geodataframe:1 of
+msgid "Ajoute des colonnes vides à un GeoDataFrame."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.add_empty_columns_to_geodataframe:3 of
+msgid "Données brutes."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.add_empty_columns_to_geodataframe:5 of
+msgid "Données avec des colonnes vides."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.convert_dtype:1 of
+msgid "Méthode permettant de convertir et nettoyer le dataframe."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.convert_dtype:3 of
+msgid "Le dataframe à convertir."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.convert_dtype:5
+#: ingestion.parser_dcdb.DataParserBCDB.read:5
+#: ingestion.parser_lowrance.DataParserLowrance.read:5
+#: ingestion.parser_ofm.DataParserOFM.read:5 of
+msgid "Un dictionnaire de type de données."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.convert_dtype:7 of
+msgid "Le nom de la colonne de temps."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.convert_dtype:9
+#: ingestion.parser_abc.DataParserABC.validate_columns:5 of
+msgid "Le fichier source."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.convert_dtype:11 of
+msgid "Le dataframe converti et nettoyé."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.from_files:1
+#: ingestion.parser_abc.DataParserABC.read_files:1 of
+msgid ""
+"Méthode permettant de lire les fichiers brutes et retourne un "
+"geodataframe."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.from_files:3
+#: ingestion.parser_abc.DataParserABC.read_files:3 of
+msgid "Les fichiers à lire."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.from_files:5 of
+msgid "Un GeoDataFrame respectant le schéma de données DataLoggerSchema."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.read:1
+#: ingestion.parser_dcdb.DataParserBCDB.read:1
+#: ingestion.parser_lowrance.DataParserLowrance.read:1
+#: ingestion.parser_ofm.DataParserOFM.read:1 of
+msgid "Méthode permettant de lire un fichier brut et retourne un geodataframe."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.read:5
+#: ingestion.parser_abc.DataParserABC.read_files:5
+#: ingestion.parser_dcdb.DataParserBCDB.read:7
+#: ingestion.parser_lowrance.DataParserLowrance.read:7
+#: ingestion.parser_ofm.DataParserOFM.read:7 of
+msgid "Un GeoDataFrame."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.remove_duplicates:1 of
+msgid "Méthode permettant de supprimer les doublons du geodataframe."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.remove_duplicates:3 of
+msgid "Le geodataframe à nettoyer."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.remove_duplicates:5 of
+msgid "Le geodataframe nettoyé."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.sort_geodataframe_by_datetime:1 of
+msgid "Méthode permettant de trier le geodataframe par datetime."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.sort_geodataframe_by_datetime:3 of
+msgid "Le geodataframe à trier."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.sort_geodataframe_by_datetime:5 of
+msgid "Le geodataframe trié."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.transform:1
+#: ingestion.parser_dcdb.DataParserBCDB.transform:1
+#: ingestion.parser_lowrance.DataParserLowrance.transform:1
+#: ingestion.parser_ofm.DataParserOFM.transform:1 of
+msgid ""
+"Méthode permettant de transformer le geodataframe pour respecter le "
+"schéma de données."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.transform:3
+#: ingestion.parser_dcdb.DataParserBCDB.transform:3
+#: ingestion.parser_lowrance.DataParserLowrance.convert_depth_to_meters:3
+#: ingestion.parser_lowrance.DataParserLowrance.remove_special_characters_from_columns:3
+#: ingestion.parser_lowrance.DataParserLowrance.transform:3
+#: ingestion.parser_ofm.DataParserOFM.transform:3 of
+msgid "Le geodataframe à transformer."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.transform:5
+#: ingestion.parser_lowrance.DataParserLowrance.convert_depth_to_meters:5
+#: ingestion.parser_lowrance.DataParserLowrance.remove_special_characters_from_columns:5
+#: of
+msgid "Le geodataframe transformé."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.validate_columns:1 of
+msgid "Méthode permettant de valider les colonnes du dataframe."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.validate_columns:3 of
+msgid "Le dataframe à valider."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.validate_columns:7 of
+msgid "Les noms et les exceptions de colonnes."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.validate_columns:9 of
+msgid "Erreur si la colonne de longitude est absente."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.validate_columns:10 of
+msgid "Erreur si la colonne de latitude est absente."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.validate_columns:11 of
+msgid "Erreur si la colonne de profondeur est absente."
+msgstr ""
+
+#: ingestion.parser_abc.DataParserABC.validate_columns:12 of
+msgid "Erreur si la colonne de temps est absente."
+msgstr ""
+
+#: ../../source/ingestion.rst:24
+msgid "ingestion.parser\\_dcdb module"
+msgstr ""
+
+#: ingestion.parser_dcdb:1 of
+msgid "Module permettant de parser les données de type DCDB."
+msgstr ""
+
+#: ingestion.parser_dcdb.DataParserBCDB:1
+#: ingestion.parser_lowrance.DataParserLowrance:1
+#: ingestion.parser_ofm.DataParserOFM:1 of
+msgid "Bases : :py:class:`~ingestion.parser_abc.DataParserABC`"
+msgstr ""
+
+#: ingestion.parser_dcdb.DataParserBCDB:1 of
+msgid "Classe permettant de parser les données de type DCDB."
+msgstr ""
+
+#: ingestion.parser_dcdb.DataParserBCDB.transform:5
+#: ingestion.parser_ofm.DataParserOFM.transform:5 of
+msgid ""
+"e geodataframe transformé et respectant le schéma de données "
+"DataLoggerSchema."
+msgstr ""
+
+#: ../../source/ingestion.rst:32
+msgid "ingestion.parser\\_exception module"
+msgstr ""
+
+#: ingestion.parser_exception:1 of
+msgid "Module pour définir les exceptions des parsers."
+msgstr ""
+
+#: ingestion.parser_exception.MultipleParsersError:1
+#: ingestion.parser_exception.ParserIdentifierError:1
+#: ingestion.parsing_exception.ParsingError:1 of
+msgid "Bases : :py:class:`Exception`"
+msgstr ""
+
+#: ingestion.parser_exception.MultipleParsersError:1 of
+msgid "Exception pour les erreurs de multiples parsers."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_exception.MultipleParsersError.parsers:1
+#: of
+msgid "Liste des parsers trouvés."
+msgstr ""
+
+#: ingestion.parser_exception.ParserIdentifierError:1 of
+msgid "Exception pour les erreurs d'identification du parser."
+msgstr ""
+
+#: ingestion.parser_exception.ParserIdentifierError:3
+#: ingestion.parsing_exception.ParsingError:3 of
+msgid "(Path) Le fichier en cours de lecture."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_exception.ParserIdentifierError.file:1
+#: of
+msgid "Le fichier en erreur."
+msgstr ""
+
+#: ../../source/ingestion.rst:40
+msgid "ingestion.parser\\_ids module"
+msgstr ""
+
+#: ingestion.parser_ids:1 of
+msgid ""
+"Ce module contient les constantes utilisées pour parser les données des "
+"fichiers OFM, DCDB, Lowrance et Actisense."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.COURSE_OVER_GROUND_ACTISENSE:1 of
+msgid ""
+"Valeur de la constante pour la colonne de cap sur le fond des données "
+"Actisense."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.DEPTH_ACTISENSE:1 of
+msgid ""
+"Valeur de la constante pour la colonne de profondeur des données "
+"Actisense."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.DEPTH_DCDB:1 of
+msgid "Valeur de la constante pour la colonne de profondeur des données DCDB."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.DEPTH_LOWRANCE:1 of
+msgid "Valeur de la constante pour la colonne de profondeur des données Lowrance."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.DEPTH_OFM:1 of
+msgid "Valeur de la constante pour la colonne de profondeur des données OFM."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.EPSG_WGS84:1 of
+msgid "Valeur de la constante pour le code EPSG 4326."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.EXTENSION_CSV:1 of
+msgid "Valeur de la constante pour l'extension de fichier CSV."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.EXTENSION_TXT:1 of
+msgid "Valeur de la constante pour l'extension de fichier TXT."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.EXTENSION_XYZ:1 of
+msgid "Valeur de la constante pour l'extension de fichier XYZ."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.FLOAT64:1 of
+msgid "Valeur de la constante pour le type de données float64."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.LATITUDE_ACTISENSE:1 of
+msgid "Valeur de la constante pour la colonne de latitude des données Actisense."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.LATITUDE_DCDB:1 of
+msgid "Valeur de la constante pour la colonne de latitude des données DCDB."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.LATITUDE_LOWRANCE:1 of
+msgid "Valeur de la constante pour la colonne de latitude des données Lowrance."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.LATITUDE_OFM:1 of
+msgid "Valeur de la constante pour la colonne de latitude des données OFM."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.LINE_ACTISENSE:1 of
+msgid "Valeur de la constante pour la colonne de ligne des données Actisense."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.LONGITUDE_ACTISENSE:1 of
+msgid "Valeur de la constante pour la colonne de longitude des données Actisense."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.LONGITUDE_DCDB:1 of
+msgid "Valeur de la constante pour la colonne de longitude des données DCDB."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.LONGITUDE_LOWRANCE:1 of
+msgid "Valeur de la constante pour la colonne de longitude des données Lowrance."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.LONGITUDE_OFM:1 of
+msgid "Valeur de la constante pour la colonne de longitude des données OFM."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.NAME_ACTISENSE:1 of
+msgid "Valeur de la constante pour la colonne de nom des données Actisense."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.OFFSET_ACTISENSE:1 of
+msgid "Valeur de la constante pour la colonne de décalage des données Actisense."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.PGN_ACTISENSE:1 of
+msgid "Valeur de la constante pour la colonne de PGN des données Actisense."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.POSITION_DATE_ACTISENSE:1 of
+msgid ""
+"Valeur de la constante pour la colonne de date de position des données "
+"Actisense."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.POSITION_TIME_ACTISENSE:1 of
+msgid ""
+"Valeur de la constante pour la colonne de temps de position des données "
+"Actisense."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.PRIMARY_LOWRANCE:1 of
+msgid ""
+"Valeur de la constante pour le type de relevé primaire des données "
+"Lowrance."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.SPEED_OVER_GROUND_ACTISENSE:1 of
+msgid ""
+"Valeur de la constante pour la colonne de vitesse sur le fond des données"
+" Actisense."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.SURVEY_TYPE_LOWRANCE:1 of
+msgid ""
+"Valeur de la constante pour la colonne de type de relevé des données "
+"Lowrance."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.TIME_ACTISENSE:1 of
+msgid "Valeur de la constante pour la colonne de temps des données Actisense."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.TIME_DCDB:1 of
+msgid "Valeur de la constante pour la colonne de temps des données DCDB."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.TIME_LOWRANCE:1 of
+msgid "Valeur de la constante pour la colonne de temps des données Lowrance."
+msgstr ""
+
+#: ../../../docstring ingestion.parser_ids.TIME_OFM:1 of
+msgid "Valeur de la constante pour la colonne de temps des données OFM."
+msgstr ""
+
+#: ../../source/ingestion.rst:48
+msgid "ingestion.parser\\_lowrance module"
+msgstr ""
+
+#: ingestion.parser_lowrance:1 of
+msgid "Module permettant de définir un parser pour les données de type Lowrance."
+msgstr ""
+
+#: ingestion.parser_lowrance.DataParserLowrance:1 of
+msgid "Classe permettant de parser les données de type Lowrance."
+msgstr ""
+
+#: ingestion.parser_lowrance.DataParserLowrance.convert_depth_to_meters:1 of
+msgid "Méthode permettant de convertir les profondeurs en mètres."
+msgstr ""
+
+#: ingestion.parser_lowrance.DataParserLowrance.remove_special_characters_from_columns:1
+#: of
+msgid ""
+"Méthode permettant de supprimer les caractères spéciaux des noms de "
+"colonnes."
+msgstr ""
+
+#: ingestion.parser_lowrance.DataParserLowrance.rename_columns:1 of
+msgid "Méthode permettant de renommer les colonnes du geodataframe."
+msgstr ""
+
+#: ingestion.parser_lowrance.DataParserLowrance.rename_columns:3 of
+msgid "Le geodataframe à renommer."
+msgstr ""
+
+#: ingestion.parser_lowrance.DataParserLowrance.rename_columns:5 of
+msgid "Le geodataframe renommé."
+msgstr ""
+
+#: ingestion.parser_lowrance.DataParserLowrance.transform:5 of
+msgid ""
+"Le geodataframe transformé respectant le schéma de données "
+"DataLoggerSchema."
+msgstr ""
+
+#: ../../source/ingestion.rst:56
+msgid "ingestion.parser\\_ofm module"
+msgstr ""
+
+#: ingestion.parser_ofm:1 of
+msgid "Module permettant de parser les données de type OFM."
+msgstr ""
+
+#: ingestion.parser_ofm.DataParserOFM:1 of
+msgid "Classe permettant de parser les données de type OFM."
+msgstr ""
+
+#: ../../source/ingestion.rst:64
+msgid "ingestion.parsing\\_exception module"
+msgstr ""
+
+#: ingestion.parsing_exception:1 of
+msgid "Module pour définir les exceptions du parsing."
+msgstr ""
+
+#: ingestion.parsing_exception.ParsingDataframeDepthError:1
+#: ingestion.parsing_exception.ParsingDataframeLatitudeError:1
+#: ingestion.parsing_exception.ParsingDataframeLongitudeError:1
+#: ingestion.parsing_exception.ParsingDataframeTimeError:1 of
+msgid "Bases : :py:class:`~ingestion.parsing_exception.ParsingError`"
+msgstr ""
+
+#: ingestion.parsing_exception.ParsingDataframeDepthError:1 of
+msgid "Exception pour les erreurs de parsing de la colonne de profondeur."
+msgstr ""
+
+#: ingestion.parsing_exception.ParsingDataframeLatitudeError:1 of
+msgid "Exception pour les erreurs de parsing de la colonne de latitude."
+msgstr ""
+
+#: ingestion.parsing_exception.ParsingDataframeLongitudeError:1 of
+msgid "Exception pour les erreurs de parsing de la colonne de longitude"
+msgstr ""
+
+#: ingestion.parsing_exception.ParsingDataframeTimeError:1 of
+msgid "Exception pour les erreurs de parsing de la colonne de temps."
+msgstr ""
+
+#: ingestion.parsing_exception.ParsingError:1 of
+msgid "Classe de base pour les exceptions de parsing."
+msgstr ""
+
+#: ingestion.parsing_exception.ParsingError:4 of
+msgid "(str) Le nom de la colonne en erreur."
+msgstr ""
+
+#: ../../../docstring ingestion.parsing_exception.ParsingError.column:1 of
+msgid "Le nom de la colonne en erreur."
+msgstr ""
+
+#: ../../../docstring ingestion.parsing_exception.ParsingError.file:1 of
+msgid "Le ficher en erreur."
+msgstr ""
+
+#: ingestion.parsing_exception.ColumnException:1 of
+msgid "Classe pour les exceptions de colonnes."
+msgstr ""
+
+#: ingestion.parsing_exception.ColumnException:3 of
+msgid "(str) Le nom de la colonne."
+msgstr ""
+
+#: ingestion.parsing_exception.ColumnException:4 of
+msgid "(Type[ParsingError]) L'erreur de parsing associée."
+msgstr ""
+
+#: ../../../docstring ingestion.parsing_exception.ColumnException.column_name:1
+#: of
+msgid "Le nom de la colonne."
+msgstr ""
+
+#: ../../../docstring ingestion.parsing_exception.ColumnException.error:1 of
+msgid "L'erreur de parsing associée."
+msgstr ""
+
+#: ../../source/ingestion.rst:72
+msgid "ingestion.warning\\_capture module"
+msgstr ""
+
+#: ingestion.warning_capture:1 of
+msgid "Module permettant d'attraper les warnings."
+msgstr ""
+
+#: ingestion.warning_capture.WarningCapture:1 of
+msgid "Classe permettant d'attraper les warnings."
+msgstr ""
+
+#: ../../source/ingestion.rst:80
+msgid "Module contents"
+msgstr ""
+
+#: ingestion:1 of
+msgid ""
+"Ce package contient les fonctions qui permettent de récupérer les données"
+" depuis des fichiers de différents formats."
+msgstr ""
+

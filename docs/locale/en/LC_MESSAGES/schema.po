@@ -1,0 +1,292 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, Yan Bilodeau
+# This file is distributed under the same license as the CHS-CSB-Processing
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: CHS-CSB-Processing \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-16 15:32-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: ../../source/schema.rst:2
+msgid "schema package"
+msgstr ""
+
+#: ../../source/schema.rst:5
+msgid "Submodules"
+msgstr ""
+
+#: ../../source/schema.rst:8
+msgid "schema.model module"
+msgstr ""
+
+#: of schema.model:1
+msgid "Module qui contient les schémas des dataframes."
+msgstr ""
+
+#: of schema.model:3
+msgid ""
+"Ce module contient les schémas des dataframes des DataLoggers, des "
+"stations, des séries temporelles et des zones de marées."
+msgstr ""
+
+#: of schema.model.DataLoggerSchema:1 schema.model.StationsSchema:1
+#: schema.model.TideZoneInfoSchema:1 schema.model.TideZoneProtocolSchema:1
+#: schema.model.WaterLevelSerieDataSchema:1
+msgid "Bases : :py:class:`~pandera.api.pandas.model.DataFrameModel`"
+msgstr ""
+
+#: of schema.model.DataLoggerSchema:1
+msgid "Schéma des données des DataLoggers."
+msgstr ""
+
+#: of schema.model.DataLoggerSchema.Config:1
+#: schema.model.DataLoggerWithTideZoneSchema.Config:1
+#: schema.model.StationsSchema.Config:1
+#: schema.model.TideZoneProtocolSchema.Config:1
+#: schema.model.WaterLevelSerieDataSchema.Config:1
+msgid "Bases : :py:class:`object`"
+msgstr ""
+
+#: of schema.model.DataLoggerWithTideZoneSchema:1
+msgid "Bases : :py:class:`~schema.model.DataLoggerSchema`"
+msgstr ""
+
+#: of schema.model.DataLoggerWithTideZoneSchema:1
+msgid "Schéma des données des DataLoggers avec les zones de marées."
+msgstr ""
+
+#: of schema.model.StationsSchema:1
+msgid "Schéma des stations."
+msgstr ""
+
+#: of schema.model.TideZoneInfoSchema:1
+msgid "Schéma des informations des zones de marées."
+msgstr ""
+
+#: of pandera.api.dataframe.model.Config:1
+msgid "Bases : :py:class:`~pandera.api.pandas.model_config.BaseConfig`"
+msgstr ""
+
+#: ../../../docstring of schema.TideZoneInfoSchema.Config.name:1
+#: schema.model.TideZoneInfoSchema.Config.name:1
+msgid "name of schema"
+msgstr ""
+
+#: of schema.model.TideZoneProtocolSchema:1
+msgid "Schéma des protocoles des zones de marées."
+msgstr ""
+
+#: of schema.model.TideZoneStationSchema:1
+msgid "Bases : :py:class:`~schema.model.TideZoneProtocolSchema`"
+msgstr ""
+
+#: of schema.model.TideZoneStationSchema:1
+msgid "Schéma des zones de marées extraite des stations."
+msgstr ""
+
+#: of pandera.api.dataframe.model.Config:1
+msgid "Bases : :py:class:`~schema.model.TideZoneProtocolSchema.Config`"
+msgstr ""
+
+#: of schema.model.WaterLevelSerieDataSchema:1
+msgid "Schéma des séries temporelles."
+msgstr ""
+
+#: of schema.model.WaterLevelSerieDataWithMetaDataSchema:1
+msgid "Bases : :py:class:`~schema.model.WaterLevelSerieDataSchema`"
+msgstr ""
+
+#: of schema.model.WaterLevelSerieDataWithMetaDataSchema:1
+msgid "Schéma des séries temporelles avec les métadonnées."
+msgstr ""
+
+#: of pandera.api.dataframe.model.Config:1
+msgid "Bases : :py:class:`~schema.model.WaterLevelSerieDataSchema.Config`"
+msgstr ""
+
+#: of schema.model.WaterLevelSerieDataWithMetaDataSchema.validate:1
+msgid ""
+"Valide les métadonnées des séries temporelles en surchargeant la méthode "
+"de validation par défaut."
+msgstr ""
+
+#: ../../source/schema.rst
+msgid "Paramètres"
+msgstr ""
+
+#: of schema.model.WaterLevelSerieDataWithMetaDataSchema.validate:3
+msgid "Les séries temporelles."
+msgstr ""
+
+#: of schema.model.WaterLevelSerieDataWithMetaDataSchema.validate:5
+msgid "Les arguments."
+msgstr ""
+
+#: of schema.model.WaterLevelSerieDataWithMetaDataSchema.validate:7
+msgid "Les paramètres."
+msgstr ""
+
+#: ../../source/schema.rst
+msgid "Renvoie"
+msgstr ""
+
+#: of schema.model.WaterLevelSerieDataWithMetaDataSchema.validate:9
+msgid "Les séries temporelles validées."
+msgstr ""
+
+#: ../../source/schema.rst
+msgid "Type renvoyé"
+msgstr ""
+
+#: of schema.model.validate_schema:1
+msgid "Valide le schéma des stations."
+msgstr ""
+
+#: of schema.model.validate_schema:3
+msgid "Les stations."
+msgstr ""
+
+#: of schema.model.validate_schema:5
+msgid "Le schéma."
+msgstr ""
+
+#: of schema.model.validate_schemas:1
+msgid "Valide les schémas des dataframes."
+msgstr ""
+
+#: of schema.model.validate_schemas:3
+msgid "Le schéma de retour."
+msgstr ""
+
+#: of schema.model.validate_schemas:5
+msgid "Les schémas."
+msgstr ""
+
+#: of schema.model.validate_schemas:7
+msgid "La fonction décorée."
+msgstr ""
+
+#: ../../source/schema.rst:16
+msgid "schema.model\\_ids module"
+msgstr ""
+
+#: of schema.model_ids:1
+msgid ""
+"Ce module contient les constantes pour les identifiants des modèles de "
+"données."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.CODE:1
+msgid "Valeur de la constante code."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.DEPTH_PROCESSED_METER:1
+msgid "Valeur de la constante Depth_processed_meter."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.DEPTH_RAW_METER:1
+msgid "Valeur de la constante Depth_raw_meter."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.END_TIME:1
+msgid "Valeur de la constante end_time."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.EVENT_DATE:1
+msgid "Valeur de la constante event_date."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.GEOMETRY:1
+msgid "Valeur de la constante geometry."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.ID:1
+msgid "Valeur de la constante id."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.IS_TIDAL:1
+msgid "Valeur de la constante is_tidal."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.LATITUDE_WGS84:1
+msgid "Valeur de la constante Latitude_WGS84."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.LONGITUDE_WGS84:1
+msgid "Valeur de la constante Longitude_WGS84."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.MAX_TIME:1
+msgid "Valeur de la constante max_time."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.MIN_TIME:1
+msgid "Valeur de la constante min_time."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.NAME:1
+#: schema.model_ids.NAME_METADATA:1
+msgid "Valeur de la constante name."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.START_TIME:1
+msgid "Valeur de la constante start_time."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.STATION_ID:1
+msgid "Valeur de la constante station_id."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.STATION_POSITION:1
+msgid "Valeur de la constante station_position."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.TIDE_ZONE_ID:1
+msgid "Valeur de la constante Tide_zone_id."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.TIME_SERIES:1
+msgid "Valeur de la constante time_series."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.TIME_SERIE_CODE:1
+msgid "Valeur de la constante time_serie_code."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.TIME_UTC:1
+msgid "Valeur de la constante Time_UTC."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.UNCERTAINTY:1
+msgid "Valeur de la constante Uncertainty."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.VALUE:1
+msgid "Valeur de la constante value."
+msgstr ""
+
+#: ../../../docstring of schema.model_ids.WATER_LEVEL_METER:1
+msgid "Valeur de la constante Water_level_meter."
+msgstr ""
+
+#: ../../source/schema.rst:24
+msgid "Module contents"
+msgstr ""
+
+#: of schema:1
+msgid "Ce package contient les schémas des données."
+msgstr ""
+

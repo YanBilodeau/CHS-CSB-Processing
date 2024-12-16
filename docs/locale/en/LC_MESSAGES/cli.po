@@ -1,0 +1,128 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, Yan Bilodeau
+# This file is distributed under the same license as the CHS-CSB-Processing
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: CHS-CSB-Processing \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-16 15:32-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: ../../source/cli.rst:2
+msgid "cli module"
+msgstr ""
+
+#: cli:1 of
+msgid "Ce module contient la fonction principale de la ligne de commande."
+msgstr ""
+
+#: cli:3 of
+msgid ""
+"Il permet de traiter des fichiers de données bathymétriques et de les "
+"géoréférencer."
+msgstr ""
+
+#: cli.get_files:1 of
+msgid "Récupère les fichiers à traiter."
+msgstr ""
+
+#: ../../source/cli.rst
+msgid "Paramètres"
+msgstr ""
+
+#: cli.get_files:3 of
+msgid "Chemins des fichiers ou répertoires."
+msgstr ""
+
+#: ../../source/cli.rst
+msgid "Renvoie"
+msgstr ""
+
+#: cli.get_files:5 of
+msgid "Liste des fichiers à traiter."
+msgstr ""
+
+#: ../../source/cli.rst
+msgid "Type renvoyé"
+msgstr ""
+
+#: cli.is_valid_file:1 of
+msgid "Vérifie si le fichier est valide pour le traitement."
+msgstr ""
+
+#: cli.is_valid_file:3 of
+msgid "Chemin du fichier."
+msgstr ""
+
+#: cli.is_valid_file:5 of
+msgid "Vrai si le fichier est valide, faux sinon."
+msgstr ""
+
+#: ../../../cli:1
+msgid ""
+"Ce script permet de traiter des fichiers de données bathymétriques et de "
+"les géoréférencer."
+msgstr ""
+
+#: ../../../cli:1
+msgid ""
+"This script allows to process bathymetric data files and georeference "
+"them."
+msgstr ""
+
+#: ../../source/cli.rst
+msgid "Options"
+msgstr ""
+
+#: ../../../cli:1
+msgid "Chemin du répertoire de sortie."
+msgstr ""
+
+#: ../../../cli:1
+msgid "Path of the output directory."
+msgstr ""
+
+#: ../../../cli:1
+msgid ""
+"Identifiant du navire. Si aucun identifiant de navire est utilisé, un "
+"navire par défaut avec des bras de levier à 0 sera utilisé."
+msgstr ""
+
+#: ../../../cli:1
+msgid ""
+"Vessel identifier. If no vessel identifier is used, a default vessel with"
+" lever arms at 0 will be used."
+msgstr ""
+
+#: ../../../cli:1
+msgid ""
+"Chemin du fichier de configuration. si aucun fichier de configuration "
+"n'est fourni, le fichier de configuration par défaut sera utilisé."
+msgstr ""
+
+#: ../../../cli:1
+msgid ""
+"Path of the configuration file. If no configuration file is provided, the"
+" default configuration file will be used."
+msgstr ""
+
+#: ../../source/cli.rst
+msgid "Arguments"
+msgstr ""
+
+#: ../../../cli:1
+msgid "Required argument(s)"
+msgstr ""
+

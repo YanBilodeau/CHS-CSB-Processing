@@ -1,0 +1,448 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, Yan Bilodeau
+# This file is distributed under the same license as the CHS-CSB-Processing
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: CHS-CSB-Processing \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-16 15:32-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: ../../source/transformation.rst:2
+msgid "transformation package"
+msgstr ""
+
+#: ../../source/transformation.rst:5
+msgid "Submodules"
+msgstr ""
+
+#: ../../source/transformation.rst:8
+msgid "transformation.data\\_cleaning module"
+msgstr ""
+
+#: of transformation.data_cleaning:1
+msgid "Module qui contient les fonctions de nettoyage des données."
+msgstr ""
+
+#: of transformation.data_cleaning:3
+msgid ""
+"Ce module contient les fonctions qui permettent de nettoyer les données "
+"en fonction de critères"
+msgstr ""
+
+#: of transformation.data_cleaning.clean_data:1
+msgid ""
+"Fonction qui nettoie les données à partir d'une collection de fonctions "
+"de nettoyage."
+msgstr ""
+
+#: ../../source/transformation.rst
+msgid "Paramètres"
+msgstr ""
+
+#: of transformation.data_cleaning.clean_data:3
+#: transformation.data_cleaning.clean_latitude:3
+#: transformation.data_cleaning.clean_longitude:3
+#: transformation.data_cleaning.clean_time:3
+msgid "Le GeoDataFrame à nettoyer."
+msgstr ""
+
+#: of transformation.data_cleaning.clean_data:5
+msgid "Les fonctions de nettoyage."
+msgstr ""
+
+#: of transformation.data_cleaning.clean_data:7
+msgid "La configuration de nettoyage."
+msgstr ""
+
+#: ../../source/transformation.rst
+msgid "Renvoie"
+msgstr ""
+
+#: of transformation.data_cleaning.clean_data:9
+#: transformation.data_cleaning.clean_depth:9
+#: transformation.data_cleaning.clean_latitude:9
+#: transformation.data_cleaning.clean_longitude:9
+#: transformation.data_cleaning.clean_time:5
+msgid "Le GeoDataFrame nettoyé."
+msgstr ""
+
+#: ../../source/transformation.rst
+msgid "Type renvoyé"
+msgstr ""
+
+#: ../../source/transformation.rst
+msgid "Lève"
+msgstr ""
+
+#: of transformation.data_cleaning.clean_data:11
+msgid "Si la fonction de nettoyage n'existe pas."
+msgstr ""
+
+#: of transformation.data_cleaning.clean_depth:1
+msgid "Fonction qui nettoie les données de profondeur."
+msgstr ""
+
+#: of transformation.data_cleaning.clean_depth:3
+msgid "Le GeoDataFrame."
+msgstr ""
+
+#: ../../../docstring of transformation.data_cleaning.clean_depth:5
+#: transformation.transformation_models.DataFilterConfigProtocol.min_depth:1
+msgid "La profondeur minimale."
+msgstr ""
+
+#: ../../../docstring of transformation.data_cleaning.clean_depth:7
+#: transformation.transformation_models.DataFilterConfigProtocol.max_depth:1
+msgid "La profondeur maximale."
+msgstr ""
+
+#: of transformation.data_cleaning.clean_latitude:1
+msgid "Fonction qui nettoie les données de latitude."
+msgstr ""
+
+#: ../../../docstring of transformation.data_cleaning.clean_latitude:5
+#: transformation.transformation_models.DataFilterConfigProtocol.min_latitude:1
+msgid "La latitude minimale."
+msgstr ""
+
+#: ../../../docstring of transformation.data_cleaning.clean_latitude:7
+#: transformation.transformation_models.DataFilterConfigProtocol.max_latitude:1
+msgid "La latitude maximale."
+msgstr ""
+
+#: of transformation.data_cleaning.clean_longitude:1
+msgid "Fonction qui nettoie les données de longitude."
+msgstr ""
+
+#: ../../../docstring of transformation.data_cleaning.clean_longitude:5
+#: transformation.transformation_models.DataFilterConfigProtocol.min_longitude:1
+msgid "La longitude minimale."
+msgstr ""
+
+#: of transformation.data_cleaning.clean_longitude:7
+msgid "a longitude maximale."
+msgstr ""
+
+#: of transformation.data_cleaning.clean_time:1
+msgid "Fonction qui nettoie les données de temps."
+msgstr ""
+
+#: ../../source/transformation.rst:16
+msgid "transformation.exception\\_tranformation module"
+msgstr ""
+
+#: of transformation.exception_tranformation:1
+msgid "Module contenant les exceptions liées à la transformation des données."
+msgstr ""
+
+#: of transformation.exception_tranformation:3
+msgid ""
+"Ce module contient les classes d'exceptions qui sont levées lors de la "
+"transformation des données."
+msgstr ""
+
+#: of transformation.exception_tranformation.DataCleaningFunctionError:1
+msgid "Bases : :py:class:`Exception`"
+msgstr ""
+
+#: of transformation.exception_tranformation.DataCleaningFunctionError:1
+msgid "Exception levée lorsqu'une fonction de nettoyage n'existe pas."
+msgstr ""
+
+#: of transformation.exception_tranformation.DataCleaningFunctionError:3
+msgid "(str) La fonction de nettoyage."
+msgstr ""
+
+#: ../../../docstring of
+#: transformation.exception_tranformation.DataCleaningFunctionError.function:1
+msgid "La fonction de nettoyage."
+msgstr ""
+
+#: ../../source/transformation.rst:24
+msgid "transformation.georeference module"
+msgstr ""
+
+#: of transformation.georeference:1
+msgid "Module de transformation des données de géoréférencement."
+msgstr ""
+
+#: of transformation.georeference:3
+msgid ""
+"Ce module contient les fonctions de géoréférencement des données de "
+"bathymétrie."
+msgstr ""
+
+#: of transformation.georeference._add_value_within_limit_if_applicable:1
+msgid "Ajoute la valeur du niveau d'eau si elle est dans les limites."
+msgstr ""
+
+#: of transformation.georeference._add_value_within_limit_if_applicable:3
+msgid "Position de l'événement du niveau d'eau."
+msgstr ""
+
+#: of transformation.georeference._add_value_within_limit_if_applicable:5
+msgid "Temps UTC de la sonde."
+msgstr ""
+
+#: of transformation.georeference._add_value_within_limit_if_applicable:7
+msgid "Dates des événements des niveaux d'eau."
+msgstr ""
+
+#: of transformation.georeference._add_value_within_limit_if_applicable:9
+#: transformation.georeference._get_event_dates:5
+msgid "DataFrame contenant les niveaux d'eau."
+msgstr ""
+
+#: of transformation.georeference._add_value_within_limit_if_applicable:11
+#: transformation.georeference._handle_missing_data:3
+msgid "Index de la sonde."
+msgstr ""
+
+#: of transformation.georeference._add_value_within_limit_if_applicable:13
+#: transformation.georeference._handle_missing_data:5
+msgid "Identifiant de la zone de marée."
+msgstr ""
+
+#: of transformation.georeference._add_value_within_limit_if_applicable:15
+#: transformation.georeference._get_water_level_for_sounding:7
+#: transformation.georeference.georeference_bathymetry:11
+#: transformation.georeference.get_water_levels:7
+msgid "Tolérance de temps pour la récupération de la valeur du niveau d'eau."
+msgstr ""
+
+#: of transformation.georeference._add_value_within_limit_if_applicable:17
+#: transformation.georeference._get_water_level_for_sounding:9
+msgid "Valeur du niveau d'eau."
+msgstr ""
+
+#: of transformation.georeference._get_event_dates:1
+msgid "Récupère les dates des événements avec mise en cache."
+msgstr ""
+
+#: of transformation.georeference._get_event_dates:3
+msgid "Identifiant de la station."
+msgstr ""
+
+#: of transformation.georeference._get_event_dates:7
+msgid "Index des dates des événements."
+msgstr ""
+
+#: of transformation.georeference._get_water_level_for_sounding:1
+msgid "Récupère la valeur du niveau d'eau pour une sonde."
+msgstr ""
+
+#: of transformation.georeference._get_water_level_for_sounding:3
+msgid "Série temporelle de la sonde."
+msgstr ""
+
+#: of transformation.georeference._get_water_level_for_sounding:5
+msgid "Les séries temporelles des niveaux d'eau."
+msgstr ""
+
+#: of transformation.georeference._handle_missing_data:1
+msgid "Gère les données manquantes de niveau d'eau."
+msgstr ""
+
+#: of transformation.georeference._handle_missing_data:7
+msgid "np.nan"
+msgstr ""
+
+#: of transformation.georeference._interpolate_water_level:1
+msgid "Interpole le niveau d'eau entre deux événements."
+msgstr ""
+
+#: of transformation.georeference._interpolate_water_level:3
+msgid "Événement avant le temps pour lequel interpoler le niveau d'eau."
+msgstr ""
+
+#: of transformation.georeference._interpolate_water_level:5
+msgid "Événement après le temps pour lequel interpoler le niveau d'eau."
+msgstr ""
+
+#: of transformation.georeference._interpolate_water_level:7
+msgid "Temps pour lequel interpoler le niveau d'eau."
+msgstr ""
+
+#: of transformation.georeference._interpolate_water_level:9
+msgid "Valeur interpolée du niveau d'eau."
+msgstr ""
+
+#: of transformation.georeference._validate_and_sort_data:1
+msgid "Valide et trie les données de niveau d'eau."
+msgstr ""
+
+#: of transformation.georeference._validate_and_sort_data:3
+#: transformation.georeference.georeference_bathymetry:5
+#: transformation.georeference.get_water_levels:5
+msgid "Niveau d'eau."
+msgstr ""
+
+#: of transformation.georeference.apply_georeference_bathymetry:1
+msgid "Applique la transformation de géoréférencement des données de bathymétrie."
+msgstr ""
+
+#: of transformation.georeference.apply_georeference_bathymetry:3
+#: transformation.georeference.georeference_bathymetry:3
+#: transformation.georeference.get_water_levels:3
+msgid "Données brutes de profondeur."
+msgstr ""
+
+#: of transformation.georeference.apply_georeference_bathymetry:5
+#: transformation.georeference.georeference_bathymetry:7
+msgid "Données de la ligne d'eau."
+msgstr ""
+
+#: of transformation.georeference.apply_georeference_bathymetry:7
+#: transformation.georeference.georeference_bathymetry:9
+msgid "Données du sondeur."
+msgstr ""
+
+#: of transformation.georeference.apply_georeference_bathymetry:9
+msgid "Données de profondeur géoréférencées."
+msgstr ""
+
+#: of transformation.georeference.compute_tpu:1
+msgid "Calcule le TPU des données de bathymétrie."
+msgstr ""
+
+#: of transformation.georeference.compute_tpu:3
+msgid "Données brut de profondeur."
+msgstr ""
+
+#: of transformation.georeference.compute_tpu:5
+msgid "Coefficient de profondeur."
+msgstr ""
+
+#: of transformation.georeference.compute_tpu:7
+msgid "Constante du TPU."
+msgstr ""
+
+#: of transformation.georeference.compute_tpu:9
+msgid "Données de profondeur avec le TPU."
+msgstr ""
+
+#: of transformation.georeference.georeference_bathymetry:1
+msgid "Géoréférence les données de bathymétrie."
+msgstr ""
+
+#: of transformation.georeference.georeference_bathymetry:13
+msgid ""
+"Géoréférencer les données de profondeur même si elles ont déjà été "
+"géoréférencées."
+msgstr ""
+
+#: of transformation.georeference.georeference_bathymetry:15
+#: transformation.georeference.get_water_levels:9
+msgid "Données de profondeur avec le niveau d'eau."
+msgstr ""
+
+#: of transformation.georeference.get_water_levels:1
+msgid "Ajoute le niveau d'eau aux données de profondeur."
+msgstr ""
+
+#: ../../source/transformation.rst:32
+msgid "transformation.transformation\\_models module"
+msgstr ""
+
+#: of transformation.transformation_models:1
+msgid "Module pour les modèles de transformation."
+msgstr ""
+
+#: of transformation.transformation_models:3
+msgid ""
+"Ce module contient les modèles de données pour la transformation des "
+"données."
+msgstr ""
+
+#: of transformation.transformation_models.DataFilterConfigProtocol:1
+#: transformation.transformation_models.SensorProtocol:1
+#: transformation.transformation_models.WaterlineProtocol:1
+msgid "Bases : :py:class:`~typing.Protocol`"
+msgstr ""
+
+#: of transformation.transformation_models.DataFilterConfigProtocol:1
+msgid "Protocole pour la configuration des filtres de données."
+msgstr ""
+
+#: of transformation.transformation_models.DataFilterConfigProtocol:3
+msgid "(int | float) La latitude minimale."
+msgstr ""
+
+#: of transformation.transformation_models.DataFilterConfigProtocol:4
+msgid "(int | float) La latitude maximale."
+msgstr ""
+
+#: of transformation.transformation_models.DataFilterConfigProtocol:5
+msgid "(int | float) La longitude minimale."
+msgstr ""
+
+#: of transformation.transformation_models.DataFilterConfigProtocol:6
+msgid "(int | float) La longitude maximale."
+msgstr ""
+
+#: of transformation.transformation_models.DataFilterConfigProtocol:7
+msgid "(int | float) La profondeur minimale."
+msgstr ""
+
+#: of transformation.transformation_models.DataFilterConfigProtocol:8
+msgid "(Optional[int | float]) La profonde maximale."
+msgstr ""
+
+#: ../../../docstring of
+#: transformation.transformation_models.DataFilterConfigProtocol.max_longitude:1
+msgid "La longitude maximale."
+msgstr ""
+
+#: of transformation.transformation_models.SensorProtocol:1
+msgid "Protocole pour les données pour un capteur."
+msgstr ""
+
+#: ../../../docstring of transformation.transformation_models.SensorProtocol:3
+#: transformation.transformation_models.SensorProtocol.time_stamp:1
+#: transformation.transformation_models.WaterlineProtocol:3
+#: transformation.transformation_models.WaterlineProtocol.time_stamp:1
+msgid "Date et heure."
+msgstr ""
+
+#: ../../../docstring of transformation.transformation_models.SensorProtocol:5
+#: transformation.transformation_models.SensorProtocol.x:1
+msgid "Bras de levier X."
+msgstr ""
+
+#: ../../../docstring of transformation.transformation_models.SensorProtocol:7
+#: transformation.transformation_models.SensorProtocol.y:1
+msgid "Bras de levier Y."
+msgstr ""
+
+#: ../../../docstring of transformation.transformation_models.SensorProtocol:9
+#: transformation.transformation_models.SensorProtocol.z:1
+#: transformation.transformation_models.WaterlineProtocol:5
+#: transformation.transformation_models.WaterlineProtocol.z:1
+msgid "Bras de levier Z."
+msgstr ""
+
+#: of transformation.transformation_models.WaterlineProtocol:1
+msgid "Protocole pour les données pour une ligne d'eau."
+msgstr ""
+
+#: ../../source/transformation.rst:40
+msgid "Module contents"
+msgstr ""
+
+#: of transformation:1
+msgid "Ce package contient les modules de transformation des données."
+msgstr ""
+

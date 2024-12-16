@@ -1,0 +1,112 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, Yan Bilodeau
+# This file is distributed under the same license as the CHS-CSB-Processing
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: CHS-CSB-Processing \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-16 15:32-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: ../../source/logger.rst:2
+msgid "logger package"
+msgstr ""
+
+#: ../../source/logger.rst:5
+msgid "Submodules"
+msgstr ""
+
+#: ../../source/logger.rst:8
+msgid "logger.ids\\_logger module"
+msgstr ""
+
+#: logger.ids_logger:1 of
+msgid "Ce module contient les constantes de configuration du logger."
+msgstr ""
+
+#: ../../../docstring logger.ids_logger.LOG_FORMAT:1 of
+msgid "Constante de format de log."
+msgstr ""
+
+#: ../../source/logger.rst:16
+msgid "logger.loguru\\_config module"
+msgstr ""
+
+#: logger.loguru_config:1 of
+msgid "Module de configuration du logger loguru."
+msgstr ""
+
+#: logger.loguru_config:3 of
+msgid "Ce module contient la fonction de configuration du logger loguru."
+msgstr ""
+
+#: logger.loguru_config.configure_logger:1 of
+msgid "Fonction de configuration du logger loguru."
+msgstr ""
+
+#: ../../source/logger.rst
+msgid "Paramètres"
+msgstr ""
+
+#: logger.loguru_config.configure_logger:3 of
+msgid "Chemin du fichier de log."
+msgstr ""
+
+#: logger.loguru_config.configure_logger:5 of
+msgid "Niveau de log pour la sortie standard."
+msgstr ""
+
+#: logger.loguru_config.configure_logger:7 of
+msgid "Niveau de log pour le fichier de log."
+msgstr ""
+
+#: logger.loguru_config.configure_logger:9 of
+msgid "Durée de rotation des fichiers de log."
+msgstr ""
+
+#: logger.loguru_config.configure_logger:11 of
+msgid "Durée de rétention des fichiers de log."
+msgstr ""
+
+#: logger.loguru_config.configure_logger:13 of
+msgid "Indique si les messages doivent être enfilés."
+msgstr ""
+
+#: logger.loguru_config.get_username:1 of
+msgid "Fonction pour obtenir le nom d'utilisateur."
+msgstr ""
+
+#: ../../source/logger.rst
+msgid "Renvoie"
+msgstr ""
+
+#: logger.loguru_config.get_username:3 of
+msgid "Nom d'utilisateur."
+msgstr ""
+
+#: ../../source/logger.rst
+msgid "Type renvoyé"
+msgstr ""
+
+#: ../../source/logger.rst:24
+msgid "Module contents"
+msgstr ""
+
+#: logger:1 of
+msgid ""
+"Ce package contient les classes permettant de gérer les logs de "
+"l'application."
+msgstr ""
+

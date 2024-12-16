@@ -1,0 +1,407 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, Yan Bilodeau
+# This file is distributed under the same license as the CHS-CSB-Processing
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: CHS-CSB-Processing \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-16 15:32-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: ../../source/config.rst:2
+msgid "config package"
+msgstr ""
+
+#: ../../source/config.rst:5
+msgid "Submodules"
+msgstr ""
+
+#: ../../source/config.rst:8
+msgid "config.helper module"
+msgstr ""
+
+#: config.helper:1 config.processing_config:1 of
+msgid "Module de configuration des données."
+msgstr ""
+
+#: config.helper:3 of
+msgid ""
+"Ce module permet de charger les données de configuration à partir d'un "
+"fichier TOML."
+msgstr ""
+
+#: config.helper.load_config:1 of
+msgid "Retournes les données de configuration du fichier TOML."
+msgstr ""
+
+#: ../../source/config.rst
+msgid "Paramètres"
+msgstr ""
+
+#: config.helper.load_config:3 config.processing_config.get_data_config:3 of
+msgid "Le chemin du fichier de configuration."
+msgstr ""
+
+#: ../../source/config.rst
+msgid "Renvoie"
+msgstr ""
+
+#: config.helper.load_config:5 of
+msgid "Les données de configuration."
+msgstr ""
+
+#: ../../source/config.rst
+msgid "Type renvoyé"
+msgstr ""
+
+#: ../../source/config.rst:16
+msgid "config.iwls\\_api\\_config module"
+msgstr ""
+
+#: config.iwls_api_config:1 of
+msgid "Module de configuration de l'API IWLS."
+msgstr ""
+
+#: config.iwls_api_config:3 of
+msgid ""
+"Ce module contient les classes et fonctions nécessaires pour charger et "
+"valider la configuration de l'API IWLS."
+msgstr ""
+
+#: config.iwls_api_config.CacheConfig:1 config.iwls_api_config.IWLSAPIConfig:1
+#: config.iwls_api_config.TimeSeriesConfig:1
+#: config.processing_config.CSBprocessingConfig:1
+#: config.processing_config.DataFilterConfig:1
+#: config.processing_config.DataGeoreferenceConfig:1
+#: config.processing_config.OptionsConfig:1
+#: config.processing_config.VesselManagerConfig:1 of
+msgid "Bases : :py:class:`~pydantic.main.BaseModel`"
+msgstr ""
+
+#: config.iwls_api_config.CacheConfig:1 of
+msgid "Classe de configuration pour le cache."
+msgstr ""
+
+#: ../../../docstring config.iwls_api_config.CacheConfig:3
+#: config.iwls_api_config.CacheConfig.cache_path:1
+#: config.iwls_api_config.CacheConfig.validate_cache_path:3
+#: config.iwls_api_config.CacheConfig.validate_cache_path:5 of
+msgid "Le répertoire du cache."
+msgstr ""
+
+#: ../../../docstring config.iwls_api_config.CacheConfig:5
+#: config.iwls_api_config.CacheConfig.ttl:1 of
+msgid "Le temps de vie du cache en secondes."
+msgstr ""
+
+#: config.iwls_api_config.CacheConfig.validate_cache_path:1 of
+msgid "Valide le répertoire du cache."
+msgstr ""
+
+#: config.iwls_api_config.CacheConfig.validate_ttl:1 of
+msgid "Valide le temps de vie de la cache."
+msgstr ""
+
+#: config.iwls_api_config.CacheConfig.validate_ttl:3
+#: config.iwls_api_config.CacheConfig.validate_ttl:5 of
+msgid "Le temps de vie du cache."
+msgstr ""
+
+#: ../../source/config.rst
+msgid "Lève"
+msgstr ""
+
+#: config.iwls_api_config.CacheConfig.validate_ttl:7 of
+msgid "Si le temps de vie du cache est négatif."
+msgstr ""
+
+#: config.iwls_api_config.IWLSAPIConfig:1 of
+msgid "Classe de configuration pour l'API IWLS."
+msgstr ""
+
+#: config.iwls_api_config.IWLSAPIConfig:3 of
+msgid "L'environnement de développement."
+msgstr ""
+
+#: config.iwls_api_config.IWLSAPIConfig:5 of
+msgid "L'environnement de production."
+msgstr ""
+
+#: config.iwls_api_config.IWLSAPIConfig:7 of
+msgid "L'environnement public."
+msgstr ""
+
+#: config.iwls_api_config.IWLSAPIConfig:9 of
+msgid "La configuration des séries temporelles."
+msgstr ""
+
+#: config.iwls_api_config.IWLSAPIConfig:11 of
+msgid "Le profil actif de l'API."
+msgstr ""
+
+#: config.iwls_api_config.IWLSAPIConfig:13 of
+msgid "La configuration du cache."
+msgstr ""
+
+#: ../../../docstring config.IWLSAPIConfig.cache:1
+#: config.iwls_api_config.IWLSAPIConfig.cache:1 of
+msgid "Configuration du cache."
+msgstr ""
+
+#: ../../../docstring config.IWLSAPIConfig.dev:1
+#: config.iwls_api_config.IWLSAPIConfig.dev:1 of
+msgid "Environnement de développement."
+msgstr ""
+
+#: ../../../docstring config.IWLSAPIConfig.prod:1
+#: config.iwls_api_config.IWLSAPIConfig.prod:1 of
+msgid "Environnement de production."
+msgstr ""
+
+#: ../../../docstring config.IWLSAPIConfig.profile:1
+#: config.iwls_api_config.IWLSAPIConfig.profile:1 of
+msgid "Profil actif de l'API."
+msgstr ""
+
+#: ../../../docstring config.IWLSAPIConfig.public:1
+#: config.iwls_api_config.IWLSAPIConfig.public:1 of
+msgid "Environnement public."
+msgstr ""
+
+#: ../../../docstring config.IWLSAPIConfig.time_series:1
+#: config.iwls_api_config.IWLSAPIConfig.time_series:1 of
+msgid "Configuration des séries temporelles."
+msgstr ""
+
+#: config.iwls_api_config.TimeSeriesConfig:1 of
+msgid "Classe de configuration pour les séries temporelles."
+msgstr ""
+
+#: ../../../docstring config.iwls_api_config.TimeSeriesConfig:3
+#: config.iwls_api_config.TimeSeriesConfig.priority:1 of
+msgid "La liste des séries temporelles à garder par ordre de priorité."
+msgstr ""
+
+#: ../../../docstring config.iwls_api_config.TimeSeriesConfig:5
+#: config.iwls_api_config.TimeSeriesConfig.max_time_gap:1 of
+msgid "Le temps maximal permit entre deux points."
+msgstr ""
+
+#: ../../../docstring config.iwls_api_config.TimeSeriesConfig:7
+#: config.iwls_api_config.TimeSeriesConfig.threshold_interpolation_filling:1 of
+msgid "Le seuil de remplissage ou d'interpolation."
+msgstr ""
+
+#: ../../../docstring config.iwls_api_config.TimeSeriesConfig:9
+#: config.iwls_api_config.TimeSeriesConfig.wlo_qc_flag_filter:1 of
+msgid "Les filtres de qualité à filtrer."
+msgstr ""
+
+#: ../../../docstring config.iwls_api_config.TimeSeriesConfig:11
+#: config.iwls_api_config.TimeSeriesConfig.buffer_time:1 of
+msgid "Le temps de buffer à ajouter s'il manque des données pour l'interpolation."
+msgstr ""
+
+#: config.iwls_api_config.TimeSeriesConfig.validate_time_gap:1 of
+msgid "Valide le time gap."
+msgstr ""
+
+#: config.iwls_api_config.TimeSeriesConfig.validate_time_gap:3
+#: config.iwls_api_config.TimeSeriesConfig.validate_time_gap:5 of
+msgid "Le time gap."
+msgstr ""
+
+#: config.iwls_api_config.TimeSeriesConfig.validate_time_gap:7 of
+msgid "Si le time gap n'est pas au bon format."
+msgstr ""
+
+#: config.iwls_api_config.get_api_config:1 of
+msgid "Retournes la configuration de l'API IWLS"
+msgstr ""
+
+#: config.iwls_api_config.get_api_config:3 of
+msgid "Le fichier de configuration."
+msgstr ""
+
+#: config.iwls_api_config.get_api_config:5 of
+msgid "Un objet APIConfig."
+msgstr ""
+
+#: ../../source/config.rst:24
+msgid "config.processing\\_config module"
+msgstr ""
+
+#: config.processing_config:3 of
+msgid ""
+"Ce module contient les classes et fonctions nécessaires pour charger et "
+"valider les configurations de filtrage des données."
+msgstr ""
+
+#: config.processing_config.DataFilterConfig:1 of
+msgid "Classe de configuration pour le filtrage des données."
+msgstr ""
+
+#: ../../../docstring config.DataFilterConfig.min_latitude:1
+#: config.processing_config.DataFilterConfig:3
+#: config.processing_config.DataFilterConfig.min_latitude:1 of
+msgid "La latitude minimale."
+msgstr ""
+
+#: ../../../docstring config.DataFilterConfig.max_latitude:1
+#: config.processing_config.DataFilterConfig:5
+#: config.processing_config.DataFilterConfig.max_latitude:1 of
+msgid "La latitude maximale."
+msgstr ""
+
+#: ../../../docstring config.DataFilterConfig.min_longitude:1
+#: config.processing_config.DataFilterConfig:7
+#: config.processing_config.DataFilterConfig.min_longitude:1 of
+msgid "La longitude minimale."
+msgstr ""
+
+#: ../../../docstring config.DataFilterConfig.max_longitude:1
+#: config.processing_config.DataFilterConfig:9
+#: config.processing_config.DataFilterConfig.max_longitude:1 of
+msgid "La longitude maximale."
+msgstr ""
+
+#: ../../../docstring config.DataFilterConfig.min_depth:1
+#: config.processing_config.DataFilterConfig:11
+#: config.processing_config.DataFilterConfig.min_depth:1 of
+msgid "La profondeur minimale."
+msgstr ""
+
+#: ../../../docstring config.DataFilterConfig.max_depth:1
+#: config.processing_config.DataFilterConfig:13
+#: config.processing_config.DataFilterConfig.max_depth:1 of
+msgid "La profondeur maximale."
+msgstr ""
+
+#: config.processing_config.DataFilterConfig.validate_depth:1 of
+msgid "Valide la profondeur."
+msgstr ""
+
+#: config.processing_config.DataFilterConfig.validate_depth:3
+#: config.processing_config.DataFilterConfig.validate_depth:5 of
+msgid "La valeur de la profondeur."
+msgstr ""
+
+#: config.processing_config.DataFilterConfig.validate_depth:7 of
+msgid "Si la profondeur est inférieure à MIN_DEPTH."
+msgstr ""
+
+#: config.processing_config.DataFilterConfig.validate_latitude:1 of
+msgid "Valide la latitude."
+msgstr ""
+
+#: config.processing_config.DataFilterConfig.validate_latitude:3
+#: config.processing_config.DataFilterConfig.validate_latitude:5 of
+msgid "La valeur de la latitude."
+msgstr ""
+
+#: config.processing_config.DataFilterConfig.validate_latitude:7 of
+msgid "Si la latitude n'est pas comprise entre MIN_LATITUDE et MAX_LATITUDE."
+msgstr ""
+
+#: config.processing_config.DataFilterConfig.validate_longitude:1 of
+msgid "Valide la longitude."
+msgstr ""
+
+#: config.processing_config.DataFilterConfig.validate_longitude:3
+#: config.processing_config.DataFilterConfig.validate_longitude:5 of
+msgid "La valeur de la longitude."
+msgstr ""
+
+#: config.processing_config.DataFilterConfig.validate_longitude:7 of
+msgid "Si la longitude n'est pas comprise entre MIN_LONGITUDE et MAX_LONGITUDE."
+msgstr ""
+
+#: config.processing_config.DataGeoreferenceConfig:1 of
+msgid "Classe de configuration pour le géoréférencement des données."
+msgstr ""
+
+#: config.processing_config.DataGeoreferenceConfig:3 of
+msgid ""
+"Écart maximal en minutes entre les données et les niveaux d'eau à "
+"récupérer pour le géoréférencement."
+msgstr ""
+
+#: ../../../docstring config.DataGeoreferenceConfig.water_level_tolerance:1
+#: config.processing_config.DataGeoreferenceConfig.water_level_tolerance:1 of
+msgid ""
+"La tolérance en minutes pour les données de marée à récupérer pour le "
+"géoréférencement."
+msgstr ""
+
+#: config.processing_config.OptionsConfig:1 of
+msgid "Classe de configuration pour les options de traitement."
+msgstr ""
+
+#: ../../../docstring config.processing_config.OptionsConfig.log_level:1 of
+msgid "Le niveau de log."
+msgstr ""
+
+#: config.processing_config.VesselConfigManagerType:1 of
+msgid "Bases : :py:class:`~enum.StrEnum`"
+msgstr ""
+
+#: config.processing_config.VesselConfigManagerType:1 of
+msgid "Enumération des types de gestionnaire de configuration de navires."
+msgstr ""
+
+#: ../../../docstring
+#: config.processing_config.VesselConfigManagerType.VesselConfigJsonManager:1
+#: of
+msgid "Gestionnaire de configuration de navires en JSON."
+msgstr ""
+
+#: ../../../docstring
+#: config.processing_config.VesselConfigManagerType.VesselConfigSQLiteManager:1
+#: of
+msgid "Gestionnaire de configuration de navires en SQLite."
+msgstr ""
+
+#: config.processing_config.VesselManagerConfig:1 of
+msgid "Classe de configuration pour le gestionnaire de navires."
+msgstr ""
+
+#: config.processing_config.VesselManagerConfig:3 of
+msgid "Le type de gestionnaire de configuration de navires."
+msgstr ""
+
+#: config.processing_config.VesselManagerConfig:5 of
+msgid "Les arguments pour le gestionnaire de configuration de navires."
+msgstr ""
+
+#: config.processing_config.get_data_config:1 of
+msgid ""
+"Retournes la configuration pour la transformation des données et le "
+"géoréférencement."
+msgstr ""
+
+#: config.processing_config.get_data_config:5 of
+msgid ""
+"La configuration pour la transformation des données et le "
+"géoréférencement."
+msgstr ""
+
+#: ../../source/config.rst:32
+msgid "Module contents"
+msgstr ""
+
+#: config:1 of
+msgid "Ce package contient les configurations nécessaires pour l'application."
+msgstr ""
+

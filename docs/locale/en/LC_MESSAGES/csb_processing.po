@@ -1,0 +1,284 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, Yan Bilodeau
+# This file is distributed under the same license as the CHS-CSB-Processing
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: CHS-CSB-Processing \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-16 15:32-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: ../../source/csb_processing.rst:2
+msgid "csb\\_processing module"
+msgstr ""
+
+#: csb_processing:1 of
+msgid ""
+"Module principal pour le traitement des données des capteurs à bord des "
+"navires."
+msgstr ""
+
+#: csb_processing:3 of
+msgid ""
+"Ce module contient le workflow de traitement des données des capteurs à "
+"bord des navires. Les données des capteurs sont récupérées à partir de "
+"fichiers bruts, nettoyées, filtrées, géoréférencées et exportées dans un "
+"format standardisé."
+msgstr ""
+
+#: csb_processing.SensorConfigurationError:1
+#: csb_processing.VesselConfigManagerError:1 of
+msgid "Bases : :py:class:`Exception`"
+msgstr ""
+
+#: csb_processing.SensorConfigurationError:1 of
+msgid ""
+"Exception levée lorsque la configuration du capteur change durant la "
+"période de temps couverte par les données."
+msgstr ""
+
+#: ../../../docstring csb_processing.SensorConfigurationError.sensor_type:1 of
+msgid "Le type de capteur."
+msgstr ""
+
+#: csb_processing.VesselConfigManagerError:1 of
+msgid ""
+"Exception levée lorsque la configuration du gestionnaire de navires est "
+"manquante pour récupérer la configuration du navire."
+msgstr ""
+
+#: ../../../docstring
+#: csb_processing.VesselConfigManagerError.vessel_config_manager:1 of
+msgid "La configuration du gestionnaire de navires."
+msgstr ""
+
+#: ../../../docstring csb_processing.VesselConfigManagerError.vessel_id:1 of
+msgid "L'identifiant du navire."
+msgstr ""
+
+#: csb_processing._:1 csb_processing.get_vessel_config:1 of
+msgid "Récupère la configuration du navire."
+msgstr ""
+
+#: ../../source/csb_processing.rst
+msgid "Paramètres"
+msgstr ""
+
+#: csb_processing._:3 of
+msgid "Identifiant du navire."
+msgstr ""
+
+#: csb_processing._:5 csb_processing.get_vessel_config:5 of
+msgid "Gestionnaire de configuration du navire."
+msgstr ""
+
+#: ../../source/csb_processing.rst
+msgid "Renvoie"
+msgstr ""
+
+#: csb_processing._:7 csb_processing.get_sensor_with_validation:3
+#: csb_processing.get_sensors:3 csb_processing.get_vessel_config:7 of
+msgid "Configuration du navire."
+msgstr ""
+
+#: ../../source/csb_processing.rst
+msgid "Type renvoyé"
+msgstr ""
+
+#: csb_processing.add_tide_zone_id_to_geodataframe:1 of
+msgid "Récupère les zones de marées pour les données."
+msgstr ""
+
+#: csb_processing.add_tide_zone_id_to_geodataframe:3
+#: csb_processing.get_intersected_tide_zone_info:3 of
+msgid "Les données des DataLoggers."
+msgstr ""
+
+#: csb_processing.add_tide_zone_id_to_geodataframe:5
+#: csb_processing.get_intersected_tide_zone_info:5 of
+msgid "Les zones de marées."
+msgstr ""
+
+#: csb_processing.add_tide_zone_id_to_geodataframe:7 of
+msgid "Les données des DataLoggers avec les zones de marées."
+msgstr ""
+
+#: csb_processing.export_station_water_levels:1 of
+msgid ""
+"Exporte les données de niveaux d'eau pour chaque station dans des "
+"fichiers CSV."
+msgstr ""
+
+#: csb_processing.export_station_water_levels:3
+#: csb_processing.plot_water_level_data:3 of
+msgid "Dictionnaire contenant les DataFrames des niveaux d'eau par station."
+msgstr ""
+
+#: csb_processing.export_station_water_levels:5 of
+msgid "GeoDataFrame contenant les informations des stations."
+msgstr ""
+
+#: csb_processing.export_station_water_levels:7
+#: csb_processing.export_water_level_dataframe:7 of
+msgid "Chemin du répertoire d'exportation des fichiers CSV."
+msgstr ""
+
+#: csb_processing.export_station_water_levels:9
+#: csb_processing.plot_water_level_data:5 of
+msgid "Liste des titres des stations."
+msgstr ""
+
+#: csb_processing.export_water_level_dataframe:1 of
+msgid "Exporte les données de niveaux d'eau pour une station dans un fichier CSV."
+msgstr ""
+
+#: csb_processing.export_water_level_dataframe:3 of
+msgid "Titre de la station."
+msgstr ""
+
+#: csb_processing.export_water_level_dataframe:5 of
+msgid "DataFrame contenant les données de niveaux d'eau."
+msgstr ""
+
+#: csb_processing.get_api:1 of
+msgid "Récupère l'API IWLS à partir de l'environnement spécifié."
+msgstr ""
+
+#: csb_processing.get_api:3 csb_processing.get_iwls_environment:5 of
+msgid "Environnement de l'API IWLS."
+msgstr ""
+
+#: csb_processing.get_api:5 csb_processing.get_stations_handler:5 of
+msgid "API IWLS."
+msgstr ""
+
+#: csb_processing.get_data_structure:1 of
+msgid "Récupère la structure de répertoires pour les données."
+msgstr ""
+
+#: csb_processing.get_data_structure:3 csb_processing.processing_workflow:7 of
+msgid "Chemin du répertoire de sortie."
+msgstr ""
+
+#: csb_processing.get_data_structure:5 of
+msgid "Chemin des répertoires pour les données."
+msgstr ""
+
+#: csb_processing.get_intersected_tide_zone_info:1 of
+msgid ""
+"Récupère les zones de marées et le temps de début et de fin pour les "
+"données."
+msgstr ""
+
+#: csb_processing.get_intersected_tide_zone_info:7 of
+msgid "Les zones de marées et le temps de début et de fin pour les données."
+msgstr ""
+
+#: csb_processing.get_iwls_environment:1 of
+msgid ""
+"Réccupère l'environnement de l'API IWLS à partir du fichier de "
+"configuration."
+msgstr ""
+
+#: csb_processing.get_iwls_environment:3 of
+msgid "Configuration de l'API IWLS."
+msgstr ""
+
+#: csb_processing.get_sensor_with_validation:1 of
+msgid "Récupère et valide les capteurs pour une période de temps donnée."
+msgstr ""
+
+#: csb_processing.get_sensor_with_validation:5 of
+msgid "Type de capteur à récupérer."
+msgstr ""
+
+#: csb_processing.get_sensor_with_validation:7 csb_processing.get_sensors:5 of
+msgid "Date et heure minimale."
+msgstr ""
+
+#: csb_processing.get_sensor_with_validation:9 csb_processing.get_sensors:7 of
+msgid "Date et heure maximale."
+msgstr ""
+
+#: csb_processing.get_sensor_with_validation:11 of
+msgid "Capteur pour le moment donné."
+msgstr ""
+
+#: ../../source/csb_processing.rst
+msgid "Lève"
+msgstr ""
+
+#: csb_processing.get_sensor_with_validation:13 of
+msgid ""
+"Si la configuration du capteur change durant la période de temps couverte"
+" par les données."
+msgstr ""
+
+#: csb_processing.get_sensors:1 of
+msgid ""
+"Méthode pour récupérer les données des capteurs et valider que la "
+"configuration du navire couvre la période de temps."
+msgstr ""
+
+#: csb_processing.get_sensors:9 of
+msgid "Données des capteurs pour le moment donné."
+msgstr ""
+
+#: csb_processing.get_stations_handler:1 of
+msgid "Récupère le gestionnaire des stations."
+msgstr ""
+
+#: csb_processing.get_stations_handler:3 of
+msgid "Type de l'endpoint."
+msgstr ""
+
+#: csb_processing.get_stations_handler:7 of
+msgid "Durée de vie du cache."
+msgstr ""
+
+#: csb_processing.get_stations_handler:9 of
+msgid "Chemin du répertoire du cache."
+msgstr ""
+
+#: csb_processing.get_stations_handler:11 of
+msgid "Gestionnaire des stations."
+msgstr ""
+
+#: csb_processing.get_vessel_config:3 csb_processing.processing_workflow:5 of
+msgid "Identifiant du navire ou configuration du navire."
+msgstr ""
+
+#: csb_processing.plot_water_level_data:1 of
+msgid ""
+"Trace les données de niveaux d'eau pour chaque station et les enregistre "
+"dans un fichier HTML."
+msgstr ""
+
+#: csb_processing.plot_water_level_data:7 of
+msgid "Chemin du répertoire d'exportation des fichiers HTML."
+msgstr ""
+
+#: csb_processing.processing_workflow:1 of
+msgid "Workflow de traitement des données."
+msgstr ""
+
+#: csb_processing.processing_workflow:3 of
+msgid "Liste des fichiers à traiter."
+msgstr ""
+
+#: csb_processing.processing_workflow:9 of
+msgid "Chemin du fichier de configuration."
+msgstr ""
+

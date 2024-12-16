@@ -1,0 +1,874 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, Yan Bilodeau
+# This file is distributed under the same license as the CHS-CSB-Processing
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: CHS-CSB-Processing \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-16 15:32-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: ../../source/vessel.rst:2
+msgid "vessel package"
+msgstr ""
+
+#: ../../source/vessel.rst:5
+msgid "Submodules"
+msgstr ""
+
+#: ../../source/vessel.rst:8
+msgid "vessel.exception\\_vessel module"
+msgstr ""
+
+#: of vessel.exception_vessel:1
+msgid "Exceptions spécifiques à l'application Vessel."
+msgstr ""
+
+#: of vessel.exception_vessel:3
+msgid "Ce module contient les exceptions spécifiques à l'application Vessel."
+msgstr ""
+
+#: of vessel.exception_vessel.MissingConfigKeyError:1
+#: vessel.exception_vessel.SensorNotFoundError:1
+#: vessel.exception_vessel.VesselConfigManagerIdentifierError:1
+#: vessel.exception_vessel.VesselConfigNotFoundError:1
+msgid "Bases : :py:class:`Exception`"
+msgstr ""
+
+#: of vessel.exception_vessel.MissingConfigKeyError:1
+msgid "Exception levée lorsqu'une clé de configuration est manquante."
+msgstr ""
+
+#: ../../source/vessel.rst
+msgid "Paramètres"
+msgstr ""
+
+#: ../../../docstring of vessel.exception_vessel.MissingConfigKeyError:3
+#: vessel.exception_vessel.MissingConfigKeyError.missing_keys:1
+msgid "Les clés manquantes."
+msgstr ""
+
+#: of vessel.exception_vessel.SensorNotFoundError:1
+msgid "Exception levée lorsqu'un capteur n'est pas trouvé."
+msgstr ""
+
+#: of vessel.exception_vessel.SensorNotFoundError:3
+msgid "Le nom du capteur."
+msgstr ""
+
+#: ../../../docstring of vessel.exception_vessel.SensorNotFoundError:5
+#: vessel.exception_vessel.SensorNotFoundError.timestamp:1
+msgid "Le timestamp."
+msgstr ""
+
+#: ../../../docstring of
+#: vessel.exception_vessel.SensorNotFoundError.sensor_name:1
+msgid "Le type du capteur."
+msgstr ""
+
+#: of vessel.exception_vessel.VesselConfigManagerIdentifierError:1
+msgid ""
+"Exception levée lorsqu'une erreur survient lors de l'identification du "
+"gestionnaire de configuration de navires."
+msgstr ""
+
+#: ../../../docstring of
+#: vessel.exception_vessel.VesselConfigManagerIdentifierError:3
+#: vessel.exception_vessel.VesselConfigManagerIdentifierError.manager_type:1
+msgid "Le type de gestionnaire de navire."
+msgstr ""
+
+#: of vessel.exception_vessel.VesselConfigNotFoundError:1
+msgid "Exception levée lorsqu'une configuration de navire n'est pas trouvée."
+msgstr ""
+
+#: ../../../docstring of vessel.exception_vessel.VesselConfigNotFoundError:3
+#: vessel.exception_vessel.VesselConfigNotFoundError.vessel_id:1
+msgid "L'identifiant du navire."
+msgstr ""
+
+#: ../../source/vessel.rst:16
+msgid "vessel.factory\\_vessel\\_config\\_manager module"
+msgstr ""
+
+#: of vessel.factory_vessel_config_manager:1
+msgid ""
+"Module de gestion de la factory de gestionnaire de configuration de "
+"navires."
+msgstr ""
+
+#: of vessel.factory_vessel_config_manager:3
+msgid ""
+"Ce module contient la factory qui permet de récupérer la factory de "
+"gestionnaire de configuration de navires en fonction du type."
+msgstr ""
+
+#: of vessel.factory_vessel_config_manager.VesselConfigManagerType:1
+#: vessel.vessel_config.AxisConvention:1
+msgid "Bases : :py:class:`~enum.StrEnum`"
+msgstr ""
+
+#: of vessel.factory_vessel_config_manager.VesselConfigManagerType:1
+msgid "Enumération des types de gestionnaire de configuration de navires."
+msgstr ""
+
+#: ../../../docstring of
+#: vessel.VesselConfigManagerType.VesselConfigJsonManager:1
+#: vessel.factory_vessel_config_manager.VesselConfigManagerType.VesselConfigJsonManager:1
+msgid "Gestionnaire de configuration de navires en JSON."
+msgstr ""
+
+#: ../../../docstring of
+#: vessel.VesselConfigManagerType.VesselConfigSQLiteManager:1
+#: vessel.factory_vessel_config_manager.VesselConfigManagerType.VesselConfigSQLiteManager:1
+msgid "Gestionnaire de configuration de navires en SQLite."
+msgstr ""
+
+#: of vessel.factory_vessel_config_manager.get_vessel_config_manager_factory:1
+msgid "Récupère la factory du gestionnaire de navire en fonction du type."
+msgstr ""
+
+#: of vessel.factory_vessel_config_manager.get_vessel_config_manager_factory:3
+msgid "Type de gestionnaire de navire."
+msgstr ""
+
+#: ../../source/vessel.rst
+msgid "Renvoie"
+msgstr ""
+
+#: of vessel.factory_vessel_config_manager.get_vessel_config_manager_factory:5
+msgid "La factory du gestionnaire de navire."
+msgstr ""
+
+#: ../../source/vessel.rst
+msgid "Type renvoyé"
+msgstr ""
+
+#: ../../source/vessel.rst
+msgid "Lève"
+msgstr ""
+
+#: of vessel.factory_vessel_config_manager.get_vessel_config_manager_factory:7
+msgid "Si le type de gestionnaire de navire n'est pas reconnu."
+msgstr ""
+
+#: ../../source/vessel.rst:24
+msgid "vessel.unknown\\_vessel\\_config module"
+msgstr ""
+
+#: ../../source/vessel.rst:32
+msgid "vessel.vessel\\_config module"
+msgstr ""
+
+#: of vessel.vessel_config:1
+msgid "Module pour la configuration du navire."
+msgstr ""
+
+#: of vessel.vessel_config:3
+msgid ""
+"Ce module contient les classes et les fonctions pour la configuration du "
+"navire."
+msgstr ""
+
+#: of vessel.vessel_config.AxisConvention:1
+msgid "Enumération des conventions d'axes."
+msgstr ""
+
+#: ../../../docstring of vessel.AxisConvention.CARIS:1
+#: vessel.vessel_config.AxisConvention.CARIS:1
+msgid ""
+"The X-Y-Z fields set the location from the Reference Point (0). The "
+"Reference Point is the point on the vessel where the X, Y, and Z axes "
+"intersect. The X, Y, and Z fields are defined as follows: - X: The "
+"athwart-ship distance of the sensor, positive to starboard. - Y: The "
+"along-ship distance of the sensor, positive to the bow. - Z: The vertical"
+" distance of the sensor, positive into the water."
+msgstr ""
+
+#: of vessel.vessel_config.BDBattribute:1 vessel.vessel_config.Sensor:1
+#: vessel.vessel_config.SoundSpeedProfile:1 vessel.vessel_config.VesselConfig:1
+#: vessel.vessel_config.Waterline:1
+msgid "Bases : :py:class:`~pydantic.main.BaseModel`"
+msgstr ""
+
+#: of vessel.vessel_config.BDBattribute:1
+msgid "Modèle de données pour un attribut BDB."
+msgstr ""
+
+#: ../../../docstring of vessel.BDBattribute.time_stamp:1
+#: vessel.Sensor.time_stamp:1 vessel.SoundSpeedProfile.time_stamp:1
+#: vessel.Waterline.time_stamp:1 vessel.vessel_config.BDBattribute:3
+#: vessel.vessel_config.BDBattribute.time_stamp:1 vessel.vessel_config.Sensor:3
+#: vessel.vessel_config.Sensor.time_stamp:1
+#: vessel.vessel_config.SoundSpeedProfile:3
+#: vessel.vessel_config.SoundSpeedProfile.time_stamp:1
+#: vessel.vessel_config.Waterline:3 vessel.vessel_config.Waterline.time_stamp:1
+#: vessel.vessel_models.AttributeDict:3
+#: vessel.vessel_models.AttributeDict.time_stamp:1
+#: vessel.vessel_models.SensorDict:3
+#: vessel.vessel_models.SensorDict.time_stamp:1
+#: vessel.vessel_models.SoundSpeedProfileDict:3
+#: vessel.vessel_models.SoundSpeedProfileDict.time_stamp:1
+#: vessel.vessel_models.WaterlineDict.time_stamp:1
+msgid "Date et heure."
+msgstr ""
+
+#: ../../../docstring of vessel.BDBattribute.pltfrm:1
+#: vessel.vessel_config.BDBattribute:5
+#: vessel.vessel_config.BDBattribute.pltfrm:1
+#: vessel.vessel_models.AttributeDict:5
+#: vessel.vessel_models.AttributeDict.pltfrm:1
+msgid "Plateforme."
+msgstr ""
+
+#: ../../../docstring of vessel.BDBattribute.sdghdw:1
+#: vessel.vessel_config.BDBattribute:7
+#: vessel.vessel_config.BDBattribute.sdghdw:1
+#: vessel.vessel_models.AttributeDict:7
+#: vessel.vessel_models.AttributeDict.sdghdw:1
+msgid "Système de sondage."
+msgstr ""
+
+#: ../../../docstring of vessel.BDBattribute.poshdw:1
+#: vessel.vessel_config.BDBattribute:9
+#: vessel.vessel_config.BDBattribute.poshdw:1
+#: vessel.vessel_models.AttributeDict:9
+#: vessel.vessel_models.AttributeDict.poshdw:1
+msgid "Système de positionnement."
+msgstr ""
+
+#: ../../../docstring of vessel.BDBattribute.bureau:1
+#: vessel.vessel_config.BDBattribute:11
+#: vessel.vessel_config.BDBattribute.bureau:1
+msgid "Bureau du fournisseur de données."
+msgstr ""
+
+#: ../../../docstring of vessel.BDBattribute.restrn:1
+#: vessel.vessel_config.BDBattribute:13
+#: vessel.vessel_config.BDBattribute.restrn:1
+#: vessel.vessel_models.AttributeDict:13
+#: vessel.vessel_models.AttributeDict.restrn:1
+msgid "Restrictions de données."
+msgstr ""
+
+#: of vessel.vessel_config.Sensor:1
+msgid "Modèle de données pour un capteur."
+msgstr ""
+
+#: ../../../docstring of vessel.Sensor.x:1 vessel.vessel_config.Sensor:5
+#: vessel.vessel_config.Sensor.x:1 vessel.vessel_models.SensorDict:5
+#: vessel.vessel_models.SensorDict.x:1
+msgid "Bras de levier X."
+msgstr ""
+
+#: ../../../docstring of vessel.Sensor.y:1 vessel.vessel_config.Sensor:7
+#: vessel.vessel_config.Sensor.y:1 vessel.vessel_models.SensorDict:7
+#: vessel.vessel_models.SensorDict.y:1
+msgid "Bras de levier Y."
+msgstr ""
+
+#: ../../../docstring of vessel.Sensor.z:1 vessel.Waterline.z:1
+#: vessel.vessel_config.Sensor:9 vessel.vessel_config.Sensor.z:1
+#: vessel.vessel_config.Waterline:5 vessel.vessel_config.Waterline.z:1
+#: vessel.vessel_models.SensorDict:9 vessel.vessel_models.SensorDict.z:1
+#: vessel.vessel_models.WaterlineDict:5 vessel.vessel_models.WaterlineDict.z:1
+msgid "Bras de levier Z."
+msgstr ""
+
+#: of vessel.vessel_config.SoundSpeedProfile:1
+msgid "Modèle de données pour un profil de vitesse du son."
+msgstr ""
+
+#: ../../../docstring of vessel.SoundSpeedProfile.ssp:1
+#: vessel.vessel_config.SoundSpeedProfile:5
+#: vessel.vessel_config.SoundSpeedProfile.ssp:1
+#: vessel.vessel_models.SoundSpeedProfileDict:5
+#: vessel.vessel_models.SoundSpeedProfileDict.ssp:1
+msgid "True si le profil de vitesse du son est appliqué."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig:1
+msgid "Modèle de données pour la configuration du navire."
+msgstr ""
+
+#: ../../../docstring of vessel.VesselConfig.id:1
+#: vessel.vessel_config.VesselConfig:3 vessel.vessel_config.VesselConfig.id:1
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager.delete_vessel_config:3
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager.get_vessel_config:3
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager.update_vessel_config:3
+#: vessel.vessel_config_manager_abc.VesselConfigManagerABC.delete_vessel_config:3
+#: vessel.vessel_config_manager_abc.VesselConfigManagerABC.get_vessel_config:3
+#: vessel.vessel_config_manager_abc.VesselConfigManagerABC.update_vessel_config:3
+#: vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager.delete_vessel_config:3
+#: vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager.get_vessel_config:3
+#: vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager.update_vessel_config:3
+#: vessel.vessel_models.VesselConfigDict.id:1
+msgid "Identifiant du navire."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig:5
+msgid "Convention d'axes."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig:7
+msgid "Liste des données de navigation."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig:9
+msgid "Liste des données de mouvement."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig:11
+msgid "Liste des données du sondeur."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig:13
+msgid "Liste des données de ligne d'eau."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig:15
+msgid "Liste des données de profil de vitesse du son appliqué."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig:17
+msgid "Liste des données d'attribut."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig.get_attribute:1
+msgid "Méthode pour récupérer les données d'attribut à un instant donné."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig.get_attribute:3
+#: vessel.vessel_config.VesselConfig.get_motion:3
+#: vessel.vessel_config.VesselConfig.get_navigation:3
+#: vessel.vessel_config.VesselConfig.get_sensor:5
+#: vessel.vessel_config.VesselConfig.get_sounder:3
+#: vessel.vessel_config.VesselConfig.get_ssp_applied:3
+#: vessel.vessel_config.VesselConfig.get_waterline:3
+msgid "Une date et heure."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig.get_attribute:5
+msgid "Données d'attribut pour le moment donné."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig.get_motion:1
+msgid "Méthode pour récupérer les données de mouvement à un instant donné."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig.get_motion:5
+msgid "Données de mouvement pour le moment donné."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig.get_navigation:1
+msgid "Méthode pour récupérer les données de navigation à un instant donné."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig.get_navigation:5
+msgid "Données de navigation pour le moment donné."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig.get_sensor:1
+msgid "Récupère les données d'un type de capteur à un instant donné."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig.get_sensor:3
+msgid "Nom du capteur."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig.get_sensor:7
+msgid "Données du capteur pour le moment donné."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig.get_sensor:9
+msgid "Si le capteur n'existe pas."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig.get_sounder:1
+msgid "Méthode pour récupérer les données du sondeur à un instant donné."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig.get_sounder:5
+msgid "Données du sondeur pour le moment donné."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig.get_ssp_applied:1
+msgid ""
+"Méthode pour récupérer les données de profil de vitesse du son appliqué à"
+" un instant donné."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig.get_ssp_applied:5
+msgid "Données de profil de vitesse du son appliqué pour le moment donné."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig.get_waterline:1
+msgid "Méthode pour récupérer les données de ligne d'eau à un instant donné."
+msgstr ""
+
+#: of vessel.vessel_config.VesselConfig.get_waterline:5
+msgid "Données de ligne d'eau pour le moment donné."
+msgstr ""
+
+#: ../../../docstring of vessel.VesselConfig.attribute:1
+#: vessel.vessel_config.VesselConfig.attribute:1
+#: vessel.vessel_models.VesselConfigDict.attribute:1
+msgid "Données des attributs BDB."
+msgstr ""
+
+#: ../../../docstring of vessel.VesselConfig.axis_convention:1
+#: vessel.vessel_config.VesselConfig.axis_convention:1
+#: vessel.vessel_models.VesselConfigDict:5
+#: vessel.vessel_models.VesselConfigDict.axis_convention:1
+msgid "Convention des axes."
+msgstr ""
+
+#: ../../../docstring of vessel.VesselConfig.motion:1
+#: vessel.vessel_config.VesselConfig.motion:1
+msgid "Données des bras de levier du capteur de mouvement."
+msgstr ""
+
+#: ../../../docstring of vessel.VesselConfig.navigation:1
+#: vessel.vessel_config.VesselConfig.navigation:1
+msgid "Données des bras de levier du capteur de navigation."
+msgstr ""
+
+#: ../../../docstring of vessel.VesselConfig.sounder:1
+#: vessel.vessel_config.VesselConfig.sounder:1
+msgid "Données des bras de levier du sondeur."
+msgstr ""
+
+#: ../../../docstring of vessel.VesselConfig.ssp_applied:1
+#: vessel.vessel_config.VesselConfig.ssp_applied:1
+msgid "Données de profil de vitesse du son appliqué."
+msgstr ""
+
+#: ../../../docstring of vessel.VesselConfig.waterline:1
+#: vessel.vessel_config.VesselConfig.waterline:1
+msgid "Données des bras de levier de la ligne d'eau."
+msgstr ""
+
+#: of vessel.vessel_config.Waterline:1
+msgid "Modèle de données pour une ligne d'eau."
+msgstr ""
+
+#: of vessel.vessel_config.get_vessel_config_from_config_dict:1
+msgid "Récupère la configuration du navire."
+msgstr ""
+
+#: of vessel.vessel_config.get_vessel_config_from_config_dict:3
+#: vessel.vessel_config.get_vessel_config_from_config_dict:5
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager.add_veessel_config:3
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager.get_vessel_config:5
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager.update_vessel_config:5
+#: vessel.vessel_config_manager_abc.VesselConfigManagerABC.add_veessel_config:3
+#: vessel.vessel_config_manager_abc.VesselConfigManagerABC.get_vessel_config:5
+#: vessel.vessel_config_manager_abc.VesselConfigManagerABC.update_vessel_config:5
+#: vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager.add_veessel_config:3
+#: vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager.get_vessel_config:5
+#: vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager.update_vessel_config:5
+msgid "Configuration du navire."
+msgstr ""
+
+#: of vessel.vessel_config.get_vessel_config_from_config_dict:7
+msgid "Si des clés de configuration sont manquantes."
+msgstr ""
+
+#: ../../source/vessel.rst:40
+msgid "vessel.vessel\\_config\\_json\\_manager module"
+msgstr ""
+
+#: of vessel.vessel_config_json_manager:1
+msgid ""
+"Module permettant de gérer la configuration des navires à partir d'un "
+"fichier JSON."
+msgstr ""
+
+#: of vessel.vessel_config_json_manager:3
+msgid ""
+"Ce module contient la classe VesselConfigJsonManager qui permet de gérer "
+"la configuration des navires à partir d'un fichier JSON."
+msgstr ""
+
+#: of vessel.vessel_config_json_manager.VesselConfigJsonManager:1
+#: vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager:1
+msgid ""
+"Bases : "
+":py:class:`~vessel.vessel_config_manager_abc.VesselConfigManagerABC`"
+msgstr ""
+
+#: of vessel.vessel_config_json_manager.VesselConfigJsonManager:1
+msgid ""
+"Classe permettant de gérer la configuration des navires à partir d'un "
+"fichier JSON."
+msgstr ""
+
+#: of
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager._load_vessel_configs_file:1
+msgid ""
+"Méthode permettant de charger la configuration des navires depuis un "
+"fichier JSON."
+msgstr ""
+
+#: of
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager._load_vessel_configs_file:3
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager.commit_vessel_configs:3
+msgid "Chemin du fichier JSON."
+msgstr ""
+
+#: of
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager._load_vessel_configs_file:5
+msgid "Les configurations des navires."
+msgstr ""
+
+#: of
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager._load_vessel_configs_file
+msgid "type"
+msgstr ""
+
+#: of
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager._load_vessel_configs_file:6
+msgid "dict[str, VesselConfigDict]"
+msgstr ""
+
+#: of
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager._load_vessel_configs_file:7
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager.get_vessel_configs:3
+#: vessel.vessel_config_manager_abc.VesselConfigManagerABC.get_vessel_configs:3
+#: vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager.get_vessel_configs:3
+msgid "Configurations des navires."
+msgstr ""
+
+#: of
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager._load_vessel_configs_file:9
+msgid "Si le fichier de configuration des navires n'existe pas."
+msgstr ""
+
+#: of
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager.add_veessel_config:1
+#: vessel.vessel_config_manager_abc.VesselConfigManagerABC.add_veessel_config:1
+#: vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager.add_veessel_config:1
+msgid "Méthode permettant d'ajouter la configuration d'un navire."
+msgstr ""
+
+#: of
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager.commit_vessel_configs:1
+msgid ""
+"Méthode permettant de sauvegarder la configuration des navires dans un "
+"fichier JSON."
+msgstr ""
+
+#: of
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager.commit_vessel_configs:5
+msgid "Si un objet n'est pas sérialisable."
+msgstr ""
+
+#: of
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager.delete_vessel_config:1
+#: vessel.vessel_config_manager_abc.VesselConfigManagerABC.delete_vessel_config:1
+#: vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager.delete_vessel_config:1
+msgid "Méthode permettant de supprimer la configuration d'un navire."
+msgstr ""
+
+#: of
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager.get_vessel_config:1
+#: vessel.vessel_config_manager_abc.VesselConfigManagerABC.get_vessel_config:1
+#: vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager.get_vessel_config:1
+msgid "Méthode permettant de récupérer la configuration d'un navire."
+msgstr ""
+
+#: of
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager.get_vessel_config:7
+msgid "Si la configuration du navire n'existe pas."
+msgstr ""
+
+#: of
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager.get_vessel_configs:1
+#: vessel.vessel_config_manager_abc.VesselConfigManagerABC.get_vessel_configs:1
+#: vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager.get_vessel_configs:1
+msgid "Méthode permettant de récupérer la configuration de tous les navires."
+msgstr ""
+
+#: of
+#: vessel.vessel_config_json_manager.VesselConfigJsonManager.update_vessel_config:1
+#: vessel.vessel_config_manager_abc.VesselConfigManagerABC.update_vessel_config:1
+#: vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager.update_vessel_config:1
+msgid "Méthode permettant de mettre à jour la configuration d'un navire."
+msgstr ""
+
+#: ../../source/vessel.rst:48
+msgid "vessel.vessel\\_config\\_manager\\_abc module"
+msgstr ""
+
+#: of vessel.vessel_config_manager_abc:1
+msgid "Module contenant la classe abstraite VesselConfigManagerABC."
+msgstr ""
+
+#: of vessel.vessel_config_manager_abc:3
+msgid ""
+"Ce module contient la classe abstraite VesselConfigManagerABC qui définit"
+" les méthodes pour gérer la configuration des navires."
+msgstr ""
+
+#: of vessel.vessel_config_manager_abc.VesselConfigManagerABC:1
+msgid "Bases : :py:class:`~abc.ABC`"
+msgstr ""
+
+#: of vessel.vessel_config_manager_abc.VesselConfigManagerABC:1
+msgid ""
+"Classe abstraite définissant les méthodes pour gérer la configuration des"
+" navires."
+msgstr ""
+
+#: of
+#: vessel.vessel_config_manager_abc.VesselConfigManagerABC.commit_vessel_configs:1
+#: vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager.commit_vessel_configs:1
+msgid "Méthode permettant de sauvegarder les configurations des navires."
+msgstr ""
+
+#: of
+#: vessel.vessel_config_manager_abc.VesselConfigManagerABC.commit_vessel_configs:3
+#: vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager.commit_vessel_configs:3
+msgid "Dictionnaire des paramètres."
+msgstr ""
+
+#: ../../source/vessel.rst:56
+msgid "vessel.vessel\\_config\\_sqlite\\_manager module"
+msgstr ""
+
+#: of vessel.vessel_config_sqlite_manager:1
+msgid ""
+"Module permettant de gérer la configuration des navires à partir d'une "
+"base de données SQLite."
+msgstr ""
+
+#: of vessel.vessel_config_sqlite_manager:3
+msgid ""
+"Ce module contient la classe VesselConfigSQLiteManager qui permet de "
+"gérer la configuration des navires à partir d'une base de données SQLite."
+msgstr ""
+
+#: of vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager:1
+msgid ""
+"Classe permettant de gérer la configuration des navires à partir d'une "
+"base de données SQLite."
+msgstr ""
+
+#: of
+#: vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager._connect_to_db:1
+msgid "Méthode permettant de se connecter à la base de données SQLite."
+msgstr ""
+
+#: of
+#: vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager._connect_to_db:3
+msgid "Chemin de la base de données SQLite."
+msgstr ""
+
+#: of
+#: vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager._connect_to_db:5
+msgid "Session de la base de données SQLite."
+msgstr ""
+
+#: of
+#: vessel.vessel_config_sqlite_manager.VesselConfigSQLiteManager._connect_to_db:7
+msgid "Le fichier de configuration de la base de données SQLite n'existe pas."
+msgstr ""
+
+#: ../../source/vessel.rst:64
+msgid "vessel.vessel\\_ids module"
+msgstr ""
+
+#: of vessel.vessel_ids:1
+msgid ""
+"Ce module contient les constantes utilisées pour les identifiants des "
+"navires."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_ids.ATTRIBUTE:1
+msgid "Valeur de la constante ATTRIBUTE."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_ids.AXIS_CONVENTION:1
+msgid "Valeur de la constante AXIS_CONVENTION."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_ids.BUREAU:1
+msgid "Valeur de la constante BUREAU."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_ids.CARIS:1
+msgid "Valeur de la constante CARIS."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_ids.ID:1
+msgid "Valeur de la constante ID."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_ids.MOTION:1
+msgid "Valeur de la constante MOTION."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_ids.NAVIGATION:1
+msgid "Valeur de la constante NAVIGATION."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_ids.PLTFRM:1
+msgid "Valeur de la constante PLTFRM."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_ids.POSHDW:1
+msgid "Valeur de la constante POSHDW."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_ids.RESTRN:1
+msgid "Valeur de la constante RESTRN."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_ids.SDGHDW:1
+msgid "Valeur de la constante SDGHDW."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_ids.SOUNDER:1
+msgid "Valeur de la constante SOUNDER."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_ids.SSP:1
+msgid "Valeur de la constante SSP."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_ids.SSP_APPLIED:1
+msgid "Valeur de la constante SSP_APPLIED."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_ids.TIME_STAMP:1
+msgid "Valeur de la constante TIME_STAMP."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_ids.WATERLINE:1
+msgid "Valeur de la constante WATERLINE."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_ids.X:1
+msgid "Valeur de la constante X."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_ids.Y:1
+msgid "Valeur de la constante Y."
+msgstr ""
+
+#: ../../source/vessel.rst:72
+msgid "vessel.vessel\\_models module"
+msgstr ""
+
+#: of vessel.vessel_models:1
+msgid "Module qui contient les modèles de données pour les navires."
+msgstr ""
+
+#: of vessel.vessel_models:3
+msgid ""
+"Ce module contient les classes qui définissent les modèles de données "
+"pour les navires."
+msgstr ""
+
+#: of vessel.vessel_models.AttributeDict:1 vessel.vessel_models.SensorDict:1
+#: vessel.vessel_models.SoundSpeedProfileDict:1
+#: vessel.vessel_models.VesselConfigDict:1 vessel.vessel_models.WaterlineDict:1
+msgid "Bases : :py:class:`dict`"
+msgstr ""
+
+#: of vessel.vessel_models.AttributeDict:1
+msgid "Dictionnaire de données pour un attribut BDB."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_models.AttributeDict:11
+#: vessel.vessel_models.AttributeDict.bureau:1
+msgid "Organisation du fournisseur de données."
+msgstr ""
+
+#: of vessel.vessel_models.SensorDict:1
+msgid "Dictionnaire de données pour un capteur."
+msgstr ""
+
+#: of vessel.vessel_models.SoundSpeedProfileDict:1
+msgid "Dictionnaire de données pour un profil de vitesse du son."
+msgstr ""
+
+#: of vessel.vessel_models.VesselConfigDict:1
+msgid "Dictionnaire de données pour la configuration d'un navire."
+msgstr ""
+
+#: of vessel.vessel_models.VesselConfigDict:3
+msgid "Identifiant unique."
+msgstr ""
+
+#: of vessel.vessel_models.VesselConfigDict:7
+msgid "Capteurs de navigation."
+msgstr ""
+
+#: of vessel.vessel_models.VesselConfigDict:9
+msgid "Capteurs de mouvement."
+msgstr ""
+
+#: of vessel.vessel_models.VesselConfigDict:11
+msgid "Capteurs de sonde."
+msgstr ""
+
+#: of vessel.vessel_models.VesselConfigDict:13
+msgid "Lignes d'eau."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_models.VesselConfigDict:15
+#: vessel.vessel_models.VesselConfigDict.ssp_applied:1
+msgid "Profils de vitesse du son appliqués."
+msgstr ""
+
+#: of vessel.vessel_models.VesselConfigDict:17
+msgid "Attributs BDB."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_models.VesselConfigDict.motion:1
+msgid "Données des bras de leviers du capteur de mouvement."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_models.VesselConfigDict.nav:1
+msgid "Données des bras de leviers du capteur de navigation."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_models.VesselConfigDict.sounder:1
+msgid "Données des bras de leviers du sondeur."
+msgstr ""
+
+#: ../../../docstring of vessel.vessel_models.VesselConfigDict.waterline:1
+msgid "Données des bras de leviers de la lignes d'eau."
+msgstr ""
+
+#: of vessel.vessel_models.WaterlineDict:1
+msgid "Dictionnaire de données pour une ligne d'eau."
+msgstr ""
+
+#: of vessel.vessel_models.WaterlineDict:3
+msgid "(Date et heure."
+msgstr ""
+
+#: ../../source/vessel.rst:80
+msgid "Module contents"
+msgstr ""
+
+#: of vessel:1
+msgid ""
+"Ce package contient les classes et les fonctions qui permettent de "
+"manipuler les données des navires."
+msgstr ""
+

@@ -1,0 +1,693 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, Yan Bilodeau
+# This file is distributed under the same license as the CHS-CSB-Processing
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: CHS-CSB-Processing \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-16 15:32-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: ../../source/tide.stations.rst:2
+msgid "tide.stations package"
+msgstr ""
+
+#: ../../source/tide.stations.rst:5
+msgid "Submodules"
+msgstr ""
+
+#: ../../source/tide.stations.rst:8
+msgid "tide.stations.cache\\_wrapper module"
+msgstr ""
+
+#: of tide.stations.cache_wrapper:1
+msgid ""
+"Module permettant de gérer une cache pour les données des stations de "
+"marées."
+msgstr ""
+
+#: of tide.stations.cache_wrapper:3
+msgid ""
+"Ce module contient les fonctions suivantes qui permettent de gérer une "
+"cache pour les données des stations de marées."
+msgstr ""
+
+#: of tide.stations.cache_wrapper.cache_result:1
+msgid "Décorateur pour mettre en cache le résultat d'une fonction."
+msgstr ""
+
+#: ../../source/tide.stations.rst
+msgid "Paramètres"
+msgstr ""
+
+#: of tide.stations.cache_wrapper.cache_result:3
+msgid "Durée de vie du cache en secondes."
+msgstr ""
+
+#: of tide.stations.cache_wrapper.clear_cache:1
+msgid "Fonction pour vider le cache."
+msgstr ""
+
+#: of tide.stations.cache_wrapper.init_cache:1
+msgid "Fonction pour initialiser le cache."
+msgstr ""
+
+#: of tide.stations.cache_wrapper.init_cache:3
+msgid "Chemin du cache."
+msgstr ""
+
+#: ../../source/tide.stations.rst:16
+msgid "tide.stations.exception\\_stations module"
+msgstr ""
+
+#: of tide.stations.exception_stations:1
+msgid "Module pour les exceptions des stations."
+msgstr ""
+
+#: of tide.stations.exception_stations:3
+msgid "Ce module contient la classe StationsError pour les erreurs des stations."
+msgstr ""
+
+#: of tide.stations.exception_stations.StationsError:1
+msgid "Bases : :py:class:`Exception`"
+msgstr ""
+
+#: of tide.stations.exception_stations.StationsError:1
+msgid "Classe pour les erreurs des stations."
+msgstr ""
+
+#: ../../../docstring of tide.stations.StationsError.message:1
+#: tide.stations.exception_stations.StationsError:3
+#: tide.stations.exception_stations.StationsError.message:1
+msgid "Message de l'erreur."
+msgstr ""
+
+#: ../../../docstring of tide.stations.StationsError.error:1
+#: tide.stations.exception_stations.StationsError:5
+#: tide.stations.exception_stations.StationsError.error:1
+msgid "Erreur de l'erreur."
+msgstr ""
+
+#: ../../../docstring of tide.stations.StationsError.status_code:1
+#: tide.stations.exception_stations.StationsError:7
+#: tide.stations.exception_stations.StationsError.status_code:1
+msgid "Code de statut de l'erreur."
+msgstr ""
+
+#: ../../source/tide.stations.rst:24
+msgid "tide.stations.factory\\_stations module"
+msgstr ""
+
+#: of tide.stations.factory_stations:1
+msgid "Module de gestion de la factory de stations."
+msgstr ""
+
+#: of tide.stations.factory_stations:3
+msgid ""
+"Ce module contient la fonction factory qui permet de récupérer la factory"
+" de stations en fonction du type d'endpoint."
+msgstr ""
+
+#: of tide.stations.factory_stations.get_stations_factory:1
+msgid "Récupère la factory de stations en fonction du type d'endpoint."
+msgstr ""
+
+#: of tide.stations.factory_stations.get_stations_factory:3
+msgid "Type d'endpoint."
+msgstr ""
+
+#: ../../source/tide.stations.rst
+msgid "Renvoie"
+msgstr ""
+
+#: of tide.stations.factory_stations.get_stations_factory:5
+msgid "Factory de stations"
+msgstr ""
+
+#: ../../source/tide.stations.rst
+msgid "Type renvoyé"
+msgstr ""
+
+#: ../../source/tide.stations.rst:32
+msgid "tide.stations.stations\\_abc module"
+msgstr ""
+
+#: of tide.stations.stations_abc:1
+msgid "Module ABC récupérer des données des stations de marée."
+msgstr ""
+
+#: of tide.stations.stations_abc:3
+msgid ""
+"Ce module contient la classe abstraite `StationsHandlerABC` qui définit "
+"les méthodes pour récupérer les données stations de marée."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC:1
+msgid "Bases : :py:class:`~abc.ABC`"
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC:1
+msgid "Classe abstraite pour récupérer des données stations de marée."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._create_attributes:1
+msgid "Crée une liste d'attributs pour les stations."
+msgstr ""
+
+#: of tide.stations.StationsHandlerABC.stations:3
+#: tide.stations.stations_abc.StationsHandlerABC._create_attributes:3
+#: tide.stations.stations_abc.StationsHandlerABC._create_geometry:3
+#: tide.stations.stations_abc.StationsHandlerABC._filter_stations:3
+#: tide.stations.stations_abc.StationsHandlerABC._get_stations_geodataframe:3
+#: tide.stations.stations_abc.StationsHandlerABC._get_stations_tidal_info:3
+#: tide.stations.stations_abc.StationsHandlerABC.stations:3
+#: tide.stations.stations_private.StationsHandlerPrivate._filter_stations:3
+#: tide.stations.stations_private.StationsHandlerPrivate._get_stations_time_series:3
+#: tide.stations.stations_public.StationsHandlerPublic._filter_stations:3
+msgid "Liste des stations."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._create_attributes:5
+#: tide.stations.stations_abc.StationsHandlerABC._create_index_map:5
+#: tide.stations.stations_abc.StationsHandlerABC._get_time_series:5
+#: tide.stations.stations_private.StationsHandlerPrivate._get_time_series:5
+#: tide.stations.stations_public.StationsHandlerPublic._get_time_series:5
+msgid "Carte d'index pour les séries temporelles."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._create_attributes:7
+#: tide.stations.stations_abc.StationsHandlerABC._get_stations_geodataframe:9
+#: tide.stations.stations_abc.StationsHandlerABC.get_stations_geodataframe:7
+#: tide.stations.stations_private.StationsHandlerPrivate.get_stations_geodataframe:7
+#: tide.stations.stations_public.StationsHandlerPublic.get_stations_geodataframe:7
+msgid "Clé du nom de la station."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._create_attributes:9
+msgid "Liste des attributs."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._create_geometry:1
+msgid "Crée une liste de points à partir des données des stations."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._create_geometry:5
+msgid "Liste des points."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._create_index_map:1
+msgid "Crée une carte d'index pour les séries temporelles."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._create_index_map:3
+msgid "Liste des séries temporelles en ordre de priorité."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._fetch_is_tidal_station:1
+msgid "Récupère l'information si la station est une station de marée."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._fetch_is_tidal_station:3
+msgid "dentifiant de la station."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._fetch_is_tidal_station:5
+#: tide.stations.stations_abc.StationsHandlerABC._get_stations_tidal_info:5
+msgid "Type de l'API."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._fetch_is_tidal_station:7
+#: tide.stations.stations_abc.StationsHandlerABC._get_stations_tidal_info:7
+msgid "Nom de la colonne."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._fetch_is_tidal_station:9
+msgid "True si la station est une station de marée, False sinon."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._filter_stations:1
+#: tide.stations.stations_private.StationsHandlerPrivate._filter_stations:1
+#: tide.stations.stations_public.StationsHandlerPublic._filter_stations:1
+msgid "Filtre les stations en fonction des séries temporelles."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._filter_stations:5
+#: tide.stations.stations_private.StationsHandlerPrivate._filter_stations:5
+#: tide.stations.stations_public.StationsHandlerPublic._filter_stations:5
+msgid "Liste des séries temporelles pour filtrer les stations."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._filter_stations:7
+#: tide.stations.stations_abc.StationsHandlerABC._get_stations_geodataframe:7
+#: tide.stations.stations_abc.StationsHandlerABC.get_stations_geodataframe:5
+#: tide.stations.stations_private.StationsHandlerPrivate._filter_stations:7
+#: tide.stations.stations_private.StationsHandlerPrivate.get_stations_geodataframe:5
+#: tide.stations.stations_public.StationsHandlerPublic._filter_stations:7
+#: tide.stations.stations_public.StationsHandlerPublic.get_stations_geodataframe:5
+msgid "Liste des stations à exclure."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._filter_stations:9
+#: tide.stations.stations_private.StationsHandlerPrivate._filter_stations:9
+#: tide.stations.stations_public.StationsHandlerPublic._filter_stations:9
+msgid "Liste des stations filtrées."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._get_event_date:1
+#: tide.stations.stations_private.StationsHandlerPrivate._get_event_date:1
+#: tide.stations.stations_public.StationsHandlerPublic._get_event_date:1
+msgid "Récupère la date de l'événement."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._get_event_date:3
+#: tide.stations.stations_abc.StationsHandlerABC._get_qc_flag:3
+#: tide.stations.stations_private.StationsHandlerPrivate._get_event_date:3
+#: tide.stations.stations_private.StationsHandlerPrivate._get_qc_flag:3
+#: tide.stations.stations_public.StationsHandlerPublic._get_event_date:3
+#: tide.stations.stations_public.StationsHandlerPublic._get_qc_flag:3
+msgid "Données de l'événement."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._get_event_date:5
+#: tide.stations.stations_private.StationsHandlerPrivate._get_event_date:5
+#: tide.stations.stations_public.StationsHandlerPublic._get_event_date:5
+msgid "Date de l'événement."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._get_qc_flag:1
+#: tide.stations.stations_private.StationsHandlerPrivate._get_qc_flag:1
+#: tide.stations.stations_public.StationsHandlerPublic._get_qc_flag:1
+msgid "Récupère le type du flag de qualité."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._get_qc_flag:5
+#: tide.stations.stations_private.StationsHandlerPrivate._get_qc_flag:5
+#: tide.stations.stations_public.StationsHandlerPublic._get_qc_flag:5
+msgid "Type du flag de qualité."
+msgstr ""
+
+#: of
+#: tide.stations.stations_abc.StationsHandlerABC._get_stations_geodataframe:1
+#: tide.stations.stations_abc.StationsHandlerABC.get_stations_geodataframe:1
+#: tide.stations.stations_private.StationsHandlerPrivate.get_stations_geodataframe:1
+#: tide.stations.stations_public.StationsHandlerPublic.get_stations_geodataframe:1
+msgid "Récupère les données des stations sous forme de GeoDataFrame."
+msgstr ""
+
+#: of
+#: tide.stations.stations_abc.StationsHandlerABC._get_stations_geodataframe:5
+#: tide.stations.stations_abc.StationsHandlerABC.get_stations_geodataframe:3
+#: tide.stations.stations_private.StationsHandlerPrivate.get_stations_geodataframe:3
+#: tide.stations.stations_public.StationsHandlerPublic.get_stations_geodataframe:3
+msgid ""
+"Liste des séries temporelles pour filtrer les stations. Si None, toutes "
+"les stations sont retournées."
+msgstr ""
+
+#: of
+#: tide.stations.stations_abc.StationsHandlerABC._get_stations_geodataframe:11
+#: tide.stations.stations_abc.StationsHandlerABC.get_stations_geodataframe:9
+#: tide.stations.stations_private.StationsHandlerPrivate.get_stations_geodataframe:9
+#: tide.stations.stations_public.StationsHandlerPublic.get_stations_geodataframe:9
+msgid "Données des stations sous forme de GeoDataFrame."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._get_stations_tidal_info:1
+msgid "Récupère les informations sur les stations de marée."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._get_stations_tidal_info:9
+msgid "Liste des informations sur les stations de marée."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._get_time_series:1
+#: tide.stations.stations_private.StationsHandlerPrivate._fetch_time_series:1
+#: tide.stations.stations_private.StationsHandlerPrivate._get_time_series:1
+#: tide.stations.stations_public.StationsHandlerPublic._get_time_series:1
+msgid "Récupère les séries temporelles de la station."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._get_time_series:3
+#: tide.stations.stations_private.StationsHandlerPrivate._get_time_series:3
+#: tide.stations.stations_public.StationsHandlerPublic._get_time_series:3
+msgid "Données de la station."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC._get_time_series:7
+#: tide.stations.stations_private.StationsHandlerPrivate._get_time_series:7
+#: tide.stations.stations_public.StationsHandlerPublic._get_time_series:7
+msgid "Liste des séries temporelles."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC.create_data_list:1
+msgid "Crée une liste de données pour les séries temporelles."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC.create_data_list:3
+msgid "Données de la série temporelle."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC.create_data_list:5
+msgid "Le code de la série temporelle."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC.create_data_list:7
+msgid "Liste des données."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC.filter_wlo_qc_flag:1
+msgid ""
+"Filtre les données de la série temporelle WLO en fonction des flags de "
+"qualité."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC.filter_wlo_qc_flag:3
+#: tide.stations.stations_abc.StationsHandlerABC.filter_wlo_qc_flag:9
+#: tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe:17
+msgid "Données des séries temporelles sous forme de DataFrame."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC.filter_wlo_qc_flag:5
+msgid "e code de la série temporelle des données."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC.filter_wlo_qc_flag:7
+#: tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe:15
+msgid "Liste des flags de qualité à filtrer pour la série temporelle WLO."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe:1
+msgid "Récupère les séries temporelles sous forme de DataFrame."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe:3
+#: tide.stations.stations_models.IWLSapiProtocol.get_metadata_station:3
+#: tide.stations.stations_models.IWLSapiProtocol.get_time_serie_block_data:3
+#: tide.stations.stations_models.IWLSapiProtocol.get_time_series_station:3
+msgid "Code de la station."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe:5
+msgid "La date de début en format ISO 8601 (ex: 2019-11-13T19:18:00Z)."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe:7
+msgid "La date de fin en format ISO 8601 (ex: 2019-11-13T19:18:00Z)."
+msgstr ""
+
+#: of tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe:9
+msgid "Le code de la série temporelle désirée."
+msgstr ""
+
+#: of
+#: tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe:11
+msgid "L'intervalle de temps maximale pour chaque requête."
+msgstr ""
+
+#: of
+#: tide.stations.stations_abc.StationsHandlerABC.get_time_series_dataframe:13
+msgid "Si les données doivent être triées par date."
+msgstr ""
+
+#: of tide.stations.StationsHandlerABC.stations:1
+#: tide.stations.stations_abc.StationsHandlerABC.stations:1
+msgid "Récupère la liste des stations."
+msgstr ""
+
+#: ../../source/tide.stations.rst:40
+msgid "tide.stations.stations\\_models module"
+msgstr ""
+
+#: of tide.stations.stations_models:1
+msgid "Moddule pour définir les types et les protocoles des modèles des stations."
+msgstr ""
+
+#: of tide.stations.stations_models:3
+msgid ""
+"Ce module contient les types et les protocoles nécessaires pour définir "
+"les modèles des stations."
+msgstr ""
+
+#: of tide.stations.stations_models.EndpointTypeProtocol:1
+#: tide.stations.stations_models.IWLSapiProtocol:1
+#: tide.stations.stations_models.ResponseProtocol:1
+#: tide.stations.stations_models.TimeSeriesProtocol:1
+msgid "Bases : :py:class:`~typing.Protocol`"
+msgstr ""
+
+#: of tide.stations.stations_models.EndpointTypeProtocol:1
+msgid "Protocole pour définir les types des endpoints."
+msgstr ""
+
+#: ../../../docstring of tide.stations.EndpointTypeProtocol.PRIVATE_DEV:1
+#: tide.stations.stations_models.EndpointTypeProtocol.PRIVATE_DEV:1
+msgid "Endpoint privé de développement."
+msgstr ""
+
+#: ../../../docstring of tide.stations.EndpointTypeProtocol.PRIVATE_PROD:1
+#: tide.stations.stations_models.EndpointTypeProtocol.PRIVATE_PROD:1
+msgid "Endpoint privé de production."
+msgstr ""
+
+#: ../../../docstring of tide.stations.EndpointTypeProtocol.PUBLIC:1
+#: tide.stations.stations_models.EndpointTypeProtocol.PUBLIC:1
+msgid "Endpoint public."
+msgstr ""
+
+#: of tide.stations.stations_models.IWLSapiProtocol:1
+msgid "Protocole pour définir les méthode des différent types d'API."
+msgstr ""
+
+#: of tide.stations.stations_models.IWLSapiProtocol.get_all_stations:1
+msgid "Méthode pour récupérer toutes les stations."
+msgstr ""
+
+#: of tide.stations.stations_models.IWLSapiProtocol.get_all_stations:3
+#: tide.stations.stations_models.IWLSapiProtocol.get_metadata_station:5
+#: tide.stations.stations_models.IWLSapiProtocol.get_time_serie_block_data:15
+#: tide.stations.stations_models.IWLSapiProtocol.get_time_series_station:5
+msgid "Réponse de la requête."
+msgstr ""
+
+#: of tide.stations.stations_models.IWLSapiProtocol.get_metadata_station:1
+msgid "Méthode pour récupérer les métadonnées d'une station."
+msgstr ""
+
+#: of tide.stations.stations_models.IWLSapiProtocol.get_time_serie_block_data:1
+msgid "Méthode pour récupérer les données d'une série temporelle."
+msgstr ""
+
+#: of tide.stations.stations_models.IWLSapiProtocol.get_time_serie_block_data:5
+msgid "Date de début."
+msgstr ""
+
+#: of tide.stations.stations_models.IWLSapiProtocol.get_time_serie_block_data:7
+msgid "Date de fin."
+msgstr ""
+
+#: of tide.stations.stations_models.IWLSapiProtocol.get_time_serie_block_data:9
+msgid "Code de la série temporelle."
+msgstr ""
+
+#: of
+#: tide.stations.stations_models.IWLSapiProtocol.get_time_serie_block_data:11
+msgid "Intervalle de temps."
+msgstr ""
+
+#: of
+#: tide.stations.stations_models.IWLSapiProtocol.get_time_serie_block_data:13
+msgid "Indique si les données sont triées par date."
+msgstr ""
+
+#: of tide.stations.stations_models.IWLSapiProtocol.get_time_series_station:1
+msgid "Méthode pour récupérer les séries temporelles d'une station."
+msgstr ""
+
+#: of tide.stations.stations_models.ResponseProtocol:1
+msgid "Protocole pour définir les types des réponses des API."
+msgstr ""
+
+#: ../../../docstring of tide.stations.stations_models.ResponseProtocol.data:1
+msgid "Données de la réponse."
+msgstr ""
+
+#: ../../../docstring of tide.stations.stations_models.ResponseProtocol.error:1
+msgid "Erreur de la réponse."
+msgstr ""
+
+#: ../../../docstring of tide.stations.stations_models.ResponseProtocol.is_ok:1
+msgid "Indique si la réponse est valide."
+msgstr ""
+
+#: ../../../docstring of
+#: tide.stations.stations_models.ResponseProtocol.message:1
+msgid "Message de la réponse."
+msgstr ""
+
+#: ../../../docstring of
+#: tide.stations.stations_models.ResponseProtocol.status_code:1
+msgid "Code de statut de la réponse."
+msgstr ""
+
+#: of tide.stations.stations_models.TimeSeriesProtocol:1
+msgid "Protocole pour définir les types des séries temporelles."
+msgstr ""
+
+#: of tide.stations.stations_models.TimeSeriesProtocol.from_str:1
+msgid "Méthode pour convertir une chaîne de caractères en série temporelle."
+msgstr ""
+
+#: of tide.stations.stations_models.TimeSeriesProtocol.from_str:3
+msgid "Chaîne de caractères."
+msgstr ""
+
+#: of tide.stations.stations_models.TimeSeriesProtocol.from_str:5
+msgid "Série temporelle."
+msgstr ""
+
+#: ../../../docstring of tide.stations.TimeSeriesProtocol.WLF:1
+#: tide.stations.stations_models.TimeSeriesProtocol.WLF:1
+msgid "Water Level Forecast."
+msgstr ""
+
+#: ../../../docstring of tide.stations.TimeSeriesProtocol.WLF_SPINE:1
+#: tide.stations.stations_models.TimeSeriesProtocol.WLF_SPINE:1
+msgid "Water Level Forecast Spine."
+msgstr ""
+
+#: ../../../docstring of tide.stations.TimeSeriesProtocol.WLF_VTG:1
+#: tide.stations.stations_models.TimeSeriesProtocol.WLF_VTG:1
+msgid "Water Level Forecast VTG."
+msgstr ""
+
+#: ../../../docstring of tide.stations.TimeSeriesProtocol.WLO:1
+#: tide.stations.stations_models.TimeSeriesProtocol.WLO:1
+msgid "Water Level Observed."
+msgstr ""
+
+#: ../../../docstring of tide.stations.TimeSeriesProtocol.WLP:1
+#: tide.stations.stations_models.TimeSeriesProtocol.WLP:1
+msgid "Water Level Prediction."
+msgstr ""
+
+#: ../../source/tide.stations.rst:48
+msgid "tide.stations.stations\\_private module"
+msgstr ""
+
+#: of tide.stations.stations_private:1
+msgid "Module pour récupérer des données des stations de l'API privé."
+msgstr ""
+
+#: of tide.stations.stations_private:3
+msgid ""
+"Ce module contient la classe StationsHandlerPrivate qui permet de "
+"récupérer les données des stations de l'API privé."
+msgstr ""
+
+#: of tide.stations.stations_private.StationsHandlerPrivate:1
+#: tide.stations.stations_public.StationsHandlerPublic:1
+msgid "Bases : :py:class:`~tide.stations.stations_abc.StationsHandlerABC`"
+msgstr ""
+
+#: of tide.stations.stations_private.StationsHandlerPrivate:1
+msgid "Classe récupérer des données stations de l'API privé."
+msgstr ""
+
+#: of
+#: tide.stations.stations_private.StationsHandlerPrivate._fetch_time_series:3
+msgid "Identifiant de la station."
+msgstr ""
+
+#: of
+#: tide.stations.stations_private.StationsHandlerPrivate._fetch_time_series:5
+msgid "Type d'API."
+msgstr ""
+
+#: of
+#: tide.stations.stations_private.StationsHandlerPrivate._fetch_time_series:7
+msgid "Données de la station avec les séries temporelles."
+msgstr ""
+
+#: of
+#: tide.stations.stations_private.StationsHandlerPrivate._get_stations_time_series:1
+msgid "Récupère les séries temporelles des stations."
+msgstr ""
+
+#: of
+#: tide.stations.stations_private.StationsHandlerPrivate._get_stations_time_series:5
+msgid "ype d'API."
+msgstr ""
+
+#: of
+#: tide.stations.stations_private.StationsHandlerPrivate._get_stations_time_series:7
+msgid "Liste des stations avec les séries temporelles."
+msgstr ""
+
+#: of
+#: tide.stations.stations_private.StationsHandlerPrivate._get_stations_with_metadata:1
+#: tide.stations.stations_public.StationsHandlerPublic._get_stations_with_metadata:1
+msgid "Récupère les données des stations avec les séries temporelles."
+msgstr ""
+
+#: of
+#: tide.stations.stations_private.StationsHandlerPrivate._get_stations_with_metadata:3
+#: tide.stations.stations_public.StationsHandlerPublic._get_stations_with_metadata:3
+msgid "Nom de l'API."
+msgstr ""
+
+#: of
+#: tide.stations.stations_private.StationsHandlerPrivate._get_stations_with_metadata:5
+msgid "Nom de la colonne pour les informations de marée."
+msgstr ""
+
+#: of
+#: tide.stations.stations_private.StationsHandlerPrivate._get_stations_with_metadata:7
+#: tide.stations.stations_public.StationsHandlerPublic._get_stations_with_metadata:7
+msgid "Données des stations avec les séries temporelles."
+msgstr ""
+
+#: ../../source/tide.stations.rst:56
+msgid "tide.stations.stations\\_public module"
+msgstr ""
+
+#: of tide.stations.stations_public:1
+msgid "Module pour récupérer des données des stations de l'API public."
+msgstr ""
+
+#: of tide.stations.stations_public:3
+msgid ""
+"Ce module contient la classe StationsHandlerPublic qui permet de "
+"récupérer des données des stations de l'API public."
+msgstr ""
+
+#: of tide.stations.stations_public.StationsHandlerPublic:1
+msgid "Classe récupérer des données des stations de l'API public."
+msgstr ""
+
+#: of
+#: tide.stations.stations_public.StationsHandlerPublic._get_stations_with_metadata:5
+msgid "Nom de la colonne pour les informations sur les marées."
+msgstr ""
+
+#: ../../source/tide.stations.rst:64
+msgid "Module contents"
+msgstr ""
+
+#: of tide.stations:1
+msgid ""
+"Ce package contient les classes et fonctions permettant de gérer les "
+"stations marégraphiques."
+msgstr ""
+

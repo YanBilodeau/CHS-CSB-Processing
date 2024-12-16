@@ -1,0 +1,195 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, Yan Bilodeau
+# This file is distributed under the same license as the CHS-CSB-Processing
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: CHS-CSB-Processing \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-16 15:32-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: ../../source/iwls_api_request.api.endpoint.rst:2
+msgid "iwls\\_api\\_request.api.endpoint package"
+msgstr ""
+
+#: ../../source/iwls_api_request.api.endpoint.rst:5
+msgid "Submodules"
+msgstr ""
+
+#: ../../source/iwls_api_request.api.endpoint.rst:8
+msgid "iwls\\_api\\_request.api.endpoint.endpoint\\_abc module"
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:1 of
+msgid "Bases : :py:class:`~abc.ABC`"
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:1 of
+msgid "Classe abstraite pour les points d'entrés de l'API."
+msgstr ""
+
+#: ../../source/iwls_api_request.api.endpoint.rst
+msgid "Paramètres"
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:3 of
+msgid "URL de l'API."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:4 of
+msgid "Type de l'API."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:5 of
+msgid "Point d'entrée pour un repère."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:6 of
+msgid "Point d'entrée pour les repères."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:7 of
+msgid "Point d'entrée pour les métadonnées d'un repère."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:8 of
+msgid "Point d'entrée pour les élévations d'un repère."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:9 of
+msgid "Point d'entrée pour un type de hauteur."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:10 of
+msgid "Point d'entrée pour les types de hauteurs."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:11 of
+msgid "Point d'entrée pour les phénomènes."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:12 of
+msgid "Point d'entrée pour un phénomène."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:13 of
+msgid "Point d'entrée pour une station."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:14 of
+msgid "Point d'entrée pour les stations."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:15 of
+msgid "Point d'entrée pour les données d'une station."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:16 of
+msgid "Point d'entrée pour les métadonnées d'une station."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:17 of
+msgid "Point d'entrée pour une table des marées."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:18 of
+msgid "Point d'entrée pour les tables des marées."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:19 of
+msgid "Point d'entrée pour les définitions de séries temporelles."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:20 of
+msgid "Point d'entrée pour une définition de série temporelle."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:21 of
+msgid "Point d'entrée pour une station GNSS."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:22 of
+msgid "Point d'entrée pour les stations GNSS."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:23 of
+msgid "Point d'entrée pour le sommaire des données GNSS."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:24 of
+msgid "Point d'entrée pour les régions."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:25 of
+msgid "Point d'entrée pour les dernières données d'une station."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:26 of
+msgid "Point d'entrée pour les séries temporelles d'une station."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:27 of
+msgid "Point d'entrée pour les statistiques journalières d'une station."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_abc.Endpoint:28 of
+msgid "Point d'entrée pour les statistiques mensuelles d'une station."
+msgstr ""
+
+#: ../../source/iwls_api_request.api.endpoint.rst:16
+msgid "iwls\\_api\\_request.api.endpoint.endpoint\\_private module"
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_private.EndpointPrivate:1 of
+msgid ""
+"Bases : :py:class:`~iwls_api_request.api.endpoint.endpoint_abc.Endpoint`,"
+" :py:class:`~abc.ABC`"
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_private.EndpointPrivateDev:1
+#: iwls_api_request.api.endpoint.endpoint_private.EndpointPrivateProd:1 of
+msgid ""
+"Bases : "
+":py:class:`~iwls_api_request.api.endpoint.endpoint_private.EndpointPrivate`"
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_private.EndpointPrivateDev:1 of
+msgid "Classe pour les points d'entrés de l'API privée de développement."
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_private.EndpointPrivateProd:1 of
+msgid "Classe pour les points d'entrés de l'API privée de production."
+msgstr ""
+
+#: ../../source/iwls_api_request.api.endpoint.rst:24
+msgid "iwls\\_api\\_request.api.endpoint.endpoint\\_public module"
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_public.EndpointPublic:1 of
+msgid "Bases : :py:class:`~iwls_api_request.api.endpoint.endpoint_abc.Endpoint`"
+msgstr ""
+
+#: iwls_api_request.api.endpoint.endpoint_public.EndpointPublic:1 of
+msgid "Classe pour les points d'entrés de l'API publique."
+msgstr ""
+
+#: ../../source/iwls_api_request.api.endpoint.rst:32
+msgid "Module contents"
+msgstr ""
+
+#: iwls_api_request.api.models_api.EndpointType:1 of
+msgid "Bases : :py:class:`~enum.StrEnum`"
+msgstr ""
+

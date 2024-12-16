@@ -1,0 +1,161 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, Yan Bilodeau
+# This file is distributed under the same license as the CHS-CSB-Processing
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: CHS-CSB-Processing \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-16 15:32-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: ../../source/export.rst:2
+msgid "export package"
+msgstr ""
+
+#: ../../source/export.rst:5
+msgid "Submodules"
+msgstr ""
+
+#: ../../source/export.rst:8
+msgid "export.export\\_utils module"
+msgstr ""
+
+#: export.export_utils:1 of
+msgid ""
+"Module qui contient les fonctions utilitaires pour l'exportation des "
+"données."
+msgstr ""
+
+#: export.export_utils:3 of
+msgid ""
+"Ce module contient les fonctions qui permettent de sauvegarder les "
+"données dans des fichiers de différents formats."
+msgstr ""
+
+#: export.export_utils.export_dataframe_to_csv:1 of
+msgid "Sauvegarde le DataFrame dans un fichier CSV."
+msgstr ""
+
+#: ../../source/export.rst
+msgid "Paramètres"
+msgstr ""
+
+#: export.export_utils.export_dataframe_to_csv:3 of
+msgid "Le DataFrame."
+msgstr ""
+
+#: export.export_utils.export_dataframe_to_csv:5
+#: export.export_utils.export_geodataframe:5
+#: export.export_utils.export_geodataframe_to_csv:5
+#: export.export_utils.export_geodataframe_to_feather:5
+#: export.export_utils.export_geodataframe_to_geojson:5
+#: export.export_utils.export_geodataframe_to_gpkg:5
+#: export.export_utils.export_geodataframe_to_parquet:5
+#: export.export_utils.export_geodataframe_to_shapefile:5 of
+msgid "Le chemin du fichier de sortie."
+msgstr ""
+
+#: export.export_utils.export_geodataframe:1
+#: export.export_utils.export_geodataframe_to_geojson:1 of
+msgid "Sauvegarde le GeoDataFrame dans un fichier GeoJSON."
+msgstr ""
+
+#: export.export_utils.export_geodataframe:3
+#: export.export_utils.export_geodataframe_to_csv:3
+#: export.export_utils.export_geodataframe_to_feather:3
+#: export.export_utils.export_geodataframe_to_geojson:3
+#: export.export_utils.export_geodataframe_to_gpkg:3
+#: export.export_utils.export_geodataframe_to_parquet:3
+#: export.export_utils.export_geodataframe_to_shapefile:3
+#: export.export_utils.transform_additional_geometry_columns_to_wkt:3
+#: export.export_utils.transform_geodataframe_crs:3 of
+msgid "Le GeoDataFrame."
+msgstr ""
+
+#: export.export_utils.export_geodataframe:7 of
+msgid "Le driver du fichier de sortie."
+msgstr ""
+
+#: export.export_utils.export_geodataframe:9
+#: export.export_utils.export_geodataframe_to_csv:7
+#: export.export_utils.export_geodataframe_to_geojson:7
+#: export.export_utils.export_geodataframe_to_gpkg:7
+#: export.export_utils.export_geodataframe_to_shapefile:7
+#: export.export_utils.transform_geodataframe_crs:5 of
+msgid "Le code EPSG de la projection."
+msgstr ""
+
+#: export.export_utils.export_geodataframe_to_csv:1 of
+msgid "Sauvegarde le GeoDataFrame dans un fichier CSV."
+msgstr ""
+
+#: export.export_utils.export_geodataframe_to_feather:1 of
+msgid "Sauvegarde le GeoDataFrame dans un fichier Feather."
+msgstr ""
+
+#: export.export_utils.export_geodataframe_to_gpkg:1 of
+msgid "Sauvegarde le GeoDataFrame dans un fichier GeoPackage."
+msgstr ""
+
+#: export.export_utils.export_geodataframe_to_parquet:1 of
+msgid "Sauvegarde le GeoDataFrame dans un fichier Parquet."
+msgstr ""
+
+#: export.export_utils.export_geodataframe_to_shapefile:1 of
+msgid "Sauvegarde le GeoDataFrame dans un fichier Shapefile."
+msgstr ""
+
+#: export.export_utils.sanitize_path_name:1 of
+msgid "Fonction qui remplace les caractères invalides dans le nom d'un fichier."
+msgstr ""
+
+#: export.export_utils.sanitize_path_name:3 of
+msgid "Le chemin du fichier."
+msgstr ""
+
+#: ../../source/export.rst
+msgid "Renvoie"
+msgstr ""
+
+#: export.export_utils.sanitize_path_name:5 of
+msgid "Le chemin du fichier avec un nom sans caractères invalides."
+msgstr ""
+
+#: ../../source/export.rst
+msgid "Type renvoyé"
+msgstr ""
+
+#: export.export_utils.transform_additional_geometry_columns_to_wkt:1 of
+msgid "Transforme les colonnes de géométrie supplémentaires en WKT."
+msgstr ""
+
+#: export.export_utils.transform_additional_geometry_columns_to_wkt:5 of
+msgid ""
+"Le GeoDataFrame avec les colonnes de géométrie supplémentaires "
+"transformées en WKT."
+msgstr ""
+
+#: export.export_utils.transform_geodataframe_crs:1 of
+msgid "Fonction qui transforme le système de coordonnées d'un GeoDataFrame."
+msgstr ""
+
+#: ../../source/export.rst:16
+msgid "Module contents"
+msgstr ""
+
+#: export:1 of
+msgid "Ce package contient les fonctions d'export des données."
+msgstr ""
+

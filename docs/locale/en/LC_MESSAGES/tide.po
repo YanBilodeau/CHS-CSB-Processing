@@ -1,0 +1,160 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, Yan Bilodeau
+# This file is distributed under the same license as the CHS-CSB-Processing
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: CHS-CSB-Processing \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-16 15:32-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: ../../source/tide.rst:2
+msgid "tide package"
+msgstr ""
+
+#: ../../source/tide.rst:5
+msgid "Subpackages"
+msgstr ""
+
+#: ../../source/tide.rst:15
+msgid "Submodules"
+msgstr ""
+
+#: ../../source/tide.rst:18
+msgid "tide.plot module"
+msgstr ""
+
+#: of tide.plot:1
+msgid "Module qui contient les fonctions pour afficher les série temporelle."
+msgstr ""
+
+#: of tide.plot:3
+msgid ""
+"Ce module contient les fonctions pour afficher un graphique de la série "
+"temporelle."
+msgstr ""
+
+#: of tide.plot.add_traces:1
+msgid "Ajoute les traces Scatter pour chaque série temporelle dans la figure."
+msgstr ""
+
+#: ../../source/tide.rst
+msgid "Paramètres"
+msgstr ""
+
+#: of tide.plot.add_traces:3 tide.plot.create_buttons:3
+#: tide.plot.set_initial_visibility:3 tide.plot.update_layout:3
+msgid "La figure Plotly."
+msgstr ""
+
+#: of tide.plot.add_traces:5 tide.plot.create_buttons:5
+#: tide.plot.set_initial_visibility:5
+msgid "La collection de DataFrames."
+msgstr ""
+
+#: of tide.plot.create_annotations:1
+msgid "Crée une liste d'annotations pour le graphique."
+msgstr ""
+
+#: ../../source/tide.rst
+msgid "Renvoie"
+msgstr ""
+
+#: of tide.plot.create_annotations:3
+msgid "La liste des annotations."
+msgstr ""
+
+#: ../../source/tide.rst
+msgid "Type renvoyé"
+msgstr ""
+
+#: of tide.plot.create_buttons:1
+msgid "Crée une liste de boutons pour le menu déroulant."
+msgstr ""
+
+#: of tide.plot.create_buttons:7
+msgid "Les titres des graphiques."
+msgstr ""
+
+#: of tide.plot.create_buttons:9 tide.plot.plot_time_series_dataframe:7
+#: tide.plot.update_layout:7
+msgid "Le titre de l'axe des x."
+msgstr ""
+
+#: of tide.plot.create_buttons:11 tide.plot.plot_time_series_dataframe:9
+#: tide.plot.update_layout:9
+msgid "Le titre de l'axe des y."
+msgstr ""
+
+#: of tide.plot.create_buttons:14 tide.plot.update_layout:5
+msgid "La liste des boutons."
+msgstr ""
+
+#: of tide.plot.create_scatter_traces:1
+msgid "Crée une liste de traces de type Scatter pour chaque série temporelle."
+msgstr ""
+
+#: of tide.plot.create_scatter_traces:3 tide.plot.plot_time_series_dataframe:3
+msgid "Le DataFrame de la série temporelle."
+msgstr ""
+
+#: of tide.plot.create_scatter_traces:5
+msgid "La liste des traces Scatter."
+msgstr ""
+
+#: of tide.plot.plot_time_series_dataframe:1
+msgid ""
+"Fonction qui affiche un graphique de la série temporelle avec un menu "
+"déroulant."
+msgstr ""
+
+#: of tide.plot.plot_time_series_dataframe:5 tide.plot.update_layout:11
+msgid "Le titre du graphique."
+msgstr ""
+
+#: of tide.plot.plot_time_series_dataframe:11
+msgid "Le chemin du fichier de sortie."
+msgstr ""
+
+#: of tide.plot.plot_time_series_dataframe:13
+msgid "Afficher le graphique."
+msgstr ""
+
+#: of tide.plot.plot_time_series_dataframe:15 tide.plot.update_layout:13
+msgid "Le template du graphique."
+msgstr ""
+
+#: of tide.plot.set_initial_visibility:1
+msgid "Définit la visibilité initiale des traces pour chaque série temporelle."
+msgstr ""
+
+#: of tide.plot.set_initial_visibility:7
+msgid "La liste de visibilité initiale."
+msgstr ""
+
+#: of tide.plot.update_layout:1
+msgid "Met à jour la mise en page de la figure."
+msgstr ""
+
+#: ../../source/tide.rst:26
+msgid "Module contents"
+msgstr ""
+
+#: of tide:1
+msgid ""
+"Ce package contient les classes et fonctions permettant de gérer les "
+"marées et leurs zones d'influences."
+msgstr ""
+

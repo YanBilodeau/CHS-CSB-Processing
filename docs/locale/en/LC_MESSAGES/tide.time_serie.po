@@ -1,0 +1,818 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, Yan Bilodeau
+# This file is distributed under the same license as the CHS-CSB-Processing
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: CHS-CSB-Processing \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-16 15:32-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: ../../source/tide.time_serie.rst:2
+msgid "tide.time\\_serie package"
+msgstr ""
+
+#: ../../source/tide.time_serie.rst:5
+msgid "Submodules"
+msgstr ""
+
+#: ../../source/tide.time_serie.rst:8
+msgid "tide.time\\_serie.exception\\_time\\_serie module"
+msgstr ""
+
+#: of tide.time_serie.exception_time_serie:1
+msgid ""
+"Module contenant les exceptions pour les séries temporelles de données de"
+" marée."
+msgstr ""
+
+#: of tide.time_serie.exception_time_serie:3
+msgid ""
+"Ce module contient les exceptions sont utilisées pour gérer les erreurs "
+"lors de la récupération des données de marée."
+msgstr ""
+
+#: of tide.time_serie.exception_time_serie.InterpolationValueError:1
+#: tide.time_serie.exception_time_serie.NoWaterLevelDataError:1
+#: tide.time_serie.exception_time_serie.WaterLevelDataGapError:1
+msgid "Bases : :py:class:`Exception`"
+msgstr ""
+
+#: of tide.time_serie.exception_time_serie.InterpolationValueError:1
+msgid "Exception pour les valeurs impossibles à interpoler."
+msgstr ""
+
+#: ../../source/tide.time_serie.rst
+msgid "Paramètres"
+msgstr ""
+
+#: ../../../docstring of tide.time_serie.InterpolationValueError.from_time:1
+#: tide.time_serie.NoWaterLevelDataError.from_time:1
+#: tide.time_serie.exception_time_serie.InterpolationValueError:3
+#: tide.time_serie.exception_time_serie.InterpolationValueError.from_time:1
+#: tide.time_serie.exception_time_serie.NoWaterLevelDataError:5
+#: tide.time_serie.exception_time_serie.NoWaterLevelDataError.from_time:1
+#: tide.time_serie.time_serie_dataframe.clean_time_series_data:5
+#: tide.time_serie.time_serie_models.DataGapPeriod:3
+#: tide.time_serie.time_serie_models.DataGapPeriod.start:1
+#: tide.time_serie.time_serie_models.StationsHandlerProtocol.get_time_series_dataframe:5
+msgid "Date de début."
+msgstr ""
+
+#: ../../../docstring of tide.time_serie.InterpolationValueError.to_time:1
+#: tide.time_serie.NoWaterLevelDataError.to_time:1
+#: tide.time_serie.exception_time_serie.InterpolationValueError:5
+#: tide.time_serie.exception_time_serie.InterpolationValueError.to_time:1
+#: tide.time_serie.exception_time_serie.NoWaterLevelDataError:7
+#: tide.time_serie.exception_time_serie.NoWaterLevelDataError.to_time:1
+#: tide.time_serie.time_serie_dataframe.clean_time_series_data:7
+#: tide.time_serie.time_serie_models.DataGapPeriod:5
+#: tide.time_serie.time_serie_models.DataGapPeriod.end:1
+#: tide.time_serie.time_serie_models.StationsHandlerProtocol.get_time_series_dataframe:7
+msgid "Date de fin."
+msgstr ""
+
+#: ../../../docstring of tide.time_serie.InterpolationValueError.time_serie:1
+#: tide.time_serie.exception_time_serie.InterpolationValueError:7
+#: tide.time_serie.exception_time_serie.InterpolationValueError.time_serie:1
+#: tide.time_serie.time_serie_dataframe.get_threshold_interpolation_filling_value:3
+#: tide.time_serie.time_serie_dataframe.get_water_level_time_serie:11
+#: tide.time_serie.time_serie_models.TimeSeriesProtocol.from_str:5
+msgid "Série temporelle."
+msgstr ""
+
+#: of tide.time_serie.exception_time_serie.NoWaterLevelDataError:1
+msgid "Exception pour les erreurs de données de marée manquantes."
+msgstr ""
+
+#: ../../../docstring of tide.time_serie.NoWaterLevelDataError.station_id:1
+#: tide.time_serie.WaterLevelDataGapError.station_id:1
+#: tide.time_serie.exception_time_serie.NoWaterLevelDataError:3
+#: tide.time_serie.exception_time_serie.NoWaterLevelDataError.station_id:1
+#: tide.time_serie.exception_time_serie.WaterLevelDataGapError:3
+#: tide.time_serie.exception_time_serie.WaterLevelDataGapError.station_id:1
+#: tide.time_serie.time_serie_models.StationsHandlerProtocol.get_time_series_dataframe:3
+msgid "Code de la station."
+msgstr ""
+
+#: of tide.time_serie.exception_time_serie.WaterLevelDataGapError:1
+msgid "Exception pour les périodes de données manquantes."
+msgstr ""
+
+#: ../../../docstring of tide.time_serie.WaterLevelDataGapError.gaps:1
+#: tide.time_serie.exception_time_serie.WaterLevelDataGapError:5
+#: tide.time_serie.exception_time_serie.WaterLevelDataGapError.gaps:1
+#: tide.time_serie.exception_time_serie.get_data_gap_periods:5
+#: tide.time_serie.exception_time_serie.get_data_gaps_message:3
+msgid "Périodes de données manquantes."
+msgstr ""
+
+#: of tide.time_serie.exception_time_serie.WaterLevelDataGapError:7
+msgid "Limite permise pour les données"
+msgstr ""
+
+#: ../../../docstring of tide.time_serie.WaterLevelDataGapError.max_time_gap:1
+#: tide.time_serie.exception_time_serie.WaterLevelDataGapError.max_time_gap:1
+msgid "Limite permise pour les données."
+msgstr ""
+
+#: of tide.time_serie.exception_time_serie.get_data_gap_periods:1
+#: tide.time_serie.time_serie_dataframe.get_gaps_dataframe_list:1
+msgid "Récupère les périodes de données manquantes."
+msgstr ""
+
+#: of tide.time_serie.exception_time_serie.get_data_gap_periods:3
+#: tide.time_serie.time_serie_dataframe.combine_water_level_data:7
+#: tide.time_serie.time_serie_dataframe.fill_data_gaps:3
+#: tide.time_serie.time_serie_dataframe.get_gaps_dataframe_list:3
+#: tide.time_serie.time_serie_dataframe.identify_interpolation_and_fill_gaps:3
+#: tide.time_serie.time_serie_dataframe.process_gaps_to_fill:5
+msgid "DataFrame contenant les périodes de données manquantes."
+msgstr ""
+
+#: ../../source/tide.time_serie.rst
+msgid "Renvoie"
+msgstr ""
+
+#: ../../source/tide.time_serie.rst
+msgid "Type renvoyé"
+msgstr ""
+
+#: of tide.time_serie.exception_time_serie.get_data_gaps_message:1
+msgid "Journalise les périodes de données manquantes."
+msgstr ""
+
+#: of tide.time_serie.exception_time_serie.get_data_gaps_message:5
+msgid "Journalisation des périodes de données manquantes."
+msgstr ""
+
+#: ../../source/tide.time_serie.rst:16
+msgid "tide.time\\_serie.time\\_serie\\_dataframe module"
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe:1
+msgid "Module pour la gestion des données de séries temporelles de marée."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe:3
+msgid ""
+"Ce module contient les fonctions pour gérer les données de séries "
+"temporelles de marée."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.add_metadata_to_time_serie_dataframe:1
+msgid "Ajoute les métadonnées aux données de la série temporelle."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.add_metadata_to_time_serie_dataframe:3
+#: tide.time_serie.time_serie_dataframe.clean_time_series_data:3
+#: tide.time_serie.time_serie_dataframe.finalize_time_serie_dataframe:3
+#: tide.time_serie.time_serie_dataframe.get_water_level_time_serie:17
+msgid "Données de la série temporelle."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.add_metadata_to_time_serie_dataframe:5
+#: tide.time_serie.time_serie_dataframe.finalize_time_serie_dataframe:5
+#: tide.time_serie.time_serie_dataframe.get_station_position:3
+#: tide.time_serie.time_serie_dataframe.get_water_level_data:5
+#: tide.time_serie.time_serie_dataframe.get_water_level_time_serie:5
+msgid "Identifiant de la station."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.add_metadata_to_time_serie_dataframe:7
+#: tide.time_serie.time_serie_dataframe.finalize_time_serie_dataframe:7
+#: tide.time_serie.time_serie_dataframe.get_station_position:5
+#: tide.time_serie.time_serie_dataframe.get_water_level_data:3
+#: tide.time_serie.time_serie_dataframe.get_water_level_data_for_stations:3
+#: tide.time_serie.time_serie_dataframe.get_water_level_time_serie:3
+msgid "Gestionnaire des stations."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.add_metadata_to_time_serie_dataframe:9
+msgid "Données de la série temporelle avec les métadonnées."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.add_nan_date_row:1
+msgid "Ajoute une ligne de données avec une valeur de NaN à partir d'une date."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.add_nan_date_row:3
+#: tide.time_serie.time_serie_dataframe.get_first_and_last_rows:3
+#: tide.time_serie.time_serie_dataframe.get_gaps_dataframe_list:5
+#: tide.time_serie.time_serie_dataframe.get_row_by_index:3
+#: tide.time_serie.time_serie_dataframe.identify_data_gaps:3
+#: tide.time_serie.time_serie_dataframe.interpolate_data_gaps:3
+#: tide.time_serie.time_serie_dataframe.process_gaps_to_interpolate:3
+#: tide.time_serie.time_serie_dataframe.resample_data:3
+#: tide.time_serie.time_serie_dataframe.reset_and_sort_index:7
+msgid "DataFrame contenant les données."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.add_nan_date_row:5
+#: tide.time_serie.time_serie_dataframe.create_nan_date_row:3
+msgid "Date."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.add_nan_date_row:7
+msgid "DataFrame contenant la ligne ajouter aux autres données."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.check_for_missing_values_for_interpolation:1
+msgid ""
+"Vérifie la présence de valeurs manquantes et lève une exception si "
+"nécessaire."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.check_for_missing_values_for_interpolation:3
+msgid "Série de valeurs à vérifier."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.check_for_missing_values_for_interpolation:5
+#: tide.time_serie.time_serie_dataframe.cubic_spline_interpolation:7
+#: tide.time_serie.time_serie_dataframe.resample_data:7
+msgid "DataFrame contenant les données rééchantillonnées."
+msgstr ""
+
+#: ../../source/tide.time_serie.rst
+msgid "Lève"
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.check_for_missing_values_for_interpolation:7
+msgid "Si des valeurs manquantes sont détectées."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.clean_time_series_data:1
+msgid "Nettoie les données de la série temporelle."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.clean_time_series_data:9
+msgid "Données de la série temporelle nettoyées."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.combine_water_level_data:1
+msgid "Combine les données de niveau d'eau."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.combine_water_level_data:3
+#: tide.time_serie.time_serie_dataframe.combine_water_level_data:9
+msgid "DataFrame contenant les données de niveau d'eau combinées."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.combine_water_level_data:5
+msgid "DataFrame contenant les données de niveau d'eau."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.create_nan_date_row:1
+msgid "Crée une ligne de données avec une valeur de NaN pour une date donnée."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.create_nan_date_row:5
+msgid "Ligne de données."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.cubic_spline_interpolation:1
+msgid "Interpole les données manquantes avec une spline cubique."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.cubic_spline_interpolation:3
+msgid "Index des données."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.cubic_spline_interpolation:5
+msgid "Valeurs des données."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.cubic_spline_interpolation:9
+#: tide.time_serie.time_serie_dataframe.interpolate_data_gaps:9
+msgid "DataFrame contenant les données interpolées."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.extend_non_nan_dataframe:1
+#: tide.time_serie.time_serie_dataframe.extend_rows_to_deltatime:1
+msgid ""
+"Étend les lignes du DataFrame pour ajouter la première et la dernière "
+"date."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.extend_non_nan_dataframe:3
+#: tide.time_serie.time_serie_dataframe.extend_rows_to_deltatime:3
+msgid "DataFrame contenant les données non NaN."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.extend_non_nan_dataframe:5
+#: tide.time_serie.time_serie_dataframe.extend_rows_to_deltatime:5
+msgid "Première ligne du DataFrame."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.extend_non_nan_dataframe:7
+#: tide.time_serie.time_serie_dataframe.extend_rows_to_deltatime:7
+msgid "Dernière ligne du DataFrame."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.extend_non_nan_dataframe:9
+#: tide.time_serie.time_serie_dataframe.extend_rows_to_deltatime:9
+msgid "DataFrame contenant les données étendues."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.fill_data_gaps:1
+msgid "Permet de remplir les périodes de données manquantes."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.fill_data_gaps:5
+msgid "DataFrame contenant les données à ajouter."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.fill_data_gaps:7
+#: tide.time_serie.time_serie_dataframe.merge_dataframes:3
+#: tide.time_serie.time_serie_dataframe.process_gaps_to_fill:3
+msgid "DataFrame contenant les données combinées."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.fill_data_gaps:9
+msgid "DataFrame contenant les données ajoutées au données combinées."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.finalize_time_serie_dataframe:1
+msgid ""
+"Finalise les données de la série temporelle en les nettoyant, en les "
+"triant et en ajoutant les métadonnées."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.finalize_time_serie_dataframe:9
+msgid "Données de la série temporelle finalisées."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_buffered_time:1
+msgid "Calcul le temps avec un tampon à partir d'une date."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_buffered_time:3
+msgid "Date en format ISO 8601 ou objet datetime."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_buffered_time:5
+#: tide.time_serie.time_serie_dataframe.get_water_level_data:15
+#: tide.time_serie.time_serie_dataframe.get_water_level_data_for_stations:9
+#: tide.time_serie.time_serie_dataframe.get_water_level_time_serie:13
+msgid "Temps tampon à ajouter au début et à la fin de la période de données."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_buffered_time:7
+msgid "Opération à effectuer."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_buffered_time:9
+msgid "Date avec le temps tampon."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_datetime_from_iso8601:1
+msgid "Convertit une date ISO 8601 en objet datetime."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_datetime_from_iso8601:3
+#: tide.time_serie.time_serie_dataframe.get_iso8601_from_datetime:5
+msgid "Date ISO 8601."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_datetime_from_iso8601:5
+#: tide.time_serie.time_serie_dataframe.get_iso8601_from_datetime:3
+msgid "Objet datetime."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_empty_dataframe:1
+msgid "Crée un DataFrame vide."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_empty_dataframe:3
+msgid "DataFrame vide."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_first_and_last_rows:1
+msgid "Récupère la première et la dernière ligne du DataFrame."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_first_and_last_rows:5
+msgid "Première et dernière ligne du DataFrame."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_gaps_dataframe_list:7
+msgid "Une liste de DataFrame contenant les périodes de données manquantes."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_iso8601_from_datetime:1
+msgid "Convertit un objet datetime en date ISO 8601."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_row_by_index:1
+msgid "Récupère une ligne du DataFrame par son index."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_row_by_index:5
+msgid "Index de la ligne à récupérer."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_row_by_index:7
+msgid "Ligne du DataFrame."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_station_position:1
+msgid "Récupère la position de la station."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_station_position:7
+msgid "Position de la station."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.get_threshold_interpolation_filling_value:1
+msgid "Fonction pour obtenir la valeur du seuil d'interpolation."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.get_threshold_interpolation_filling_value:5
+#: tide.time_serie.time_serie_dataframe.get_water_level_data:19
+#: tide.time_serie.time_serie_dataframe.get_water_level_data_for_stations:13
+#: tide.time_serie.time_serie_dataframe.identify_data_gaps:7
+#: tide.time_serie.time_serie_dataframe.process_gaps_to_interpolate:7
+msgid ""
+"Seuil de temps en dessous duquel les données manquantes sont interpolées "
+"ou remplies. Si None, les données manquantes sont seulement remplies par "
+"la time série suivante."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.get_threshold_interpolation_filling_value:8
+msgid "Liste des séries temporelles à exclure de l'interpolation."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.get_threshold_interpolation_filling_value:10
+msgid "Seuil d'interpolation."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_water_level_data:1
+msgid ""
+"Récupère et traite les séries temporelles de niveau d'eau pour une "
+"station donnée."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_water_level_data:7
+#: tide.time_serie.time_serie_dataframe.get_water_level_time_serie:7
+msgid "Date de début en format ISO 8601 ou objet datetime."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_water_level_data:9
+#: tide.time_serie.time_serie_dataframe.get_water_level_time_serie:9
+msgid "Date de fin en format ISO 8601 ou objet datetime."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_water_level_data:11
+msgid "Liste des séries temporelles à récupérer en ordre de priorité."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_water_level_data:13
+#: tide.time_serie.time_serie_dataframe.get_water_level_data_for_stations:7
+#: tide.time_serie.time_serie_dataframe.get_water_level_time_serie:15
+msgid "Filtre de qualité des données wlo."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_water_level_data:17
+#: tide.time_serie.time_serie_dataframe.get_water_level_data_for_stations:11
+msgid ""
+"Intervalle de temps maximal permis. Si None, l'interpolation et le "
+"remplissage des données manquantes est désactivée."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_water_level_data:22
+msgid "Liste des séries temporelles à exclure de l'interpolation. Si une"
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_water_level_data:25
+#: tide.time_serie.time_serie_dataframe.process_gaps_to_fill:9
+#: tide.time_serie.time_serie_dataframe.process_gaps_to_interpolate:10
+#: tide.time_serie.time_serie_retry.exclude_time_serie_retry:5
+msgid "Données de niveau d'eau combinées."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_water_level_data_for_stations:1
+msgid "Récupère les données de niveau d'eau pour plusieurs stations."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_water_level_data_for_stations:5
+msgid ""
+"Informations sur les stations et les périodes de données à récupérer et "
+"leur priorité de séries temporelles."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_water_level_data_for_stations:16
+msgid "Données de niveau d'eau combinées et exceptions."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.get_water_level_data_retrieval_message:1
+msgid ""
+"Récupère le message de log pour la récupération des données de niveau "
+"d'eau."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.get_water_level_data_retrieval_message:3
+msgid "(str) L'identifiant de la station."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.get_water_level_data_retrieval_message:4
+msgid "(str) La date de début."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.get_water_level_data_retrieval_message:5
+msgid "(str) La date de fin."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.get_water_level_data_retrieval_message:6
+msgid "(Collection[TimeSeriesProtocol]) Les séries temporelles prioritaires."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.get_water_level_data_retrieval_message:7
+msgid "(str) Le message de log."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.get_water_level_time_serie:1
+msgid "Récupère les données de la série temporelle."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.identify_data_gaps:1
+msgid "Identifie les périodes de données manquantes."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.identify_data_gaps:5
+#: tide.time_serie.time_serie_dataframe.process_gaps_to_interpolate:5
+msgid ""
+"Intervalle de temps maximale permise avant de  combler les données "
+"manquantes."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.identify_data_gaps:10
+msgid ""
+"Un tuple contenant toutes les périodes de données manquantes, les "
+"périodes de données manquantes à interpoler et les périodes de données "
+"manquantes à remplir."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.identify_interpolation_and_fill_gaps:1
+msgid "Identifie les périodes de données manquantes à interpoler et à remplir."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.identify_interpolation_and_fill_gaps:5
+msgid ""
+"Seuil de temps en dessous duquel les données manquantes sont interpolées "
+"ou remplies."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_dataframe.identify_interpolation_and_fill_gaps:7
+msgid "Périodes de données manquantes à interpoler et à remplir."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.interpolate_data_gaps:1
+msgid "Interpole les données manquantes."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.interpolate_data_gaps:5
+msgid "DataFrame contenant les périodes de données manquantes à interpoler."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.interpolate_data_gaps:7
+msgid ""
+"Intervalle de temps maximale permise avant de combler les données "
+"manquantes."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.merge_dataframes:1
+msgid "Fusionne les DataFrames."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.merge_dataframes:5
+msgid "DataFrame contenant les données à ajouter"
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.merge_dataframes:7
+msgid "DataFrame contenant les données à ajouter et celles combinées."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.process_gaps_to_fill:1
+msgid "Identifie et comble les données manquantes."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.process_gaps_to_fill:7
+msgid "DataFrame contenant les données à ajouter aux données combinées."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.process_gaps_to_interpolate:1
+msgid "Identifie et comble les données manquantes avec une interpolation."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.process_gaps_to_interpolate
+msgid "Rtype"
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.process_gaps_to_interpolate:11
+msgid "pd.DataFrame[schema.TimeSerieDataSchema]"
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.resample_data:1
+msgid "Rééchantillonne les données."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.resample_data:5
+msgid "Intervalle de temps."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.reset_and_sort_index:1
+msgid "Réinitialise et trie l'index du DataFrame."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.reset_and_sort_index:3
+msgid "Si True, supprime l'ancien index."
+msgstr ""
+
+#: of tide.time_serie.time_serie_dataframe.reset_and_sort_index:5
+msgid "Si True, modifie le DataFrame en place."
+msgstr ""
+
+#: ../../../docstring builtins.dict:1 of
+msgid "Dictionnaire pour une ligne de données avec une valeur de NaN."
+msgstr ""
+
+#: ../../source/tide.time_serie.rst:24
+msgid "tide.time\\_serie.time\\_serie\\_models module"
+msgstr ""
+
+#: of tide.time_serie.time_serie_models:1
+msgid ""
+"Module contenant les modèles pour les séries temporelles de données de "
+"marée."
+msgstr ""
+
+#: of tide.time_serie.time_serie_models:3
+msgid ""
+"Ce module contient les modèles de données et les protocoles pour les "
+"séries temporelles de données de marée."
+msgstr ""
+
+#: of tide.time_serie.time_serie_models.DataGapPeriod:1
+msgid "Bases : :py:class:`object`"
+msgstr ""
+
+#: of tide.time_serie.time_serie_models.DataGapPeriod:1
+msgid "Modèle pour les périodes de données manquantes."
+msgstr ""
+
+#: ../../../docstring of tide.time_serie.time_serie_models.DataGapPeriod:7
+#: tide.time_serie.time_serie_models.DataGapPeriod.duration:1
+msgid "Durée de la période."
+msgstr ""
+
+#: of tide.time_serie.time_serie_models.StationsHandlerProtocol:1
+#: tide.time_serie.time_serie_models.TimeSeriesProtocol:1
+msgid "Bases : :py:class:`~typing.Protocol`"
+msgstr ""
+
+#: of tide.time_serie.time_serie_models.StationsHandlerProtocol:1
+msgid "Protocole pour les gestionnaires de stations."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_models.StationsHandlerProtocol.get_time_series_dataframe:1
+msgid "Méthode pour récupérer les données de marée d'une station."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_models.StationsHandlerProtocol.get_time_series_dataframe:9
+msgid "Code de la série temporelle."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_models.StationsHandlerProtocol.get_time_series_dataframe:11
+msgid "Flag de qualité à filtrer."
+msgstr ""
+
+#: of
+#: tide.time_serie.time_serie_models.StationsHandlerProtocol.get_time_series_dataframe:13
+msgid "Données de marée."
+msgstr ""
+
+#: of tide.time_serie.time_serie_models.StationsHandlerProtocol.stations:1
+msgid "Propriété pour obtenir les stations."
+msgstr ""
+
+#: of tide.time_serie.time_serie_models.StationsHandlerProtocol.stations:3
+msgid "Stations."
+msgstr ""
+
+#: of tide.time_serie.time_serie_models.TimeSeriesProtocol:1
+msgid "Protocole pour définir les types des séries temporelles."
+msgstr ""
+
+#: of tide.time_serie.time_serie_models.TimeSeriesProtocol.from_str:1
+msgid "Méthode pour convertir une chaîne de caractères en série temporelle."
+msgstr ""
+
+#: of tide.time_serie.time_serie_models.TimeSeriesProtocol.from_str:3
+msgid "Chaîne de caractères."
+msgstr ""
+
+#: ../../../docstring of
+#: tide.time_serie.time_serie_models.TimeSeriesProtocol.WLF:1
+msgid "Water Level Forecast."
+msgstr ""
+
+#: ../../../docstring of
+#: tide.time_serie.time_serie_models.TimeSeriesProtocol.WLF_SPINE:1
+msgid "Water Level Forecast Spine."
+msgstr ""
+
+#: ../../../docstring of
+#: tide.time_serie.time_serie_models.TimeSeriesProtocol.WLF_VTG:1
+msgid "Water Level Forecast VTG."
+msgstr ""
+
+#: ../../../docstring of
+#: tide.time_serie.time_serie_models.TimeSeriesProtocol.WLO:1
+msgid "Water Level Observed."
+msgstr ""
+
+#: ../../../docstring of
+#: tide.time_serie.time_serie_models.TimeSeriesProtocol.WLP:1
+msgid "Water Level Prediction."
+msgstr ""
+
+#: ../../source/tide.time_serie.rst:32
+msgid "tide.time\\_serie.time\\_serie\\_retry module"
+msgstr ""
+
+#: of tide.time_serie.time_serie_retry:1
+msgid ""
+"Module pour la gestion des tentatives d'interpolation de séries "
+"temporelles."
+msgstr ""
+
+#: of tide.time_serie.time_serie_retry:3
+msgid ""
+"Ce module contient les fonctions pour gérer les tentatives "
+"d'interpolation de séries temporelles."
+msgstr ""
+
+#: of tide.time_serie.time_serie_retry.double_buffer_time:1
+msgid ""
+"Fonction pour doubler le temps tampon pour la prochaine tentative "
+"d'interpolation."
+msgstr ""
+
+#: of tide.time_serie.time_serie_retry.double_buffer_time:3
+#: tide.time_serie.time_serie_retry.exclude_time_serie_retry:3
+msgid "État de la tentative."
+msgstr ""
+
+#: of tide.time_serie.time_serie_retry.exclude_time_serie_retry:1
+msgid ""
+"Fonction pour exclure les tentatives d'interpolation de séries "
+"temporelles."
+msgstr ""
+
+#: ../../source/tide.time_serie.rst:40
+msgid "Module contents"
+msgstr ""
+
+#: of tide.time_serie:1
+msgid ""
+"Ce package contient les fonctions et les classes nécessaires pour traiter"
+" les séries temporelles."
+msgstr ""
+
