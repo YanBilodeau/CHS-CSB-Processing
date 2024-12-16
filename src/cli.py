@@ -111,7 +111,7 @@ def cli(
     configure_logger()
 
     LOGGER.info(f"Ligne de commande exécutée : python {' '.join(sys.argv)}")
-    print(files)
+
     # Get the files to parse
     files: list[Path] = get_files(files)
 
