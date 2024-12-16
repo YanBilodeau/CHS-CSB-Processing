@@ -12,6 +12,22 @@ vessel.exception\_vessel module
    :undoc-members:
    :show-inheritance:
 
+vessel.factory\_vessel\_config\_manager module
+----------------------------------------------
+
+.. automodule:: vessel.factory_vessel_config_manager
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+vessel.unknown\_vessel\_config module
+-------------------------------------
+
+.. automodule:: vessel.unknown_vessel_config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 vessel.vessel\_config module
 ----------------------------
 
@@ -32,6 +48,14 @@ vessel.vessel\_config\_manager\_abc module
 ------------------------------------------
 
 .. automodule:: vessel.vessel_config_manager_abc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+vessel.vessel\_config\_sqlite\_manager module
+---------------------------------------------
+
+.. automodule:: vessel.vessel_config_sqlite_manager
    :members:
    :undoc-members:
    :show-inheritance:

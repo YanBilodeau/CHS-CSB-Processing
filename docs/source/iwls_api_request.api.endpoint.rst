@@ -12,6 +12,14 @@ iwls\_api\_request.api.endpoint.endpoint\_abc module
    :undoc-members:
    :show-inheritance:
 
+iwls\_api\_request.api.endpoint.endpoint\_private module
+--------------------------------------------------------
+
+.. automodule:: iwls_api_request.api.endpoint.endpoint_private
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 iwls\_api\_request.api.endpoint.endpoint\_public module
 -------------------------------------------------------
 

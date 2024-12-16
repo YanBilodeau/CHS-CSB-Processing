@@ -4,10 +4,10 @@ config package
 Submodules
 ----------
 
-config.data\_config module
---------------------------
+config.helper module
+--------------------
 
-.. automodule:: config.data_config
+.. automodule:: config.helper
    :members:
    :undoc-members:
    :show-inheritance:
@@ -16,6 +16,14 @@ config.iwls\_api\_config module
 -------------------------------
 
 .. automodule:: config.iwls_api_config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+config.processing\_config module
+--------------------------------
+
+.. automodule:: config.processing_config
    :members:
    :undoc-members:
    :show-inheritance:

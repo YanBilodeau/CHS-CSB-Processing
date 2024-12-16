@@ -1,7 +1,7 @@
-example\_parser module
+csb\_processing module
 ======================
 
-.. automodule:: example_parser
+.. automodule:: csb_processing
    :members:
    :undoc-members:
    :show-inheritance:

@@ -52,6 +52,22 @@ ingestion.parser\_lowrance module
    :undoc-members:
    :show-inheritance:
 
+ingestion.parser\_ofm module
+----------------------------
+
+.. automodule:: ingestion.parser_ofm
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ingestion.parsing\_exception module
+-----------------------------------
+
+.. automodule:: ingestion.parsing_exception
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 ingestion.warning\_capture module
 ---------------------------------
 

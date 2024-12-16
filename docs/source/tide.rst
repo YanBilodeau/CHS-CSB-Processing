@@ -22,14 +22,6 @@ tide.plot module
    :undoc-members:
    :show-inheritance:
 
-tide.schema module
-------------------
-
-.. automodule:: tide.schema
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 

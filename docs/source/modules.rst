@@ -4,14 +4,14 @@ CHS-CSB-Processing
 .. toctree::
    :maxdepth: 4
 
+   app
+   cli
    config
-   example_iwls_api_request
-   example_parser
-   example_tide
-   example_vessel
+   csb_processing
    export
    ingestion
    iwls_api_request
+   logger
    schema
    tide
    transformation
