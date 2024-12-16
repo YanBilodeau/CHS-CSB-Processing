@@ -22,7 +22,7 @@ msgstr ""
 
 #: ../../source/cli.rst:2
 msgid "cli module"
-msgstr ""
+msgstr "cli module"
 
 #: cli:1 of
 msgid "Ce module contient la fonction principale de la ligne de commande."
@@ -32,97 +32,99 @@ msgstr "This module contains the main function of the command line."
 msgid ""
 "Il permet de traiter des fichiers de données bathymétriques et de les "
 "géoréférencer."
-msgstr ""
+msgstr "It allows processing bathymetric data files and georeferencing them."
 
 #: cli.get_files:1 of
 msgid "Récupère les fichiers à traiter."
-msgstr ""
+msgstr "Retrieves the files to process."
 
 #: ../../source/cli.rst
 msgid "Paramètres"
-msgstr ""
+msgstr "Parameters"
 
 #: cli.get_files:3 of
 msgid "Chemins des fichiers ou répertoires."
-msgstr ""
+msgstr "Paths of files or directories."
 
 #: ../../source/cli.rst
 msgid "Renvoie"
-msgstr ""
+msgstr "Returns"
 
 #: cli.get_files:5 of
 msgid "Liste des fichiers à traiter."
-msgstr ""
+msgstr "List of files to process."
 
 #: ../../source/cli.rst
 msgid "Type renvoyé"
-msgstr ""
+msgstr "Return type"
 
 #: cli.is_valid_file:1 of
 msgid "Vérifie si le fichier est valide pour le traitement."
-msgstr ""
+msgstr "Checks if the file is valid for processing."
 
 #: cli.is_valid_file:3 of
 msgid "Chemin du fichier."
-msgstr ""
+msgstr "File path."
 
 #: cli.is_valid_file:5 of
 msgid "Vrai si le fichier est valide, faux sinon."
-msgstr ""
+msgstr "True if the file is valid, false otherwise."
 
 #: ../../../cli:1
 msgid ""
 "Ce script permet de traiter des fichiers de données bathymétriques et de "
 "les géoréférencer."
-msgstr ""
+msgstr "This script allows processing bathymetric data files and georeferencing them."
 
 #: ../../../cli:1
-msgid ""
-"This script allows to process bathymetric data files and georeference "
-"them."
-msgstr ""
+msgid "This script allows to process bathymetric data files and georeference them."
+msgstr "This script allows processing bathymetric data files and georeferencing them."
 
 #: ../../source/cli.rst
 msgid "Options"
-msgstr ""
+msgstr "Options"
 
 #: ../../../cli:1
 msgid "Chemin du répertoire de sortie."
-msgstr ""
+msgstr "Path of the output directory."
 
 #: ../../../cli:1
 msgid "Path of the output directory."
-msgstr ""
+msgstr "Path of the output directory."
 
 #: ../../../cli:1
 msgid ""
 "Identifiant du navire. Si aucun identifiant de navire est utilisé, un "
 "navire par défaut avec des bras de levier à 0 sera utilisé."
 msgstr ""
+"Vessel identifier. If no vessel identifier is used, a default vessel with lever arms at 0 will be used."
 
 #: ../../../cli:1
 msgid ""
 "Vessel identifier. If no vessel identifier is used, a default vessel with"
 " lever arms at 0 will be used."
 msgstr ""
+"Vessel identifier. If no vessel identifier is used, a default vessel with lever arms at 0 will be used."
 
 #: ../../../cli:1
 msgid ""
 "Chemin du fichier de configuration. si aucun fichier de configuration "
 "n'est fourni, le fichier de configuration par défaut sera utilisé."
 msgstr ""
+"Path of the configuration file. If no configuration file is provided, the default configuration file will be used."
 
 #: ../../../cli:1
 msgid ""
 "Path of the configuration file. If no configuration file is provided, the"
 " default configuration file will be used."
 msgstr ""
+"Path of the configuration file. If no configuration file is provided, the default configuration file will be used."
 
 #: ../../source/cli.rst
 msgid "Arguments"
-msgstr ""
+msgstr "Arguments"
 
 #: ../../../cli:1
 msgid "Required argument(s)"
-msgstr ""
+msgstr "Required argument(s)"
 
