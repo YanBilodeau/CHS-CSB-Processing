@@ -19,7 +19,3 @@ python:
 
 submodules:
   include: all
-
-# Configurer les langues
-languages:
-  - fr
