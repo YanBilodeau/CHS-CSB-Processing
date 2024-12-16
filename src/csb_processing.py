@@ -36,9 +36,8 @@ configure_logger()
 
 ROOT: Path = Path(__file__).parent
 OUTPUT: Path = ROOT.parent / "Output"
-VESSEL_JSON_PATH: Path = ROOT / "TCSB_VESSELSLIST.json"
-
-CONFIG_FILE: Path = Path(__file__).parent / "CONFIG_csb-processing.toml"
+VESSEL_JSON_PATH: Path = ROOT / "CONFIG_vessels.json"
+CONFIG_FILE: Path = ROOT / "CONFIG_csb-processing.toml"
 
 
 @dataclass(frozen=True)
@@ -196,19 +195,16 @@ def add_tide_zone_id_to_geodataframe(
         schema_ids.ID,
     ]
 
-    gdf_data_time_zone: gpd.GeoDataFrame[
-        schema.DataLoggerWithTideZoneSchema
-    ] = gpd.sjoin(
-        data_geodataframe,
-        tide_zone,
-        how="left",
-        predicate="within",
-    )[
-        columns
-    ].rename(
-        columns={schema_ids.ID: schema_ids.TIDE_ZONE_ID}
-    )  # todo drop la colonne avant de renommer ?
-    # todo seulement sur les rangées NAN de DEPTH_PROCESSED_METER ?
+    gdf_data_time_zone: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
+        gpd.sjoin(
+            data_geodataframe,
+            tide_zone,
+            how="left",
+            predicate="within",
+        )[
+            columns
+        ].rename(columns={schema_ids.ID: schema_ids.TIDE_ZONE_ID})
+    )
 
     return gdf_data_time_zone
 
@@ -228,7 +224,7 @@ def get_intersected_tide_zone_info(
 
     :param data_geodataframe: Les données des DataLoggers.
     :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
-    param tide_zone: Les zones de marées.
+    :param tide_zone: Les zones de marées.
     :type tide_zone: gpd.GeoDataFrame[schema.TideZoneProtocolSchema]
     :return: Les zones de marées et le temps de début et de fin pour les données.
     :rtype: pd.DataFrame[schema.TideZoneInfoSchema]
@@ -247,7 +243,8 @@ def get_intersected_tide_zone_info(
     )
 
     tide_zone_info: pd.DataFrame = (
-        data_geodataframe.groupby(schema_ids.TIDE_ZONE_ID)[schema_ids.TIME_UTC]
+        data_geodataframe[data_geodataframe[schema_ids.DEPTH_PROCESSED_METER].isna()]
+        .groupby(schema_ids.TIDE_ZONE_ID)[schema_ids.TIME_UTC]
         .agg(min_time="min", max_time="max")
         .reset_index()
     )
@@ -568,11 +565,12 @@ def processing_workflow(
         pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]
     ] = []
     station_titles_list: list[str] = []
+    last_run_stations: list[str] = []
     run: int = 1
 
-    while True:
+    while True:  # todo ajouter max itération
         LOGGER.info(
-            f"Transformation des données : #{run}. Stations exclues : {excluded_stations}."
+            f"Transformation des données : {run}. Stations exclues : {excluded_stations}."
         )
         # Get the Voronoi diagram of the stations. The stations are selected based on the priority of the time series.
         # The time series priority is defined in the configuration file.
@@ -636,7 +634,9 @@ def processing_workflow(
             threshold_interpolation_filling=iwls_api_config.time_series.threshold_interpolation_filling,
         )
         # Add the water level data to the list for the plot
-        wl_combineds_list.extend(wl_combineds.values())
+        wl_combineds_list.extend(
+            wl_combineds.values()
+        )  # todo concaterner les dataframes des mêmes stations
 
         # Export the water level data for each station
         station_titles: list[str] = export_station_water_levels(
@@ -654,7 +654,7 @@ def processing_workflow(
         if wl_combineds:
             # Export the Voronoi diagram to a GeoJSON file
             voronoi_output_path: Path = (
-                export_tide_path / f"StationVoronoi (#{run}).geojson"
+                export_tide_path / f"StationVoronoi-{run}.geojson"
             )
             LOGGER.info(
                 f"Exportation du diagramme de Voronoi des stations marégraphiques : {voronoi_output_path}."
@@ -680,12 +680,18 @@ def processing_workflow(
                 LOGGER.debug(row)
 
         # Check if there are any missing values in the processed data
-        if data[schema_ids.DEPTH_PROCESSED_METER].isna().any():
-            # Add the stations with missing values to the excluded stations
-            excluded_stations.extend(tide_zonde_info[schema_ids.TIDE_ZONE_ID].tolist())
-            run += 1
-        else:
+        if not data[schema_ids.DEPTH_PROCESSED_METER].isna().any():
             break
+
+        # Add the stations with missing values to the excluded stations
+        excluded_stations.extend(wl_exceptions.keys())
+
+        # Check if the stations are the same as the last run and if there are no exceptions
+        if not wl_exceptions and (last_run_stations == list(wl_combineds.keys())):
+            excluded_stations.extend(list(wl_combineds.keys()))
+
+        run += 1
+        last_run_stations = list(wl_combineds.keys())
 
     # Plot the water level data for each station
     if wl_combineds_list:
@@ -734,6 +740,9 @@ if __name__ == "__main__":
         source_path = ROOT / "ingestion" / "Lowrance" / "Tuktoyaktuk"
         return list(source_path.glob("*.csv"))
 
+    def get_lowrance_files_2() -> list[Path]:
+        return [ROOT / "ingestion" / "Lowrance" / "Sonar_2022-08-05_16.04.31-route.csv"]
+
     def get_blackbox_files() -> list[Path]:
         return [ROOT / "ingestion" / "BlackBox" / "NMEALOG.TXT"]
 
@@ -746,6 +755,7 @@ if __name__ == "__main__":
     # files_path: list[Path] = get_ofm_files()
     # files_path: list[Path] = get_dcdb_files()
     files_path: list[Path] = get_lowrance_files()
+    # files_path: list[Path] = get_lowrance_files_2()
     # files_path: list[Path] = get_blackbox_files()
     # files_path: list[Path] = get_actisense_files()
     # files_path: list[Path] = (
