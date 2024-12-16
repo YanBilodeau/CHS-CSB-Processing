@@ -17,7 +17,8 @@ scipy
 tenacity
 shapely
 python-dateutil
-sphinx-rtd-theme
-click
 sqlalchemy
+click
 sphinx-click
+sphinx_intl
+sphinx-rtd-theme
