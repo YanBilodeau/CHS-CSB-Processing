@@ -1,6 +1,6 @@
 [IWLS.API.TimeSeries]
 # Liste des séries temporelles à récupérer selon leur priorité d'utilisation. {"wlo", "wlp"}
-priority = ["wlo", "wlp"]
+priority = ["wlo"]  # todo ajouter wlp
 # Intervalle de temps maximal sans données avant de déclencher l'intepolation et le remplissage des données.
 # Laisser vide "" pour désactiver. {format str "<number> <min|h>"}
 max_time_gap = "1 min"
@@ -71,7 +71,7 @@ base_tpu_wlp = 2
 manager_type = "VesselConfigJsonManager"
 # Chemin du fichier de configuration des navires {str}. Il est possible de spécifier un chemin absolu ou relatif.
 # Exemple de chemin relatif : "./TCSB_VESSELSLIST.json" pour un fichier "TCSB_VESSELSLIST.json" à la racine du projet.
-json_config_path = "./TCSB_VESSELSLIST.json"
+json_config_path = "./CONFIG_vessels.json"
 
 [CSB.Processing.options]
 # Niveau de log {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
