@@ -30,6 +30,7 @@ extensions = [
     "sphinx.ext.autosummary",  # Permet de générer des résumés de documentation
     "sphinx.ext.inheritance_diagram",  # Permet de générer des diagrammes d'héritage
     "sphinx_click",
+    "sphinx_intl",
 ]
 
 templates_path = ["_templates"]
