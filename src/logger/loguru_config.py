@@ -6,7 +6,7 @@ Ce module contient la fonction de configuration du logger loguru.
 
 import sys
 from collections import defaultdict
-from os import getlogin
+import os
 from pathlib import Path
 from random import choice, seed
 from socket import gethostname
@@ -53,6 +53,22 @@ def formatter(record) -> str:
         "<level>{level: ^8}</level> <bold><white>-</white></bold> <level>{message}</level>\n"
         "<level>{exception}</level>"
     )
+
+
+def get_username() -> str:
+    """
+    Fonction pour obtenir le nom d'utilisateur.
+
+    :return: Nom d'utilisateur.
+    :rtype: str
+    """
+    try:
+        username = os.getlogin()
+
+    except OSError:
+        username = os.getenv("USER", "unknown")
+
+    return username
 
 
 def configure_logger(
@@ -111,6 +127,6 @@ def configure_logger(
         extra={
             "name": "CSB-Processing",
             "hostname": gethostname(),
-            "username": getlogin(),
+            "username": get_username(),
         },
     )
