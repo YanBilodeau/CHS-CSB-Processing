@@ -11,7 +11,7 @@ from typing import Collection, Optional
 
 from loguru import logger
 
-from csb_processing import processing_workflow
+from csb_processing import processing_workflow, CONFIG_FILE
 from logger.loguru_config import configure_logger
 from vessel import UNKNOWN_VESSEL_CONFIG
 
@@ -86,7 +86,31 @@ def get_files(paths: Collection[Path]) -> list[Path]:
     Vessel identifier. If no vessel identifier is used, a default vessel with lever arms at 0 will be used.
     """,
 )
-def cli(files: Collection[Path], output: Path, vessel: Optional[str]) -> None:
+@click.option(
+    "--config",
+    type=click.Path(),
+    required=False,
+    help="""
+    Chemin du fichier de configuration. si aucun fichier de configuration n'est fourni, le fichier de configuration
+    par défaut sera utilisé.\n
+    Path of the configuration file. If no configuration file is provided, the default configuration file will be used.
+    """,
+)
+def cli(
+    files: Collection[Path], output: Path, vessel: Optional[str], config: Optional[Path]
+) -> None:
+    """
+    Fonction principale de la ligne de commande.
+
+    :param files: Chemins des fichiers ou répertoires à traiter.
+    :type files: Collection[Path]
+    :param output: Chemin du répertoire de sortie.
+    :type output: Path
+    :param vessel: Identifiant du navire.
+    :type vessel: Optional[str]
+    :param config: Chemin du fichier de configuration.
+    :type config: Optional[Path]
+    """
     configure_logger()
 
     LOGGER.info(f"Ligne de commande exécutée : python {' '.join(sys.argv)}")
@@ -105,4 +129,12 @@ def cli(files: Collection[Path], output: Path, vessel: Optional[str]) -> None:
         )
         vessel = UNKNOWN_VESSEL_CONFIG
 
-    processing_workflow(files=files, vessel=vessel, output=Path(output))
+    if not config:
+        LOGGER.warning(
+            "Aucun fichier de configuration n'a été fourni. Le fichier de configuration par défaut sera utilisé."
+        )
+        config = CONFIG_FILE
+
+    processing_workflow(
+        files=files, vessel=vessel, output=Path(output), config_path=Path(config)
+    )
