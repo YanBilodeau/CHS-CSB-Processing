@@ -56,15 +56,18 @@ def _get_event_dates(station_id: str, water_level_df: pd.DataFrame) -> pd.Dateti
     :return: Index des dates des événements.
     :rtype: pd.DatetimeIndex[pd.Timestamp]
     """
+    cache_key: str = (
+        f"{station_id}-{water_level_df.attrs[schema_ids.START_TIME]}-{water_level_df.attrs[schema_ids.END_TIME]}-{len(water_level_df)}"
+    )
     # Mise en cache des dates des événements
-    if station_id not in event_dates_cache:
-        event_dates_cache[station_id] = (
+    if cache_key not in event_dates_cache:
+        event_dates_cache[cache_key] = (
             pd.to_datetime(water_level_df[schema_ids.EVENT_DATE].values)
             .tz_localize("UTC")
             .tz_convert("UTC")
         )
 
-    return event_dates_cache[station_id]
+    return event_dates_cache[cache_key]
 
 
 def _interpolate_water_level(
@@ -391,9 +394,6 @@ def georeference_bathymetry(
     :return: Données de profondeur avec le niveau d'eau.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
-    # Réinitialisation du cache des dates des événements pour chaque station. Cela permet de respecter les index.
-    event_dates_cache.clear()
-
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
         data if overwrite else data[data[schema_ids.DEPTH_PROCESSED_METER].isna()]
     )
