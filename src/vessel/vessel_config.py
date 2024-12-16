@@ -6,6 +6,7 @@ Ce module contient les classes et les fonctions pour la configuration du navire.
 
 from datetime import datetime
 from enum import StrEnum
+from typing import Optional
 
 from loguru import logger
 from pydantic import BaseModel
@@ -157,7 +158,7 @@ class VesselConfig(BaseModel):
     """Données des bras de levier de la ligne d'eau."""
     ssp_applied: list[SoundSpeedProfile]
     """Données de profil de vitesse du son appliqué."""
-    attribute: list[BDBattribute]
+    attribute: Optional[list[BDBattribute]] = None
     """Données des attributs BDB."""
 
     def get_sensor(
@@ -280,7 +281,6 @@ def get_vessel_config_from_config_dict(config: VesselConfigDict) -> VesselConfig
         ids.SOUNDER,
         ids.WATERLINE,
         ids.SSP_APPLIED,
-        ids.ATTRIBUTE,
     ]
     missing_keys = [key for key in required_keys if key not in config]
 
@@ -295,5 +295,9 @@ def get_vessel_config_from_config_dict(config: VesselConfigDict) -> VesselConfig
         sounder=[Sensor(**sounder) for sounder in config[ids.SOUNDER]],
         waterline=[Waterline(**waterline) for waterline in config[ids.WATERLINE]],
         ssp_applied=[SoundSpeedProfile(**ssp) for ssp in config[ids.SSP_APPLIED]],
-        attribute=[BDBattribute(**attr) for attr in config[ids.ATTRIBUTE]],
+        attribute=(
+            [BDBattribute(**attr) for attr in config[ids.ATTRIBUTE]]
+            if ids.ATTRIBUTE in config
+            else None
+        ),
     )
