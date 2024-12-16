@@ -29,6 +29,7 @@ extensions = [
     "sphinx.ext.graphviz",  # Permet de générer des graphiques
     "sphinx.ext.autosummary",  # Permet de générer des résumés de documentation
     "sphinx.ext.inheritance_diagram",  # Permet de générer des diagrammes d'héritage
+    "sphinx_click",
 ]
 
 templates_path = ["_templates"]
