@@ -80,7 +80,7 @@ class TimeSeriesConfig(BaseModel):
             pattern = re.compile(r"^\d+\s*(min|h)$")
             if not pattern.match(value):
                 raise ValueError(
-                    'Le time gap et le threshold interpolation filling doivent être au format '
+                    "Le time gap et le threshold interpolation filling doivent être au format "
                     '"<number> <minutes|hours>".'
                 )
 
