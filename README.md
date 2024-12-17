@@ -1,5 +1,6 @@
 # CHS-CSB-Processing
 
+CHS-CSB-Processing est présentement en développement. Plusieurs fonctionnalités sont encore incomplètes ou en cours de développement.
 Vous pouvez visiter la [documentation](https://chs-csb-processing.readthedocs.io/fr/latest/) pour plus d'informations.
 
 ---
@@ -265,6 +266,7 @@ python cli.py /data/fichier1.csv /data/dossier --output /data/output --vessel NA
 
 # CHS-CSB-Processing
 
+CHS-CSB-Processing is currently under development. Several features are still incomplete or under development.
 You can visit the [documentation](https://chs-csb-processing.readthedocs.io/en/latest/) for more information.
 
 ---
