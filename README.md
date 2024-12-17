@@ -126,7 +126,7 @@ min_depth = 0
 # max_depth = 1000 # Valeur maximale de profondeur (désactivée par défaut).
 
 [DATA.Georeference.water_level]
-water_level_tolerance = 15  # Tolérance en minutes pour le géoréférencement des niveaux d'eau.
+water_level_tolerance = "15 min"  # Tolérance en pour le géoréférencement des niveaux d'eau.
 
 [CSB.Processing.vessel]
 manager_type = "VesselConfigJsonManager"
@@ -148,7 +148,7 @@ log_level = "INFO"  # Niveau de log : {"DEBUG", "INFO", "WARNING", "ERROR", "CRI
 - `[IWLS.API.Environment.<profil>]` : Paramètres spécifiques aux environnements (ex. : `endpoint`, `calls`, `period`).
 - `[IWLS.API.Cache]` : Définit la gestion du cache (durée de vie et emplacement).
 - `[DATA.Transformation.filter]` : Définit les limites géographiques et de profondeur pour filtrer les données.
-- `[DATA.Georeference.water_level]` : Définit la tolérance pour le géoréférencement basé sur les niveaux d'eau.
+- `[DATA.Georeference.water_level]` : Définit la tolérance pour le géoréférencement basé sur les niveaux d'eau. (format : `"<nombre> <unité>"`, ex. : `"15 min"`).
 - `[CSB.Processing.vessel]` : Configure le gestionnaire et le fichier des navires.
 - `[CSB.Processing.options]` : Définit les options générales comme le niveau de log.
 
@@ -391,7 +391,7 @@ min_depth = 0
 # max_depth = 1000 # Maximum depth value (disabled by default).
 
 [DATA.Georeference.water_level]
-water_level_tolerance = 15  # Tolerance in minutes for georeferencing water levels.
+water_level_tolerance = "15 min"  # Tolerance for georeferencing water levels.
 
 [CSB.Processing.vessel]
 manager_type = "VesselConfigJsonManager"
@@ -413,7 +413,7 @@ log_level = "INFO"  # Log level: {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL
 - `[IWLS.API.Environment.<profile>]`: Environment-specific parameters (e.g., `endpoint`, `calls`, `period`).
 - `[IWLS.API.Cache]`: Defines cache management (lifetime and location).
 - `[DATA.Transformation.filter]`: Sets geographic and depth limits for filtering data.
-- `[DATA.Georeference.water_level]`: Defines tolerance for georeferencing based on water levels.
+- `[DATA.Georeference.water_level]`: Defines tolerance for georeferencing based on water levels (format: `"<number> <unit>", e.g., "15 min"`).
 - `[CSB.Processing.vessel]`: Configures the vessel manager and vessel file.
 - `[CSB.Processing.options]`: Defines general options like log level.
 
