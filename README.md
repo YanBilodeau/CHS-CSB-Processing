@@ -5,7 +5,8 @@ Vous pouvez visiter la [documentation](https://chs-csb-processing.readthedocs.io
 ---
 # Tutoriel d'utilisation de l'interface en ligne de commande pour le traitement des fichiers bathymétriques
 
-Ce tutoriel explique en détail comment utiliser le module de ligne de commande pour traiter et géoréférencer des fichiers de données bathymétriques. Il couvre chaque paramètre et fournit des exemples pratiques.
+Ce tutoriel explique en détail comment utiliser le module de ligne de commande pour traiter et géoréférencer des fichiers 
+de données bathymétriques. Il couvre chaque paramètre et fournit des exemples pratiques.
 
 ---
 
@@ -15,6 +16,13 @@ Ce module est conçu pour automatiser le traitement des fichiers de données bat
 - Identifier et charger les fichiers appropriés (CSV, TXT, XYZ).
 - Effectuer un géoréférencement basé sur des configurations spécifiques.
 - Gérer les identifiants de navires et les configurations associées.
+
+Les formats de fichiers pris en charge sont les suivants : 
+- OFM : extension `.xyz` avec minimalement les colonnes `LON`, `LAT`, `DEPTH`, `TIME` dans l'entête.
+- DCDB : extension `.csv` avec minimalement les colonnes `LON`, `LAT`, `DEPTH`, `TIME` dans l'entête.
+- LOWRANCE: extension `.csv` avec minimalement les colonnes `Longitude[°WGS84]`, `Latitude[°WGS84]`, `WaterDepth[Feet]`, 
+            `DateTime[UTC]` dans l'entête. Ces fichiers sont le résultat des fichiers `SL3` de Lowrance exportés par 
+            l'outil [SL3Reader](https://github.com/halmaia/SL3Reader).
 
 ---
 
@@ -70,7 +78,8 @@ python cli.py <files> [options]
 
 ## Fichier de configuration (TOML)
 
-Le fichier de configuration au format TOML permet de définir les paramètres pour le traitement. Voici un exemple du fichier de configuration par défaut (./src/CONFIG_csb-processing.toml) :
+Le fichier de configuration au format TOML permet de définir les paramètres pour le traitement. 
+Voici un exemple du fichier de configuration par défaut (./src/CONFIG_csb-processing.toml) :
 
 ```toml
 [IWLS.API.TimeSeries]
@@ -144,7 +153,9 @@ log_level = "INFO"  # Niveau de log : {"DEBUG", "INFO", "WARNING", "ERROR", "CRI
 
 ## Fichier des navires (Vessels)
 
-Le fichier des navires est un fichier JSON (./scr/CONFIG_vessels.json) contenant les informations nécessaires pour chaque navire, telles que l'identifiant, les conventions d'axes, et les données associées. Voici un exemple de fichier :
+Le fichier de configuration des navires est un fichier JSON contenant les informations nécessaires pour chaque navire, telles que 
+l'identifiant, les conventions d'axes, et les données associées. Le chemin du fichier JSON est défini dans le fichier 
+de configuration TOML. Voici un exemple de fichier :
 
 ```json
 [
@@ -211,7 +222,8 @@ Le fichier des navires est un fichier JSON (./scr/CONFIG_vessels.json) contenant
 - **`waterline`** : Informations sur la ligne d'eau, incluant l'élévation (`z`) et un horodatage.
 - **`ssp_applied`** : Indique si le modèle de propagation du son a été appliqué (`ssp`).
 
-Pour tous les attributs `time_stamp`, le format doit être ISO 8601 (ex. : `"2021-09-25T00:00:00Z"`). De plus, le `time_stamp` indique la date à partir de laquelle la configuration est valide.
+Pour tous les attributs `time_stamp`, le format doit être ISO 8601 (ex. : `"2021-09-25T00:00:00Z"`). De plus, le `time_stamp` 
+indique la date à partir de laquelle la configuration est valide.
 
 ---
 
@@ -256,7 +268,8 @@ You can visit the [documentation](https://chs-csb-processing.readthedocs.io/en/l
 ---
 # Command-Line Interface Tutorial for Bathymetric File Processing
 
-This tutorial provides a detailed explanation of how to use the command-line module to process and georeference bathymetric data files. It covers every parameter and provides practical examples.
+This tutorial provides a detailed explanation of how to use the command-line module to process and georeference 
+bathymetric data files. It covers every parameter and provides practical examples.
 
 ---
 
@@ -266,6 +279,13 @@ This module is designed to automate the processing of bathymetric data files. It
 - Identify and load appropriate files (CSV, TXT, XYZ).
 - Perform georeferencing based on specific configurations.
 - Manage vessel identifiers and associated configurations.
+
+The supported file formats are as follows:
+- OFM: `.xyz` extension with at least the columns `LON`, `LAT`, `DEPTH`, `TIME` in the header.
+- DCDB: `.csv` extension with at least the columns `LON`, `LAT`, `DEPTH`, `TIME` in the header.
+- LOWRANCE: `.csv` extension with at least the columns `Longitude[°WGS84]`, `Latitude[°WGS84]`, `WaterDepth[Feet]`, 
+            `DateTime[UTC]` in the header. These files are the result of `SL3` files from Lowrance exported by 
+            the tool [SL3Reader](https://github.com/halmaia/SL3Reader).
 
 ---
 
@@ -395,7 +415,9 @@ log_level = "INFO"  # Log level: {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL
 
 ## Vessel File (Vessels)
 
-The vessel file is a JSON file (./scr/CONFIG_vessels.json) containing necessary information for each vessel, such as identifier, axis conventions, and associated data. Below is an example:
+The vessel configuration file is a JSON file containing the necessary information for each vessel, such as the 
+identifier, axis conventions, and associated data. The path to the JSON file is defined in the TOML configuration file. 
+Here is an example file:
 
 ```json
 [
@@ -462,7 +484,8 @@ The vessel file is a JSON file (./scr/CONFIG_vessels.json) containing necessary 
 - **`waterline`**: Waterline information, including elevation (`z`) and a timestamp.
 - **`ssp_applied`**: Indicates whether the sound speed profile model has been applied (`ssp`).
 
-For all `time_stamp` attributes, the format must be ISO 8601 (e.g., `"2021-09-25T00:00:00Z"`). Additionally, the `time_stamp` indicates the date from which the configuration is valid.
+For all `time_stamp` attributes, the format must be ISO 8601 (e.g., `"2021-09-25T00:00:00Z"`). Additionally, the 
+`time_stamp` indicates the date from which the configuration is valid.
 
 ---
 
