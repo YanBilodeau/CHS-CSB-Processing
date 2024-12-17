@@ -74,7 +74,7 @@ msgstr "True if the file is valid, false otherwise."
 msgid ""
 "Ce script permet de traiter des fichiers de données bathymétriques et de "
 "les géoréférencer."
-msgstr "This script allows processing bathymetric data files and georeferencing them."
+msgstr "This script allows to process bathymetric data files and georeference them."
 
 #: ../../source/cli.rst
 msgid "Options"
