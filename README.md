@@ -20,9 +20,11 @@ Ce module est conçu pour automatiser le traitement des fichiers de données bat
 Les formats de fichiers pris en charge sont les suivants : 
 - OFM : extension `.xyz` avec minimalement les colonnes `LON`, `LAT`, `DEPTH`, `TIME` dans l'entête.
 - DCDB : extension `.csv` avec minimalement les colonnes `LON`, `LAT`, `DEPTH`, `TIME` dans l'entête.
-- LOWRANCE: extension `.csv` avec minimalement les colonnes `Longitude[°WGS84]`, `Latitude[°WGS84]`, `WaterDepth[Feet]`, 
+- Lowrance: extension `.csv` avec minimalement les colonnes `Longitude[°WGS84]`, `Latitude[°WGS84]`, `WaterDepth[Feet]`, 
             `DateTime[UTC]` dans l'entête. Ces fichiers sont le résultat des fichiers `SL3` de Lowrance exportés par 
             l'outil [SL3Reader](https://github.com/halmaia/SL3Reader).
+- Actisense : à venir.
+- BlackBox : à venir.
 
 ---
 
@@ -283,9 +285,11 @@ This module is designed to automate the processing of bathymetric data files. It
 The supported file formats are as follows:
 - OFM: `.xyz` extension with at least the columns `LON`, `LAT`, `DEPTH`, `TIME` in the header.
 - DCDB: `.csv` extension with at least the columns `LON`, `LAT`, `DEPTH`, `TIME` in the header.
-- LOWRANCE: `.csv` extension with at least the columns `Longitude[°WGS84]`, `Latitude[°WGS84]`, `WaterDepth[Feet]`, 
+- Lowrance: `.csv` extension with at least the columns `Longitude[°WGS84]`, `Latitude[°WGS84]`, `WaterDepth[Feet]`, 
             `DateTime[UTC]` in the header. These files are the result of `SL3` files from Lowrance exported by 
             the tool [SL3Reader](https://github.com/halmaia/SL3Reader).
+- Actisense: coming soon.
+- BlackBox: coming soon.
 
 ---
 
