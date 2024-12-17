@@ -141,7 +141,7 @@ log_level = "INFO"  # Niveau de log : {"DEBUG", "INFO", "WARNING", "ERROR", "CRI
 - `[IWLS.API.TimeSeries]` :
   - `priority` : Liste des séries temporelles à utiliser selon leur priorité (ex. : `"wlo"`, `"wlp"`).
   - `max_time_gap` : Temps maximal sans données avant interpolation (format : `"<nombre> <unité>"`, ex. : `"1 min"`).
-  - `threshold_interpolation_filling` : Seuil pour interpolation et remplissage des données manquantes (ex. : `"4 h"`).
+  - `threshold_interpolation_filling` : Seuil pour l'interpolation et le remplissage des données manquantes (ex. : `"4 h"`).
   - `wlo_qc_flag_filter` : Filtres de qualité pour les données WLO.
   - `buffer_time` : Temps tampon en heures pour les interpolations.
 - `[IWLS.API.Profile]` : Définit le profil actif (`"dev"`, `"prod"`, `"public"`).
