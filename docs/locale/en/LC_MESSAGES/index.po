@@ -1,0 +1,37 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, Yan Bilodeau
+# This file is distributed under the same license as the CHS-CSB-Processing
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: CHS-CSB-Processing \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-16 15:32-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: ../../source/index.rst:14
+msgid "Sommaire"
+msgstr "Table of Contents"
+
+#: ../../source/index.rst:20
+msgid "Indices et tableaux"
+msgstr "Indexes and Tables"
+
+#: ../../source/index.rst:7
+msgid "Documentation de CHS-CSB-Processing"
+msgstr "CHS-CSB-Processing Documentation"
+
+#: ../../source/index.rst:9
+msgid "Bienvenue sur la documentation de CHS-CSB-Processing. Cette documentation est destinée à vous aider à comprendre le fonctionnement de CHS-CSB-Processing et à vous guider dans son utilisation."
+msgstr "Welcome to the CHS-CSB-Processing documentation. This documentation is designed to help you understand how CHS-CSB-Processing works and guide you in its usage."
