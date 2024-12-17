@@ -6,10 +6,11 @@ récupérées à partir de fichiers bruts, nettoyées, filtrées, géoréférenc
 """
 
 from dataclasses import dataclass
+from collections import defaultdict
 from datetime import datetime
 from functools import singledispatch
 from pathlib import Path
-from typing import Optional, Collection
+from typing import Optional, Collection, Sequence
 
 import geopandas as gpd
 from loguru import logger
@@ -22,6 +23,7 @@ import iwls_api_request as iwls
 from logger.loguru_config import configure_logger
 import schema
 import schema.model_ids as schema_ids
+from schema import WaterLevelSerieDataSchema
 from tide.plot import plot_time_series_dataframe
 import tide.stations as stations
 import tide.voronoi as voronoi
@@ -283,11 +285,28 @@ def export_water_level_dataframe(
     )
 
 
+def get_station_title(gdf_voronoi: gpd.GeoDataFrame, station_id: str) -> str:
+    """
+    Récupère le titre de la station.
+
+    :param gdf_voronoi: GeoDataFrame contenant les informations des stations.
+    :type gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema]
+    :param station_id: Identifiant de la station.
+    :type station_id: str
+    :return: Titre de la station.
+    :rtype: str
+    """
+    return (
+        f"{voronoi.get_name_by_station_id(gdf_voronoi=gdf_voronoi, station_id=station_id)} "
+        f"({voronoi.get_code_by_station_id(gdf_voronoi=gdf_voronoi, station_id=station_id)})"
+    )
+
+
 def export_station_water_levels(
     wl_combineds: dict[str, pd.DataFrame],
     gdf_voronoi: gpd.GeoDataFrame,
-    export_tide_path: Optional[Path] = None,
-) -> list[str]:
+    export_tide_path: Path,
+) -> None:
     """
     Exporte les données de niveaux d'eau pour chaque station dans des fichiers CSV.
 
@@ -296,41 +315,30 @@ def export_station_water_levels(
     :param gdf_voronoi: GeoDataFrame contenant les informations des stations.
     :type gdf_voronoi: gpd.GeoDataFrame
     :param export_tide_path: Chemin du répertoire d'exportation des fichiers CSV.
-    :type export_tide_path: Optional[Path]
-    :return: Liste des titres des stations.
-    :rtype: list[str]
+    :type export_tide_path: Path
     """
-    station_titles = []
-
     for station_id, wl_dataframe in wl_combineds.items():
-        station_title = (
-            f"{voronoi.get_name_by_station_id(gdf_voronoi=gdf_voronoi, station_id=station_id)} "
-            f"({voronoi.get_code_by_station_id(gdf_voronoi=gdf_voronoi, station_id=station_id)})"
+        export_water_level_dataframe(
+            station_title=get_station_title(
+                gdf_voronoi=gdf_voronoi, station_id=station_id
+            ),
+            wl_dataframe=wl_dataframe,
+            export_tide_path=export_tide_path,
         )
-        station_titles.append(station_title)
-
-        if export_tide_path:
-            export_water_level_dataframe(
-                station_title=station_title,
-                wl_dataframe=wl_dataframe,
-                export_tide_path=export_tide_path,
-            )
-
-    return station_titles
 
 
 def plot_water_level_data(
-    wl_combineds: list[pd.DataFrame],
-    station_titles: list[str],
+    wl_combineds: Collection[pd.DataFrame],
+    station_titles: Sequence[str],
     export_path: Path,
 ) -> None:
     """
     Trace les données de niveaux d'eau pour chaque station et les enregistre dans un fichier HTML.
 
     :param wl_combineds: Dictionnaire contenant les DataFrames des niveaux d'eau par station.
-    :type wl_combineds: list[pd.DataFrame]
+    :type wl_combineds: Collection[pd.DataFrame]
     :param station_titles: Liste des titres des stations.
-    :type station_titles: list[str]
+    :type station_titles: Sequence[str]
     :param export_path: Chemin du répertoire d'exportation des fichiers HTML.
     :type export_path: Path
     """
@@ -560,14 +568,16 @@ def processing_workflow(
     )
 
     excluded_stations: list[str] = []
-    wl_combineds_list: list[
-        pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]
-    ] = []
-    station_titles_list: list[str] = []
+    wl_combineds_dict: dict[
+        str, list[pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]
+    ] = defaultdict(list)
+
     last_run_stations: list[str] = []
     run: int = 1
 
-    while True:  # todo ajouter max itération
+    max_iterations = 20  # todo à ajouter dans la configuration
+
+    while run < max_iterations + 1:
         LOGGER.info(
             f"Transformation des données : {run}. Stations exclues : {excluded_stations}."
         )
@@ -633,18 +643,15 @@ def processing_workflow(
             threshold_interpolation_filling=iwls_api_config.time_series.threshold_interpolation_filling,
         )
         # Add the water level data to the list for the plot
-        wl_combineds_list.extend(
-            wl_combineds.values()
-        )  # todo concaterner les dataframes des mêmes stations
+        for key, value in wl_combineds.items():
+            wl_combineds_dict[key].append(value)
 
         # Export the water level data for each station
-        station_titles: list[str] = export_station_water_levels(
+        export_station_water_levels(
             wl_combineds=wl_combineds,
             gdf_voronoi=gdf_voronoi,
             export_tide_path=export_tide_path,
         )
-        # Add the station titles to the list for the plot
-        station_titles_list.extend(station_titles)
 
         # Log the exceptions
         LOGGER.debug(f"Exceptions : {wl_exceptions}.")
@@ -695,7 +702,29 @@ def processing_workflow(
         last_run_stations = list(wl_combineds.keys())
 
     # Plot the water level data for each station
-    if wl_combineds_list:
+    if wl_combineds_dict:
+        wl_combineds_list = [
+            pd.concat(value)
+            .drop_duplicates(subset=[schema_ids.EVENT_DATE])
+            .reset_index(drop=True)
+            .sort_values(by=schema_ids.EVENT_DATE)
+            for value in wl_combineds_dict.values()
+        ]
+
+        gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneInfoSchema] = (
+            voronoi.get_voronoi_geodataframe(
+                stations_handler=stations_handler,
+                time_series=iwls_api_config.time_series.priority,
+            )
+        )
+        station_titles_list: list[str] = [
+            get_station_title(
+                gdf_voronoi=gdf_voronoi,
+                station_id=key,
+            )
+            for key in wl_combineds_dict.keys()
+        ]
+
         plot_water_level_data(
             wl_combineds=wl_combineds_list,
             station_titles=station_titles_list,
@@ -708,6 +737,10 @@ def processing_workflow(
         f"Exportation des données traitées ({len(data)} sondes) : {output_path}."
     )
     export.export_geodataframe_to_gpkg(geodataframe=data, output_path=output_path)
+
+    # todo exporter en csar
+
+    # todo tester sur des gros jeux de données
 
 
 if __name__ == "__main__":
