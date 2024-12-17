@@ -78,19 +78,19 @@ msgstr "This script allows processing bathymetric data files and georeferencing 
 
 #: ../../../cli:1
 msgid "This script allows to process bathymetric data files and georeference them."
-msgstr "This script allows processing bathymetric data files and georeferencing them."
+msgstr ""
 
 #: ../../source/cli.rst
 msgid "Options"
-msgstr "Options"
+msgstr ""
 
 #: ../../../cli:1
 msgid "Chemin du répertoire de sortie."
-msgstr "Path of the output directory."
+msgstr ""
 
 #: ../../../cli:1
 msgid "Path of the output directory."
-msgstr "Path of the output directory."
+msgstr ""
 
 #: ../../../cli:1
 msgid ""
@@ -104,7 +104,7 @@ msgid ""
 "Vessel identifier. If no vessel identifier is used, a default vessel with"
 " lever arms at 0 will be used."
 msgstr ""
-"Vessel identifier. If no vessel identifier is used, a default vessel with lever arms at 0 will be used."
+""
 
 #: ../../../cli:1
 msgid ""
@@ -118,13 +118,13 @@ msgid ""
 "Path of the configuration file. If no configuration file is provided, the"
 " default configuration file will be used."
 msgstr ""
-"Path of the configuration file. If no configuration file is provided, the default configuration file will be used."
+""
 
 #: ../../source/cli.rst
 msgid "Arguments"
-msgstr "Arguments"
+msgstr "A"
 
 #: ../../../cli:1
 msgid "Required argument(s)"
-msgstr "Required argument(s)"
+msgstr ""
 
