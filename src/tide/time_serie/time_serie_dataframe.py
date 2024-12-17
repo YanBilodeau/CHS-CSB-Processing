@@ -1145,4 +1145,4 @@ def get_water_level_data_for_stations(
 # todo isTidal == False  -> interpolation linéaire plutôt que spline cubique ?
 # todo récupérer isTidal pour savoir si on doit interpoler linéairement ou avec une spline cubique
 
-# todo problème avec l'interpolation si les données sont manquantes à la fin ou au début de la période NaN -> refaire les polygones sans cette station
+# todo : caler les données de niveau d'eau sur les séries avec une priorité supérieure
