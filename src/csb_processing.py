@@ -559,7 +559,6 @@ def processing_workflow(
         cache_path=iwls_api_config.cache.cache_path,
     )
 
-    # todo à partir d'ici une boucle sur les NAN et concat à la fin
     excluded_stations: list[str] = []
     wl_combineds_list: list[
         pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]
@@ -671,7 +670,9 @@ def processing_workflow(
                     water_level=wl_combineds,
                     waterline=waterline,
                     sounder=sounder,
-                    water_level_tolerance=processing_config.georeference.water_level_tolerance,
+                    water_level_tolerance=pd.Timedelta(
+                        processing_config.georeference.water_level_tolerance
+                    ),
                 )
             )
 
@@ -775,4 +776,7 @@ if __name__ == "__main__":
 
     # todo gérer la valeur np.nan dans les configurations des capteurs
 
-    # todo dans ce fichier, dans le fichier de configuration CONFIG_csb-processing.toml et dans tide.time_serie.time_serie_dataframe et transformation.georeference
+    # todo dans ce fichier, dans le fichier de configuration dans tide.time_serie.time_serie_dataframe et transformation.georeference
+    # [DATA.Georeference.tpu]  # todo à ajouter au BaseModel ?
+    # base_tpu_wlo = 1
+    # base_tpu_wlp = 2
