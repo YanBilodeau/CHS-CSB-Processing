@@ -8,6 +8,7 @@ les configurations de filtrage des données.
 from enum import StrEnum
 from pathlib import Path
 from pydantic import BaseModel, field_validator
+import re
 from typing import Optional, Any
 
 from loguru import logger
@@ -30,7 +31,7 @@ MAX_LONGITUDE: int | float = 180
 MIN_DEPTH: int | float = 0
 MAX_DEPTH: int | float | None = None
 
-WATER_LEVEL_TOLERANCE: int | float = 15
+WATER_LEVEL_TOLERANCE: str = "15 min"
 
 INFO: str = "INFO"
 
@@ -127,11 +128,34 @@ class DataGeoreferenceConfig(BaseModel):
 
     :param water_level_tolerance: Écart maximal en minutes entre les données et les niveaux d'eau à
                                 récupérer pour le géoréférencement.
-    :type water_level_tolerance: int | float
+    :type water_level_tolerance: str
     """
 
-    water_level_tolerance: int | float = WATER_LEVEL_TOLERANCE
+    water_level_tolerance: str = WATER_LEVEL_TOLERANCE
     """La tolérance en minutes pour les données de marée à récupérer pour le géoréférencement."""
+
+    @field_validator("water_level_tolerance")
+    def validate_water_level_tolerance(cls, value: str | None) -> str:
+        """
+        Valide le time gap.
+
+        :param value: La tolérance pour water level.
+        :type value: str | None
+        :return: La tolérance pour water level.
+        :rtype: str
+        :raises ValueError: Si la tolérance pour water level n'est pas au bon format.
+        """
+        if value == "" or value is None:
+            return WATER_LEVEL_TOLERANCE
+
+        if value is not None:
+            pattern = re.compile(r"^\d+\s*(min|h)$")
+            if not pattern.match(value):
+                raise ValueError(
+                    'La tolerance pour water level doit être au format "<number> <minutes|hours>".'
+                )
+
+        return value
 
 
 class VesselConfigManagerType(StrEnum):
