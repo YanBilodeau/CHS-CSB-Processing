@@ -34,4 +34,4 @@ msgstr "CHS-CSB-Processing Documentation"
 
 #: ../../source/index.rst:9
 msgid "Bienvenue sur la documentation de CHS-CSB-Processing. Cette documentation est destinée à vous aider à comprendre le fonctionnement de CHS-CSB-Processing et à vous guider dans son utilisation."
-msgstr "Welcome to the CHS-CSB-Processing documentation. This documentation is designed to help you understand how CHS-CSB-Processing works and guide you in its usage."
+msgstr "Welcome to the CHS-CSB-Processing documentation. This documentation is designed to help you understand how CHS-CSB-Processing works and guide you in its usage.\nThe translation in English is in progress."
