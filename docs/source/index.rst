@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-CHS-CSB-Processing documentation
-================================
+Documentation de CHS-CSB-Processing
+===================================
 
 Bienvenue sur la documentation de CHS-CSB-Processing. Cette documentation est
 destinée à vous aider à comprendre le fonctionnement de CHS-CSB-Processing et
