@@ -75,7 +75,8 @@ def _interpolate_water_level(
     before_event: pd.Series,
     after_event: pd.Series,
     time_utc: pd.Timestamp,
-) -> np.float64:
+    water_level_tolerance: pd.Timedelta,
+) -> float:
     """
     Interpole le niveau d'eau entre deux événements.
 
@@ -85,21 +86,27 @@ def _interpolate_water_level(
     :type after_event: pd.Series[schema.WaterLevelSerieDataSchema]
     :param time_utc: Temps pour lequel interpoler le niveau d'eau.
     :type time_utc: pd.Timestamp
+    :param water_level_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
+    :type water_level_tolerance: pd.Timedelta
     :return: Valeur interpolée du niveau d'eau.
-    :rtype: np.float64
+    :rtype: float
     """
     # Interpolation linéaire
-    time_diff: np.float64 = (
+    time_diff_event: np.float64 = (
         after_event[schema_ids.EVENT_DATE] - before_event[schema_ids.EVENT_DATE]
-    ).total_seconds()  # todo ne pas interpoler si le temps est trop grand
+    ).total_seconds()
+    if time_diff_event > (2 * water_level_tolerance.total_seconds()):
+        return np.nan
 
-    value_diff: float = after_event[schema_ids.VALUE] - before_event[schema_ids.VALUE]
+    value_diff_event: float = (
+        after_event[schema_ids.VALUE] - before_event[schema_ids.VALUE]
+    )
     time_elapsed: float = (
         time_utc - before_event[schema_ids.EVENT_DATE]
     ).total_seconds()
 
     interpolated_value: np.float64 = before_event[schema_ids.VALUE] + (
-        value_diff * (time_elapsed / time_diff)
+        value_diff_event * (time_elapsed / time_diff_event)
     )
 
     return round(interpolated_value, 3)
@@ -130,7 +137,7 @@ def _add_value_within_limit_if_applicable(
     water_level_df: pd.DataFrame,
     idx_sounding: int,
     tide_zone_id: str,
-    water_level_tolerance: int | float,
+    water_level_tolerance: pd.Timedelta,
 ) -> np.float64 | float:
     """
     Ajoute la valeur du niveau d'eau si elle est dans les limites.
@@ -148,15 +155,15 @@ def _add_value_within_limit_if_applicable(
     :param tide_zone_id: Identifiant de la zone de marée.
     :type tide_zone_id: str
     :param water_level_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
-    :type water_level_tolerance: int | float
+    :type water_level_tolerance: pd.Timedelta
     :return: Valeur du niveau d'eau.
     :rtype: np.float64 | float
     """
-    time_diff: float = (
-        abs(event_dates_wl[event_position_wl] - time_utc_sounding).total_seconds() / 60
-    )
+    time_diff: float = abs(
+        event_dates_wl[event_position_wl] - time_utc_sounding
+    ).total_seconds()
 
-    if time_diff <= water_level_tolerance:
+    if time_diff <= water_level_tolerance.total_seconds():
         return round(water_level_df.iloc[event_position_wl][schema_ids.VALUE], 3)
 
     LOGGER.debug(
@@ -170,7 +177,7 @@ def _add_value_within_limit_if_applicable(
 def _get_water_level_for_sounding(
     sounding: pd.Series,
     water_level_data: dict[str, pd.DataFrame],
-    water_level_tolerance: int | float,
+    water_level_tolerance: pd.Timedelta,
 ) -> np.float64 | float:
     """
     Récupère la valeur du niveau d'eau pour une sonde.
@@ -180,7 +187,7 @@ def _get_water_level_for_sounding(
     :param water_level_data: Les séries temporelles des niveaux d'eau.
     :type water_level_data: dict[str, pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]
     :param water_level_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
-    :type water_level_tolerance: int | float
+    :type water_level_tolerance: pd.Timedelta
     :return: Valeur du niveau d'eau.
     :rtype: np.float64 | float
     """
@@ -248,13 +255,14 @@ def _get_water_level_for_sounding(
         before_event=water_level_df.iloc[position_before],
         after_event=water_level_df.iloc[position_after],
         time_utc=time_utc_sounding,
+        water_level_tolerance=water_level_tolerance,
     )
 
 
 def get_water_levels(
     data: gpd.GeoDataFrame,
     water_level_data: dict[str, pd.DataFrame],
-    water_level_tolerance: int | float,
+    water_level_tolerance: pd.Timedelta,
 ) -> gpd.GeoDataFrame:
     """
     Ajoute le niveau d'eau aux données de profondeur.
@@ -264,7 +272,7 @@ def get_water_levels(
     :param water_level_data: Niveau d'eau.
     :type water_level_data: dict[str, pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]
     :param water_level_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
-    :type water_level_tolerance: int | float
+    :type water_level_tolerance: pd.Timedelta
     :return: Données de profondeur avec le niveau d'eau.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
@@ -359,7 +367,7 @@ def compute_tpu(
         return gdf
 
     # todo mettre en paramètre (wlo 1 ? et wlp 2 ?), mettre le coefficient et la constante en paramètre
-    # todo Appliquer sur depth_raw_meter ou depth_processed_meter ?
+
     dask_data = dask_data.map_partitions(calculate_uncertainty)
 
     return dask_data.compute().pipe(gpd.GeoDataFrame)
@@ -374,7 +382,7 @@ def georeference_bathymetry(
     water_level: dict[str, pd.DataFrame],
     waterline: WaterlineProtocol,
     sounder: SensorProtocol,
-    water_level_tolerance: int | float = 15,
+    water_level_tolerance: pd.Timedelta = pd.Timedelta("15 min"),
     overwrite: bool = False,
 ) -> gpd.GeoDataFrame:
     """
@@ -389,7 +397,7 @@ def georeference_bathymetry(
     :param sounder: Données du sondeur.
     :type sounder: SensorProtocol
     :param water_level_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
-    :type water_level_tolerance: int | float
+    :type water_level_tolerance: pd.Timedelta
     :param overwrite: Géoréférencer les données de profondeur même si elles ont déjà été géoréférencées.
     :type overwrite: bool
     :return: Données de profondeur avec le niveau d'eau.
