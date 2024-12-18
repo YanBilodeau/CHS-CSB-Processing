@@ -12,8 +12,9 @@ threshold_interpolation-filling = "6 h"
 # Flag de l'API privée {"GOOD", "NOT_EVAL", "QUESTIONABLE", "BAD", "MISSING"}.
 # Flag de l'API publique {"1", "2", "3"}. 1 = Good, 2 = Not evaluated, 3 = Questionable
 wlo_qc_flag_filter = ["NOT_EVAL", "QUESTIONABLE", "BAD", "MISSING", "2", "3"]
-# Temps tampon en heures pour les données de la série temporelle à récupérer pour les interpolations {int}.
-buffer_time = 24
+# Temps tampon pour les données de la série temporelle à récupérer pour les interpolations.
+# {format str "<number> <min|h>"}
+buffer_time = "24 h"
 
 [IWLS.API.Profile]
 # {"dev", "prod", "public"}
