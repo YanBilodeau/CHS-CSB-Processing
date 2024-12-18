@@ -12,7 +12,9 @@ import geopandas as gpd
 import numpy as np
 from loguru import logger
 import pandas as pd
+from typing import Optional
 
+from .exception_tranformation import WaterLevelDataRequiredError
 from .transformation_models import SensorProtocol, WaterlineProtocol
 import schema
 from schema import model_ids as schema_ids
@@ -405,9 +407,9 @@ def compute_tpu(
 )
 def georeference_bathymetry(
     data: gpd.GeoDataFrame,
-    water_level: dict[str, pd.DataFrame],
     waterline: WaterlineProtocol,
     sounder: SensorProtocol,
+    water_level: Optional[dict[str, pd.DataFrame]] = None,
     water_level_tolerance: pd.Timedelta = pd.Timedelta("15 min"),
     overwrite: bool = False,
     apply_water_level: bool = True,
@@ -417,12 +419,12 @@ def georeference_bathymetry(
 
     :param data: Données brutes de profondeur.
     :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
-    :param water_level: Niveau d'eau.
-    :type water_level: dict[str, pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]
     :param waterline: Données de la ligne d'eau.
     :type waterline: WaterlineProtocol
     :param sounder: Données du sondeur.
     :type sounder: SensorProtocol
+    :param water_level: Niveau d'eau.
+    :type water_level: Optional[dict[str, pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]]
     :param water_level_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
     :type water_level_tolerance: pd.Timedelta
     :param overwrite: Géoréférencer les données de profondeur même si elles ont déjà été géoréférencées.
@@ -431,6 +433,9 @@ def georeference_bathymetry(
     :type apply_water_level: bool
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
+    if apply_water_level and water_level is None:
+        raise WaterLevelDataRequiredError()
+
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
         data if overwrite else data[data[schema_ids.DEPTH_PROCESSED_METER].isna()]
     )
