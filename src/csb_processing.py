@@ -164,7 +164,7 @@ def get_stations_handler(
 
 
 @schema.validate_schemas(
-    data_geodataframe=schema.DataLoggerSchema,
+    data_geodataframe=schema.DataLoggerWithTideZoneSchema,
     tide_zone=schema.TideZoneProtocolSchema,
     return_schema=schema.DataLoggerWithTideZoneSchema,
 )
@@ -176,7 +176,7 @@ def add_tide_zone_id_to_geodataframe(
     Récupère les zones de marées pour les données.
 
     :param data_geodataframe: Les données des DataLoggers.
-    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     :param tide_zone: Les zones de marées.
     :type tide_zone: gpd.GeoDataFrame[schema.TideZoneProtocolSchema]
     :return: Les données des DataLoggers avec les zones de marées.
@@ -326,7 +326,7 @@ def export_station_water_levels(
         )
 
 
-def plot_water_level_data(
+def export_plot_water_level_data(
     wl_combineds: Collection[pd.DataFrame],
     station_titles: Sequence[str],
     export_path: Path,
@@ -350,6 +350,53 @@ def plot_water_level_data(
         titles=station_titles,
         show_plot=False,  # Afficher le graphique dans un navigateur web
         output_path=export_path,  # Exporter le graphique dans un fichier HTML
+    )
+
+
+def plot_water_levels(
+    wl_combineds_dict: dict[str, list[pd.DataFrame]],
+    stations_handler: stations.StationsHandlerABC,
+    time_series: Collection[iwls.TimeSeries],
+    export_tide_path: Path,
+) -> None:
+    """
+    Trace les données de niveaux d'eau pour chaque station et les enregistre dans un fichier HTML.
+
+    :param wl_combineds_dict: Dictionnaire contenant les DataFrames des niveaux d'eau par station.
+    :type wl_combineds_dict: dict[str, list[pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]]
+    :param stations_handler: Gestionnaire des stations.
+    :type stations_handler: stations.StationsHandlerABC
+    :param time_series: Liste des séries temporelles.
+    :type time_series: Collection[iwls.TimeSeries]
+    :param export_tide_path: Chemin du répertoire d'exportation des fichiers HTML.
+    :type export_tide_path: Path
+    """
+    wl_combineds_list = [
+        pd.concat(value)
+        .drop_duplicates(subset=[schema_ids.EVENT_DATE])
+        .reset_index(drop=True)
+        .sort_values(by=schema_ids.EVENT_DATE)
+        for value in wl_combineds_dict.values()
+    ]
+
+    gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneInfoSchema] = (
+        voronoi.get_voronoi_geodataframe(
+            stations_handler=stations_handler,
+            time_series=time_series,
+        )
+    )
+    station_titles_list: list[str] = [
+        get_station_title(
+            gdf_voronoi=gdf_voronoi,
+            station_id=key,
+        )
+        for key in wl_combineds_dict.keys()
+    ]
+
+    export_plot_water_level_data(
+        wl_combineds=wl_combineds_list,
+        station_titles=station_titles_list,
+        export_path=export_tide_path / "WaterLevel.html",
     )
 
 
@@ -477,6 +524,26 @@ def get_sensors(
     return sounder, waterline
 
 
+def export_processed_data(
+    data_geodataframe: gpd.GeoDataFrame, export_data_path: Path
+) -> None:
+    """
+    Exporte les données traitées dans un fichier GeoPackage.
+
+    :param data_geodataframe: Données traitées à exporter.
+    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :param export_data_path: Chemin du répertoire d'exportation.
+    :type export_data_path: Path
+    """
+    output_path: Path = export_data_path / "ProcessedData.gpkg"
+    logger.info(
+        f"Exportation des données traitées ({len(data_geodataframe)} sondes) : {output_path}."
+    )
+    export.export_geodataframe_to_gpkg(
+        geodataframe=data_geodataframe, output_path=output_path
+    )
+
+
 def processing_workflow(
     files: Collection[Path],
     vessel: str | vessel_manager.VesselConfig,
@@ -530,6 +597,7 @@ def processing_workflow(
     LOGGER.info(
         f"Récupération de la configuration du navire {vessel.id if isinstance(vessel, vessel_manager.VesselConfig) else vessel}."
     )
+    # Get the sensors for the vessel
     vessel_config: vessel_manager.VesselConfig = get_vessel_config(
         vessel, processing_config.vessel_manager
     )
@@ -546,8 +614,8 @@ def processing_workflow(
         return
 
     # Parse the data
-    data: gpd.GeoDataFrame[schema.DataLoggerSchema] = parser_files.parser.from_files(
-        files=parser_files.files
+    data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
+        parser_files.parser.from_files(files=parser_files.files)
     )
 
     # Clean the data
@@ -558,6 +626,33 @@ def processing_workflow(
 
     # Export the parsed data
     export.export_geodataframe_to_gpkg(data, export_data_path / "ParsedData.gpkg")
+
+    sounder, waterline = get_sensors(
+        vessel_config=vessel_config,
+        min_time=data[schema_ids.TIME_UTC].min(),
+        max_time=data[schema_ids.TIME_UTC].max(),
+    )
+
+    if not apply_water_level:
+        LOGGER.info("Le niveau d'eau ne sera pas appliqué aux données.")
+
+        # Georeference the bathymetry data
+        data: gpd.GeoDataFrame[schema.DataLoggerSchema] = (
+            georeference.georeference_bathymetry(
+                data=data,
+                water_level=None,
+                waterline=waterline,
+                sounder=sounder,
+                water_level_tolerance=pd.Timedelta(
+                    processing_config.georeference.water_level_tolerance
+                ),
+                apply_water_level=apply_water_level,
+            )
+        )
+
+        export_processed_data(data_geodataframe=data, export_data_path=export_data_path)
+
+        return
 
     # Read the configuration file 'iwls_API_config.toml'
     iwls_api_config: config.IWLSAPIConfig = config.get_api_config(
@@ -600,9 +695,11 @@ def processing_workflow(
             )
         )
 
-        # Add the tide zone to the data
-        data: gpd.GeoDataFrame = add_tide_zone_id_to_geodataframe(
-            data_geodataframe=data, tide_zone=gdf_voronoi
+        # Add the tide zone id to the data
+        data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
+            add_tide_zone_id_to_geodataframe(
+                data_geodataframe=data, tide_zone=gdf_voronoi
+            )
         )
 
         # Get the time and tide zone
@@ -620,13 +717,6 @@ def processing_workflow(
             LOGGER.info(
                 f"Zone de marée {zone} : temps minimum - {min_time}, temps maximum - {max_time}, séries temporelles - {time_series}."
             )
-
-        # Get the sensors for the vessel
-        sounder, waterline = get_sensors(
-            vessel_config=vessel_config,
-            min_time=tide_zonde_info[schema_ids.MIN_TIME].min(),
-            max_time=tide_zonde_info[schema_ids.MAX_TIME].max(),
-        )
 
         # Get the water level data for each station
         LOGGER.info(
@@ -692,10 +782,6 @@ def processing_workflow(
                 )
             )
 
-            LOGGER.debug(data)
-            for idx, row in data.head(5).iterrows():
-                LOGGER.debug(row)
-
         # Check if there are any missing values in the processed data
         if not data[schema_ids.DEPTH_PROCESSED_METER].isna().any():
             break
@@ -712,40 +798,15 @@ def processing_workflow(
 
     # Plot the water level data for each station
     if wl_combineds_dict:
-        wl_combineds_list = [
-            pd.concat(value)
-            .drop_duplicates(subset=[schema_ids.EVENT_DATE])
-            .reset_index(drop=True)
-            .sort_values(by=schema_ids.EVENT_DATE)
-            for value in wl_combineds_dict.values()
-        ]
-
-        gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneInfoSchema] = (
-            voronoi.get_voronoi_geodataframe(
-                stations_handler=stations_handler,
-                time_series=iwls_api_config.time_series.priority,
-            )
-        )
-        station_titles_list: list[str] = [
-            get_station_title(
-                gdf_voronoi=gdf_voronoi,
-                station_id=key,
-            )
-            for key in wl_combineds_dict.keys()
-        ]
-
-        plot_water_level_data(
-            wl_combineds=wl_combineds_list,
-            station_titles=station_titles_list,
-            export_path=export_tide_path / "WaterLevel.html",
+        plot_water_levels(
+            wl_combineds_dict=wl_combineds_dict,
+            stations_handler=stations_handler,
+            time_series=iwls_api_config.time_series.priority,
+            export_tide_path=export_tide_path,
         )
 
     # Export the processed data
-    output_path: Path = export_data_path / "ProcessedData.gpkg"
-    LOGGER.info(
-        f"Exportation des données traitées ({len(data)} sondes) : {output_path}."
-    )
-    export.export_geodataframe_to_gpkg(geodataframe=data, output_path=output_path)
+    export_processed_data(data_geodataframe=data, export_data_path=export_data_path)
 
 
 if __name__ == "__main__":
@@ -813,6 +874,13 @@ if __name__ == "__main__":
     def get_tuk_2023() -> list[Path]:
         return list(Path(r"D:\Tuk_2023").glob("*.xyz"))
 
+    def get_morrish() -> list[Path]:
+        return list(
+            Path(
+                r"\\dcqcimlna01a\SHC_Donnees\Hydrographie_Communautaire\1_RawData\DCDB\Extract_GreatLakes_October2024\LakeHuron\dcdb\Thomas R Morrish"
+            ).glob("*.csv")
+        )
+
     # Get the files to parse
     files_path: list[Path] = get_ofm_files()
     # files_path: list[Path] = get_dcdb_files()
@@ -825,6 +893,7 @@ if __name__ == "__main__":
     # files_path: list[Path] = get_dcdb_paramarine()
     # files_path: list[Path] = get_ludy_pudluk()
     # files_path: list[Path] = get_tuk_2023()
+    # files_path: list[Path] = get_morrish()  # todo tester il y a seulement une run et il reste des NAN ?
     # files_path: list[Path] = (
     #     get_ofm_files()
     #     + get_dcdb_files()
@@ -838,6 +907,7 @@ if __name__ == "__main__":
         vessel="Tuktoyaktuk",  # vessel_manager.UNKNOWN_VESSEL_CONFIG,
         output=OUTPUT,
         config_path=CONFIG_FILE,
+        apply_water_level=True,
     )
 
     # todo gérer la valeur np.nan dans les configurations des capteurs
@@ -852,5 +922,4 @@ if __name__ == "__main__":
     # base_tpu_wlo = 1
     # base_tpu_wlp = 2
 
-    # todo tester \\dcqcimlna01a\SHC_Donnees\Hydrographie_Communautaire\1_RawData\DCDB\Extract_GreatLakes_October2024\LakeHuron\dcdb\Thomas R Morrish
-    #   il y a seulement une run et il reste des NAN
+    # todo tpu si apply_water_level=False ?
