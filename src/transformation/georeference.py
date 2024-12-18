@@ -319,7 +319,7 @@ def get_zero_water_levels(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=CPU_COUNT)
 
     def apply_zero_water_level(gdf: gpd.GeoDataFrame):
-        gdf[schema_ids.WATER_LEVEL_METER] = 0.0
+        gdf.loc[:, schema_ids.WATER_LEVEL_METER] = 0.0
         return gdf
 
     dask_data = dask_data.map_partitions(apply_zero_water_level)
@@ -349,7 +349,7 @@ def apply_georeference_bathymetry(
     dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=CPU_COUNT)
 
     def caculate_depth(gdf: gpd.GeoDataFrame):
-        gdf[schema_ids.DEPTH_PROCESSED_METER] = (
+        gdf.loc[:, schema_ids.DEPTH_PROCESSED_METER] = (
             gdf[schema_ids.DEPTH_RAW_METER]
             - gdf[schema_ids.WATER_LEVEL_METER]
             - waterline.z
@@ -387,7 +387,7 @@ def compute_tpu(
     dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=CPU_COUNT)
 
     def calculate_uncertainty(gdf: gpd.GeoDataFrame):
-        gdf[schema_ids.UNCERTAINTY] = (
+        gdf.loc[:, schema_ids.UNCERTAINTY] = (
             gdf[schema_ids.DEPTH_RAW_METER] * depth_coeficient_tpu
         ) + constant_tpu
         return gdf
