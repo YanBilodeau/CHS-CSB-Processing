@@ -87,7 +87,7 @@ class DataParserOFM(DataParserABC):
         :param data: Le geodataframe à transformer.
         :type data: gpd.GeoDataFrame
         :return: e geodataframe transformé et respectant le schéma de données DataLoggerSchema.
-        :rtype: gpd.GeoDataFrame
+        :rtype: gpd.GeoDataFrame[schema_ids.DataLoggerSchema]
         """
         LOGGER.debug("Transformation du geodataframe.")
 

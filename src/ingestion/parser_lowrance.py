@@ -161,7 +161,7 @@ class DataParserLowrance(DataParserABC):
         :param data: Le geodataframe à transformer.
         :type data: gpd.GeoDataFrame
         :return: Le geodataframe transformé respectant le schéma de données DataLoggerSchema.
-        :rtype: gpd.GeoDataFrame
+        :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
         """
         LOGGER.debug("Transformation du geodataframe.")
 
