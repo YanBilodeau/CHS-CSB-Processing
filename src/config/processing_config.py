@@ -195,6 +195,22 @@ class OptionsConfig(BaseModel):
     max_iterations: int = MAX_ITERATIONS
     """Le nombre maximal d'itérations pour le traitement."""
 
+    @field_validator("max_iterations")
+    def validate_max_iterations(cls, value: int) -> int:
+        """
+        Valide que max_iterations est plus grand que 0.
+
+        :param value: La valeur de max_iterations.
+        :type value: int
+        :return: La valeur de max_iterations.
+        :rtype: int
+        :raises ValueError: Si max_iterations est inférieur ou égal à 0.
+        """
+        if value <= 0:
+            raise ValueError("Le paramètre max_iterations doit être supérieur à 0.")
+
+        return value
+
 
 class CSBprocessingConfig(BaseModel):
     filter: DataFilterConfig
