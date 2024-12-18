@@ -583,9 +583,7 @@ def processing_workflow(
     last_run_stations: list[str] = []
     run: int = 1
 
-    max_iterations = 20  # todo à ajouter dans la configuration
-
-    while run < max_iterations + 1:
+    while run <= processing_config.options.max_iterations:
         LOGGER.info(
             f"Transformation des données : {run}. Stations exclues : {excluded_stations}."
         )
@@ -748,7 +746,8 @@ def processing_workflow(
 
     # todo exporter en csar
 
-    # todo tester sur des gros jeux de données
+    # todo ajouter option waterline dans le CLI
+    # todo option sans réduction de marée
 
 
 if __name__ == "__main__":
@@ -806,8 +805,18 @@ if __name__ == "__main__":
             ).glob("*.csv")
         )
 
+    def get_ludy_pudluk() -> list[Path]:
+        return list(
+            Path(
+                r"\\dcqcimlna01a\SHC_Donnees\Hydrographie_Communautaire\1_RawData\OFM_CHS5_LudyPudluk_2023"
+            ).glob("*.xyz")
+        )
+
+    def get_tuk_2023() -> list[Path]:
+        return list(Path(r"D:\Tuk_2023").glob("*.xyz"))
+
     # Get the files to parse
-    # files_path: list[Path] = get_ofm_files()
+    files_path: list[Path] = get_ofm_files()
     # files_path: list[Path] = get_dcdb_files()
     # files_path: list[Path] = get_lowrance_files()
     # files_path: list[Path] = get_lowrance_files_2()
@@ -815,7 +824,9 @@ if __name__ == "__main__":
     # files_path: list[Path] = get_actisense_files()
     # files_path: list[Path] = get_naujaat_files()
     # files_path: list[Path] = get_kuujjuaq_files()
-    files_path: list[Path] = get_dcdb_paramarine()
+    # files_path: list[Path] = get_dcdb_paramarine()
+    # files_path: list[Path] = get_ludy_pudluk()
+    # files_path: list[Path] = get_tuk_2023()
     # files_path: list[Path] = (
     #     get_ofm_files()
     #     + get_dcdb_files()
