@@ -228,7 +228,9 @@ class DataParserABC(ABC):
         """
         parser = cls()
         data_geodataframe: gpd.GeoDataFrame = parser.read_files(files=files)
-        data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = parser.transform(data=data_geodataframe)
+        data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = parser.transform(
+            data=data_geodataframe
+        )
         data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
             parser.add_empty_columns_to_geodataframe(data=data_geodataframe)
         )
