@@ -168,7 +168,7 @@ def _add_value_within_limit_if_applicable(
 
     LOGGER.debug(
         f"Pas de données de niveau d'eau suffisantes pour récupérer l'index {idx_sounding} avec une "
-        f"tolérance de {water_level_tolerance} minutes : (tide_zone_id={tide_zone_id})."
+        f"tolérance de {water_level_tolerance} : (tide_zone_id={tide_zone_id})."
     )
 
     return np.nan
