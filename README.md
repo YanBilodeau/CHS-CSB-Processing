@@ -90,7 +90,7 @@ priority = ["wlo", "wlp"]  # Priorité des séries temporelles à récupérer.
 max_time_gap = "1 min"  # Intervalle maximal sans données avant interpolation.
 threshold_interpolation_filling = "4 h"  # Seuil pour interpolation et remplissage des données manquantes.
 wlo_qc_flag_filter = ["NOT_EVAL", "QUESTIONABLE", "BAD", "MISSING", "2", "3"]  # Filtres de qualité pour wlo.
-buffer_time = 24  # Temps tampon (en heures) pour récupérer les données nécessaires à l'interpolation.
+buffer_time = "24 h"  # Temps tampon pour récupérer les données nécessaires à l'interpolation.
 
 [IWLS.API.Profile]
 active = "public"  # Profil actif : {"dev", "prod", "public"}.
@@ -144,14 +144,16 @@ max_iterations = 10  # Nombre maximal d'itérations {int}.
   - `max_time_gap` : Temps maximal sans données avant interpolation (format : `"<nombre> <unité>"`, ex. : `"1 min"`).
   - `threshold_interpolation_filling` : Seuil pour l'interpolation et le remplissage des données manquantes (ex. : `"4 h"`).
   - `wlo_qc_flag_filter` : Filtres de qualité pour les données WLO.
-  - `buffer_time` : Temps tampon en heures pour les interpolations.
+  - `buffer_time` : Temps tampon pour les interpolations. (format : `"<nombre> <unité>"`, ex. : `"24 h"`).
 - `[IWLS.API.Profile]` : Définit le profil actif (`"dev"`, `"prod"`, `"public"`).
 - `[IWLS.API.Environment.<profil>]` : Paramètres spécifiques aux environnements (ex. : `endpoint`, `calls`, `period`).
 - `[IWLS.API.Cache]` : Définit la gestion du cache (durée de vie et emplacement).
 - `[DATA.Transformation.filter]` : Définit les limites géographiques et de profondeur pour filtrer les données.
 - `[DATA.Georeference.water_level]` : Définit la tolérance pour le géoréférencement basé sur les niveaux d'eau. (format : `"<nombre> <unité>"`, ex. : `"15 min"`).
 - `[CSB.Processing.vessel]` : Configure le gestionnaire et le fichier des navires.
-- `[CSB.Processing.options]` : Définit les options générales de l'outil.
+- `[CSB.Processing.options]`
+  - `log_level` : Niveau de journalisation : {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}.
+  - `max_iterations` : Nombre maximal d'itérations {int}.
 
 ---
 
@@ -356,7 +358,7 @@ priority = ["wlo", "wlp"]  # Priority of time series to retrieve.
 max_time_gap = "1 min"  # Maximum interval without data before interpolation.
 threshold_interpolation_filling = "4 h"  # Threshold for interpolation and filling missing data.
 wlo_qc_flag_filter = ["NOT_EVAL", "QUESTIONABLE", "BAD", "MISSING", "2", "3"]  # Quality filters for wlo.
-buffer_time = 24  # Buffer time (in hours) to retrieve data needed for interpolation.
+buffer_time = "24 h"  # Buffer time to retrieve data needed for interpolation.
 
 [IWLS.API.Profile]
 active = "public"  # Active profile: {"dev", "prod", "public"}.
@@ -410,14 +412,16 @@ max_iterations = 10  # Maximum number of iterations {int}.
   - `max_time_gap`: Maximum time without data before interpolation (format: `"<number> <unit>", e.g., "1 min"`).
   - `threshold_interpolation_filling`: Threshold for interpolation and filling missing data (e.g., `"4 h"`).
   - `wlo_qc_flag_filter`: Quality filters for WLO data.
-  - `buffer_time`: Buffer time in hours for interpolations.
+  - `buffer_time`: Buffer time in hours for interpolations. (format: `"<number> <unit>", e.g., "24 h"`).
 - `[IWLS.API.Profile]`: Defines the active profile (`"dev"`, `"prod"`, `"public"`).
 - `[IWLS.API.Environment.<profile>]`: Environment-specific parameters (e.g., `endpoint`, `calls`, `period`).
 - `[IWLS.API.Cache]`: Defines cache management (lifetime and location).
 - `[DATA.Transformation.filter]`: Sets geographic and depth limits for filtering data.
 - `[DATA.Georeference.water_level]`: Defines tolerance for georeferencing based on water levels (format: `"<number> <unit>", e.g., "15 min"`).
 - `[CSB.Processing.vessel]`: Configures the vessel manager and vessel file.
-- `[CSB.Processing.options]`: Defines general options for the tool.
+- `[CSB.Processing.options]`
+  - `log_level`: Log level: {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}.
+  - `max_iterations`: Maximum number of iterations {int}.
 
 ---
 
