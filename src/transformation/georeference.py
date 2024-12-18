@@ -402,7 +402,7 @@ def compute_tpu(
 
 
 @schema.validate_schemas(
-    data=schema.DataLoggerWithTideZoneSchema,
+    data=schema.DataLoggerWithTideZoneSchema,  # todo type
     return_schema=schema.DataLoggerSchema,
 )
 def georeference_bathymetry(
@@ -432,6 +432,7 @@ def georeference_bathymetry(
     :param apply_water_level: True pour appliquer le niveau d'eau, sinon un niveau d'eau de 0 sera appliqué.
     :type apply_water_level: bool
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :raises WaterLevelDataRequiredError: Erreur si les données de niveau d'eau sont requises.
     """
     if apply_water_level and water_level is None:
         raise WaterLevelDataRequiredError()
