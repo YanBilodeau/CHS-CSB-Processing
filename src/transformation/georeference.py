@@ -303,6 +303,30 @@ def get_water_levels(
     return data
 
 
+def get_zero_water_levels(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    """
+    Applique un niveau d'eau de 0 aux données de profondeur.
+
+    :param data: Données brutes de profondeur.
+    :type data: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :return: Données de profondeur brutes avec un niveau d'eau de 0.
+    :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    """
+    LOGGER.debug(
+        f"Utilisation d'un niveau d'eau de 0 mètre pour les {len(data)} sondes avec {CPU_COUNT} processus en parallèle."
+    )
+
+    dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=CPU_COUNT)
+
+    def apply_zero_water_level(gdf: gpd.GeoDataFrame):
+        gdf[schema_ids.WATER_LEVEL_METER] = 0.0
+        return gdf
+
+    dask_data = dask_data.map_partitions(apply_zero_water_level)
+
+    return dask_data.compute().pipe(gpd.GeoDataFrame)
+
+
 def apply_georeference_bathymetry(
     data: gpd.GeoDataFrame, waterline: WaterlineProtocol, sounder: SensorProtocol
 ) -> gpd.GeoDataFrame:
@@ -386,6 +410,7 @@ def georeference_bathymetry(
     sounder: SensorProtocol,
     water_level_tolerance: pd.Timedelta = pd.Timedelta("15 min"),
     overwrite: bool = False,
+    apply_water_level: bool = True,
 ) -> gpd.GeoDataFrame:
     """
     Géoréférence les données de bathymétrie.
@@ -402,7 +427,8 @@ def georeference_bathymetry(
     :type water_level_tolerance: pd.Timedelta
     :param overwrite: Géoréférencer les données de profondeur même si elles ont déjà été géoréférencées.
     :type overwrite: bool
-    :return: Données de profondeur avec le niveau d'eau.
+    :param apply_water_level: True pour appliquer le niveau d'eau, sinon un niveau d'eau de 0 sera appliqué.
+    :type apply_water_level: bool
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
@@ -415,11 +441,15 @@ def georeference_bathymetry(
 
     LOGGER.info("Récupération des niveaux d'eau pour les sondes.")
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
-        get_water_levels(
-            data=data_to_process,
-            water_level_data=water_level,
-            water_level_tolerance=water_level_tolerance,
+        (
+            get_water_levels(
+                data=data_to_process,
+                water_level_data=water_level,
+                water_level_tolerance=water_level_tolerance,
+            )
         )
+        if apply_water_level
+        else get_zero_water_levels(data=data_to_process)
     )
 
     LOGGER.info("Application des niveaux d'eau et des bras de levier aux sondes.")

@@ -638,7 +638,7 @@ def processing_workflow(
             # Quality control flag filter for the wlo time series.
             wlo_qc_flag_filter=iwls_api_config.time_series.wlo_qc_flag_filter,
             # Buffer time to add before and after the requested time range for the interpolation.
-            buffer_time=iwls_api_config.time_series.buffer_time,
+            buffer_time=pd.Timedelta(iwls_api_config.time_series.buffer_time),
             # Maximum time gap allowed for the data. The maximum time gap is defined in the configuration file.
             # If the gap is greater than this value, data from the next time series will be retrieved to fill
             # the gaps. For example, if the time series priority is [wlo, wlp] and the maximum time gap is 1 hour, the
@@ -744,11 +744,6 @@ def processing_workflow(
     )
     export.export_geodataframe_to_gpkg(geodataframe=data, output_path=output_path)
 
-    # todo exporter en csar
-
-    # todo ajouter option waterline dans le CLI
-    # todo option sans réduction de marée
-
 
 if __name__ == "__main__":
     import sys
@@ -844,7 +839,15 @@ if __name__ == "__main__":
 
     # todo gérer la valeur np.nan dans les configurations des capteurs
 
+    # todo exporter en csar
+
+    # todo ajouter option waterline dans le CLI
+    # todo option sans réduction de marée
+
     # todo dans ce fichier, dans le fichier de configuration dans tide.time_serie.time_serie_dataframe et transformation.georeference
     # [DATA.Georeference.tpu]  # todo à ajouter au BaseModel ?
     # base_tpu_wlo = 1
     # base_tpu_wlp = 2
+
+    # todo tester \\dcqcimlna01a\SHC_Donnees\Hydrographie_Communautaire\1_RawData\DCDB\Extract_GreatLakes_October2024\LakeHuron\dcdb\Thomas R Morrish
+    #   il y a seulement une run et il reste des NAN
