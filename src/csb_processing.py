@@ -496,6 +496,10 @@ def processing_workflow(
     :param config_path: Chemin du fichier de configuration.
     :type config_path: Optional[Path]
     """
+    if not files:
+        LOGGER.warning(f"Aucun fichier à traiter.")
+        return
+
     # Get the data structure
     export_data_path, export_tide_path, log_path = get_data_structure(output)
 
@@ -534,6 +538,10 @@ def processing_workflow(
         files=files
     )
     LOGGER.debug(parser_files)
+
+    if not parser_files.files:
+        LOGGER.warning(f"Aucun fichier valide à traiter.")
+        return
 
     # Parse the data
     data: gpd.GeoDataFrame[schema.DataLoggerSchema] = parser_files.parser.from_files(
@@ -785,13 +793,29 @@ if __name__ == "__main__":
             ROOT / "ingestion" / "ActiSense" / "composite_RDL_2024_ALL.n2kdecoded.csv"
         ]
 
+    def get_naujaat_files() -> list[Path]:
+        return list(Path("D:\OFM_CHS2_Naujaat_2023-2024").glob("*.xyz"))
+
+    def get_kuujjuaq_files() -> list[Path]:
+        return list(Path("D:\OFM_CHS3_Kuujjuaq_2023-2024").glob("*.xyz"))
+
+    def get_dcdb_paramarine() -> list[Path]:
+        return list(
+            Path(
+                r"\\dcqcimlna01a\SHC_Donnees\Hydrographie_Communautaire\1_RawData\DCDB\Extract_GreatLakes_October2024\LakeOntario\dcdb\PARA Marine"
+            ).glob("*.csv")
+        )
+
     # Get the files to parse
     # files_path: list[Path] = get_ofm_files()
     # files_path: list[Path] = get_dcdb_files()
-    files_path: list[Path] = get_lowrance_files()
+    # files_path: list[Path] = get_lowrance_files()
     # files_path: list[Path] = get_lowrance_files_2()
     # files_path: list[Path] = get_blackbox_files()
     # files_path: list[Path] = get_actisense_files()
+    # files_path: list[Path] = get_naujaat_files()
+    # files_path: list[Path] = get_kuujjuaq_files()
+    files_path: list[Path] = get_dcdb_paramarine()
     # files_path: list[Path] = (
     #     get_ofm_files()
     #     + get_dcdb_files()
