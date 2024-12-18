@@ -134,6 +134,7 @@ json_config_path = "./TCSB_VESSELSLIST.json"  # Chemin vers le fichier de config
 
 [CSB.Processing.options]
 log_level = "INFO"  # Niveau de log : {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}.
+max_iterations = 10  # Nombre maximal d'itérations {int}.
 ```
 
 ### Sections principales
@@ -150,7 +151,7 @@ log_level = "INFO"  # Niveau de log : {"DEBUG", "INFO", "WARNING", "ERROR", "CRI
 - `[DATA.Transformation.filter]` : Définit les limites géographiques et de profondeur pour filtrer les données.
 - `[DATA.Georeference.water_level]` : Définit la tolérance pour le géoréférencement basé sur les niveaux d'eau. (format : `"<nombre> <unité>"`, ex. : `"15 min"`).
 - `[CSB.Processing.vessel]` : Configure le gestionnaire et le fichier des navires.
-- `[CSB.Processing.options]` : Définit les options générales comme le niveau de log.
+- `[CSB.Processing.options]` : Définit les options générales de l'outil.
 
 ---
 
@@ -399,6 +400,7 @@ json_config_path = "./TCSB_VESSELSLIST.json"  # Path to vessel configuration fil
 
 [CSB.Processing.options]
 log_level = "INFO"  # Log level: {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}.
+max_iterations = 10  # Maximum number of iterations {int}.
 ```
 
 ### Main Sections
@@ -415,7 +417,7 @@ log_level = "INFO"  # Log level: {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL
 - `[DATA.Transformation.filter]`: Sets geographic and depth limits for filtering data.
 - `[DATA.Georeference.water_level]`: Defines tolerance for georeferencing based on water levels (format: `"<number> <unit>", e.g., "15 min"`).
 - `[CSB.Processing.vessel]`: Configures the vessel manager and vessel file.
-- `[CSB.Processing.options]`: Defines general options like log level.
+- `[CSB.Processing.options]`: Defines general options for the tool.
 
 ---
 
