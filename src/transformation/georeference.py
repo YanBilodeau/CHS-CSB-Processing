@@ -475,7 +475,7 @@ def georeference_bathymetry(
         f"{data_to_process['Depth_processed_meter'].notna().sum()} sondes géoréférencées."
     )
 
-    data.update(data_to_process)
+    data.update(data_to_process)  # Mise à jour des données
 
     data: gpd.GeoDataFrame[schema.DataLoggerSchema] = data.drop(
         columns=[schema_ids.TIDE_ZONE_ID]
