@@ -24,6 +24,9 @@ class DataCleaningFunctionError(Exception):
 
 @dataclass(frozen=True)
 class WaterLevelDataRequiredError(Exception):
+    """
+    Exception levée lorsqu'il manque les données de niveau d'eau.
+    """
 
     def __str__(self):
         return "Les données de niveau d'eau sont requises pour effectuer le géoréférencement."
