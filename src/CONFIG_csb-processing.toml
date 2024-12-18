@@ -73,3 +73,5 @@ json_config_path = "./CONFIG_vessels.json"
 [CSB.Processing.options]
 # Niveau de log {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 log_level = "INFO"
+# Valeur minimale de 1 {int}
+max_iterations = 10
