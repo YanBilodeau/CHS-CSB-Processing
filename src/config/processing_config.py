@@ -7,6 +7,7 @@ les configurations de filtrage des données.
 
 from enum import StrEnum
 from pathlib import Path
+
 from pydantic import BaseModel, field_validator
 import re
 from typing import Optional, Any
@@ -34,6 +35,7 @@ MAX_DEPTH: int | float | None = None
 WATER_LEVEL_TOLERANCE: str = "15 min"
 
 INFO: str = "INFO"
+MAX_ITERATIONS: int = 10
 
 
 class DataFilterConfig(BaseModel):
@@ -190,6 +192,8 @@ class OptionsConfig(BaseModel):
 
     log_level: str = INFO
     """Le niveau de log."""
+    max_iterations: int = MAX_ITERATIONS
+    """Le nombre maximal d'itérations pour le traitement."""
 
 
 class CSBprocessingConfig(BaseModel):
