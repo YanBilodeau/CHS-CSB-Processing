@@ -195,14 +195,15 @@ class DataParserABC(ABC):
         Ajoute des colonnes vides à un GeoDataFrame.
 
         :param data: Données brutes.
-        :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
+        :type data: gpd.GeoDataFrame[schema.DataLoggerSchema]
         :return: Données avec des colonnes vides.
-        :rtype: gpd.GeoDataFrame[schema.DataLoggerProcessedSchemaWithTideZone]
+        :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
         """
         columns: dict[str, pd.Series] = {
             schema_ids.DEPTH_PROCESSED_METER: pd.Series(dtype="float64"),
             schema_ids.WATER_LEVEL_METER: pd.Series(dtype="float64"),
             schema_ids.UNCERTAINTY: pd.Series(dtype="float64"),
+            schema_ids.TIDE_ZONE_ID: pd.Series(dtype="string"),
         }
 
         LOGGER.debug(f"Ajout de colonnes vides aux données : {columns.keys()}.")
@@ -214,7 +215,7 @@ class DataParserABC(ABC):
 
     @classmethod
     @schema.validate_schemas(
-        return_schema=schema.DataLoggerSchema,
+        return_schema=schema.DataLoggerWithTideZoneSchema,
     )
     def from_files(cls, files: Collection[Path]) -> gpd.GeoDataFrame:
         """
@@ -223,12 +224,12 @@ class DataParserABC(ABC):
         :param files: Les fichiers à lire.
         :type files: Collection[Path]
         :return: Un GeoDataFrame respectant le schéma de données DataLoggerSchema.
-        :rtype: gpd.GeoDataFrame[DataloggerSchema]
+        :rtype: gpd.GeoDataFrame[DataLoggerWithTideZoneSchema]
         """
         parser = cls()
         data_geodataframe: gpd.GeoDataFrame = parser.read_files(files=files)
         data_geodataframe = parser.transform(data=data_geodataframe)
-        data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = (
+        data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
             parser.add_empty_columns_to_geodataframe(data=data_geodataframe)
         )
         data_geodataframe = parser.remove_duplicates(data=data_geodataframe)

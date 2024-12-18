@@ -43,7 +43,7 @@ class DataLoggerWithTideZoneSchema(DataLoggerSchema):
     Schéma des données des DataLoggers avec les zones de marées.
     """
 
-    Tide_zone_id: Series[str]
+    Tide_zone_id: Series[str] = pa.Field(nullable=True)
 
     class Config:
         coerce = True
