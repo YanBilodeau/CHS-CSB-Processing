@@ -20,3 +20,10 @@ class DataCleaningFunctionError(Exception):
 
     def __str__(self):
         return f"La fonction de nettoyage '{self.function}' n'existe pas."
+
+
+@dataclass(frozen=True)
+class WaterLevelDataRequiredError(Exception):
+
+    def __str__(self):
+        return "Les données de niveau d'eau sont requises pour effectuer le géoréférencement."
