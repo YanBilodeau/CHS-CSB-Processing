@@ -23,7 +23,6 @@ import iwls_api_request as iwls
 from logger.loguru_config import configure_logger
 import schema
 import schema.model_ids as schema_ids
-from schema import WaterLevelSerieDataSchema
 from tide.plot import plot_time_series_dataframe
 import tide.stations as stations
 import tide.voronoi as voronoi
@@ -483,6 +482,7 @@ def processing_workflow(
     vessel: str | vessel_manager.VesselConfig,
     output: Path,
     config_path: Optional[Path] = CONFIG_FILE,
+    apply_water_level: Optional[bool] = True,
 ) -> None:
     """
     Workflow de traitement des données.
@@ -495,6 +495,8 @@ def processing_workflow(
     :type output: Path
     :param config_path: Chemin du fichier de configuration.
     :type config_path: Optional[Path]
+    :param apply_water_level: Appliquer le niveau d'eau aux données.
+    :type apply_water_level: Optional[bool]
     """
     if not files:
         LOGGER.warning(f"Aucun fichier à traiter.")
@@ -686,6 +688,7 @@ def processing_workflow(
                     water_level_tolerance=pd.Timedelta(
                         processing_config.georeference.water_level_tolerance
                     ),
+                    apply_water_level=apply_water_level,
                 )
             )
 
