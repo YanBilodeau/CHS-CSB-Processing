@@ -154,7 +154,7 @@ class DataGeoreferenceConfig(BaseModel):
             pattern = re.compile(r"^\d+\s*(min|h)$")
             if not pattern.match(value):
                 raise ValueError(
-                    'La tolerance pour water level doit être au format "<number> <minutes|hours>".'
+                    'La tolerance pour water level doit être au format "<number> <min|h>".'
                 )
 
         return value
