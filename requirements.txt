@@ -22,3 +22,4 @@ click
 sphinx-click
 sphinx_intl
 sphinx-rtd-theme
+sphinx-autodoc-typehints
