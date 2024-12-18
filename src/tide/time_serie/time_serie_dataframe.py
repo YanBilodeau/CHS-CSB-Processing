@@ -626,7 +626,7 @@ def clean_time_series_data(
 
 
 def get_buffered_time(
-    time: str | datetime, buffer_time: Optional[timedelta], operation: Literal["-", "+"]
+    time: str | datetime, buffer_time: Optional[pd.Timedelta], operation: Literal["-", "+"]
 ) -> str:
     """
     Calcul le temps avec un tampon à partir d'une date.
@@ -634,7 +634,7 @@ def get_buffered_time(
     :param time: Date en format ISO 8601 ou objet datetime.
     :type time: str | datetime
     :param buffer_time: Temps tampon à ajouter au début et à la fin de la période de données.
-    :type buffer_time: Optional[timedelta]
+    :type buffer_time: Optional[pd.Timedelta]
     :param operation: Opération à effectuer.
     :type operation: Literal['-', '+']
     :return: Date avec le temps tampon.
@@ -664,7 +664,7 @@ def get_water_level_time_serie(
     from_time: str | datetime,
     to_time: str | datetime,
     time_serie_code: TimeSeriesProtocol,
-    buffer_time: Optional[timedelta] = None,
+    buffer_time: Optional[pd.Timedelta] = None,
     wlo_qc_flag_filter: Optional[Collection[str] | None] = None,
 ) -> pd.DataFrame | None:
     """
@@ -681,7 +681,7 @@ def get_water_level_time_serie(
     :param time_serie_code: Série temporelle.
     :type time_serie_code: TimeSeriesProtocol
     :param buffer_time: Temps tampon à ajouter au début et à la fin de la période de données.
-    :type buffer_time: Optional[timedelta]
+    :type buffer_time: Optional[pd.Timedelta]
     :param wlo_qc_flag_filter: Filtre de qualité des données wlo.
     :type wlo_qc_flag_filter: Optional[Collection[str] | None]
     :return: Données de la série temporelle.
@@ -893,7 +893,7 @@ def get_water_level_data(
     to_time: str | datetime,
     time_series_priority: Collection[TimeSeriesProtocol],
     wlo_qc_flag_filter: Optional[Collection[str] | None] = None,
-    buffer_time: Optional[timedelta | None] = None,
+    buffer_time: Optional[pd.Timedelta | None] = None,
     max_time_gap: Optional[str | None] = None,
     threshold_interpolation_filling: Optional[str | None] = None,
     time_series_excluded_from_interpolation: Optional[
@@ -916,7 +916,7 @@ def get_water_level_data(
     :param wlo_qc_flag_filter: Filtre de qualité des données wlo.
     :type wlo_qc_flag_filter: Optional[Collection[str] | None]
     :param buffer_time: Temps tampon à ajouter au début et à la fin de la période de données.
-    :type buffer_time: Optional[timedelta | None]
+    :type buffer_time: Optional[pd.Timedelta | None]
     :param max_time_gap: Intervalle de temps maximal permis. Si None, l'interpolation et le remplissage des données manquantes est désactivée.
     :type max_time_gap: Optional[str | None]
     :param threshold_interpolation_filling: Seuil de temps en dessous duquel les données manquantes sont interpolées ou remplies.
@@ -1018,7 +1018,7 @@ def get_water_level_data_for_stations(
     stations_handler: StationsHandlerProtocol,
     tide_zonde_info: pd.DataFrame,
     wlo_qc_flag_filter: Optional[Collection[str] | None] = None,
-    buffer_time: Optional[timedelta | None] = None,
+    buffer_time: Optional[pd.Timedelta | None] = None,
     max_time_gap: Optional[str | None] = None,
     threshold_interpolation_filling: Optional[str | None] = None,
 ) -> tuple[
@@ -1035,7 +1035,7 @@ def get_water_level_data_for_stations(
     :param wlo_qc_flag_filter: Filtre de qualité des données wlo.
     :type wlo_qc_flag_filter: Optional[Collection[str] | None]
     :param buffer_time: Temps tampon à ajouter au début et à la fin de la période de données.
-    :type buffer_time: Optional[timedelta | None]
+    :type buffer_time: Optional[pd.Timedelta | None]
     :param max_time_gap: Intervalle de temps maximal permis. Si None, l'interpolation et le remplissage des données manquantes est désactivée.
     :type max_time_gap: Optional[str | None]
     :param threshold_interpolation_filling: Seuil de temps en dessous duquel les données manquantes sont interpolées ou remplies.
