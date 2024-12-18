@@ -626,7 +626,9 @@ def clean_time_series_data(
 
 
 def get_buffered_time(
-    time: str | datetime, buffer_time: Optional[pd.Timedelta], operation: Literal["-", "+"]
+    time: str | datetime,
+    buffer_time: Optional[pd.Timedelta],
+    operation: Literal["-", "+"],
 ) -> str:
     """
     Calcul le temps avec un tampon à partir d'une date.
