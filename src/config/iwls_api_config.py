@@ -54,16 +54,11 @@ class TimeSeriesConfig(BaseModel):
     """Le seuil de remplissage ou d'interpolation."""
     wlo_qc_flag_filter: Optional[list[str]] = None
     """Les filtres de qualité à filtrer."""
-    buffer_time: Optional[timedelta] = None
+    buffer_time: Optional[str] = None
     """Le temps de buffer à ajouter s'il manque des données pour l'interpolation."""
 
-    def __init__(self, **data):
-        super().__init__(**data)
-        if isinstance(data.get("buffer_time"), int):
-            self.buffer_time = timedelta(hours=data["buffer_time"])
-
-    @field_validator("max_time_gap", "threshold_interpolation_filling")
-    def validate_time_gap(cls, value: str | None) -> str | None:
+    @field_validator("max_time_gap", "threshold_interpolation_filling", "buffer_time")
+    def validate_str_time(cls, value: str | None) -> str | None:
         """
         Valide le time gap.
 
@@ -80,7 +75,7 @@ class TimeSeriesConfig(BaseModel):
             pattern = re.compile(r"^\d+\s*(min|h)$")
             if not pattern.match(value):
                 raise ValueError(
-                    "Le time gap et le threshold interpolation filling doivent être au format "
+                    "Le time gap, le threshold interpolation filling et le buffer doivent être au format "
                     '"<number> <min|h>".'
                 )
 
