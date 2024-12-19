@@ -114,7 +114,7 @@ def get_files(paths: Collection[Path]) -> list[Path]:
     default=True,
     help="""
     Appliquer la réduction des niveaux d'eau lors du géoréférencement des sondes. Par défaut, 
-    la réduction des niveaux d'eau est appliqués.\n
+    la réduction des niveaux d'eau est appliqué.\n
     Apply the water level reduction when georeferencing the soundings. 
     By default, the water level reduction is applied.
     """,
