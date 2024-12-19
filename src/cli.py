@@ -131,6 +131,9 @@ def cli(
     :type waterline: Optional[float]
     :param config: Chemin du fichier de configuration.
     :type config: Optional[Path]
+    :raise click.UsageError: Si les options --vessel et --waterline sont utilisées en même temps.
+    :raise click.UsageError: Si la valeur de l'option --waterline est négative.
+    :raise click.UsageError: Si aucun fichier valide n'est fourni.
     """
     configure_logger()
     LOGGER.info(f"Ligne de commande exécutée : python {' '.join(sys.argv)}")
@@ -165,9 +168,9 @@ def cli(
 
     if waterline is not None:
         LOGGER.info(f"Ligne de flottaison fournie : {waterline}.")
-        UNKNOWN_VESSEL_CONFIG.waterline = Waterline(
-            time_stamp=UNKNOWN_DATE, z=waterline
-        )
+        UNKNOWN_VESSEL_CONFIG.waterline = [
+            Waterline(time_stamp=UNKNOWN_DATE, z=-waterline)
+        ]
         vessel = UNKNOWN_VESSEL_CONFIG
 
     if not config:
