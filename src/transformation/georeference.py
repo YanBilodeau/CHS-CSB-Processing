@@ -352,7 +352,7 @@ def apply_georeference_bathymetry(
                 - waterline.z
                 + sounder.z
             ),
-            3,
+            2,
         )
         return gdf
 
@@ -382,7 +382,7 @@ def compute_tpu(
 
     def calculate_uncertainty(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         gdf.loc[:, schema_ids.UNCERTAINTY] = round(
-            (gdf[schema_ids.DEPTH_RAW_METER] * depth_coeficient_tpu) + constant_tpu, 3
+            (gdf[schema_ids.DEPTH_RAW_METER] * depth_coeficient_tpu) + constant_tpu, 2
         )
         return gdf
 
