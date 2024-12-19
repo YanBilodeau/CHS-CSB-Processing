@@ -345,11 +345,14 @@ def apply_georeference_bathymetry(
     )
 
     def caculate_depth(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
-        gdf.loc[:, schema_ids.DEPTH_PROCESSED_METER] = (
-            gdf[schema_ids.DEPTH_RAW_METER]
-            - gdf[schema_ids.WATER_LEVEL_METER]
-            - waterline.z
-            + sounder.z
+        gdf.loc[:, schema_ids.DEPTH_PROCESSED_METER] = round(
+            (
+                gdf[schema_ids.DEPTH_RAW_METER]
+                - gdf[schema_ids.WATER_LEVEL_METER]
+                - waterline.z
+                + sounder.z
+            ),
+            3,
         )
         return gdf
 
@@ -378,9 +381,9 @@ def compute_tpu(
     )
 
     def calculate_uncertainty(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
-        gdf.loc[:, schema_ids.UNCERTAINTY] = (
-            gdf[schema_ids.DEPTH_RAW_METER] * depth_coeficient_tpu
-        ) + constant_tpu
+        gdf.loc[:, schema_ids.UNCERTAINTY] = round(
+            (gdf[schema_ids.DEPTH_RAW_METER] * depth_coeficient_tpu) + constant_tpu, 3
+        )
         return gdf
 
     # todo mettre en paramètre (wlo 1 ? et wlp 2 ?), mettre le coefficient et la constante en paramètre
