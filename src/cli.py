@@ -79,8 +79,9 @@ def get_files(paths: Collection[Path]) -> list[Path]:
     required=False,
     help="""
     Identifiant du navire. Si aucun identifiant de navire est utilisé, un navire par défaut
-    avec des bras de levier à 0 sera utilisé. Cet option ne peut pas être utilisé conjointement avec --waterline\n
+    avec des bras de levier à 0 sera utilisé. Cette option ne peut pas être utilisé conjointement avec --waterline.\n
     Vessel identifier. If no vessel identifier is used, a default vessel with lever arms at 0 will be used.
+    This option cannot be used together with --waterline.
     """,
 )
 @click.option(
@@ -90,9 +91,10 @@ def get_files(paths: Collection[Path]) -> list[Path]:
     help="""
     Ligne de flottaison du navire. Cette mesure correspond à la distance entre le sondeur et la surface de 
     l'eau (mesure verticale). Si aucune ligne de flottaison n'est fournie, une valeur de 0 sera utilisée.
-    \n
+    Cette option ne peut pas être utilisée conjointement avec --vessel.\n
     Waterline of the vessel. This measurement corresponds to the distance between the sounder and the surface of
     the water (vertical measurement). If no waterline is provided, a value of 0 will be used.
+    This option cannot be used together with --vessel.
     """,
 )
 @click.option(
