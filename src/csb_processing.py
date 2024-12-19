@@ -35,10 +35,7 @@ import vessel as vessel_manager
 LOGGER = logger.bind(name="CSB-Processing.WorkFlow")
 configure_logger()
 
-ROOT: Path = Path(__file__).parent
-OUTPUT: Path = ROOT.parent / "Output"
-VESSEL_JSON_PATH: Path = ROOT / "CONFIG_vessels.json"
-CONFIG_FILE: Path = ROOT / "CONFIG_csb-processing.toml"
+CONFIG_FILE: Path = Path(__file__).parent / "CONFIG_csb-processing.toml"
 
 
 @dataclass(frozen=True)
@@ -524,6 +521,16 @@ def get_sensors(
     return sounder, waterline
 
 
+def finalize_geodataframe(data_geodataframe: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    """
+    Finalise le GeoDataFrame des données.
+
+    :param data_geodataframe: GeoDataFrame des données.
+    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    """
+    return data_geodataframe[schema.DataLoggerSchema.__annotations__.keys()]
+
+
 def export_processed_data(
     data_geodataframe: gpd.GeoDataFrame, export_data_path: Path
 ) -> None:
@@ -579,6 +586,7 @@ def processing_workflow(
     configure_logger(
         log_path / f"{datetime.now().strftime('%Y-%m-%d')}_CSB-Processing.log",
         std_level=processing_config.options.log_level,
+        log_file_level="DEBUG",
     )
 
     # Check if the vessel configuration is missing
@@ -650,9 +658,12 @@ def processing_workflow(
             )
         )
 
-        export_processed_data(data_geodataframe=data, export_data_path=export_data_path)
+        export_processed_data(
+            data_geodataframe=finalize_geodataframe(data_geodataframe=data),
+            export_data_path=export_data_path,
+        )
 
-        return
+        return None
 
     # Read the configuration file 'iwls_API_config.toml'
     iwls_api_config: config.IWLSAPIConfig = config.get_api_config(
@@ -806,108 +817,9 @@ def processing_workflow(
         )
 
     # Export the processed data
-    export_processed_data(data_geodataframe=data, export_data_path=export_data_path)
-
-
-if __name__ == "__main__":
-    import sys
-    from cli import cli
-
-    if sys.argv[1:]:
-        cli()
-
-    def get_ofm_files() -> list[Path]:
-        return [
-            ROOT
-            / "ingestion"
-            / "OFM"
-            / "CHS9-Aventure9_20241001183031_20241001194143-singlefile.xyz",
-            ROOT
-            / "ingestion"
-            / "OFM"
-            / "CHS9-Aventure9_20241002132309_20241002144241-singlefile.xyz",
-        ]
-
-    def get_dcdb_files() -> list[Path]:
-        return [
-            ROOT
-            / "ingestion"
-            / "DCDB"
-            / "20240605215519876796_08b05f2b-eb9f-11ee-a43c-bd300fe11e8a_pointData.csv"
-        ]
-
-    def get_lowrance_files() -> list[Path]:
-        source_path = ROOT / "ingestion" / "Lowrance" / "Tuktoyaktuk"
-        return list(source_path.glob("*.csv"))
-
-    def get_lowrance_files_2() -> list[Path]:
-        return [ROOT / "ingestion" / "Lowrance" / "Sonar_2022-08-05_16.04.31-route.csv"]
-
-    def get_blackbox_files() -> list[Path]:
-        return [ROOT / "ingestion" / "BlackBox" / "NMEALOG.TXT"]
-
-    def get_actisense_files() -> list[Path]:
-        return [
-            ROOT / "ingestion" / "ActiSense" / "composite_RDL_2024_ALL.n2kdecoded.csv"
-        ]
-
-    def get_naujaat_files() -> list[Path]:
-        return list(Path("D:\OFM_CHS2_Naujaat_2023-2024").glob("*.xyz"))
-
-    def get_kuujjuaq_files() -> list[Path]:
-        return list(Path("D:\OFM_CHS3_Kuujjuaq_2023-2024").glob("*.xyz"))
-
-    def get_dcdb_paramarine() -> list[Path]:
-        return list(
-            Path(
-                r"\\dcqcimlna01a\SHC_Donnees\Hydrographie_Communautaire\1_RawData\DCDB\Extract_GreatLakes_October2024\LakeOntario\dcdb\PARA Marine"
-            ).glob("*.csv")
-        )
-
-    def get_ludy_pudluk() -> list[Path]:
-        return list(
-            Path(
-                r"\\dcqcimlna01a\SHC_Donnees\Hydrographie_Communautaire\1_RawData\OFM_CHS5_LudyPudluk_2023"
-            ).glob("*.xyz")
-        )
-
-    def get_tuk_2023() -> list[Path]:
-        return list(Path(r"D:\Tuk_2023").glob("*.xyz"))
-
-    def get_morrish() -> list[Path]:
-        return list(
-            Path(
-                r"\\dcqcimlna01a\SHC_Donnees\Hydrographie_Communautaire\1_RawData\DCDB\Extract_GreatLakes_October2024\LakeHuron\dcdb\Thomas R Morrish"
-            ).glob("*.csv")
-        )
-
-    # Get the files to parse
-    files_path: list[Path] = get_ofm_files()
-    # files_path: list[Path] = get_dcdb_files()
-    # files_path: list[Path] = get_lowrance_files()
-    # files_path: list[Path] = get_lowrance_files_2()
-    # files_path: list[Path] = get_blackbox_files()
-    # files_path: list[Path] = get_actisense_files()
-    # files_path: list[Path] = get_naujaat_files()
-    # files_path: list[Path] = get_kuujjuaq_files()
-    # files_path: list[Path] = get_dcdb_paramarine()
-    # files_path: list[Path] = get_ludy_pudluk()
-    # files_path: list[Path] = get_tuk_2023()
-    # files_path: list[Path] = get_morrish()  # todo tester il y a seulement une run et il reste des NAN ?
-    # files_path: list[Path] = (
-    #     get_ofm_files()
-    #     + get_dcdb_files()
-    #     + get_lowrance_files()
-    #     + get_blackbox_files()
-    #     + get_actisense_files()
-    # )
-
-    processing_workflow(
-        files=files_path,
-        vessel="Tuktoyaktuk",  # vessel_manager.UNKNOWN_VESSEL_CONFIG,
-        output=OUTPUT,
-        config_path=CONFIG_FILE,
-        apply_water_level=True,
+    export_processed_data(
+        data_geodataframe=finalize_geodataframe(data_geodataframe=data),
+        export_data_path=export_data_path,
     )
 
     # todo gérer la valeur np.nan dans les configurations des capteurs
