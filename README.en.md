@@ -8,7 +8,9 @@
       - [`files`](#files)
       - [`--output`](#--output)
       - [`--vessel`](#--vessel)
+      - [`--waterline`](#--waterline)
       - [`--config`](#--config)
+      - [`--apply-water-level`](#--apply-water-level)
   - [Configuration File (TOML)](#configuration-file-toml)
     - [Main Sections](#main-sections)
   - [Vessel File (Vessels)](#vessel-file-vessels)
@@ -92,6 +94,15 @@ python cli.py <files> [options]
   python cli.py /data/file1.csv --vessel VESSEL123
   ```
 
+#### `--waterline`
+- **Description**: Specifies the distance between the sounder and the waterline.
+- **Type**: `float`
+- **Required**: No
+- **Details**: If this parameter is omitted, a waterline of 0 will be used.
+- **Example**:
+  ```bash
+  python cli.py /data/file1.csv --waterline 1.4
+
 #### `--config`
 - **Description**: Specifies the path to the configuration file (TOML format).
 - **Type**: `Path`
@@ -101,6 +112,15 @@ python cli.py <files> [options]
   ```bash
   python cli.py /data/file1.csv --config /config/config.toml
   ```
+
+#### `--apply-water-level`
+- **Description**: Enables or disables the reduction of water levels to chart datum during georeferencing.
+- **Type**: `bool`
+- **Required**: No
+- **Details**: If this parameter is omitted, georeferencing based on water levels will be applied.
+- **Example**:
+  ```bash
+  python cli.py /data/file1.csv --apply-water-level True
 
 ---
 
@@ -280,7 +300,7 @@ The module includes robust error handling to avoid unexpected interruptions. Bel
 
 ### Command
 ```bash
-python cli.py /data/file1.csv /data/folder --output /data/output --vessel VESSEL123 --config /config/config.toml
+python cli.py /data/file1.csv /data/folder --output /data/output --vessel VESSEL123 --config /config/config.toml --apply-water-level True
 ```
 
 ### Detailed Steps

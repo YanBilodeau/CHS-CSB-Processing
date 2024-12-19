@@ -15,7 +15,9 @@ Vous pouvez visiter la [documentation](https://chs-csb-processing.readthedocs.io
       - [`files`](#files)
       - [`--output`](#--output)
       - [`--vessel`](#--vessel)
+      - [`--waterline`](#--waterline)
       - [`--config`](#--config)
+      - [`--apply-water-level`](#--apply-water-level)
   - [Fichier de configuration (TOML)](#fichier-de-configuration-toml)
     - [Sections principales](#sections-principales)
   - [Fichier des navires (Vessels)](#fichier-des-navires-vessels)
@@ -92,6 +94,17 @@ python cli.py <files> [options]
   python cli.py /data/fichier1.csv --vessel NAVIRE123
   ```
 
+#### `--waterline`
+- **Description** : Spécifie la distance entre le sondeur et la ligne d'eau.
+- **Type** : `float`
+- **Obligatoire** : Non
+- **Détails** : Si ce paramètre est omis, une ligne d'eau à 0 sera utilisée. 
+- **Exemple** :
+  ```bash
+  python cli.py /data/fichier1.csv --waterline 1.4
+  ```
+
+
 #### `--config`
 - **Description** : Spécifie le chemin du fichier de configuration (au format TOML).
 - **Type** : `Path`
@@ -102,6 +115,16 @@ python cli.py <files> [options]
   python cli.py /data/fichier1.csv --config /config/config.toml
   ```
 
+#### `--apply-water-level`
+- **Description** : Active ou désactive la réduction des niveaux d'eau au zéro des cartes lors du géoréférencement.
+- **Type** : `bool`
+- **Obligatoire** : Non
+- **Détails** : Si ce paramètre est omis, le géoréférencement basé sur les niveaux d'eau sera appliqué.
+- **Exemple** :
+  ```bash
+  python cli.py /data/fichier1.csv --apply-water-level True
+  ```
+  
 ---
 
 ## Fichier de configuration (TOML)
@@ -281,7 +304,7 @@ Le module inclut une gestion robuste des erreurs pour éviter les interruptions 
 
 ### Commande
 ```bash
-python cli.py /data/fichier1.csv /data/dossier --output /data/output --vessel NAVIRE123 --config /config/config.toml
+python cli.py /data/fichier1.csv /data/dossier --output /data/output --vessel NAVIRE123 --config /config/config.toml --apply-water-level True
 ```
 
 ### Étapes détaillées
