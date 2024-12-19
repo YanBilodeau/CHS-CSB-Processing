@@ -25,10 +25,10 @@ class DataLoggerSchema(pa.DataFrameModel):
     Schéma des données des DataLoggers.
     """
 
-    Longitude_WGS84: Series[pd.Float64Dtype()]
     Latitude_WGS84: Series[pd.Float64Dtype()]
-    Depth_raw_meter: Series[pd.Float64Dtype()]
+    Longitude_WGS84: Series[pd.Float64Dtype()]
     Time_UTC: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
+    Depth_raw_meter: Series[pd.Float64Dtype()]
     Depth_processed_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
     Water_level_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
     Uncertainty: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
