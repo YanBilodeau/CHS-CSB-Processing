@@ -1,3 +1,10 @@
+"""
+Module permettant d'importer les modules de l'API de Caris.
+
+Ce module permet d'importer les modules de l'API de Caris. Il permet de valider la version de
+Python utilisée et d'ajouter le chemin du module à importer dans le système.
+"""
+
 from abc import ABC, abstractmethod
 from enum import Enum
 from importlib import util, import_module
