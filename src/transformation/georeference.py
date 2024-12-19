@@ -322,7 +322,7 @@ def get_zero_water_levels(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         gdf.loc[:, schema_ids.WATER_LEVEL_METER] = 0.0
         return gdf
 
-    return run_dask_function_in_parallel(data=data, func=apply_zero_water_level)
+    return _run_dask_function_in_parallel(data=data, func=apply_zero_water_level)
 
 
 def apply_georeference_bathymetry(
@@ -353,7 +353,7 @@ def apply_georeference_bathymetry(
         )
         return gdf
 
-    return run_dask_function_in_parallel(data=data, func=caculate_depth)
+    return _run_dask_function_in_parallel(data=data, func=caculate_depth)
 
 
 def compute_tpu(
@@ -385,10 +385,10 @@ def compute_tpu(
 
     # todo mettre en paramètre (wlo 1 ? et wlp 2 ?), mettre le coefficient et la constante en paramètre
 
-    return run_dask_function_in_parallel(data=data, func=calculate_uncertainty)
+    return _run_dask_function_in_parallel(data=data, func=calculate_uncertainty)
 
 
-def run_dask_function_in_parallel(
+def _run_dask_function_in_parallel(
     data: gpd.GeoDataFrame,
     func: Callable[[gpd.GeoDataFrame], gpd.GeoDataFrame],
     npartitions: int = CPU_COUNT,
@@ -412,7 +412,7 @@ def run_dask_function_in_parallel(
 
 
 @schema.validate_schemas(
-    data=schema.DataLoggerWithTideZoneSchema,  # todo type
+    data=schema.DataLoggerWithTideZoneSchema,
     return_schema=schema.DataLoggerSchema,
 )
 def georeference_bathymetry(
