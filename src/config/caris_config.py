@@ -9,9 +9,11 @@ from pathlib import Path
 from loguru import logger
 from pydantic import BaseModel, Field
 
-from .helper import load_config
+from config.helper import load_config
 
-LOGGER = logger.bind(name="CSB-Processing.Config.CarisConfig")
+LOGGER = logger.bind(name="CSB-Processing.Caris.Config")
+
+ConfigDict = dict[str, str | float]
 
 
 class CarisAPIConfig(BaseModel):
@@ -35,7 +37,7 @@ class CarisAPIConfig(BaseModel):
     software: str
     version: float
     python_version: float
-    python_path: Path = Field(init=False)
+    python_path: Path = Field(default=None)
 
     def __init__(self, **values) -> None:
         super().__init__(**values)
@@ -64,12 +66,14 @@ def get_caris_api_config(
     :return: La configuration pour l'API Python de Caris.
     :rtype: CarisAPIConfig
     """
-    config_caris_api: dict = load_config(config_file=config_file)
-
-    print(config_caris_api)
+    config_caris_api: ConfigDict = (
+        load_config(config_file=config_file).get("CARIS").get("Environment")
+    )
+    if not config_caris_api:
+        raise ValueError(
+            f"Aucune configuration pour l'API de Caris n'a été trouvée dans le fichier de configuration : {config_file}."
+        )
 
     LOGGER.debug(f"Initialisation de la configuration pour l'API de Caris.")
-
-    input("......")
 
     return CarisAPIConfig(**config_caris_api)
