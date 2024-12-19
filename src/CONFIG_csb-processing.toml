@@ -42,7 +42,7 @@ period = 1
 
 [IWLS.API.Cache]
 # Durée de vie maximale des données en secondes {int}.
-ttl = 86400
+ttl = 604800
 # Répertoire de stockage des données dans le cache {str}. Il est possible de spécifier un chemin absolu ou relatif.
 # Exemple de chemin relatif : "./cache" pour un répertoire "cache" à la racine du projet.
 cache_path = "./cache"
