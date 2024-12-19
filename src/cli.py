@@ -13,7 +13,7 @@ from loguru import logger
 
 from csb_processing import processing_workflow, CONFIG_FILE
 from logger.loguru_config import configure_logger
-from vessel import UNKNOWN_VESSEL_CONFIG
+from vessel import UNKNOWN_VESSEL_CONFIG, UNKNOWN_DATE, Waterline
 
 LOGGER = logger.bind(name="CSB-Processing.CLI")
 
@@ -79,9 +79,23 @@ def get_files(paths: Collection[Path]) -> list[Path]:
     required=False,
     help="""
     Identifiant du navire. Si aucun identifiant de navire est utilisé, un navire par défaut
-    avec des bras de levier à 0 sera utilisé.\n
+    avec des bras de levier à 0 sera utilisé. Cet option ne peut pas être utilisé conjointement avec --waterline\n
     Vessel identifier. If no vessel identifier is used, a default vessel with lever arms at 0 will be used.
     """,
+    cls=click.Option,
+)
+@click.option(
+    "--waterline",
+    type=float,
+    required=False,
+    help="""
+    Ligne de flottaison du navire. Cette mesure correspond à la distance entre le sondeur et la surface de 
+    l'eau (mesure verticale). Si aucune ligne de flottaison n'est fournie, une valeur de 0 sera utilisée.
+    \n
+    Waterline of the vessel. This measurement corresponds to the distance between the sounder and the surface of
+    the water (vertical measurement). If no waterline is provided, a value of 0 will be used.
+    """,
+    cls=click.Option,
 )
 @click.option(
     "--config",
@@ -93,24 +107,45 @@ def get_files(paths: Collection[Path]) -> list[Path]:
     Path of the configuration file. If no configuration file is provided, the default configuration file will be used.
     """,
 )
+@click.pass_context
 def cli(
-    files: Collection[Path], output: Path, vessel: Optional[str], config: Optional[Path]
+    ctx: click.Context,
+    files: Collection[Path],
+    output: Path,
+    vessel: Optional[str],
+    waterline: Optional[float],
+    config: Optional[Path],
 ) -> None:
     """
     Fonction principale de la ligne de commande.
 
+    :param ctx: Contexte de la commande.
+    :type ctx: click.Context
     :param files: Chemins des fichiers ou répertoires à traiter.
     :type files: Collection[Path]
     :param output: Chemin du répertoire de sortie.
     :type output: Path
     :param vessel: Identifiant du navire.
     :type vessel: Optional[str]
+    :param waterline: Ligne de flottaison.
+    :type waterline: Optional[float]
     :param config: Chemin du fichier de configuration.
     :type config: Optional[Path]
     """
     configure_logger()
-
     LOGGER.info(f"Ligne de commande exécutée : python {' '.join(sys.argv)}")
+
+    if vessel and waterline is not None:
+        raise click.UsageError(
+            "Vous ne pouvez utiliser que l'option --vessel ou --waterline, pas les deux en même temps.\n"
+            "You can only use the --vessel or --waterline option, not both at the same time."
+        )
+
+    if waterline is not None and waterline < 0:
+        raise click.UsageError(
+            "La valeur de l'option --waterline doit être positive.\n"
+            "The value of the --waterline option must be positive."
+        )
 
     # Get the files to parse
     files: list[Path] = get_files(files)
@@ -118,11 +153,20 @@ def cli(
     # Check if there are files to process
     if not files:
         LOGGER.error("Aucun fichier valide à traiter.")
-        return None
+        raise click.UsageError(
+            "Aucun fichier valide à traiter.\nNo valid file to process."
+        )
 
-    if not vessel:
+    if not vessel and waterline is None:
         LOGGER.warning(
             "Aucun identifiant de navire n'a été fourni. Un navire par défaut sera utilisé."
+        )
+        vessel = UNKNOWN_VESSEL_CONFIG
+
+    if waterline is not None:
+        LOGGER.info(f"Ligne de flottaison fournie : {waterline}.")
+        UNKNOWN_VESSEL_CONFIG.waterline = Waterline(
+            time_stamp=UNKNOWN_DATE, z=waterline
         )
         vessel = UNKNOWN_VESSEL_CONFIG
 
