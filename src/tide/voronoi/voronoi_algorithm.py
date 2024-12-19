@@ -38,9 +38,8 @@ def create_voronoi_polygons(
     :return: Collection de polygones de Voronoi.
     :rtype: GeometryCollection
     """
-    LOGGER.debug(
-        f"Création des polygones de Voronoi à partir de la géométrie."
-    )
+    LOGGER.debug(f"Création des polygones de Voronoi à partir de la géométrie.")
+
     return voronoi_polygons(
         geometry=geometry,
         tolerance=tolerance,
