@@ -1,0 +1,75 @@
+"""
+Module de configuration pour l'API Python de Caris.
+
+Ce module contient la classe de configuration pour l'API Python de Caris.
+"""
+
+from pathlib import Path
+
+from loguru import logger
+from pydantic import BaseModel, Field
+
+from .helper import load_config
+
+LOGGER = logger.bind(name="CSB-Processing.Config.CarisConfig")
+
+
+class CarisAPIConfig(BaseModel):
+    """
+    Classe de configuration pour l'API Python de Caris.
+
+    :param base_path: Le chemin de base de l'API Python de Caris.
+    :type base_path: str
+    :param software: Le logiciel de Caris.
+    :type software: str
+    :param version: La version du logiciel de Caris.
+    :type version: str
+    :param python_version: La version de Python.
+    :type python_version: str
+    :param python_path: Le chemin de l'API Python de Caris.
+    :type python_path: Path
+    :raises ValueError: Si l'API Python de Caris n'existe pas à l'emplacement spécifié.
+    """
+
+    base_path: str
+    software: str
+    version: float
+    python_version: float
+    python_path: Path = Field(init=False)
+
+    def __init__(self, **values) -> None:
+        super().__init__(**values)
+        self.python_path = (
+            Path(self.base_path)
+            / self.software
+            / str(self.version)
+            / "python"
+            / str(self.python_version)
+        )
+
+        if not self.python_path.exists():
+            raise ValueError(
+                f"L'API Python de Caris n'existe pas à l'emplacement {self.python_path}."
+            )
+
+
+def get_caris_api_config(
+    config_file: Path,
+) -> CarisAPIConfig:
+    """
+    Retournes la configuration pour l'API Python de Caris.
+
+    :param config_file: Le chemin du fichier de configuration.
+    :type config_file: Path
+    :return: La configuration pour l'API Python de Caris.
+    :rtype: CarisAPIConfig
+    """
+    config_caris_api: dict = load_config(config_file=config_file)
+
+    print(config_caris_api)
+
+    LOGGER.debug(f"Initialisation de la configuration pour l'API de Caris.")
+
+    input("......")
+
+    return CarisAPIConfig(**config_caris_api)
