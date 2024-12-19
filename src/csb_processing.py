@@ -579,8 +579,10 @@ def processing_workflow(
     # Get the data structure
     export_data_path, export_tide_path, log_path = get_data_structure(output)
 
-    # Read the configuration file 'data_config.toml'
-    processing_config: config.CSBprocessingConfig = config.get_data_config()
+    # Read the configuration file
+    processing_config: config.CSBprocessingConfig = config.get_data_config(
+        config_file=config_path
+    )
 
     # Configure the logger
     configure_logger(
@@ -588,6 +590,19 @@ def processing_workflow(
         std_level=processing_config.options.log_level,
         log_file_level="DEBUG",
     )
+
+    # config_caris: config.CarisAPIConfig = config.get_caris_api_config(
+    #     config_file=config_path
+    # )
+
+    # import caris
+    #
+    # caris_wrapper: caris.CarisModuleImporter = caris.CarisModuleImporter(
+    #     config=config_caris
+    # )
+    # print(caris_wrapper)
+    #
+    # input("Press Enter to continue...")
 
     # Check if the vessel configuration is missing
     if (
@@ -665,7 +680,7 @@ def processing_workflow(
 
         return None
 
-    # Read the configuration file 'iwls_API_config.toml'
+    # Read the configuration file
     iwls_api_config: config.IWLSAPIConfig = config.get_api_config(
         config_file=config_path
     )
@@ -823,15 +838,13 @@ def processing_workflow(
     )
 
     # todo gérer la valeur np.nan dans les configurations des capteurs
+    # todo mettre option dans le fichier de config pour le nombre de décimales significatives pour les couches Depth et Uncertainty
 
-    # todo exporter en csar
-
-    # todo ajouter option waterline dans le CLI
-    # todo option sans réduction de marée
-
-    # todo dans ce fichier, dans le fichier de configuration dans tide.time_serie.time_serie_dataframe et transformation.georeference
     # [DATA.Georeference.tpu]  # todo à ajouter au BaseModel ?
     # base_tpu_wlo = 1
     # base_tpu_wlp = 2
-
     # todo tpu si apply_water_level=False ?
+
+    # todo dans ce fichier, dans le fichier de configuration dans tide.time_serie.time_serie_dataframe et transformation.georeference
+
+    # todo exporter en csar
