@@ -12,7 +12,7 @@ import geopandas as gpd
 import numpy as np
 from loguru import logger
 import pandas as pd
-from typing import Optional
+from typing import Optional, Callable
 
 from .exception_tranformation import WaterLevelDataRequiredError
 from .transformation_models import SensorProtocol, WaterlineProtocol
@@ -318,15 +318,11 @@ def get_zero_water_levels(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         f"Utilisation d'un niveau d'eau de 0 mètre pour les {len(data)} sondes avec {CPU_COUNT} processus en parallèle."
     )
 
-    dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=CPU_COUNT)
-
-    def apply_zero_water_level(gdf: gpd.GeoDataFrame):
+    def apply_zero_water_level(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         gdf.loc[:, schema_ids.WATER_LEVEL_METER] = 0.0
         return gdf
 
-    dask_data = dask_data.map_partitions(apply_zero_water_level)
-
-    return dask_data.compute().pipe(gpd.GeoDataFrame)
+    return run_dask_function_in_parallel(data=data, func=apply_zero_water_level)
 
 
 def apply_georeference_bathymetry(
@@ -348,9 +344,7 @@ def apply_georeference_bathymetry(
         f"Application des niveaux d'eau et des bras de levier aux sondes avec {CPU_COUNT} processus en parallèle."
     )
 
-    dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=CPU_COUNT)
-
-    def caculate_depth(gdf: gpd.GeoDataFrame):
+    def caculate_depth(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         gdf.loc[:, schema_ids.DEPTH_PROCESSED_METER] = (
             gdf[schema_ids.DEPTH_RAW_METER]
             - gdf[schema_ids.WATER_LEVEL_METER]
@@ -359,9 +353,7 @@ def apply_georeference_bathymetry(
         )
         return gdf
 
-    dask_data = dask_data.map_partitions(caculate_depth)
-
-    return dask_data.compute().pipe(gpd.GeoDataFrame)
+    return run_dask_function_in_parallel(data=data, func=caculate_depth)
 
 
 def compute_tpu(
@@ -381,14 +373,11 @@ def compute_tpu(
     :return: Données de profondeur avec le TPU.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
-
     LOGGER.debug(
         f"Calcul du TPU des données de profondeur avec {CPU_COUNT} processus en parallèle."
     )
 
-    dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=CPU_COUNT)
-
-    def calculate_uncertainty(gdf: gpd.GeoDataFrame):
+    def calculate_uncertainty(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         gdf.loc[:, schema_ids.UNCERTAINTY] = (
             gdf[schema_ids.DEPTH_RAW_METER] * depth_coeficient_tpu
         ) + constant_tpu
@@ -396,7 +385,28 @@ def compute_tpu(
 
     # todo mettre en paramètre (wlo 1 ? et wlp 2 ?), mettre le coefficient et la constante en paramètre
 
-    dask_data = dask_data.map_partitions(calculate_uncertainty)
+    return run_dask_function_in_parallel(data=data, func=calculate_uncertainty)
+
+
+def run_dask_function_in_parallel(
+    data: gpd.GeoDataFrame,
+    func: Callable[[gpd.GeoDataFrame], gpd.GeoDataFrame],
+    npartitions: int = CPU_COUNT,
+) -> gpd.GeoDataFrame:
+    """
+    Exécute une fonction Dask en parallèle sur les partitions d'un GeoDataFrame.
+
+    :param data: Données de profondeur.
+    :type data: gpd.GeoDataFrame
+    :param func: Fonction à exécuter sur chaque partition.
+    :type func: Callable[[gpd.GeoDataFrame], gpd.GeoDataFrame]
+    :param npartitions: Nombre de partitions pour Dask.
+    :type npartitions: int
+    :return: Données traitées.
+    :rtype: gpd.GeoDataFrame
+    """
+    dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=npartitions)
+    dask_data = dask_data.map_partitions(func)  # type: ignore
 
     return dask_data.compute().pipe(gpd.GeoDataFrame)
 
