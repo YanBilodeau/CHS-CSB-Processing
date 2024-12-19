@@ -33,4 +33,5 @@ __all__ = [
     "VesselConfigManagerType",
     "get_vessel_config_manager_factory",
     "UNKNOWN_VESSEL_CONFIG",
+    "UNKNOWN_DATE",
 ]
