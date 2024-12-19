@@ -82,7 +82,6 @@ def get_files(paths: Collection[Path]) -> list[Path]:
     avec des bras de levier à 0 sera utilisé. Cet option ne peut pas être utilisé conjointement avec --waterline\n
     Vessel identifier. If no vessel identifier is used, a default vessel with lever arms at 0 will be used.
     """,
-    cls=click.Option,
 )
 @click.option(
     "--waterline",
@@ -95,7 +94,6 @@ def get_files(paths: Collection[Path]) -> list[Path]:
     Waterline of the vessel. This measurement corresponds to the distance between the sounder and the surface of
     the water (vertical measurement). If no waterline is provided, a value of 0 will be used.
     """,
-    cls=click.Option,
 )
 @click.option(
     "--config",
@@ -107,9 +105,7 @@ def get_files(paths: Collection[Path]) -> list[Path]:
     Path of the configuration file. If no configuration file is provided, the default configuration file will be used.
     """,
 )
-@click.pass_context
 def cli(
-    ctx: click.Context,
     files: Collection[Path],
     output: Path,
     vessel: Optional[str],
@@ -119,8 +115,6 @@ def cli(
     """
     Fonction principale de la ligne de commande.
 
-    :param ctx: Contexte de la commande.
-    :type ctx: click.Context
     :param files: Chemins des fichiers ou répertoires à traiter.
     :type files: Collection[Path]
     :param output: Chemin du répertoire de sortie.
