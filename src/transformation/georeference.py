@@ -310,9 +310,9 @@ def get_zero_water_levels(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     Applique un niveau d'eau de 0 aux données de profondeur.
 
     :param data: Données brutes de profondeur.
-    :type data: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     :return: Données de profondeur brutes avec un niveau d'eau de 0.
-    :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
     LOGGER.debug(
         f"Utilisation d'un niveau d'eau de 0 mètre pour les {len(data)} sondes avec {CPU_COUNT} processus en parallèle."
@@ -332,13 +332,13 @@ def apply_georeference_bathymetry(
     Applique la transformation de géoréférencement des données de bathymétrie.
 
     :param data: Données brutes de profondeur.
-    :type data: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     :param waterline: Données de la ligne d'eau.
     :type waterline: WaterlineProtocol
     :param sounder: Données du sondeur.
     :type sounder: SensorProtocol
     :return: Données de profondeur géoréférencées.
-    :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
     LOGGER.debug(
         f"Application des niveaux d'eau et des bras de levier aux sondes avec {CPU_COUNT} processus en parallèle."
@@ -365,13 +365,13 @@ def compute_tpu(
     Calcule le TPU des données de bathymétrie.
 
     :param data: Données brut de profondeur.
-    :type data: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     :param depth_coeficient_tpu: Coefficient de profondeur.
     :type depth_coeficient_tpu: float
     :param constant_tpu: Constante du TPU.
     :type constant_tpu: float
     :return: Données de profondeur avec le TPU.
-    :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
     LOGGER.debug(
         f"Calcul du TPU des données de profondeur avec {CPU_COUNT} processus en parallèle."
@@ -413,7 +413,7 @@ def _run_dask_function_in_parallel(
 
 @schema.validate_schemas(
     data=schema.DataLoggerWithTideZoneSchema,
-    return_schema=schema.DataLoggerSchema,
+    return_schema=schema.DataLoggerWithTideZoneSchema,
 )
 def georeference_bathymetry(
     data: gpd.GeoDataFrame,
@@ -441,7 +441,7 @@ def georeference_bathymetry(
     :type overwrite: bool
     :param apply_water_level: True pour appliquer le niveau d'eau, sinon un niveau d'eau de 0 sera appliqué.
     :type apply_water_level: bool
-    :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     :raises WaterLevelDataRequiredError: Erreur si les données de niveau d'eau sont requises.
     """
     if apply_water_level and water_level is None:
@@ -480,15 +480,11 @@ def georeference_bathymetry(
         compute_tpu(data_to_process)
     )
 
+    data.update(data_to_process)  # Mise à jour des données
+
     LOGGER.info(f"Géoréférencement des données bathymétrique terminé.")
     LOGGER.success(
         f"{data_to_process['Depth_processed_meter'].notna().sum()} sondes géoréférencées."
-    )
-
-    data.update(data_to_process)  # Mise à jour des données
-
-    data: gpd.GeoDataFrame[schema.DataLoggerSchema] = data.drop(
-        columns=[schema_ids.TIDE_ZONE_ID]
     )
 
     depth_nan: np.int64 = data[schema_ids.DEPTH_PROCESSED_METER].isna().sum()
