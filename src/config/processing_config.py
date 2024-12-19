@@ -19,8 +19,6 @@ from .helper import load_config
 
 LOGGER = logger.bind(name="CSB-Processing.Config.ProcessingConfig")
 
-CONFIG_FILE: Path = Path(__file__).parent.parent / "CONFIG_csb-processing.toml"
-
 ConfigDict = dict[str, int | float | str]
 CSBconfigDict = dict[str, dict[str, dict[str, ConfigDict]]]
 
@@ -220,13 +218,13 @@ class CSBprocessingConfig(BaseModel):
 
 
 def get_data_config(
-    config_file: Optional[Path] = CONFIG_FILE,
+    config_file: Path,
 ) -> CSBprocessingConfig:
     """
     Retournes la configuration pour la transformation des données et le géoréférencement.
 
     :param config_file: Le chemin du fichier de configuration.
-    :type config_file: Optional[Path]
+    :type config_file: Path
     :return: La configuration pour la transformation des données et le géoréférencement.
     :rtype: tuple[DataFilterConfig, DataGeoreferenceConfig]
     """
