@@ -105,12 +105,25 @@ def get_files(paths: Collection[Path]) -> list[Path]:
     Path of the configuration file. If no configuration file is provided, the default configuration file will be used.
     """,
 )
+@click.option(
+    "--apply-water-level",
+    type=bool,
+    required=False,
+    default=True,
+    help="""
+    Appliquer la réduction des nivaeux d'eau lors du géoréférencement des sondes. Par défaut, 
+    la réduction des niveaux d'eau sont appliqués.\n
+    Apply the water level reduction when georeferencing the soundings. 
+    By default, the water level reduction is applied.
+    """,
+)
 def cli(
     files: Collection[Path],
     output: Path,
     vessel: Optional[str],
     waterline: Optional[float],
     config: Optional[Path],
+    apply_water_level: Optional[bool] = True,
 ) -> None:
     """
     Fonction principale de la ligne de commande.
@@ -121,10 +134,12 @@ def cli(
     :type output: Path
     :param vessel: Identifiant du navire.
     :type vessel: Optional[str]
-    :param waterline: Ligne de flottaison.
+    :param waterline: La mesure de la ligne de flottaison. Distance verticale entre le sondeur et la surface de l'eau.
     :type waterline: Optional[float]
     :param config: Chemin du fichier de configuration.
     :type config: Optional[Path]
+    :param apply_water_level: Appliquer la réduction des nivaeux d'eau lors du géoréférencement des sondes.
+    :type apply_water_level: Optional[bool]
     :raise click.UsageError: Si les options --vessel et --waterline sont utilisées en même temps.
     :raise click.UsageError: Si la valeur de l'option --waterline est négative.
     :raise click.UsageError: Si aucun fichier valide n'est fourni.
@@ -174,7 +189,11 @@ def cli(
         config = CONFIG_FILE
 
     processing_workflow(
-        files=files, vessel=vessel, output=Path(output), config_path=Path(config)
+        files=files,
+        vessel=vessel,
+        output=Path(output),
+        config_path=Path(config),
+        apply_water_level=apply_water_level,
     )
 
 
