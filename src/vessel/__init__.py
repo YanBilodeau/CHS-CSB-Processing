@@ -2,7 +2,7 @@
 Ce package contient les classes et les fonctions qui permettent de manipuler les données des navires.
 """
 
-from .unknown_vessel_config import UNKNOWN_VESSEL_CONFIG
+from .unknown_vessel_config import UNKNOWN_VESSEL_CONFIG, UNKNOWN_DATE
 from .vessel_config import (
     VesselConfig,
     AxisConvention,
