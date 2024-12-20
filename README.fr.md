@@ -183,26 +183,44 @@ json_config_path = "./TCSB_VESSELSLIST.json"  # Chemin vers le fichier de config
 [CSB.Processing.options]
 log_level = "INFO"  # Niveau de log : {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}.
 max_iterations = 10  # Nombre maximal d'itérations {int}.
+
+[CARIS.Environment]
+base_path = "C:/Program Files/CARIS"  # Chemin d'installation des logiciels CARIS.
+software = "BASE Editor"  # Logiciel CARIS utilisé.
+version = "5.5"  # Version spécifique du logiciel CARIS.
+python_version = "3.11"  # Version de Python utilisée par l'API CARIS.
 ```
 
 ### Sections principales
 
-- `[IWLS.API.TimeSeries]` :
-  - `priority` : Liste des séries temporelles à utiliser selon leur priorité (ex. : `"wlo"`, `"wlp"`).
+- `[IWLS.API.TimeSeries]` (Optionnel) : Paramètres pour les séries temporelles. Si aucun paramètre n'est défini, les valeurs par défaut seront utilisées et aucune interpolation ne sera effectuée.
+  - `priority` : Liste des séries temporelles à utiliser selon leur priorité (ex. : [`"wlo"`, `"wlp"`]).
   - `max_time_gap` : Temps maximal sans données avant interpolation (format : `"<nombre> <unité>"`, ex. : `"1 min"`).
   - `threshold_interpolation_filling` : Seuil pour l'interpolation et le remplissage des données manquantes (ex. : `"4 h"`).
   - `wlo_qc_flag_filter` : Filtres de qualité pour les données WLO.
   - `buffer_time` : Temps tampon pour les interpolations. (format : `"<nombre> <unité>"`, ex. : `"24 h"`).
-- `[IWLS.API.Profile]` : Définit le profil actif (`"dev"`, `"prod"`, `"public"`).
-- `[IWLS.API.Environment.<profil>]` : Paramètres spécifiques aux environnements (ex. : `endpoint`, `calls`, `period`).
-- `[IWLS.API.Cache]` : Définit la gestion du cache (durée de vie et emplacement).
-- `[DATA.Transformation.filter]` : Définit les limites géographiques et de profondeur pour filtrer les données.
-- `[DATA.Georeference.water_level]` : Définit la tolérance pour le géoréférencement basé sur les niveaux d'eau. (format : `"<nombre> <unité>"`, ex. : `"15 min"`).
-- `[CSB.Processing.vessel]` : Configure le gestionnaire et le fichier des navires.
-- `[CSB.Processing.options]`
-  - `log_level` : Niveau de journalisation : {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}.
-  - `max_iterations` : Nombre maximal d'itérations {int}.
-
+- `[IWLS.API.Profile]` (Optionnel) : Définit le profil actif (`"dev"`, `"prod"`, `"public"`). Un profil public est utilisé par défaut avec 15 appels par seconde.
+- `[IWLS.API.Environment.<profil>]` (Optionnel) : Paramètres spécifiques aux environnements
+  - `name` : Nom de l'environnement (ex. : `"PUBLIC"`).
+  - `endpoint` : Point de terminaison de l'API `"EndpointPublic"`). À noter, seulement les points de terminaison publics sont accessibles à tous.
+  - `calls` : Nombre maximal d'appels par période.
+  - `period` : Période de temps pour les appels.
+- `[IWLS.API.Cache]` (Optionnel) : Définit la gestion du cache.
+  - `ttl` : Durée de vie des données en cache (en secondes).
+  - `cache_path` : Répertoire pour le stockage du cache.
+- `[DATA.Transformation.filter]` (Optionnel) : Définit les limites géographiques et de profondeur pour filtrer les données.
+- `[DATA.Georeference.water_level]` (Optionnel) : Définit la tolérance pour le géoréférencement basé sur les niveaux d'eau. (format : `"<nombre> <unité>"`, ex. : `"15 min"`).
+- `[CSB.Processing.vessel]` (Optionnel) : Configure le gestionnaire et le fichier des navires. Obligatoire seulement si vous utilisez des navires pour le géoréférencement.
+  - `manager_type` : Type de gestionnaire de navires (ex. : `"VesselConfigJsonManager"`).
+  - `json_config_path` (Utilisé avec `"VesselConfigJsonManager"`) : Chemin vers le fichier de configuration des navires.
+- `[CSB.Processing.options]` (Optionnel) : Options de traitement. 
+  - `log_level` : Niveau de journalisation : {`"DEBUG"`, `"INFO"`, `"WARNING"`, `"ERROR"`, `"CRITICAL"`}.
+  - `max_iterations` : Nombre maximal d'itérations.
+- `[CARIS.Environment]` (Optionnel) : Paramètres spécifiques à l'environnement CARIS. Sert à exporter les données au format CSAR.
+  - `base_path` : Chemin d'installation des logiciels CARIS (par défaut : `"C:/Program Files/CARIS"`).
+  - `software` : Logiciel CARIS utilisé (ex. : `"BASE Editor"`, `"HIPS and SIPS"`).
+  - `version` : Version spécifique du logiciel CARIS (ex. : `"5.5"`).
+  - `python_version` : Version de Python utilisée par l'API CARIS (ex. : `"3.11"`).
 ---
 
 ## Fichier des navires (Vessels)

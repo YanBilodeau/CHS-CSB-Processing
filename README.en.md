@@ -179,25 +179,44 @@ json_config_path = "./TCSB_VESSELSLIST.json"  # Path to vessel configuration fil
 [CSB.Processing.options]
 log_level = "INFO"  # Log level: {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}.
 max_iterations = 10  # Maximum number of iterations {int}.
+
+[CARIS.Environment]
+base_path = "C:/Program Files/CARIS"  # Path to the CARIS installation directory.
+software = "BASE Editor"  # CARIS software to use.
+version = "5.5"  # CARIS software version.   
+python_version = "3.11"  # Python version to use.  
 ```
 
 ### Main Sections
 
-- `[IWLS.API.TimeSeries]`:
+- `[IWLS.API.TimeSeries]` (Optional): Parameters for time series. If no parameter is defined, default values will be used and no interpolation will be performed.
   - `priority`: List of time series to use by priority (e.g., `"wlo"`, `"wlp"`).
-  - `max_time_gap`: Maximum time without data before interpolation (format: `"<number> <unit>", e.g., "1 min"`).
+  - `max_time_gap`: Maximum time without data before interpolation (format: `"<number> <unit>"`, e.g., `"1 min"`).
   - `threshold_interpolation_filling`: Threshold for interpolation and filling missing data (e.g., `"4 h"`).
   - `wlo_qc_flag_filter`: Quality filters for WLO data.
-  - `buffer_time`: Buffer time in hours for interpolations. (format: `"<number> <unit>", e.g., "24 h"`).
-- `[IWLS.API.Profile]`: Defines the active profile (`"dev"`, `"prod"`, `"public"`).
-- `[IWLS.API.Environment.<profile>]`: Environment-specific parameters (e.g., `endpoint`, `calls`, `period`).
-- `[IWLS.API.Cache]`: Defines cache management (lifetime and location).
-- `[DATA.Transformation.filter]`: Sets geographic and depth limits for filtering data.
-- `[DATA.Georeference.water_level]`: Defines tolerance for georeferencing based on water levels (format: `"<number> <unit>", e.g., "15 min"`).
-- `[CSB.Processing.vessel]`: Configures the vessel manager and vessel file.
-- `[CSB.Processing.options]`
-  - `log_level`: Log level: {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}.
-  - `max_iterations`: Maximum number of iterations {int}.
+  - `buffer_time`: Buffer time for interpolations (format: `"<number> <unit>"`, e.g., `"24 h"`).
+- `[IWLS.API.Profile]` (Optional): Defines the active profile (`"dev"`, `"prod"`, `"public"`). A public profile is used by default with 15 calls per second.
+- `[IWLS.API.Environment.<profile>]` (Optional): Environment-specific parameters
+  - `name`: Name of the environment (e.g., `"PUBLIC"`).
+  - `endpoint`: API endpoint (e.g., `"EndpointPublic"`). Note that only public endpoints are accessible to everyone.
+  - `calls`: Maximum number of calls per period.
+  - `period`: Time period for calls.
+- `[IWLS.API.Cache]` (Optional): Defines cache management.
+  - `ttl`: Cache data lifetime (in seconds).
+  - `cache_path`: Directory for cache storage.
+- `[DATA.Transformation.filter]` (Optional): Defines geographic and depth limits for filtering data.
+- `[DATA.Georeference.water_level]` (Optional): Defines tolerance for georeferencing based on water levels (format: `"<number> <unit>"`, e.g., `"15 min"`).
+- `[CSB.Processing.vessel]` (Optional): Configures the vessel manager and vessel file. Required only if you use vessels for georeferencing.
+  - `manager_type`: Type of vessel manager (e.g., `"VesselConfigJsonManager"`).
+  - `json_config_path` (Used with `"VesselConfigJsonManager"`): Path to the vessel configuration file.
+- `[CSB.Processing.options]` (Optional): Processing options.
+  - `log_level`: Log level: {`"DEBUG"`, `"INFO"`, `"WARNING"`, `"ERROR"`, `"CRITICAL"`}.
+  - `max_iterations`: Maximum number of iterations.
+- `[CARIS.Environment]` (Optional): CARIS environment-specific parameters. Used to export data in CSAR format.
+  - `base_path`: Path to CARIS software installation (default: `"C:/Program Files/CARIS"`).
+  - `software`: CARIS software used (e.g., `"BASE Editor"`, `"HIPS and SIPS"`).
+  - `version`: Specific version of CARIS software (e.g., `"5.5"`).
+  - `python_version`: Python version used by the CARIS API (e.g., `"3.11"`).
 
 ---
 
