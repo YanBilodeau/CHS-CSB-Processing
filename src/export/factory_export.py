@@ -30,11 +30,11 @@ class FileTypes(StrEnum):
     """
 
     GEOJSON: str = "geojson"
-    GPKG: str = "GPKG"
-    CSAR: str = "CSAR"
-    PARQUET: str = "Parquet"
-    FEATHER: str = "Feather"
-    CSV: str = "CSV"
+    GPKG: str = "gpkg"
+    CSAR: str = "csar"
+    PARQUET: str = "parquet"
+    FEATHER: str = "feather"
+    CSV: str = "csv"
 
 
 @dataclass(frozen=True)
