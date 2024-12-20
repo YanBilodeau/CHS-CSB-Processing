@@ -7,7 +7,7 @@ de différents formats.
 
 from pathlib import Path
 import re
-from typing import Optional
+from typing import Optional, Any
 
 import geopandas as gpd
 import pandas as pd
@@ -165,6 +165,8 @@ def export_geodataframe_to_csv(
     :param to_epsg: Le code EPSG de la projection.
     :type to_epsg: Optional[int]
     """
+    LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier CSV : '{output_path}'.")
+
     # Transformer le système de coordonnées si nécessaire
     transform_geodataframe_crs(geodataframe, to_epsg)
 
@@ -176,7 +178,10 @@ def export_geodataframe_to_csv(
 
 
 def export_geodataframe_to_parquet(
-    geodataframe: gpd.GeoDataFrame, output_path: Path, **kwargs
+    geodataframe: gpd.GeoDataFrame,
+    output_path: Path,
+    to_epsg: Optional[int] = WGS84,
+    **kwargs: Any,
 ) -> None:
     """
     Sauvegarde le GeoDataFrame dans un fichier Parquet.
@@ -185,14 +190,21 @@ def export_geodataframe_to_parquet(
     :type geodataframe: gpd.GeoDataFrame
     :param output_path: Le chemin du fichier de sortie.
     :type output_path: Path
+    :param to_epsg: Le code EPSG de la projection.
+    :type to_epsg: Optional[int]
     """
     LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier Parquet : '{output_path}'.")
+
+    transform_geodataframe_crs(geodataframe, to_epsg)
 
     geodataframe.to_parquet(sanitize_path_name(output_path), index=False)
 
 
 def export_geodataframe_to_feather(
-    geodataframe: gpd.GeoDataFrame, output_path: Path, **kwargs
+    geodataframe: gpd.GeoDataFrame,
+    output_path: Path,
+    to_epsg: Optional[int] = WGS84,
+    **kwargs: Any,
 ) -> None:
     """
     Sauvegarde le GeoDataFrame dans un fichier Feather.
@@ -201,8 +213,12 @@ def export_geodataframe_to_feather(
     :type geodataframe: gpd.GeoDataFrame
     :param output_path: Le chemin du fichier de sortie.
     :type output_path: Path
+    :param to_epsg: Le code EPSG de la projection.
+    :type to_epsg: Optional[int]
     """
     LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier Feather : '{output_path}'.")
+
+    transform_geodataframe_crs(geodataframe, to_epsg)
 
     geodataframe.to_feather(sanitize_path_name(output_path))
 
