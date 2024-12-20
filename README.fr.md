@@ -183,6 +183,8 @@ json_config_path = "./TCSB_VESSELSLIST.json"  # Chemin vers le fichier de config
 [CSB.Processing.options]
 log_level = "INFO"  # Niveau de log : {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}.
 max_iterations = 10  # Nombre maximal d'itérations {int}.
+export_format = ["gpkg", "csv"]  # Formats de fichier pour l'exportation des données traitées.
+decimal_precision = 1  # Précision des décimales pour les données traitées.
 
 [CARIS.Environment]
 base_path = "C:/Program Files/CARIS"  # Chemin d'installation des logiciels CARIS.
@@ -216,6 +218,8 @@ python_version = "3.11"  # Version de Python utilisée par l'API CARIS.
 - `[CSB.Processing.options]` (Optionnel) : Options de traitement. 
   - `log_level` : Niveau de journalisation : {`"DEBUG"`, `"INFO"`, `"WARNING"`, `"ERROR"`, `"CRITICAL"`}.
   - `max_iterations` : Nombre maximal d'itérations.
+  - `export_format` : Liste des formats de fichier pour l'exportation des données traitées : {`"geojson"`, `"gpkg"`, `"csar"`, `"parquet"`, `"feather"`, `"csv"`} (ex. : [`"gpkg"`, `"csv"`]).
+  - `decimal_precision` : Nombre de décimales significatives pour les données traitées.
 - `[CARIS.Environment]` (Optionnel) : Paramètres spécifiques à l'environnement CARIS. Sert à exporter les données au format CSAR.
   - `base_path` : Chemin d'installation des logiciels CARIS (par défaut : `"C:/Program Files/CARIS"`).
   - `software` : Logiciel CARIS utilisé (ex. : `"BASE Editor"`, `"HIPS and SIPS"`).

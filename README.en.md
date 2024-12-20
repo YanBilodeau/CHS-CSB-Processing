@@ -179,6 +179,8 @@ json_config_path = "./TCSB_VESSELSLIST.json"  # Path to vessel configuration fil
 [CSB.Processing.options]
 log_level = "INFO"  # Log level: {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}.
 max_iterations = 10  # Maximum number of iterations {int}.
+export_format = ["gpkg", "csv"]  # Formats of files for exporting processed data.
+decimal_precision = 1  # Decimal precision for processed data.
 
 [CARIS.Environment]
 base_path = "C:/Program Files/CARIS"  # Path to the CARIS installation directory.
@@ -210,8 +212,10 @@ python_version = "3.11"  # Python version to use.
   - `manager_type`: Type of vessel manager (e.g., `"VesselConfigJsonManager"`).
   - `json_config_path` (Used with `"VesselConfigJsonManager"`): Path to the vessel configuration file.
 - `[CSB.Processing.options]` (Optional): Processing options.
-  - `log_level`: Log level: {`"DEBUG"`, `"INFO"`, `"WARNING"`, `"ERROR"`, `"CRITICAL"`}.
-  - `max_iterations`: Maximum number of iterations.
+  - `log_level` : Log level: {`"DEBUG"`, `"INFO"`, `"WARNING"`, `"ERROR"`, `"CRITICAL"`}.
+  - `max_iterations` : Maximum number of iterations.
+  - `export_format` : List of file formats for exporting processed data {`"geojson"`, `"gpkg"`, `"csar"`, `"parquet"`, `"feather"`, `"csv"`} (e.g. : [`"gpkg"`, `"csv"`]).
+  - `decimal_precision` : Number of significant decimal places for processed data.
 - `[CARIS.Environment]` (Optional): CARIS environment-specific parameters. Used to export data in CSAR format.
   - `base_path`: Path to CARIS software installation (default: `"C:/Program Files/CARIS"`).
   - `software`: CARIS software used (e.g., `"BASE Editor"`, `"HIPS and SIPS"`).
