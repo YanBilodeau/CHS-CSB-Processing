@@ -891,6 +891,7 @@ def processing_workflow(
     #  [DATA.Georeference.tpu]
     #  base_tpu_wlo = 1
     #  base_tpu_wlp = 2
+    # todo mettre en paramètre (wlo 1 ? et wlp 2 ?), mettre le coefficient et la constante en paramètre
     # todo tpu si apply_water_level=False ?
 
     # todo utilise cache pour les TimeSeries, peut-être utile si plusieurs itérations
@@ -898,4 +899,9 @@ def processing_workflow(
     # todo faire le bounding polygon pour le csar
     # todo ajouter la colonne time au csar
 
-    # todo dans ce fichier, dans le fichier de configuration dans tide.time_serie.time_serie_dataframe et transformation.georeference
+    # todo dans ce fichier, dans le fichier de configuration dans
+    #  tide.time_serie.time_serie_dataframe et transformation.georeference
+
+    # todo get_morrish() tester s'il y a seulement une run et il reste des NAN ?
+
+    # todo Identification des périodes en enlevant les trous de x temps dans add_tide_zone_id_to_geodataframe
