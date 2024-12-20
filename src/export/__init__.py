@@ -2,6 +2,22 @@
 Ce package contient les fonctions d'export des données.
 """
 
-from factory_export import export_geodataframe, FileTypes
+from .export_utils import (
+    export_geodataframe_to_geojson,
+    export_geodataframe_to_shapefile,
+    export_geodataframe_to_gpkg,
+    export_geodataframe_to_csar,
+    export_dataframe_to_csv,
+)
+from .factory_export import export_geodataframe, FileTypes
 
-__all__ = ["export_geodataframe", "FileTypes"]
+
+__all__ = [
+    "export_geodataframe",
+    "FileTypes",
+    "export_geodataframe_to_geojson",
+    "export_geodataframe_to_shapefile",
+    "export_geodataframe_to_gpkg",
+    "export_geodataframe_to_csar",
+    "export_dataframe_to_csv",
+]
