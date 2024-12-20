@@ -239,7 +239,7 @@ class OptionsConfig(BaseModel):
         :rtype: int
         :raises ValueError: Si decimal_precision est inférieur ou égal à 0.
         """
-        if value <= 0:
+        if value < 0:
             raise ValueError(
                 "Le paramètre decimal_precision doit être supérieur ou égale à 0."
             )
