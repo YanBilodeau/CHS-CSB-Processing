@@ -5,6 +5,7 @@ Ce module contient le workflow de traitement des données des capteurs à bord d
 récupérées à partir de fichiers bruts, nettoyées, filtrées, géoréférencées et exportées dans un format standardisé.
 """
 
+import concurrent.futures
 from dataclasses import dataclass
 from collections import defaultdict
 from datetime import datetime
@@ -17,7 +18,8 @@ from loguru import logger
 import pandas as pd
 
 import config
-import export.export_utils as export
+import export
+from config.processing_config import FileTypes
 from ingestion import factory_parser
 import iwls_api_request as iwls
 from logger.loguru_config import configure_logger
@@ -532,7 +534,10 @@ def finalize_geodataframe(data_geodataframe: gpd.GeoDataFrame) -> gpd.GeoDataFra
 
 
 def export_processed_data(
-    data_geodataframe: gpd.GeoDataFrame, export_data_path: Path
+    data_geodataframe: gpd.GeoDataFrame,
+    export_data_path: Path,
+    file_type: export.FileTypes,
+    **kwargs,
 ) -> None:
     """
     Exporte les données traitées dans un fichier GeoPackage.
@@ -541,14 +546,63 @@ def export_processed_data(
     :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
     :param export_data_path: Chemin du répertoire d'exportation.
     :type export_data_path: Path
+    :param file_type: Type de fichier de sortie.
+    :type file_type: FileTypes
     """
-    output_path: Path = export_data_path / "ProcessedData.gpkg"
+    if "config" not in kwargs and file_type == export.FileTypes.CSAR:
+        LOGGER.warning(
+            "La configuration de l'API Caris est requise pour exporter les données au format CSAR."
+        )
+
+    output_path: Path = export_data_path / "ProcessedData"
     logger.info(
-        f"Exportation des données traitées ({len(data_geodataframe)} sondes) : {output_path}."
+        f"Exportation des données traitées ({len(data_geodataframe)} sondes) au format {file_type} : {output_path}."
     )
-    export.export_geodataframe_to_gpkg(
-        geodataframe=data_geodataframe, output_path=output_path
-    )
+
+    try:
+        export.export_geodataframe(
+            geodataframe=finalize_geodataframe(data_geodataframe=data_geodataframe),
+            file_type=file_type,
+            output_path=output_path,
+            **kwargs,
+        )
+        LOGGER.success(
+            f"Exportation des données traitées au format {file_type} complété."
+        )
+
+    except Exception as error:
+        LOGGER.error(
+            f"Erreur lors de l'exportation des données au format {file_type} : {error}."
+        )
+
+
+def export_processed_data_to(
+    data_geodataframe: gpd.GeoDataFrame,
+    export_data_path: Path,
+    file_types: Collection[export.FileTypes],
+    **kwargs,
+) -> None:
+    """
+    Exporte les données traitées dans plusieurs formats de fichier.
+
+    :param data_geodataframe: Données traitées à exporter.
+    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :param export_data_path: Chemin du répertoire d'exportation.
+    :type export_data_path: Path
+    :param file_types: Liste des types de fichiers de sortie.
+    :type file_types: Collection[FileTypes]
+    """
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        [
+            executor.submit(
+                export_processed_data,
+                data_geodataframe=data_geodataframe,
+                export_data_path=export_data_path,
+                file_type=file_type,
+                **kwargs,
+            )
+            for file_type in file_types
+        ]
 
 
 def processing_workflow(
@@ -583,6 +637,11 @@ def processing_workflow(
     processing_config: config.CSBprocessingConfig = config.get_data_config(
         config_file=config_path
     )
+    caris_api_config: config.CarisAPIConfig | None = (
+        config.get_caris_api_config(config_file=config_path)
+        if FileTypes.CSAR in processing_config.options.export_format
+        else None
+    )
 
     # Configure the logger
     configure_logger(
@@ -590,19 +649,6 @@ def processing_workflow(
         std_level=processing_config.options.log_level,
         log_file_level="DEBUG",
     )
-
-    # config_caris: config.CarisAPIConfig = config.get_caris_api_config(
-    #     config_file=config_path
-    # )
-
-    # import caris
-    #
-    # caris_wrapper: caris.CarisModuleImporter = caris.CarisModuleImporter(
-    #     config=config_caris
-    # )
-    # print(caris_wrapper)
-    #
-    # input("Press Enter to continue...")
 
     # Check if the vessel configuration is missing
     if (
@@ -673,9 +719,11 @@ def processing_workflow(
             )
         )
 
-        export_processed_data(
-            data_geodataframe=finalize_geodataframe(data_geodataframe=data),
+        export_processed_data_to(
+            data_geodataframe=data,
             export_data_path=export_data_path,
+            file_types=processing_config.options.export_format,
+            config=caris_api_config,
         )
 
         return None
@@ -783,13 +831,11 @@ def processing_workflow(
 
         if wl_combineds:
             # Export the Voronoi diagram to a GeoJSON file
-            voronoi_output_path: Path = (
-                export_tide_path / f"StationVoronoi-{run}.geojson"
-            )
+            voronoi_output_path: Path = export_tide_path / f"StationVoronoi-{run}.gpkg"
             LOGGER.info(
                 f"Exportation du diagramme de Voronoi des stations marégraphiques : {voronoi_output_path}."
             )
-            export.export_geodataframe_to_geojson(
+            export.export_geodataframe_to_gpkg(
                 geodataframe=gdf_voronoi,
                 output_path=export_tide_path / voronoi_output_path,
             )
@@ -832,19 +878,24 @@ def processing_workflow(
         )
 
     # Export the processed data
-    export_processed_data(
-        data_geodataframe=finalize_geodataframe(data_geodataframe=data),
+    export_processed_data_to(
+        data_geodataframe=data,
         export_data_path=export_data_path,
+        file_types=processing_config.options.export_format,
+        config=caris_api_config,
     )
 
     # todo gérer la valeur np.nan dans les configurations des capteurs
-    # todo mettre option dans le fichier de config pour le nombre de décimales significatives pour les couches Depth et Uncertainty
 
-    # [DATA.Georeference.tpu]  # todo à ajouter au BaseModel ?
-    # base_tpu_wlo = 1
-    # base_tpu_wlp = 2
+    # todo à ajouter au BaseModel ?
+    #  [DATA.Georeference.tpu]
+    #  base_tpu_wlo = 1
+    #  base_tpu_wlp = 2
     # todo tpu si apply_water_level=False ?
 
-    # todo dans ce fichier, dans le fichier de configuration dans tide.time_serie.time_serie_dataframe et transformation.georeference
+    # todo utilise cache pour les TimeSeries, peut-être utile si plusieurs itérations
 
-    # todo exporter en csar
+    # todo faire le bounding polygon pour le csar
+    # todo ajouter la colonne time au csar
+
+    # todo dans ce fichier, dans le fichier de configuration dans tide.time_serie.time_serie_dataframe et transformation.georeference
