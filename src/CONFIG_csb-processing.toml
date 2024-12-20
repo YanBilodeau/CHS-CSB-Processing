@@ -78,7 +78,7 @@ log_level = "INFO"
 max_iterations = 10
 # Liste des formats d'export des données traitées {"geojson", "gpkg", "csar", "parquet", "feather", "csv"}
 export_format = ["gpkg", "csar"]
-# Nombre de décimales significative pour les données traitées {int}.
+# Nombre de décimales significatives pour les données traitées {int}.
 decimal_precision = 1
 
 [CARIS.Environment]
