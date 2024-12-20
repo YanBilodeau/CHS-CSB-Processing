@@ -66,8 +66,10 @@ def get_caris_api_config(
     :return: La configuration pour l'API Python de Caris.
     :rtype: CarisAPIConfig
     """
+    config_dict = load_config(config_file=config_file)
+
     config_caris_api: ConfigDict = (
-        load_config(config_file=config_file).get("CARIS").get("Environment")
+        config_dict.get("CARIS").get("Environment") if "CARIS" in config_dict else None
     )
     if not config_caris_api:
         raise ValueError(
