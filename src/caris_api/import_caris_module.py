@@ -8,7 +8,7 @@ Python utilisée et d'ajouter le chemin du module à importer dans le système.
 from pathlib import Path
 import sys
 from types import ModuleType
-from typing import Any, Protocol
+from typing import Protocol
 
 from loguru import logger
 
@@ -35,8 +35,8 @@ class CarisModuleImporter:
         """
         Construteur de la classe.
 
-        :param config: Un objet CarisAPIConfig.
-        :type config: CarisAPIConfig
+        :param config: Un objet CarisAPIConfigProtocol.
+        :type config: CarisAPIConfigProtocol
         :raise: VersionError si la version de Python ne correspond pas.
         """
         LOGGER.debug("Initialisation de l'importateur des modules de l'API de Caris.")
@@ -47,14 +47,14 @@ class CarisModuleImporter:
         self._python_env: Path = config.python_path
 
         self._add_environment()
-        self._caris = self._import_caris()
-        self._coverage = self._import_coverage()
-        self._bathy_db = self._import_bathy_db()
+        self._caris: ModuleType = self._import_caris()
+        self._coverage: ModuleType = self._import_coverage()
+        self._bathy_db: ModuleType = self._import_bathy_db()
         self._delete_environment()
 
     def validate_python_version(self) -> None:
         """
-        Méthode permettant de valider que la version de python utilisée correspond avec celle de l'API de Caris.
+        Méthode permettant de valider que la version de python utilisée correspond à celle de l'API de Caris.
 
         :raise: VersionError si la version ne correspond pas.
         """
