@@ -18,8 +18,8 @@ LOGGER = logger.bind(name="CSB-Processing.Caris.Importer")
 class CarisAPIConfigProtocol(Protocol):
     base_path: str
     software: str
-    version: float
-    python_version: float
+    version: str
+    python_version: str
     python_path: Path
 
 
