@@ -395,8 +395,6 @@ def compute_tpu(
         )
         return gdf
 
-    # todo mettre en paramètre (wlo 1 ? et wlp 2 ?), mettre le coefficient et la constante en paramètre
-
     return _run_dask_function_in_parallel(data=data, func=calculate_uncertainty)
 
 
