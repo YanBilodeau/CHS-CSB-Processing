@@ -33,8 +33,23 @@ WATER_LEVEL_TOLERANCE: str = "15 min"
 
 INFO: str = "INFO"
 MAX_ITERATIONS: int = 10
-EXPORT_FORMAT: list[str] = ["gpkg"]
 DECIMAL_PRECISION: int = 1
+
+
+class FileTypes(StrEnum):
+    """
+    Enumération des types de fichiers de sortie.
+    """
+
+    GEOJSON: str = "geojson"
+    GPKG: str = "gpkg"
+    CSAR: str = "csar"
+    PARQUET: str = "parquet"
+    FEATHER: str = "feather"
+    CSV: str = "csv"
+
+
+EXPORT_FORMAT: list[str] = [FileTypes.GPKG]
 
 
 class DataFilterConfig(BaseModel):
@@ -193,7 +208,7 @@ class OptionsConfig(BaseModel):
     """Le niveau de log."""
     max_iterations: int = MAX_ITERATIONS
     """Le nombre maximal d'itérations pour le traitement."""
-    export_format: list[str] = EXPORT_FORMAT
+    export_format: list[FileTypes] = EXPORT_FORMAT
     """Les formats de fichiers pour l'exportation."""
     decimal_precision: int = DECIMAL_PRECISION
 
