@@ -91,7 +91,10 @@ def export_geodataframe(
 
 
 def export_geodataframe_to_geojson(
-    geodataframe: gpd.GeoDataFrame, output_path: Path, to_epsg: Optional[int] = WGS84
+    geodataframe: gpd.GeoDataFrame,
+    output_path: Path,
+    to_epsg: Optional[int] = WGS84,
+    **kwargs,
 ) -> None:
     """
     Sauvegarde le GeoDataFrame dans un fichier GeoJSON.
@@ -109,7 +112,10 @@ def export_geodataframe_to_geojson(
 
 
 def export_geodataframe_to_shapefile(
-    geodataframe: gpd.GeoDataFrame, output_path: Path, to_epsg: Optional[int] = WGS84
+    geodataframe: gpd.GeoDataFrame,
+    output_path: Path,
+    to_epsg: Optional[int] = WGS84,
+    **kwargs,
 ) -> None:
     """
     Sauvegarde le GeoDataFrame dans un fichier Shapefile.
@@ -125,7 +131,10 @@ def export_geodataframe_to_shapefile(
 
 
 def export_geodataframe_to_gpkg(
-    geodataframe: gpd.GeoDataFrame, output_path: Path, to_epsg: Optional[int] = WGS84
+    geodataframe: gpd.GeoDataFrame,
+    output_path: Path,
+    to_epsg: Optional[int] = WGS84,
+    **kwargs,
 ) -> None:
     """
     Sauvegarde le GeoDataFrame dans un fichier GeoPackage.
@@ -141,7 +150,10 @@ def export_geodataframe_to_gpkg(
 
 
 def export_geodataframe_to_csv(
-    geodataframe: gpd.GeoDataFrame, output_path: Path, to_epsg: Optional[int] = WGS84
+    geodataframe: gpd.GeoDataFrame,
+    output_path: Path,
+    to_epsg: Optional[int] = WGS84,
+    **kwargs,
 ) -> None:
     """
     Sauvegarde le GeoDataFrame dans un fichier CSV.
@@ -195,7 +207,32 @@ def export_geodataframe_to_feather(
     geodataframe.to_feather(sanitize_path_name(output_path))
 
 
-def export_dataframe_to_csv(dataframe: pd.DataFrame, output_path: Path) -> None:
+def export_geodataframe_to_csar(
+    geo_dataframe: gpd.GeoDataFrame, output_path: Path, config, **kwargs
+) -> None:
+    """
+    Sauvegarde le GeoDataFrame dans un fichier CSAR.
+
+    :param geo_dataframe: Le GeoDataFrame.
+    :type geo_dataframe: gpd.GeoDataFrame
+    :param output_path: Le chemin du fichier de sortie.
+    :type output_path: Path
+    :param config: La configuration de l'API Caris.
+    :type config: CarisAPIConfigProtocol
+    """
+    # Importation au runtime pour éviter des problèmes de dépendances si Caris n'est pas installé
+    from caris_api import export_csar
+
+    LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier CSAR : '{output_path}'.")
+
+    export_csar.export_geodataframe_to_csar(
+        data=geo_dataframe, output_path=sanitize_path_name(output_path), config=config
+    )
+
+
+def export_dataframe_to_csv(
+    dataframe: pd.DataFrame, output_path: Path, **kwargs
+) -> None:
     """
     Sauvegarde le DataFrame dans un fichier CSV.
 
