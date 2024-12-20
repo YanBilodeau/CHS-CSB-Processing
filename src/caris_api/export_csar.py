@@ -1,5 +1,7 @@
 """
+Module pour exporter un Geodataframe vers un fichier CSAR.
 
+Ce module contient les fonctions nécessaires pour exporter un Geodataframe vers un fichier CSAR.
 """
 
 from __future__ import annotations
@@ -84,7 +86,7 @@ def _get_band_info() -> dict[str, coverage.BandInfo]:
             type=coverage.DataType.FLOAT32,
             tuple_length=1,
             name=WATER_LEVEL,
-            direction=coverage.Direction.HEIGHT,  # todo à vérifier si DEPTH
+            direction=coverage.Direction.DEPTH,
             units="m",
             category=coverage.Category.SCALAR,
             ndv=NDV,
@@ -103,7 +105,7 @@ def _get_band_info() -> dict[str, coverage.BandInfo]:
 
 def _get_band_options(
     band_info: dict[str, coverage.BandInfo],
-    extent: tuple[tuple[float]] = ((0.0, 0.0), (-180, 90)),  # todo à vérifier
+    extent: tuple[tuple[float]] = ((0.0, 0.0), (-180.0, 90.0)),
     cosys: str = COSYS,
 ) -> coverage.Options:
     """
@@ -144,7 +146,10 @@ def _get_value_blocks(data: gpd.GeoDataFrame) -> list[dict[str, list]]:
     return [
         {
             POSITION: list(
-                zip(data[schema_ids.LONGITUDE_WGS84], data[schema_ids.LATITUDE_WGS84])
+                zip(
+                    data[schema_ids.LONGITUDE_WGS84],
+                    data[schema_ids.LATITUDE_WGS84],
+                )
             ),
             DEPTH_RAW: data[schema_ids.DEPTH_RAW_METER].tolist(),
             DEPTH: data[schema_ids.DEPTH_PROCESSED_METER].tolist(),
@@ -152,6 +157,24 @@ def _get_value_blocks(data: gpd.GeoDataFrame) -> list[dict[str, list]]:
             UNCERTAINTY: data[schema_ids.UNCERTAINTY].tolist(),
         }
     ]
+
+
+def _create_bounding_polygon(csar_file_path: Path) -> None:
+    """
+    Crée le polygone de délimitation du fichier CSAR.
+
+    :param csar_file_path: Le chemin du fichier CSAR.
+    :type csar_file_path: Path
+    """
+    LOGGER.debug(
+        f"Création du polygone de délimitation du fichier CSAR : {csar_file_path}."
+    )
+
+    csar_file: coverage.Cloud = coverage.Cloud(
+        filename=str(csar_file_path),
+        options=coverage.Options(open_type=coverage.OpenType.WRITE),
+    )
+    csar_file.bounding_polygon = coverage.generate_polygon(csar_file)
 
 
 def ensure_directory_exists(directory: Path) -> None:
@@ -212,9 +235,9 @@ def export_geodataframe_to_csar(
     opts.iterator = lambda: iter(blocks)
 
     remove_existing_files(files=[output_path, output_path.with_suffix(".csar0")])
-
     try:
         coverage.Cloud(filename=str(output_path), options=opts)
+        _create_bounding_polygon(csar_file_path=output_path)
 
     except Exception as error:
         LOGGER.error(
