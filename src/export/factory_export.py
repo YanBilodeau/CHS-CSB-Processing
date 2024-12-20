@@ -18,6 +18,9 @@ from .export_utils import (
     export_geodataframe_to_shapefile,
     export_geodataframe_to_gpkg,
     export_geodataframe_to_csar,
+    export_geodataframe_to_feather,
+    export_geodataframe_to_parquet,
+    export_geodataframe_to_csv,
 )
 
 
@@ -30,6 +33,9 @@ class FileTypes(StrEnum):
     SHAPEFILE: str = "Shapefile"
     GPKG: str = "GPKG"
     CSAR: str = "CSAR"
+    PARQUET: str = "Parquet"
+    FEATHER: str = "Feather"
+    CSV: str = "CSV"
 
 
 @dataclass(frozen=True)
@@ -58,6 +64,13 @@ FACTORY_EXPORT_GEODATAFRAME: dict[FileTypes, Exporter] = {
     ),
     FileTypes.GPKG: Exporter(extension=".gpkg", function=export_geodataframe_to_gpkg),
     FileTypes.CSAR: Exporter(extension=".csar", function=export_geodataframe_to_csar),
+    FileTypes.PARQUET: Exporter(
+        extension=".parquet", function=export_geodataframe_to_parquet
+    ),
+    FileTypes.FEATHER: Exporter(
+        extension=".feather", function=export_geodataframe_to_feather
+    ),
+    FileTypes.CSV: Exporter(extension=".csv", function=export_geodataframe_to_csv),
 }
 
 
