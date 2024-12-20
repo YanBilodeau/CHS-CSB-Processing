@@ -176,7 +176,7 @@ def export_geodataframe_to_csv(
 
 
 def export_geodataframe_to_parquet(
-    geodataframe: gpd.GeoDataFrame, output_path: Path
+    geodataframe: gpd.GeoDataFrame, output_path: Path, **kwargs
 ) -> None:
     """
     Sauvegarde le GeoDataFrame dans un fichier Parquet.
@@ -192,7 +192,7 @@ def export_geodataframe_to_parquet(
 
 
 def export_geodataframe_to_feather(
-    geodataframe: gpd.GeoDataFrame, output_path: Path
+    geodataframe: gpd.GeoDataFrame, output_path: Path, **kwargs
 ) -> None:
     """
     Sauvegarde le GeoDataFrame dans un fichier Feather.
