@@ -35,8 +35,8 @@ class CarisAPIConfig(BaseModel):
 
     base_path: str
     software: str
-    version: float
-    python_version: float
+    version: str
+    python_version: str
     python_path: Path = Field(default=None)
 
     def __init__(self, **values) -> None:
@@ -44,9 +44,9 @@ class CarisAPIConfig(BaseModel):
         self.python_path = (
             Path(self.base_path)
             / self.software
-            / str(self.version)
+            / self.version
             / "python"
-            / str(self.python_version)
+            / self.python_version
         )
 
         if not self.python_path.exists():
