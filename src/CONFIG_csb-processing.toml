@@ -73,6 +73,17 @@ json_config_path = "./CONFIG_vessels.json"
 
 [CSB.Processing.options]
 # Niveau de log {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
-log_level = "INFO"
+log_level = "DEBUG"
 # Valeur minimale de 1 {int}
 max_iterations = 10
+
+[CARIS.Environment]
+# Chemin d'accès à l'installation des logiciels CARIS {str}.
+base_path = "C:/Program Files/CARIS"
+# Logiciel de traitement de données CARIS {"BASE Editor", "HIPS and SIPS"}
+software = "BASE Editor"
+# Version de CARIS {str}.
+version = "5.5"
+# Version de l'API de Python utilisée par CARIS {str}.
+# Doit être la même version que l'interpreteur Python utilisé.
+python_version = "3.11"
