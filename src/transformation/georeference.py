@@ -326,7 +326,10 @@ def get_zero_water_levels(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
 
 
 def apply_georeference_bathymetry(
-    data: gpd.GeoDataFrame, waterline: WaterlineProtocol, sounder: SensorProtocol
+    data: gpd.GeoDataFrame,
+    waterline: WaterlineProtocol,
+    sounder: SensorProtocol,
+    decimal_precision: int,
 ) -> gpd.GeoDataFrame:
     """
     Applique la transformation de géoréférencement des données de bathymétrie.
@@ -337,6 +340,8 @@ def apply_georeference_bathymetry(
     :type waterline: WaterlineProtocol
     :param sounder: Données du sondeur.
     :type sounder: SensorProtocol
+    :param decimal_precision: Précision décimale pour les valeurs de profondeur.
+    :type decimal_precision: int
     :return: Données de profondeur géoréférencées.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
@@ -352,7 +357,7 @@ def apply_georeference_bathymetry(
                 - waterline.z
                 + sounder.z
             ),
-            2,
+            decimal_precision,
         )
         return gdf
 
@@ -361,6 +366,7 @@ def apply_georeference_bathymetry(
 
 def compute_tpu(
     data: gpd.GeoDataFrame,
+    decimal_precision: int,
     depth_coeficient_tpu: float = 0.05,
     constant_tpu: float = 2.0,
 ) -> gpd.GeoDataFrame:
@@ -369,6 +375,8 @@ def compute_tpu(
 
     :param data: Données brut de profondeur.
     :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
+    :param decimal_precision: Précision décimale pour les valeurs de profondeur.
+    :type decimal_precision: int
     :param depth_coeficient_tpu: Coefficient de profondeur.
     :type depth_coeficient_tpu: float
     :param constant_tpu: Constante du TPU.
@@ -382,7 +390,8 @@ def compute_tpu(
 
     def calculate_uncertainty(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         gdf.loc[:, schema_ids.UNCERTAINTY] = round(
-            (gdf[schema_ids.DEPTH_RAW_METER] * depth_coeficient_tpu) + constant_tpu, 2
+            (gdf[schema_ids.DEPTH_RAW_METER] * depth_coeficient_tpu) + constant_tpu,
+            decimal_precision,
         )
         return gdf
 
@@ -423,9 +432,10 @@ def georeference_bathymetry(
     waterline: WaterlineProtocol,
     sounder: SensorProtocol,
     water_level: Optional[dict[str, pd.DataFrame]] = None,
-    water_level_tolerance: pd.Timedelta = pd.Timedelta("15 min"),
-    overwrite: bool = False,
-    apply_water_level: bool = True,
+    water_level_tolerance: Optional[pd.Timedelta] = pd.Timedelta("15 min"),
+    decimal_precision: Optional[int] = 2,
+    overwrite: Optional[bool] = False,
+    apply_water_level: Optional[bool] = True,
 ) -> gpd.GeoDataFrame:
     """
     Géoréférence les données de bathymétrie.
@@ -439,11 +449,13 @@ def georeference_bathymetry(
     :param water_level: Niveau d'eau.
     :type water_level: Optional[dict[str, pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]]
     :param water_level_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
-    :type water_level_tolerance: pd.Timedelta
+    :type water_level_tolerance: Optional[pd.Timedelta]
+    :param decimal_precision: Précision décimale pour les valeurs de profondeur.
+    :type decimal_precision: Optional[int]
     :param overwrite: Géoréférencer les données de profondeur même si elles ont déjà été géoréférencées.
-    :type overwrite: bool
+    :type overwrite: Optional[bool]
     :param apply_water_level: True pour appliquer le niveau d'eau, sinon un niveau d'eau de 0 sera appliqué.
-    :type apply_water_level: bool
+    :type apply_water_level: Optional[bool]
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     :raises WaterLevelDataRequiredError: Erreur si les données de niveau d'eau sont requises.
     """
@@ -474,13 +486,16 @@ def georeference_bathymetry(
     LOGGER.info("Application des niveaux d'eau et des bras de levier aux sondes.")
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
         apply_georeference_bathymetry(
-            data=data_to_process, waterline=waterline, sounder=sounder
+            data=data_to_process,
+            waterline=waterline,
+            sounder=sounder,
+            decimal_precision=decimal_precision,
         )
     )
 
     LOGGER.info("Calcul du TPU des données de profondeur.")
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
-        compute_tpu(data_to_process)
+        compute_tpu(data=data_to_process, decimal_precision=decimal_precision)
     )
 
     data.update(data_to_process)  # Mise à jour des données
