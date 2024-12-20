@@ -79,7 +79,7 @@ max_iterations = 10
 # Liste des formats d'export des données traitées {"geojson", "gpkg", "csar", "parquet", "feather", "csv"}
 export_format = ["gpkg", "csar"]
 # Nombre de décimales significatives pour les données traitées {int}.
-decimal_precision = 1
+decimal_precision = 2
 
 [CARIS.Environment]
 # Chemin d'accès à l'installation des logiciels CARIS {str}.
