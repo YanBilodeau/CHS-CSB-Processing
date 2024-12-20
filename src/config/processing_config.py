@@ -33,6 +33,8 @@ WATER_LEVEL_TOLERANCE: str = "15 min"
 
 INFO: str = "INFO"
 MAX_ITERATIONS: int = 10
+EXPORT_FORMAT: list[str] = ["gpkg"]
+DECIMAL_PRECISION: int = 1
 
 
 class DataFilterConfig(BaseModel):
@@ -191,6 +193,9 @@ class OptionsConfig(BaseModel):
     """Le niveau de log."""
     max_iterations: int = MAX_ITERATIONS
     """Le nombre maximal d'itérations pour le traitement."""
+    export_format: list[str] = EXPORT_FORMAT
+    """Les formats de fichiers pour l'exportation."""
+    decimal_precision: int = DECIMAL_PRECISION
 
     @field_validator("max_iterations")
     def validate_max_iterations(cls, value: int) -> int:
@@ -205,6 +210,24 @@ class OptionsConfig(BaseModel):
         """
         if value <= 0:
             raise ValueError("Le paramètre max_iterations doit être supérieur à 0.")
+
+        return value
+
+    @field_validator("decimal_precision")
+    def validate_decimal_precision(cls, value: int) -> int:
+        """
+        Valide que decimal_precision est plus grand ou égale à 0.
+
+        :param value: La valeur de decimal_precision.
+        :type value: int
+        :return: La valeur de decimal_precision.
+        :rtype: int
+        :raises ValueError: Si decimal_precision est inférieur ou égal à 0.
+        """
+        if value <= 0:
+            raise ValueError(
+                "Le paramètre decimal_precision doit être supérieur ou égale à 0."
+            )
 
         return value
 
