@@ -9,7 +9,7 @@ from pathlib import Path
 from loguru import logger
 from pydantic import BaseModel, Field
 
-from config.helper import load_config
+from .helper import load_config
 
 LOGGER = logger.bind(name="CSB-Processing.Caris.Config")
 
