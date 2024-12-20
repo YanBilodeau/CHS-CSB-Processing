@@ -15,7 +15,6 @@ from plotly.matplotlylib import Exporter
 
 from .export_utils import (
     export_geodataframe_to_geojson,
-    export_geodataframe_to_shapefile,
     export_geodataframe_to_gpkg,
     export_geodataframe_to_csar,
     export_geodataframe_to_feather,
