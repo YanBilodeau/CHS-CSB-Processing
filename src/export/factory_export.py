@@ -21,11 +21,11 @@ from .export_utils import (
 )
 
 
-
 class FileTypes(StrEnum):
     """
     Enumération des types de fichiers de sortie.
     """
+
     GEOJSON: str = "geojson"
     SHAPEFILE: str = "Shapefile"
     GPKG: str = "GPKG"
@@ -42,20 +42,24 @@ class Exporter:
     :param function: La fonction d'exportation.
     :type function: Callable[[gpd.GeoDataFrame, Path, Any], None]
     """
+
     extension: str
     """Extension du fichier de sortie."""
     function: Callable[[gpd.GeoDataFrame, Path, Any], None]
     """Fonction d'exportation."""
 
 
-FACTORY_EXPORT_GEODATAFRAME: dict[
-    FileTypes, Exporter
-] = {
-    FileTypes.GEOJSON: Exporter(extension=".geojson", function=export_geodataframe_to_geojson),
-    FileTypes.SHAPEFILE: Exporter(extension=".shp", function=export_geodataframe_to_shapefile),
+FACTORY_EXPORT_GEODATAFRAME: dict[FileTypes, Exporter] = {
+    FileTypes.GEOJSON: Exporter(
+        extension=".geojson", function=export_geodataframe_to_geojson
+    ),
+    FileTypes.SHAPEFILE: Exporter(
+        extension=".shp", function=export_geodataframe_to_shapefile
+    ),
     FileTypes.GPKG: Exporter(extension=".gpkg", function=export_geodataframe_to_gpkg),
     FileTypes.CSAR: Exporter(extension=".csar", function=export_geodataframe_to_csar),
 }
+
 
 def export_geodataframe(
     geodataframe: gpd.GeoDataFrame,
@@ -75,4 +79,6 @@ def export_geodataframe(
     """
     exporter: Exporter = FACTORY_EXPORT_GEODATAFRAME[file_type]
 
-    exporter.function(geodataframe, output_path / exporter.extension, **kwargs)
+    exporter.function(
+        geodataframe, output_path.with_suffix(exporter.extension), **kwargs
+    )
