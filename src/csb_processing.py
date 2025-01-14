@@ -576,7 +576,7 @@ def export_processed_data(
         )
 
 
-def export_processed_data_to(
+def export_processed_data_to_file_types(
     data_geodataframe: gpd.GeoDataFrame,
     export_data_path: Path,
     file_types: Collection[export.FileTypes],
@@ -630,24 +630,23 @@ def processing_workflow(
         LOGGER.warning(f"Aucun fichier à traiter.")
         return
 
-    # Get the data structure
     export_data_path, export_tide_path, log_path = get_data_structure(output)
 
     # Read the configuration file
     processing_config: config.CSBprocessingConfig = config.get_data_config(
         config_file=config_path
     )
-    caris_api_config: config.CarisAPIConfig | None = (
-        config.get_caris_api_config(config_file=config_path)
-        if FileTypes.CSAR in processing_config.options.export_format
-        else None
-    )
-
     # Configure the logger
     configure_logger(
         log_path / f"{datetime.now().strftime('%Y-%m-%d')}_CSB-Processing.log",
         std_level=processing_config.options.log_level,
         log_file_level="DEBUG",
+    )
+    # Get the configuration for the API Caris
+    caris_api_config: config.CarisAPIConfig | None = (
+        config.get_caris_api_config(config_file=config_path)
+        if FileTypes.CSAR in processing_config.options.export_format
+        else None
     )
 
     # Check if the vessel configuration is missing
@@ -719,7 +718,7 @@ def processing_workflow(
             )
         )
 
-        export_processed_data_to(
+        export_processed_data_to_file_types(
             data_geodataframe=data,
             export_data_path=export_data_path,
             file_types=processing_config.options.export_format,
@@ -878,7 +877,7 @@ def processing_workflow(
         )
 
     # Export the processed data
-    export_processed_data_to(
+    export_processed_data_to_file_types(
         data_geodataframe=data,
         export_data_path=export_data_path,
         file_types=processing_config.options.export_format,
