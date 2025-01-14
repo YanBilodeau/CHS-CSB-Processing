@@ -4,10 +4,12 @@ Ce module contient les constantes utilisées pour parser les données des fichie
 
 from enum import StrEnum
 
+
 class DataType(StrEnum):
     """
     Enumération des types de données.
     """
+
     OFM = "OFM"
     """Type de données OFM."""
     DCDB = "DCDB"
@@ -18,6 +20,7 @@ class DataType(StrEnum):
     """Type de données Actisense."""
     BLACKBOX = "BlackBox"
     """Type de données BlackBox."""
+
 
 # Constantes pour les noms des colonnes des données DCDB.
 LONGITUDE_DCDB: str = "LON"
