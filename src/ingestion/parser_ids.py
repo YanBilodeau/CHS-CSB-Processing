@@ -2,6 +2,23 @@
 Ce module contient les constantes utilisées pour parser les données des fichiers OFM, DCDB, Lowrance et Actisense.
 """
 
+from enum import StrEnum
+
+class DataType(StrEnum):
+    """
+    Enumération des types de données.
+    """
+    OFM = "OFM"
+    """Type de données OFM."""
+    DCDB = "DCDB"
+    """Type de données DCDB."""
+    LOWRANCE = "Lowrance"
+    """Type de données Lowrance."""
+    ACTISENSE = "ACTISENSE"
+    """Type de données Actisense."""
+    BLACKBOX = "BlackBox"
+    """Type de données BlackBox."""
+
 # Constantes pour les noms des colonnes des données DCDB.
 LONGITUDE_DCDB: str = "LON"
 """Valeur de la constante pour la colonne de longitude des données DCDB."""
