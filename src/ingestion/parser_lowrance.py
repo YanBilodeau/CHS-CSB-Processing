@@ -21,7 +21,7 @@ from . import parser_ids as ids
 import schema
 from schema import model_ids as schema_ids
 
-LOGGER = logger.bind(name="CSB-Processing.Ingestion.Parser.Lowrance")
+LOGGER = logger.bind(name=f"CSB-Processing.Ingestion.Parser.{ids.LOWRANCE}")
 
 DTYPE_DICT: dict[str, str] = {
     ids.LONGITUDE_LOWRANCE: ids.FLOAT64,
@@ -59,7 +59,7 @@ class DataParserLowrance(DataParserABC):
         :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(
-            f"Chargement du fichier de données brutes de type Lowrance : {file}"
+            f"Chargement du fichier de données brutes de type {ids.LOWRANCE} : {file}"
         )
 
         dtype_dict = dtype_dict or DTYPE_DICT

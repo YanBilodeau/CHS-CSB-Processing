@@ -20,7 +20,7 @@ from . import parser_ids as ids
 from schema import model_ids as schema_ids
 
 
-LOGGER = logger.bind(name="CSB-Processing.Ingestion.Parser.DCDB")
+LOGGER = logger.bind(name=f"CSB-Processing.Ingestion.Parser.{ids.DCDB}")
 
 DTYPE_DICT: dict[str, str] = {
     ids.LATITUDE_DCDB: ids.FLOAT64,
@@ -54,7 +54,7 @@ class DataParserBCDB(DataParserABC):
         :return: Un GeoDataFrame.
         :rtype: gpd.GeoDataFrame
         """
-        LOGGER.debug(f"Chargement d'un fichier de données brutes de type DCDB : {file}")
+        LOGGER.debug(f"Chargement d'un fichier de données brutes de type {ids.DCDB} : {file}")
 
         if dtype_dict is None:
             dtype_dict = DTYPE_DICT

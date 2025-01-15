@@ -20,7 +20,7 @@ from . import parser_ids as ids
 from schema import model_ids as schema_ids
 
 
-LOGGER = logger.bind(name="CSB-Processing.Ingestion.Parser.OFM")
+LOGGER = logger.bind(name=f"CSB-Processing.Ingestion.Parser.{ids.OFM}")
 
 DTYPE_DICT: dict[str, str] = {
     ids.LATITUDE_OFM: ids.FLOAT64,
@@ -54,7 +54,7 @@ class DataParserOFM(DataParserABC):
         :return: Un GeoDataFrame.
         :rtype: gpd.GeoDataFrame
         """
-        LOGGER.debug(f"Chargement d'un fichier de données brutes de type OFM : {file}")
+        LOGGER.debug(f"Chargement d'un fichier de données brutes de type {ids.OFM} : {file}")
 
         if dtype_dict is None:
             dtype_dict = DTYPE_DICT
