@@ -10,10 +10,11 @@ from pathlib import Path
 from typing import Type, TypeVar
 
 from . import parser_ids as ids
+from .parser_abc import DataParserABC
 from .parser_dcdb import DataParserBCDB
 from .parser_lowrance import DataParserLowrance
 from .parser_ofm import DataParserOFM
-from .parser_exception import MultipleParsersError, DataParserABC
+from .parser_exception import MultipleParsersError
 
 
 class DataType(StrEnum):
@@ -41,7 +42,7 @@ DATA_TYPE_MAPPING: {Type[DataParserABC], DataType} = {
 """Dictionnaire permettant de faire le lien entre un parser et un type de données."""
 
 
-T = TypeVar('T', bound=DataParserABC)
+T = TypeVar("T", bound=DataParserABC)
 """Type générique permettant de définir un parser."""
 
 
