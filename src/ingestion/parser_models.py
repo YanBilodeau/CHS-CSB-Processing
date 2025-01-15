@@ -7,9 +7,12 @@ Ce module contient les classes permettant de définir les modèles de données u
 from dataclasses import dataclass, field
 from enum import StrEnum
 from pathlib import Path
-from typing import Type
+from typing import Type, TypeVar
 
 from . import parser_ids as ids
+from .parser_dcdb import DataParserBCDB
+from .parser_lowrance import DataParserLowrance
+from .parser_ofm import DataParserOFM
 from .parser_exception import MultipleParsersError, DataParserABC
 
 
@@ -30,25 +33,53 @@ class DataType(StrEnum):
     """Type de données BlackBox."""
 
 
+DATA_TYPE_MAPPING: {Type[DataParserABC], DataType} = {
+    DataParserOFM: DataType.OFM,
+    DataParserBCDB: DataType.DCDB,
+    DataParserLowrance: DataType.LOWRANCE,
+}
+"""Dictionnaire permettant de faire le lien entre un parser et un type de données."""
+
+
+T = TypeVar('T', bound=DataParserABC)
+"""Type générique permettant de définir un parser."""
+
+
 @dataclass
 class ParserFiles:
     """
     Classe permettant de stocker les fichiers et le parser associés.
 
     :param parser: Le parser associé aux fichiers.
-    :type parser: Type[DataParserABC]
+    :type parser: Type[T]
     :param files: Les fichiers à traiter.
     :type files: list[Path]
     """
 
-    parser: Type[DataParserABC] = None
+    parser: Type[T] = None
     """Le parser associé aux fichiers."""
     files: list[Path] = field(default_factory=list)
     """Les fichiers à traiter."""
-    data_file_type = None
 
     def __setattr__(self, name, value):
-        if name == "parser" and self.parser is not None and self.parser != value:
-            raise MultipleParsersError(parsers=(self.parser, value))
+        if name == "parser":
+            if self.parser is not None:
+                if self.parser != value:
+                    raise MultipleParsersError(parsers=(self.parser, value))
+
+                return
 
         super().__setattr__(name, value)
+
+    @property
+    def data_type(self) -> DataType | None:
+        """
+        Propriété permettant de récupérer le type de données associé.
+
+        :return: Le type de données associé.
+        :rtype: DataType
+        """
+        if self.parser is None:
+            return None
+
+        return DATA_TYPE_MAPPING[self.parser]
