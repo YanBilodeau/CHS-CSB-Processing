@@ -54,7 +54,9 @@ class DataParserOFM(DataParserABC):
         :return: Un GeoDataFrame.
         :rtype: gpd.GeoDataFrame
         """
-        LOGGER.debug(f"Chargement d'un fichier de données brutes de type {ids.OFM} : {file}")
+        LOGGER.debug(
+            f"Chargement d'un fichier de données brutes de type {ids.OFM} : {file}"
+        )
 
         if dtype_dict is None:
             dtype_dict = DTYPE_DICT

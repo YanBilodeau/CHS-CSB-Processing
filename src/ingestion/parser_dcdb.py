@@ -54,7 +54,9 @@ class DataParserBCDB(DataParserABC):
         :return: Un GeoDataFrame.
         :rtype: gpd.GeoDataFrame
         """
-        LOGGER.debug(f"Chargement d'un fichier de données brutes de type {ids.DCDB} : {file}")
+        LOGGER.debug(
+            f"Chargement d'un fichier de données brutes de type {ids.DCDB} : {file}"
+        )
 
         if dtype_dict is None:
             dtype_dict = DTYPE_DICT
