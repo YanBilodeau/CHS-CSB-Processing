@@ -12,7 +12,6 @@ import geopandas as gpd
 from loguru import logger
 import pandas as pd
 
-from . import parser_ids as ids
 from .parsing_exception import ColumnException
 from .warning_capture import WarningCapture
 import schema
@@ -26,18 +25,6 @@ class DataParserABC(ABC):
     """
     Classe abstraite pour les parsers de données.
     """
-
-    @classmethod
-    @property
-    @abstractmethod
-    def data_type(cls) -> ids.DataType:
-        """
-        Propriété permettant de retourner le nom du type de données traitées.
-
-        :return: Le nom du type de données traitées.
-        :rtype: ids.DataType
-        """
-        pass
 
     @staticmethod
     def validate_columns(
