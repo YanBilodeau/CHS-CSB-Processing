@@ -11,10 +11,11 @@ import pandas as pd
 from loguru import logger
 
 from . import parser_ids as ids
+from .parser_abc import DataParserABC
 from .parser_dcdb import DataParserBCDB
 from .parser_lowrance import DataParserLowrance
 from .parser_ofm import DataParserOFM
-from .parser_exception import ParserIdentifierError, DataParserABC
+from .parser_exception import ParserIdentifierError
 from .parser_models import ParserFiles
 
 LOGGER = logger.bind(name="CSB-Processing.Ingestion.Parser.Factory")
