@@ -12,6 +12,7 @@ from typing import Type
 from . import parser_ids as ids
 from .parser_exception import MultipleParsersError, DataParserABC
 
+
 class DataType(StrEnum):
     """
     Enumération des types de données.
