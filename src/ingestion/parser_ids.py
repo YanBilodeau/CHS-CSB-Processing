@@ -2,27 +2,9 @@
 Ce module contient les constantes utilisées pour parser les données des fichiers OFM, DCDB, Lowrance et Actisense.
 """
 
-from enum import StrEnum
-
-
-class DataType(StrEnum):
-    """
-    Enumération des types de données.
-    """
-
-    OFM = "OFM"
-    """Type de données OFM."""
-    DCDB = "DCDB"
-    """Type de données DCDB."""
-    LOWRANCE = "Lowrance"
-    """Type de données Lowrance."""
-    ACTISENSE = "ACTISENSE"
-    """Type de données Actisense."""
-    BLACKBOX = "BlackBox"
-    """Type de données BlackBox."""
-
-
 # Constantes pour les noms des colonnes des données DCDB.
+DCDB: str = "DCDB"
+"""Valeur de la constante pour le type de données DCDB."""
 LONGITUDE_DCDB: str = "LON"
 """Valeur de la constante pour la colonne de longitude des données DCDB."""
 LATITUDE_DCDB: str = "LAT"
@@ -33,6 +15,8 @@ TIME_DCDB: str = "TIME"
 """Valeur de la constante pour la colonne de temps des données DCDB."""
 
 # Constantes pour les noms des colonnes des données OFM.
+OFM: str = "OFM"
+"""Valeur de la constante pour le type de données OFM."""
 LONGITUDE_OFM: str = "LON"
 """Valeur de la constante pour la colonne de longitude des données OFM."""
 LATITUDE_OFM: str = "LAT"
@@ -43,6 +27,8 @@ TIME_OFM: str = "TIME"
 """Valeur de la constante pour la colonne de temps des données OFM."""
 
 # Constantes pour les noms des colonnes des données Lowrance.
+LOWRANCE: str = "Lowrance"
+"""Valeur de la constante pour le type de données Lowrance."""
 LONGITUDE_LOWRANCE: str = "Longitude[°WGS84]"
 """Valeur de la constante pour la colonne de longitude des données Lowrance."""
 LATITUDE_LOWRANCE: str = "Latitude[°WGS84]"
@@ -57,6 +43,8 @@ PRIMARY_LOWRANCE: str = "Primary"
 """Valeur de la constante pour le type de relevé primaire des données Lowrance."""
 
 # Constantes pour les noms des colonnes des données Actisense.
+ACTISENSE: str = "Actisense"
+"""Valeur de la constante pour le type de données Actisense."""
 LINE_ACTISENSE: str = "Line"
 """Valeur de la constante pour la colonne de ligne des données Actisense."""
 TIME_ACTISENSE: str = "Time"
@@ -81,6 +69,10 @@ SPEED_OVER_GROUND_ACTISENSE: str = "Speed Over Ground"
 """Valeur de la constante pour la colonne de vitesse sur le fond des données Actisense."""
 PGN_ACTISENSE: str = "PGN"
 """Valeur de la constante pour la colonne de PGN des données Actisense."""
+
+# Constantes pour les noms des colonnes des données BlackBox.
+BLACKBOX: str = "BlackBox"
+"""Valeur de la constante pour le type de données BlackBox."""
 
 # Constantes pour les dtypes des données.
 FLOAT64: str = "float64"
