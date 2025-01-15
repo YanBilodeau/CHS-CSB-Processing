@@ -5,6 +5,7 @@ Ce module contient les fonctions permettant de récupérer le parser associé à
 """
 
 from dataclasses import dataclass, field
+from enum import StrEnum
 from pathlib import Path
 from typing import Type, Collection
 
@@ -155,6 +156,23 @@ def get_parser_factory(file: Path) -> Type[DataParserABC]:
     raise ParserIdentifierError(file=file)
 
 
+class DataType(StrEnum):
+    """
+    Enumération des types de données.
+    """
+
+    OFM: str = ids.OFM
+    """Type de données OFM."""
+    DCDB: str = ids.DCDB
+    """Type de données DCDB."""
+    LOWRANCE: str = ids.LOWRANCE
+    """Type de données Lowrance."""
+    ACTISENSE: str = ids.ACTISENSE
+    """Type de données Actisense."""
+    BLACKBOX: str = ids.BLACKBOX
+    """Type de données BlackBox."""
+
+
 @dataclass
 class ParserFiles:
     """
@@ -170,6 +188,7 @@ class ParserFiles:
     """Le parser associé aux fichiers."""
     files: list[Path] = field(default_factory=list)
     """Les fichiers à traiter."""
+    data_file_type = None
 
     def __setattr__(self, name, value):
         if name == "parser" and self.parser is not None and self.parser != value:
