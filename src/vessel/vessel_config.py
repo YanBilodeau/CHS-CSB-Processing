@@ -128,6 +128,8 @@ class VesselConfig(BaseModel):
 
     :param id: Identifiant du navire.
     :type id: str
+    :param name: Nom du navire ou de la communauté.
+    :type name: Optional[str]
     :param axis_convention: Convention d'axes.
     :type axis_convention: AxisConvention
     :param navigation: Liste des données de navigation.
@@ -141,11 +143,13 @@ class VesselConfig(BaseModel):
     :param ssp_applied: Liste des données de profil de vitesse du son appliqué.
     :type ssp_applied: list[SoundSpeedProfile]
     :param attribute: Liste des données d'attribut.
-    :type attribute: list[BDBattribute]
+    :type attribute: Optional[list[BDBattribute]]
     """
 
     id: str
     """Identifiant du navire."""
+    name: Optional[str] = None
+    """Nom du navire ou de la communauté."""
     axis_convention: AxisConvention
     """Convention des axes."""
     navigation: list[Sensor]
@@ -289,6 +293,7 @@ def get_vessel_config_from_config_dict(config: VesselConfigDict) -> VesselConfig
 
     return VesselConfig(
         id=config[ids.ID],
+        name=config.get(ids.NAME),
         axis_convention=config[ids.AXIS_CONVENTION],
         navigation=[Sensor(**nav) for nav in config[ids.NAVIGATION]],
         motion=[Sensor(**motion) for motion in config[ids.MOTION]],
