@@ -7,6 +7,8 @@ from typing import LiteralString
 # Constantes pour VesselCongig
 ID: LiteralString = "id"
 """Valeur de la constante ID."""
+NAME: LiteralString = "name"
+"""Valeur de la constante NAME."""
 AXIS_CONVENTION: LiteralString = "axis_convention"
 """Valeur de la constante AXIS_CONVENTION."""
 NAVIGATION: LiteralString = "navigation"
