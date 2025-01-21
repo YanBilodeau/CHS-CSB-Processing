@@ -367,8 +367,8 @@ def apply_georeference_bathymetry(
 def compute_tpu(
     data: gpd.GeoDataFrame,
     decimal_precision: int,
-    depth_coeficient_tpu: float = 0.05,
-    constant_tpu: float = 2.0,
+    depth_coeficient_tpu: float = 0.04,
+    constant_tpu: float = 0.35,
 ) -> gpd.GeoDataFrame:
     """
     Calcule le TPU des données de bathymétrie.
