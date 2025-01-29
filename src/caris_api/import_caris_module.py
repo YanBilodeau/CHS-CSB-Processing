@@ -8,19 +8,12 @@ Python utilisée et d'ajouter le chemin du module à importer dans le système.
 from pathlib import Path
 import sys
 from types import ModuleType
-from typing import Protocol
 
 from loguru import logger
 
+from .model_caris import CarisConfigProtocol
+
 LOGGER = logger.bind(name="CSB-Processing.Caris.Importer")
-
-
-class CarisConfigProtocol(Protocol):
-    base_path: str
-    software: str
-    version: str
-    python_version: str
-    python_path: Path
 
 
 class VersionError(Exception): ...
