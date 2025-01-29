@@ -4,6 +4,7 @@ Module de configuration pour l'API Python de Caris.
 Ce module contient la classe de configuration pour l'API Python de Caris.
 """
 
+from dataclasses import dataclass
 from pathlib import Path
 
 from loguru import logger
@@ -14,6 +15,14 @@ from .helper import load_config
 LOGGER = logger.bind(name="CSB-Processing.Caris.Config")
 
 ConfigDict = dict[str, str | float]
+
+
+@dataclass(frozen=True)
+class CarisConfigError(Exception):
+    config_file: Path
+
+    def __str__(self) -> str:
+        return f"Aucune configuration pour Caris n'a été trouvée dans le fichier de configuration : {self.config_file}."
 
 
 class CarisAPIConfig(BaseModel):
@@ -72,9 +81,7 @@ def get_caris_api_config(
         config_dict.get("CARIS").get("Environment") if "CARIS" in config_dict else None
     )
     if not config_caris_api:
-        raise ValueError(
-            f"Aucune configuration pour de Caris n'a été trouvée dans le fichier de configuration : {config_file}."
-        )
+        raise CarisConfigError(config_file=config_file)
 
     LOGGER.debug(f"Initialisation de la configuration pour Caris.")
 
