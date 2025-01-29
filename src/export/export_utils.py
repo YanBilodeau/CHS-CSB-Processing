@@ -246,6 +246,28 @@ def export_geodataframe_to_csar_api(
     )
 
 
+def export_geodataframe_to_csar_batch(
+    geo_dataframe: gpd.GeoDataFrame, output_path: Path, config, **kwargs
+) -> None:
+    """
+    Sauvegarde le GeoDataFrame dans un fichier CSAR.
+
+    :param geo_dataframe: Le GeoDataFrame.
+    :type geo_dataframe: gpd.GeoDataFrame
+    :param output_path: Le chemin du fichier de sortie.
+    :type output_path: Path
+    :param config: La configuration de l'API Caris.
+    :type config: CarisAPIConfigProtocol
+    """
+    from caris_api import export_csar_batch
+
+    LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier CSAR : '{output_path}'.")
+
+    export_csar_batch.export_geodataframe_to_csar(
+        data=geo_dataframe, output_path=sanitize_path_name(output_path), config=config
+    )
+
+
 def export_dataframe_to_csv(
     dataframe: pd.DataFrame, output_path: Path, **kwargs
 ) -> None:
