@@ -58,7 +58,9 @@ FACTORY_EXPORT_GEODATAFRAME: dict[FileTypes, Exporter] = {
         extension=".geojson", function=export_geodataframe_to_geojson
     ),
     FileTypes.GPKG: Exporter(extension=".gpkg", function=export_geodataframe_to_gpkg),
-    FileTypes.CSAR: Exporter(extension=".csar", function=export_geodataframe_to_csar_api),
+    FileTypes.CSAR: Exporter(
+        extension=".csar", function=export_geodataframe_to_csar_api
+    ),
     FileTypes.PARQUET: Exporter(
         extension=".parquet", function=export_geodataframe_to_parquet
     ),
