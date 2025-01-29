@@ -13,6 +13,7 @@ from .processing_config import (
 from .iwls_api_config import IWLSAPIConfig, get_api_config
 
 __all__ = [
+    "CarisConfigError",
     "DataFilterConfig",
     "DataGeoreferenceConfig",
     "VesselManagerConfig",
