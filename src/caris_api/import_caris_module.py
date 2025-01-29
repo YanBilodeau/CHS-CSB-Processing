@@ -15,7 +15,7 @@ from loguru import logger
 LOGGER = logger.bind(name="CSB-Processing.Caris.Importer")
 
 
-class CarisAPIConfigProtocol(Protocol):
+class CarisConfigProtocol(Protocol):
     base_path: str
     software: str
     version: str
@@ -31,17 +31,17 @@ class CarisModuleImporter:
     Classe permettant d'importer les modules de lAPI de Caris.
     """
 
-    def __init__(self, config: CarisAPIConfigProtocol) -> None:
+    def __init__(self, config: CarisConfigProtocol) -> None:
         """
         Construteur de la classe.
 
         :param config: Un objet CarisAPIConfigProtocol.
-        :type config: CarisAPIConfigProtocol
+        :type config: CarisConfigProtocol
         :raise: VersionError si la version de Python ne correspond pas.
         """
         LOGGER.debug("Initialisation de l'importateur des modules de l'API de Caris.")
 
-        self._configuration: CarisAPIConfigProtocol = config
+        self._configuration: CarisConfigProtocol = config
         self.validate_python_version()
 
         self._python_env: Path = config.python_path
@@ -124,7 +124,7 @@ class CarisModuleImporter:
         return coverage
 
     @property
-    def configuration(self) -> CarisAPIConfigProtocol:
+    def configuration(self) -> CarisConfigProtocol:
         return self._configuration
 
     @property
