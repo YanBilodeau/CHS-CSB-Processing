@@ -22,7 +22,15 @@ class CarisConfigError(Exception):
     config_file: Path
 
     def __str__(self) -> str:
-        return f"Aucune configuration pour Caris n'a été trouvée dans le fichier de configuration : {self.config_file}."
+        return f"Aucune configuration pour Caris n'a été trouvée dans le fichier de configuration : {self.config_file}"
+
+
+@dataclass(frozen=True)
+class CarisApiConfigError(Exception):
+    python_path: Path
+
+    def __str__(self) -> str:
+        return f"L'API Python de Caris n'existe pas à l'emplacement {self.python_path}"
 
 
 class CarisAPIConfig(BaseModel):
@@ -59,9 +67,7 @@ class CarisAPIConfig(BaseModel):
         )
 
         if not self.python_path.exists():
-            raise ValueError(
-                f"L'API Python de Caris n'existe pas à l'emplacement {self.python_path}."
-            )
+            raise CarisApiConfigError(python_path=self.python_path)
 
 
 def get_caris_api_config(
