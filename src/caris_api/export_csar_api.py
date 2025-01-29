@@ -13,14 +13,14 @@ from typing import Optional
 import geopandas as gpd
 from loguru import logger
 
-from .import_caris_module import CarisModuleImporter, CarisAPIConfigProtocol
+from .import_caris_module import CarisModuleImporter, CarisConfigProtocol
 import schema
 from schema import model_ids as schema_ids
 
 
 coverage: Optional[ModuleType] = None
 
-LOGGER = logger.bind(name="CSB-Processing.Caris.ExportCSAR")
+LOGGER = logger.bind(name="CSB-Processing.Caris.API.ExportCSAR")
 
 NDV: int = -9999
 COSYS: str = """
@@ -205,7 +205,7 @@ def remove_existing_files(files: list[Path]) -> None:
 
 @schema.validate_schemas(data=schema.DataLoggerSchema)
 def export_geodataframe_to_csar(
-    data: gpd.GeoDataFrame, output_path: Path, config: CarisAPIConfigProtocol
+    data: gpd.GeoDataFrame, output_path: Path, config: CarisConfigProtocol
 ) -> None:
     """
     Exporte un Geodataframe vers un fichier CSAR.
@@ -215,7 +215,7 @@ def export_geodataframe_to_csar(
     :param output_path: Le chemin du fichier de sortie.
     :type output_path: Path
     :param config: La configuration de l'API Caris.
-    :type config: CarisAPIConfigProtocol
+    :type config: CarisConfigProtocol
     """
     global coverage
 
