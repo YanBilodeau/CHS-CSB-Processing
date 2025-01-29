@@ -1,7 +1,7 @@
 """
-Module pour exporter un Geodataframe vers un fichier CSAR.
+Module pour exporter un Geodataframe vers un fichier CSAR avec l'API de Caris.
 
-Ce module contient les fonctions nécessaires pour exporter un Geodataframe vers un fichier CSAR.
+Ce module contient les fonctions nécessaires pour exporter un Geodataframe vers un fichier CSAR avec l'API de Caris.
 """
 
 from __future__ import annotations
