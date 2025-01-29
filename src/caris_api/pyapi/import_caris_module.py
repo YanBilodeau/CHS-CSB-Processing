@@ -11,7 +11,7 @@ from types import ModuleType
 
 from loguru import logger
 
-from .model_caris import CarisConfigProtocol
+from ..model_caris import CarisConfigProtocol
 
 LOGGER = logger.bind(name="CSB-Processing.Caris.Importer")
 
