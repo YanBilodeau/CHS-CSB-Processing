@@ -223,7 +223,7 @@ def export_geodataframe_to_feather(
     geodataframe.to_feather(sanitize_path_name(output_path))
 
 
-def export_geodataframe_to_csar(
+def export_geodataframe_to_csar_api(
     geo_dataframe: gpd.GeoDataFrame, output_path: Path, config, **kwargs
 ) -> None:
     """
@@ -237,11 +237,11 @@ def export_geodataframe_to_csar(
     :type config: CarisAPIConfigProtocol
     """
     # Importation au runtime pour éviter des problèmes de dépendances si Caris n'est pas installé
-    from caris_api import export_csar
+    from caris_api import export_csar_api
 
     LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier CSAR : '{output_path}'.")
 
-    export_csar.export_geodataframe_to_csar(
+    export_csar_api.export_geodataframe_to_csar(
         data=geo_dataframe, output_path=sanitize_path_name(output_path), config=config
     )
 

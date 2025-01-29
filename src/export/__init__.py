@@ -6,7 +6,7 @@ from .export_utils import (
     export_geodataframe_to_geojson,
     export_geodataframe_to_shapefile,
     export_geodataframe_to_gpkg,
-    export_geodataframe_to_csar,
+    export_geodataframe_to_csar_api,
     export_dataframe_to_csv,
 )
 from .factory_export import export_geodataframe, FileTypes
@@ -18,6 +18,6 @@ __all__ = [
     "export_geodataframe_to_geojson",
     "export_geodataframe_to_shapefile",
     "export_geodataframe_to_gpkg",
-    "export_geodataframe_to_csar",
+    "export_geodataframe_to_csar_api",
     "export_dataframe_to_csv",
 ]
