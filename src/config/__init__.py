@@ -2,7 +2,7 @@
 Ce package contient les configurations nécessaires pour l'application.
 """
 
-from .caris_config import CarisAPIConfig, get_caris_api_config
+from .caris_config import CarisAPIConfig, get_caris_api_config, CarisConfigError
 from .processing_config import (
     DataFilterConfig,
     DataGeoreferenceConfig,
