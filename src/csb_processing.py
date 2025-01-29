@@ -642,12 +642,32 @@ def processing_workflow(
         std_level=processing_config.options.log_level,
         log_file_level="DEBUG",
     )
-    # Get the configuration for the API Caris
-    caris_api_config: config.CarisAPIConfig | None = (
-        config.get_caris_api_config(config_file=config_path)
-        if FileTypes.CSAR in processing_config.options.export_format
-        else None
+
+    # Log the parameters of the workflow
+    LOGGER.debug(
+        f"Paramètres du workflow :\n"
+        f"files = {files}\n"
+        f"vessel = {vessel}\n"
+        f"output = {output}\n"
+        f"config_path = {config_path}\n"
+        f"apply_water_level = {apply_water_level}"
     )
+
+    # Get the configuration for the API Caris
+    try:
+        caris_api_config: config.CarisAPIConfig | None = (
+            config.get_caris_api_config(config_file=config_path)
+            if FileTypes.CSAR in processing_config.options.export_format
+            else None
+        )
+    except config.CarisConfigError as error:
+        if FileTypes.CSAR in processing_config.options.export_format:
+            LOGGER.error(
+                f"La configuration de Caris est obligatoire pour l'exportation en format *csar : {error}."
+            )
+            return
+
+        raise error
 
     # Check if the vessel configuration is missing
     if (
@@ -895,12 +915,16 @@ def processing_workflow(
 
     # todo utilise cache pour les TimeSeries, peut-être utile si plusieurs itérations
 
-    # todo faire le bounding polygon pour le csar
-    # todo ajouter la colonne time au csar
+    # todo ajouter la colonne time au csar ?
 
     # todo dans ce fichier, dans le fichier de configuration dans
     #  tide.time_serie.time_serie_dataframe et transformation.georeference
 
-    # todo get_morrish() tester s'il y a seulement une run et il reste des NAN ?
-
     # todo Identification des périodes en enlevant les trous de x temps dans add_tide_zone_id_to_geodataframe
+
+    # todo Si csar dans format export, valider qu' il y a la Config pour api caris sinon message clair
+    # todo export en csar avec CarisBatchUtils -> mettre PACD ?
+
+    # Nom du fichier  # todo
+    # CH-{TypeLogger}-CommunityVesselName-AAAA-MM-jj_AAAA-MM-jj -> mettre dans le fichier de config
+    # Fichier de config de vessel centralisé
