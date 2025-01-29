@@ -18,9 +18,9 @@ ConfigDict = dict[str, str | float]
 
 class CarisAPIConfig(BaseModel):
     """
-    Classe de configuration pour l'API Python de Caris.
+    Classe de configuration pour Caris.
 
-    :param base_path: Le chemin de base de l'API Python de Caris.
+    :param base_path: Le chemin de base de Caris.
     :type base_path: str
     :param software: Le logiciel de Caris.
     :type software: str
@@ -59,11 +59,11 @@ def get_caris_api_config(
     config_file: Path,
 ) -> CarisAPIConfig:
     """
-    Retournes la configuration pour l'API Python de Caris.
+    Retournes la configuration pour Caris.
 
     :param config_file: Le chemin du fichier de configuration.
     :type config_file: Path
-    :return: La configuration pour l'API Python de Caris.
+    :return: La configuration pour Caris.
     :rtype: CarisAPIConfig
     """
     config_dict = load_config(config_file=config_file)
@@ -73,9 +73,9 @@ def get_caris_api_config(
     )
     if not config_caris_api:
         raise ValueError(
-            f"Aucune configuration pour l'API de Caris n'a été trouvée dans le fichier de configuration : {config_file}."
+            f"Aucune configuration pour de Caris n'a été trouvée dans le fichier de configuration : {config_file}."
         )
 
-    LOGGER.debug(f"Initialisation de la configuration pour l'API de Caris.")
+    LOGGER.debug(f"Initialisation de la configuration pour Caris.")
 
     return CarisAPIConfig(**config_caris_api)
