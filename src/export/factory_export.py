@@ -16,7 +16,7 @@ from plotly.matplotlylib import Exporter
 from .export_utils import (
     export_geodataframe_to_geojson,
     export_geodataframe_to_gpkg,
-    export_geodataframe_to_csar_api,
+    export_geodataframe_to_csar_batch,
     export_geodataframe_to_feather,
     export_geodataframe_to_parquet,
     export_geodataframe_to_csv,
@@ -59,7 +59,7 @@ FACTORY_EXPORT_GEODATAFRAME: dict[FileTypes, Exporter] = {
     ),
     FileTypes.GPKG: Exporter(extension=".gpkg", function=export_geodataframe_to_gpkg),
     FileTypes.CSAR: Exporter(
-        extension=".csar", function=export_geodataframe_to_csar_api
+        extension=".csar", function=export_geodataframe_to_csar_batch
     ),
     FileTypes.PARQUET: Exporter(
         extension=".parquet", function=export_geodataframe_to_parquet
