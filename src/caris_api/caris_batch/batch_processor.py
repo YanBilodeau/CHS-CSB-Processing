@@ -1,3 +1,10 @@
+"""
+Module qui contient les fonctions permettant de construire et d'exécuter des commandes Caris Batch.
+
+Ce module contient les fonctions qui permettent de construire une ligne de commande Caris Batch et de les exécuter.
+"""
+
+
 from pathlib import Path
 import subprocess
 from typing import Optional

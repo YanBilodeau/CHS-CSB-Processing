@@ -1,3 +1,9 @@
+"""
+Module contenant la classe CarisBatchResponse.
+
+Ce module contient la classe CarisBatchResponse.
+"""
+
 from dataclasses import dataclass, field
 from enum import Enum
 
