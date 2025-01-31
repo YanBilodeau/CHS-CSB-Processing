@@ -204,6 +204,8 @@ class DataParserABC(ABC):
             schema_ids.WATER_LEVEL_METER: pd.Series(dtype="float64"),
             schema_ids.UNCERTAINTY: pd.Series(dtype="float64"),
             schema_ids.TIDE_ZONE_ID: pd.Series(dtype="string"),
+            schema_ids.TIDE_ZONE_CODE: pd.Series(dtype="string"),
+            schema_ids.TIDE_ZONE_NAME: pd.Series(dtype="string"),
         }
 
         LOGGER.debug(f"Ajout de colonnes vides aux données : {columns.keys()}.")
