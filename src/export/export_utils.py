@@ -224,7 +224,7 @@ def export_geodataframe_to_feather(
 
 
 def export_geodataframe_to_csar_api(
-    geo_dataframe: gpd.GeoDataFrame, output_path: Path, config, **kwargs
+    geo_dataframe: gpd.GeoDataFrame, output_path: Path, config_caris, **kwargs
 ) -> None:
     """
     Sauvegarde le GeoDataFrame dans un fichier CSAR.
@@ -233,8 +233,8 @@ def export_geodataframe_to_csar_api(
     :type geo_dataframe: gpd.GeoDataFrame
     :param output_path: Le chemin du fichier de sortie.
     :type output_path: Path
-    :param config: La configuration de l'API Caris.
-    :type config: CarisAPIConfigProtocol
+    :param config_caris: La configuration de l'API Caris.
+    :type config_caris: CarisAPIConfigProtocol
     """
     # Importation au runtime pour éviter des problèmes de dépendances si Caris n'est pas installé
     from caris_api import export_csar_api
@@ -242,12 +242,14 @@ def export_geodataframe_to_csar_api(
     LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier CSAR : '{output_path}'.")
 
     export_csar_api.export_geodataframe_to_csar(
-        data=geo_dataframe, output_path=sanitize_path_name(output_path), config=config
+        data=geo_dataframe,
+        output_path=sanitize_path_name(output_path),
+        config=config_caris,
     )
 
 
 def export_geodataframe_to_csar_batch(
-    geo_dataframe: gpd.GeoDataFrame, output_path: Path, config, **kwargs
+    geo_dataframe: gpd.GeoDataFrame, output_path: Path, config_caris, **kwargs
 ) -> None:
     """
     Sauvegarde le GeoDataFrame dans un fichier CSAR.
@@ -256,8 +258,8 @@ def export_geodataframe_to_csar_batch(
     :type geo_dataframe: gpd.GeoDataFrame
     :param output_path: Le chemin du fichier de sortie.
     :type output_path: Path
-    :param config: La configuration de l'API Caris.
-    :type config: CarisAPIConfigProtocol
+    :param config_caris: La configuration de l'API Caris.
+    :type config_caris: CarisAPIConfigProtocol
     """
     from caris_api import export_csar_batch
 
@@ -267,7 +269,7 @@ def export_geodataframe_to_csar_batch(
     LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier CSAR : '{output_path}'.")
 
     export_csar_batch.export_geodataframe_to_csar(
-        data=csv_path, output_path=sanitize_path_name(output_path), config=config
+        data=csv_path, output_path=sanitize_path_name(output_path), config=config_caris
     )
 
     csv_path.unlink()
