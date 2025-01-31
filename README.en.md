@@ -278,7 +278,8 @@ Here is an example file:
     "ssp_applied": [
       {
         "time_stamp": "2021-09-25T00:00:00Z",
-        "ssp": false
+        "ssp": false,
+        "sound_speed": 1500.0
       }
     ]
   }
