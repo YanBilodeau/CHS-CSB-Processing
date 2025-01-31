@@ -44,6 +44,8 @@ class DataLoggerWithTideZoneSchema(DataLoggerSchema):
     """
 
     Tide_zone_id: Series[str] = pa.Field(nullable=True)
+    Tide_zone_code: Series[str] = pa.Field(nullable=True)
+    Tide_zone_name: Series[str] = pa.Field(nullable=True)
 
     class Config:
         coerce = True
