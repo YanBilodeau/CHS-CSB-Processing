@@ -33,6 +33,16 @@ class CarisApiConfigError(Exception):
         return f"L'API Python de Caris n'existe pas à l'emplacement {self.python_path}"
 
 
+@dataclass(frozen=True)
+class CarisBatchConfigError(Exception):
+    caris_batch: Path
+
+    def __str__(self) -> str:
+        return (
+            f"Le fichier carisbatch.exe n'existe pas à l'emplacement {self.caris_batch}"
+        )
+
+
 class CarisAPIConfig(BaseModel):
     """
     Classe de configuration pour Caris.
@@ -55,6 +65,7 @@ class CarisAPIConfig(BaseModel):
     version: str
     python_version: str
     python_path: Path = Field(default=None)
+    caris_batch: Path = Field(default=None)
 
     def __init__(self, **values) -> None:
         super().__init__(**values)
@@ -68,6 +79,17 @@ class CarisAPIConfig(BaseModel):
 
         if not self.python_path.exists():
             raise CarisApiConfigError(python_path=self.python_path)
+
+        self.caris_batch = (
+            Path(self.base_path)
+            / self.software
+            / self.version
+            / "bin"
+            / "carisbatch.exe"
+        )
+
+        if not self.caris_batch.exists():
+            raise CarisBatchConfigError(caris_batch=self.caris_batch)
 
 
 def get_caris_api_config(
