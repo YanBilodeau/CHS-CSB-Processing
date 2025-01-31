@@ -17,7 +17,7 @@ from .parser_ofm import DataParserOFM
 from .parser_exception import MultipleParsersError
 
 
-class DataType(StrEnum):
+class DataLoggerType(StrEnum):
     """
     Enumération des types de données.
     """
@@ -34,10 +34,10 @@ class DataType(StrEnum):
     """Type de données BlackBox."""
 
 
-DATA_TYPE_MAPPING: {Type[DataParserABC], DataType} = {
-    DataParserOFM: DataType.OFM,
-    DataParserBCDB: DataType.DCDB,
-    DataParserLowrance: DataType.LOWRANCE,
+DATA_TYPE_MAPPING: {Type[DataParserABC], DataLoggerType} = {
+    DataParserOFM: DataLoggerType.OFM,
+    DataParserBCDB: DataLoggerType.DCDB,
+    DataParserLowrance: DataLoggerType.LOWRANCE,
 }
 """Dictionnaire permettant de faire le lien entre un parser et un type de données."""
 
@@ -73,12 +73,12 @@ class ParserFiles:
         super().__setattr__(name, value)
 
     @property
-    def data_type(self) -> DataType | None:
+    def datalogger_type(self) -> DataLoggerType | None:
         """
         Propriété permettant de récupérer le type de données associé.
 
         :return: Le type de données associé.
-        :rtype: DataType
+        :rtype: DataLoggerType
         """
         if self.parser is None:
             return None
