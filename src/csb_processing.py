@@ -19,8 +19,9 @@ import pandas as pd
 
 import config
 import export
+import vessel
 from config.processing_config import FileTypes
-from ingestion import factory_parser
+from ingestion import factory_parser, DataLoggerType
 import iwls_api_request as iwls
 from logger.loguru_config import configure_logger
 import schema
@@ -193,17 +194,25 @@ def add_tide_zone_id_to_geodataframe(
         schema_ids.UNCERTAINTY,
         schema_ids.GEOMETRY,
         schema_ids.ID,
+        schema_ids.CODE,
+        schema_ids.NAME,
     ]
 
-    gdf_data_time_zone: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
-        gpd.sjoin(
-            data_geodataframe,
-            tide_zone,
-            how="left",
-            predicate="within",
-        )[
-            columns
-        ].rename(columns={schema_ids.ID: schema_ids.TIDE_ZONE_ID})
+    gdf_data_time_zone: gpd.GeoDataFrame[
+        schema.DataLoggerWithTideZoneSchema
+    ] = gpd.sjoin(
+        data_geodataframe,
+        tide_zone,
+        how="left",
+        predicate="within",
+    )[
+        columns
+    ].rename(
+        columns={
+            schema_ids.ID: schema_ids.TIDE_ZONE_ID,
+            schema_ids.CODE: schema_ids.TIDE_ZONE_CODE,
+            schema_ids.NAME: schema_ids.TIDE_ZONE_NAME,
+        }
     )
 
     return gdf_data_time_zone
@@ -528,33 +537,77 @@ def finalize_geodataframe(data_geodataframe: gpd.GeoDataFrame) -> gpd.GeoDataFra
     Finalise le GeoDataFrame des données.
 
     :param data_geodataframe: GeoDataFrame des données.
-    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
+    :return: GeoDataFrame des données finalisé.
+    :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
-    return data_geodataframe[schema.DataLoggerSchema.__annotations__.keys()]
+    print(data_geodataframe)  # todo
+    print(data_geodataframe.columns)
+    return data_geodataframe[
+        schema.DataLoggerSchema.__annotations__.keys()
+    ]  # todo ajouter colonne de zone de marée(id, code, name)
+
+
+def get_export_file_name(
+    data_geodataframe: gpd.GeoDataFrame,
+    vessel_config: vessel.VesselConfig,
+    datalogger_type: DataLoggerType,
+) -> str:
+    """
+    Récupère le nom du fichier d'exportation.
+
+    :param data_geodataframe: Données traitées à exporter.
+    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :param vessel_config: Configuration du navire.
+    :type vessel_config: vessel.VesselConfig
+    :param datalogger_type: Type de capteur.
+    :type datalogger_type: DataLoggerType
+    :return: Nom du fichier d'exportation.
+    :rtype: str
+    """
+    return (
+        f"CH-"
+        f"{datalogger_type}-"
+        f"{vessel_config.name if vessel_config.name else 'Unknown'}-"
+        f"{data_geodataframe[schema_ids.TIME_UTC].min().strftime('%Y%m%d')}-"
+        f"{data_geodataframe[schema_ids.TIME_UTC].max().strftime('%Y%m%d')}"
+    )
 
 
 def export_processed_data(
     data_geodataframe: gpd.GeoDataFrame,
     export_data_path: Path,
     file_type: export.FileTypes,
+    vessel_config: vessel.VesselConfig,
+    datalogger_type: DataLoggerType,
     **kwargs,
 ) -> None:
     """
     Exporte les données traitées dans un fichier GeoPackage.
 
     :param data_geodataframe: Données traitées à exporter.
-    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     :param export_data_path: Chemin du répertoire d'exportation.
     :type export_data_path: Path
     :param file_type: Type de fichier de sortie.
     :type file_type: FileTypes
+    :param vessel_config: Configuration du navire.
+    :type vessel_config: vessel.VesselConfig
+    :param datalogger_type: Type de capteur.
+    :type datalogger_type: DataLoggerType
     """
-    if "config" not in kwargs and file_type == export.FileTypes.CSAR:
+    if "config_caris" not in kwargs and file_type == export.FileTypes.CSAR:
         LOGGER.warning(
             "La configuration de l'API Caris est requise pour exporter les données au format CSAR."
         )
 
-    output_path: Path = export_data_path / "ProcessedData"
+    name: str = get_export_file_name(
+        data_geodataframe=data_geodataframe,
+        vessel_config=vessel_config,
+        datalogger_type=datalogger_type,
+    )
+
+    output_path: Path = export_data_path / name
     logger.info(
         f"Exportation des données traitées ({len(data_geodataframe)} sondes) au format {file_type} : {output_path}."
     )
@@ -580,17 +633,23 @@ def export_processed_data_to_file_types(
     data_geodataframe: gpd.GeoDataFrame,
     export_data_path: Path,
     file_types: Collection[export.FileTypes],
+    vessel_config: vessel.VesselConfig,
+    datalogger_type: DataLoggerType,
     **kwargs,
 ) -> None:
     """
     Exporte les données traitées dans plusieurs formats de fichier.
 
     :param data_geodataframe: Données traitées à exporter.
-    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     :param export_data_path: Chemin du répertoire d'exportation.
     :type export_data_path: Path
     :param file_types: Liste des types de fichiers de sortie.
     :type file_types: Collection[FileTypes]
+    :param vessel_config: Configuration du navire.
+    :type vessel_config: vessel.VesselConfig
+    :param datalogger_type: Type de capteur.
+    :type datalogger_type: DataLoggerType
     """
     with concurrent.futures.ThreadPoolExecutor() as executor:
         [
@@ -599,6 +658,8 @@ def export_processed_data_to_file_types(
                 data_geodataframe=data_geodataframe,
                 export_data_path=export_data_path,
                 file_type=file_type,
+                vessel_config=vessel_config,
+                datalogger_type=datalogger_type,
                 **kwargs,
             )
             for file_type in file_types
@@ -695,6 +756,7 @@ def processing_workflow(
     parser_files: factory_parser.ParserFiles = factory_parser.get_files_parser(
         files=files
     )
+
     LOGGER.debug(parser_files)
 
     if not parser_files.files:
@@ -725,7 +787,7 @@ def processing_workflow(
         LOGGER.info("Le niveau d'eau ne sera pas appliqué aux données.")
 
         # Georeference the bathymetry data
-        data: gpd.GeoDataFrame[schema.DataLoggerSchema] = (
+        data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
             georeference.georeference_bathymetry(
                 data=data,
                 water_level=None,
@@ -742,7 +804,9 @@ def processing_workflow(
             data_geodataframe=data,
             export_data_path=export_data_path,
             file_types=processing_config.options.export_format,
-            config=caris_api_config,
+            vessel_config=vessel_config,
+            datalogger_type=parser_files.datalogger_type,
+            config_caris=caris_api_config,
         )
 
         return None
@@ -860,7 +924,7 @@ def processing_workflow(
             )
 
             # Georeference the bathymetry data
-            data: gpd.GeoDataFrame[schema.DataLoggerSchema] = (
+            data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
                 georeference.georeference_bathymetry(
                     data=data,
                     water_level=wl_combineds,
@@ -901,7 +965,9 @@ def processing_workflow(
         data_geodataframe=data,
         export_data_path=export_data_path,
         file_types=processing_config.options.export_format,
-        config=caris_api_config,
+        vessel_config=vessel_config,
+        datalogger_type=parser_files.datalogger_type,
+        config_caris=caris_api_config,
     )
 
     # todo gérer la valeur np.nan dans les configurations des capteurs
@@ -915,16 +981,13 @@ def processing_workflow(
 
     # todo utilise cache pour les TimeSeries, peut-être utile si plusieurs itérations
 
-    # todo ajouter la colonne time au csar ?
-
-    # todo dans ce fichier, dans le fichier de configuration dans
-    #  tide.time_serie.time_serie_dataframe et transformation.georeference
+    # todo dans ce fichier, dans tide.time_serie.time_serie_dataframe et transformation.georeference
 
     # todo Identification des périodes en enlevant les trous de x temps dans add_tide_zone_id_to_geodataframe
 
-    # todo Si csar dans format export, valider qu' il y a la Config pour api caris sinon message clair
     # todo export en csar avec CarisBatchUtils -> mettre PACD ?
+    # todo couche THU ?
 
-    # Nom du fichier  # todo
-    # CH-{TypeLogger}-CommunityVesselName-AAAA-MM-jj_AAAA-MM-jj -> mettre dans le fichier de config
-    # Fichier de config de vessel centralisé
+    # todo inclure une colonne Station (avec le nom et la time serie utilisée) ?
+    # todo -> mettre template pour le nom dans le fichier de config dans le fichier de config
+    # todo Fichier de config de vessel centralisé ?
