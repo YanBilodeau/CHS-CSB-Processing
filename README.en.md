@@ -233,7 +233,8 @@ Here is an example file:
 ```json
 [
   {
-    "id": "Tuktoyaktuk",
+    "id": "42134324",
+    "name": "Tuktoyaktuk",
     "axis_convention": "CARIS",
     "navigation": [
       {
@@ -289,6 +290,7 @@ Here is an example file:
 ### Field Descriptions
 
 - **`id`**: Unique vessel identifier.
+- **`name`**: Vessel name.
 - **`axis_convention`**: Axis convention used (e.g., "CARIS").
 - **`navigation`**: List of navigation positions with their coordinates (`x`, `y`, `z`) and a timestamp (`time_stamp`).
 - **`motion`**: Vessel motion data (same fields as `navigation`).

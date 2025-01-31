@@ -236,7 +236,8 @@ de configuration TOML. Voici un exemple de fichier :
 ```json
 [
   {
-    "id": "Tuktoyaktuk",
+    "id": "42134324",
+    "name": "Tuktoyaktuk",
     "axis_convention": "CARIS",
     "navigation": [
       {
@@ -292,6 +293,7 @@ de configuration TOML. Voici un exemple de fichier :
 ### Description des champs
 
 - **`id`** : Identifiant unique du navire.
+- **`name`** : Nom du navire.
 - **`axis_convention`** : Convention d'axes utilisée (ex. : "CARIS").
 - **`navigation`** : Liste des positions de navigation avec leurs coordonnées (`x`, `y`, `z`) et un horodatage (`time_stamp`).
 - **`motion`** : Données de mouvement du navire (mêmes champs que `navigation`).
