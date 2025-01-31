@@ -52,6 +52,8 @@ def export_geodataframe_to_csar(
             "WaterLevel",
             "--info-file",
             INFO_FILE_PATH,
+            # "--output-vertical-crs",
+            # "PACD",
         ],
         source=[str(data)],
         destination=[str(output_path)],
