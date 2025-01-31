@@ -261,11 +261,16 @@ def export_geodataframe_to_csar_batch(
     """
     from caris_api import export_csar_batch
 
+    csv_path: Path = output_path.with_suffix(".csv")
+    export_dataframe_to_csv(dataframe=geo_dataframe, output_path=csv_path)
+
     LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier CSAR : '{output_path}'.")
 
     export_csar_batch.export_geodataframe_to_csar(
-        data=geo_dataframe, output_path=sanitize_path_name(output_path), config=config
+        data=csv_path, output_path=sanitize_path_name(output_path), config=config
     )
+
+    csv_path.unlink()
 
 
 def export_dataframe_to_csv(
