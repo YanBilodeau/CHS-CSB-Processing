@@ -23,6 +23,10 @@ GEOMETRY: str = "geometry"
 # Constantes pour les noms des colonnes des données du schéma de données DataLoggerWithTideZoneSchema.
 TIDE_ZONE_ID: str = "Tide_zone_id"
 """Valeur de la constante Tide_zone_id."""
+TIDE_ZONE_CODE: str = "Tide_zone_code"
+"""Valeur de la constante Tide_zone_code."""
+TIDE_ZONE_NAME: str = "Tide_zone_name"
+"""Valeur de la constante Tide_zone_name."""
 
 # Constantes pour les noms des colonnes des données du schéma de données StationsSchema et TideZoneSchema.
 ID: str = "id"
