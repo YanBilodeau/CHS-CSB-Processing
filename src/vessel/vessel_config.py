@@ -114,12 +114,16 @@ class SoundSpeedProfile(BaseModel):
     :type time_stamp: datetime
     :param ssp: True si le profil de vitesse du son est appliqué.
     :type ssp: bool
+    :param sound_speed: Vitesse du son.
+    :type sound_speed: float
     """
 
     time_stamp: datetime
     """Date et heure."""
     ssp: bool
     """True si le profil de vitesse du son est appliqué."""
+    sound_speed: float = 1500.0
+    """Vitesse du son."""
 
 
 class VesselConfig(BaseModel):
