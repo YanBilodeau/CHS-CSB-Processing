@@ -260,10 +260,10 @@
     ]
   },
    {
-    "id": "Tuktoyaktuk",
+     "id": "Tuktoyaktuk",
      "name": "Tuktoyaktuk",
-    "axis_convention": "CARIS",
-    "navigation": [
+     "axis_convention": "CARIS",
+     "navigation": [
       {
         "time_stamp": "2021-09-25T00:00:00Z",
         "x": 0.0,
