@@ -74,3 +74,16 @@ class VesselConfigManagerIdentifierError(Exception):
 
     def __str__(self) -> str:
         return f"Le type de gestionnaire de navire '{self.manager_type}' n'existe pas."
+
+
+@dataclass(frozen=True)
+class SensorConfigurationError(Exception):
+    """
+    Exception levée lorsque la configuration du capteur change durant la période de temps couverte par les données.
+    """
+
+    sensor_type: str
+    """Le type de capteur."""
+
+    def __str__(self) -> str:
+        return f"La configuration du capteur {self.sensor_type} a changé durant la période de temps couverte par les données."
