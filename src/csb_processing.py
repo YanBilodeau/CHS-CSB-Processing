@@ -191,6 +191,7 @@ def add_tide_zone_id_to_geodataframe(
         schema_ids.DEPTH_RAW_METER,
         schema_ids.DEPTH_PROCESSED_METER,
         schema_ids.WATER_LEVEL_METER,
+        schema_ids.WATER_LEVEL_INFO,
         schema_ids.UNCERTAINTY,
         schema_ids.GEOMETRY,
         schema_ids.ID,
@@ -541,8 +542,18 @@ def finalize_geodataframe(data_geodataframe: gpd.GeoDataFrame) -> gpd.GeoDataFra
     :return: GeoDataFrame des données finalisé.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
-    print(data_geodataframe)  # todo
-    print(data_geodataframe.columns)
+    LOGGER.debug(f"Finalisation du GeoDataFrame des données.")
+
+    data_geodataframe[schema_ids.WATER_LEVEL_INFO] = data_geodataframe.apply(
+        lambda row: schema.WaterLevelInfo(
+            water_level_meter=row[schema_ids.WATER_LEVEL_METER],
+            id=row[schema_ids.TIDE_ZONE_ID],
+            code=row[schema_ids.TIDE_ZONE_CODE],
+            name=row[schema_ids.TIDE_ZONE_NAME],
+        ),
+        axis=1,
+    )
+
     return data_geodataframe[
         schema.DataLoggerSchema.__annotations__.keys()
     ]  # todo ajouter colonne de zone de marée(id, code, name)
