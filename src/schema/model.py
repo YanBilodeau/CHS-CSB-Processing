@@ -38,6 +38,14 @@ class WaterLevelInfo:
     code: str = None
     """Le code de la station."""
 
+    def __str__(self) -> str:
+        return (
+            f"WaterLevelInfo({self.water_level_meter} m - "
+            f"{self.time_series_code} - "
+            f"{self.id} - {self.name} - "
+            f"{self.code})"
+        )
+
 
 class DataLoggerSchema(pa.DataFrameModel):
     """
