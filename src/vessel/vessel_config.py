@@ -277,7 +277,13 @@ class VesselConfig(BaseModel):
     def get_sensor_config_by_datetime(
         self,
         sensor_type: Literal[
-            "sounder", "waterline", "motion", "sound_speed", "attribute", "navigation"
+            ids.SOUNDER,  # type: ignore
+            ids.SOUNDER,
+            ids.WATERLINE,
+            ids.MOTION,
+            ids.SOUND_SPEED,
+            ids.ATTRIBUTE,
+            ids.NAVIGATION,
         ],
         min_time: datetime,
         max_time: datetime,
