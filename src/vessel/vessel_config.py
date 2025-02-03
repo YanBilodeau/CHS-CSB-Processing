@@ -144,8 +144,8 @@ class VesselConfig(BaseModel):
     :type sounder: list[Sensor]
     :param waterline: Liste des données de ligne d'eau.
     :type waterline: list[Waterline]
-    :param ssp_applied: Liste des données de profil de vitesse du son appliqué.
-    :type ssp_applied: list[SoundSpeedProfile]
+    :param sound_speed: Liste des données de profil de vitesse du son appliqué.
+    :type sound_speed: list[SoundSpeedProfile]
     :param attribute: Liste des données d'attribut.
     :type attribute: Optional[list[BDBattribute]]
     """
@@ -164,7 +164,7 @@ class VesselConfig(BaseModel):
     """Données des bras de levier du sondeur."""
     waterline: list[Waterline]
     """Données des bras de levier de la ligne d'eau."""
-    ssp_applied: list[SoundSpeedProfile]
+    sound_speed: list[SoundSpeedProfile]
     """Données de profil de vitesse du son appliqué."""
     attribute: Optional[list[BDBattribute]] = None
     """Données des attributs BDB."""
@@ -248,7 +248,7 @@ class VesselConfig(BaseModel):
         """
         return self.get_sensor(sensor_name=ids.WATERLINE, timestamp=timestamp)
 
-    def get_ssp_applied(self, timestamp: datetime) -> SoundSpeedProfile:
+    def get_sound_speed(self, timestamp: datetime) -> SoundSpeedProfile:
         """
         Méthode pour récupérer les données de profil de vitesse du son appliqué à un instant donné.
 
@@ -257,7 +257,7 @@ class VesselConfig(BaseModel):
         :return: Données de profil de vitesse du son appliqué pour le moment donné.
         :rtype: SoundSpeedProfile
         """
-        return self.get_sensor(sensor_name=ids.SSP_APPLIED, timestamp=timestamp)
+        return self.get_sensor(sensor_name=ids.SOUND_SPEED, timestamp=timestamp)
 
     def get_attribute(self, timestamp: datetime) -> BDBattribute:
         """
@@ -288,7 +288,7 @@ def get_vessel_config_from_config_dict(config: VesselConfigDict) -> VesselConfig
         ids.MOTION,
         ids.SOUNDER,
         ids.WATERLINE,
-        ids.SSP_APPLIED,
+        ids.SOUND_SPEED,
     ]
     missing_keys = [key for key in required_keys if key not in config]
 
@@ -303,7 +303,7 @@ def get_vessel_config_from_config_dict(config: VesselConfigDict) -> VesselConfig
         motion=[Sensor(**motion) for motion in config[ids.MOTION]],
         sounder=[Sensor(**sounder) for sounder in config[ids.SOUNDER]],
         waterline=[Waterline(**waterline) for waterline in config[ids.WATERLINE]],
-        ssp_applied=[SoundSpeedProfile(**ssp) for ssp in config[ids.SSP_APPLIED]],
+        sound_speed=[SoundSpeedProfile(**ssp) for ssp in config[ids.SOUND_SPEED]],
         attribute=(
             [BDBattribute(**attr) for attr in config[ids.ATTRIBUTE]]
             if ids.ATTRIBUTE in config
