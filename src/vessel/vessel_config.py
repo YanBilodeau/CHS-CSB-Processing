@@ -6,12 +6,16 @@ Ce module contient les classes et les fonctions pour la configuration du navire.
 
 from datetime import datetime
 from enum import StrEnum
-from typing import Optional
+from typing import Optional, Literal
 
 from loguru import logger
 from pydantic import BaseModel
 
-from .exception_vessel import MissingConfigKeyError, SensorNotFoundError
+from .exception_vessel import (
+    MissingConfigKeyError,
+    SensorNotFoundError,
+    SensorConfigurationError,
+)
 from . import vessel_ids as ids
 from .vessel_models import VesselConfigDict
 
@@ -269,6 +273,35 @@ class VesselConfig(BaseModel):
         :rtype: BDBattribute
         """
         return self.get_sensor(sensor_name=ids.ATTRIBUTE, timestamp=timestamp)
+
+    def get_sensor_by_datetime(
+        self,
+        sensor_type: Literal[
+            "sounder", "waterline", "motion", "sound_speed", "attribute", "navigation"
+        ],
+        min_time: datetime,
+        max_time: datetime,
+    ) -> Sensor | Waterline | SoundSpeedProfile | BDBattribute:
+        """
+        Récupère et valide les capteurs pour une période de temps donnée.
+
+        :param sensor_type: Type de capteur à récupérer.
+        :type sensor_type: Literal["sounder", "waterline", "motion", "sound_speed", "attribute", "navigation"]
+        :param min_time: Date et heure minimale.
+        :type min_time: datetime
+        :param max_time: Date et heure maximale.
+        :type max_time: datetime
+        :return: Capteur pour le moment donné.
+        :rtype: Sensor | Waterline | SoundSpeedProfile | BDBattribute
+        :raises SensorConfigurationError: Si la configuration du capteur change durant la période de temps couverte par les données.
+        """
+        min_time_sensor = getattr(self, f"get_{sensor_type}")(timestamp=min_time)
+        max_time_sensor = getattr(self, f"get_{sensor_type}")(timestamp=max_time)
+
+        if min_time_sensor.time_stamp != max_time_sensor.time_stamp:
+            raise SensorConfigurationError(sensor_type=sensor_type)
+
+        return min_time_sensor
 
 
 def get_vessel_config_from_config_dict(config: VesselConfigDict) -> VesselConfig:
