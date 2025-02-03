@@ -4,6 +4,7 @@ Module qui contient les schémas des dataframes.
 Ce module contient les schémas des dataframes des DataLoggers, des stations, des séries temporelles et des zones de marées.
 """
 
+from dataclasses import dataclass
 import functools
 from typing import Optional, Callable, Type, Any
 
@@ -20,6 +21,24 @@ from . import model_ids as schema_ids
 LOGGER = logger.bind(name="CSB-Processing.Schema")
 
 
+@dataclass
+class WaterLevelInfo:
+    """
+    Classe pour les informations sur les niveaux d'eau.
+    """
+
+    water_level_meter: float = None
+    """Le niveau d'eau en mètre."""
+    time_series_code: str = None
+    """Le code de la série temporelle."""
+    id: str = None
+    """L'identifiant de la station."""
+    name: str = None
+    """Le nom de la station."""
+    code: str = None
+    """Le code de la station."""
+
+
 class DataLoggerSchema(pa.DataFrameModel):
     """
     Schéma des données des DataLoggers.
@@ -30,7 +49,7 @@ class DataLoggerSchema(pa.DataFrameModel):
     Time_UTC: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
     Depth_raw_meter: Series[pd.Float64Dtype()]
     Depth_processed_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
-    Water_level_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
+    Water_level_info: Series[object] = pa.Field(nullable=True)
     Uncertainty: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
     geometry: GeoSeries
 
@@ -43,6 +62,7 @@ class DataLoggerWithTideZoneSchema(DataLoggerSchema):
     Schéma des données des DataLoggers avec les zones de marées.
     """
 
+    Water_level_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
     Tide_zone_id: Series[str] = pa.Field(nullable=True)
     Tide_zone_code: Series[str] = pa.Field(nullable=True)
     Tide_zone_name: Series[str] = pa.Field(nullable=True)
