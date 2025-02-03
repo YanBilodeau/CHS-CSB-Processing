@@ -18,6 +18,7 @@ from .factory_vessel_config_manager import (
     VesselConfigManagerType,
     get_vessel_config_manager_factory,
 )
+from .factory_vessel_config import get_vessel_config
 
 
 __all__ = [
@@ -34,4 +35,5 @@ __all__ = [
     "get_vessel_config_manager_factory",
     "UNKNOWN_VESSEL_CONFIG",
     "UNKNOWN_DATE",
+    "get_vessel_config",
 ]
