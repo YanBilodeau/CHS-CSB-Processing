@@ -13,6 +13,7 @@ from .model import (
     WaterLevelSerieDataWithMetaDataSchema,
     validate_schema,
     validate_schemas,
+    WaterLevelInfo,
 )
 
 
@@ -27,4 +28,5 @@ __all__ = [
     "WaterLevelSerieDataWithMetaDataSchema",
     "validate_schema",
     "validate_schemas",
+    "WaterLevelInfo",
 ]
