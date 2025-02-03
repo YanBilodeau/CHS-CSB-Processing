@@ -59,6 +59,8 @@ class SoundSpeedProfileDict(dict):
     """Date et heure."""
     ssp: str
     """True si le profil de vitesse du son est appliqué."""
+    sound_speed: float
+    """Vitesse du son."""
 
 
 class AttributeDict(dict):
@@ -109,14 +111,16 @@ class VesselConfigDict(dict):
     :type sounder: list[SensorDict]
     :param waterline: Lignes d'eau.
     :type waterline: list[WaterlineDict]
-    :param ssp_applied: Profils de vitesse du son appliqués.
-    :type ssp_applied: list[SoundSpeedProfileDict]
+    :param sound_speed: Profils de vitesse du son appliqués.
+    :type sound_speed: list[SoundSpeedProfileDict]
     :param attribute: Attributs BDB.
     :type attribute: list[AttributeDict]
     """
 
     id: str
     """Identifiant du navire."""
+    name: str
+    """Nom du navire ou de la communauté."""
     axis_convention: str
     """Convention des axes."""
     nav: list[SensorDict]
@@ -127,7 +131,7 @@ class VesselConfigDict(dict):
     """Données des bras de leviers du sondeur."""
     waterline: list[WaterlineDict]
     """Données des bras de leviers de la lignes d'eau."""
-    ssp_applied: list[SoundSpeedProfileDict]
+    sound_speed: list[SoundSpeedProfileDict]
     """Profils de vitesse du son appliqués."""
     attribute: list[AttributeDict]
     """Données des attributs BDB."""
