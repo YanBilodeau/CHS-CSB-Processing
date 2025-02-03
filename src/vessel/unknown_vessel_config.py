@@ -19,7 +19,9 @@ UNKNOWN_VESSEL_CONFIG: VesselConfig = VesselConfig(
     motion=[Sensor(time_stamp=UNKNOWN_DATE, x=0.0, y=0.0, z=0.0)],
     sounder=[Sensor(time_stamp=UNKNOWN_DATE, x=0.0, y=0.0, z=0.0)],
     waterline=[Waterline(time_stamp=UNKNOWN_DATE, z=0.0)],
-    sound_speed=[SoundSpeedProfile(time_stamp=UNKNOWN_DATE, ssp=False, sound_speed=1500.0)],
+    sound_speed=[
+        SoundSpeedProfile(time_stamp=UNKNOWN_DATE, ssp=False, sound_speed=1500.0)
+    ],
     attribute=[
         BDBattribute(
             time_stamp=UNKNOWN_DATE,
