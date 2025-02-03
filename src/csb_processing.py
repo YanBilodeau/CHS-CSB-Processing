@@ -9,7 +9,6 @@ import concurrent.futures
 from dataclasses import dataclass
 from collections import defaultdict
 from datetime import datetime
-from functools import singledispatch
 from pathlib import Path
 from typing import Optional, Collection, Sequence
 
@@ -19,7 +18,6 @@ import pandas as pd
 
 import config
 import export
-import vessel
 from config.processing_config import FileTypes
 from ingestion import factory_parser, DataLoggerType
 import iwls_api_request as iwls
@@ -39,19 +37,6 @@ LOGGER = logger.bind(name="CSB-Processing.WorkFlow")
 configure_logger()
 
 CONFIG_FILE: Path = Path(__file__).parent / "CONFIG_csb-processing.toml"
-
-
-@dataclass(frozen=True)
-class SensorConfigurationError(Exception):
-    """
-    Exception levée lorsque la configuration du capteur change durant la période de temps couverte par les données.
-    """
-
-    sensor_type: str
-    """Le type de capteur."""
-
-    def __str__(self) -> str:
-        return f"La configuration du capteur {self.sensor_type} a changé durant la période de temps couverte par les données."
 
 
 @dataclass(frozen=True)
@@ -410,106 +395,7 @@ def plot_water_levels(
     )
 
 
-@singledispatch
-def get_vessel_config(
-    vessel: str | vessel_manager.VesselConfig,
-    vessel_config_manager: config.VesselManagerConfig,
-    /,
-) -> vessel_manager.VesselConfig:
-    """
-    Récupère la configuration du navire.
-
-    :param vessel: Identifiant du navire ou configuration du navire.
-    :type vessel: str | vessel_manager.VesselConfig
-    :param vessel_config_manager: Gestionnaire de configuration du navire.
-    :type vessel_config_manager: config.VesselManagerConfig
-    :return: Configuration du navire.
-    :rtype: vessel_manager.VesselConfig
-    """
-    raise TypeError(
-        f"Type non supporté pour la récupération de la configuration du navire : {type(vessel).__name__}."
-    )
-
-
-@get_vessel_config.register
-def _(
-    vessel: vessel_manager.VesselConfig,
-    vessel_config_manager_: config.VesselManagerConfig,
-) -> vessel_manager.VesselConfig:
-    """
-    Récupère la configuration du navire.
-
-    :param vessel: Configuration du navire.
-    :type vessel: vessel_manager.VesselConfig
-    :return: Configuration du navire.
-    :rtype: vessel_manager.VesselConfig
-    """
-    LOGGER.debug(f"Configuration du navire : {vessel}.")
-
-    return vessel
-
-
-@get_vessel_config.register
-def _(
-    vessel: str,
-    vessel_config_manager: config.VesselManagerConfig,
-) -> vessel_manager.VesselConfig:
-    """
-    Récupère la configuration du navire.
-
-    :param vessel: Identifiant du navire.
-    :type vessel: str
-    :param vessel_config_manager: Gestionnaire de configuration du navire.
-    :type vessel_config_manager: config.VesselManagerConfig
-    :return: Configuration du navire.
-    :rtype: vessel_manager.VesselConfig
-    """
-    vessel_config_manager: vessel_manager.VesselConfigManagerABC = (
-        vessel_manager.get_vessel_config_manager_factory(
-            manager_type=vessel_config_manager.manager_type
-        )(**vessel_config_manager.kwargs)
-    )
-
-    vessel_config: vessel_manager.VesselConfig = (
-        vessel_config_manager.get_vessel_config(vessel_id=vessel)
-    )
-
-    LOGGER.debug(f"Configuration du navire : {vessel_config}.")
-
-    return vessel_config
-
-
-def get_sensor_with_validation(
-    vessel_config: vessel_manager.VesselConfig,
-    sensor_type: str,
-    min_time: datetime,
-    max_time: datetime,
-) -> vessel_manager.Sensor | vessel_manager.Waterline:
-    """
-    Récupère et valide les capteurs pour une période de temps donnée.
-
-    :param vessel_config: Configuration du navire.
-    :type vessel_config: vessel_manager.VesselConfig
-    :param sensor_type: Type de capteur à récupérer.
-    :type sensor_type: str
-    :param min_time: Date et heure minimale.
-    :type min_time: datetime
-    :param max_time: Date et heure maximale.
-    :type max_time: datetime
-    :return: Capteur pour le moment donné.
-    :rtype: vessel_manager.Sensor | vessel_manager.Waterline
-    :raises SensorConfigurationError: Si la configuration du capteur change durant la période de temps couverte par les données.
-    """
-    min_time_sensor = getattr(vessel_config, f"get_{sensor_type}")(timestamp=min_time)
-    max_time_sensor = getattr(vessel_config, f"get_{sensor_type}")(timestamp=max_time)
-
-    if min_time_sensor.time_stamp != max_time_sensor.time_stamp:
-        raise SensorConfigurationError(sensor_type=sensor_type)
-
-    return min_time_sensor
-
-
-def get_sensors(
+def get_sensors_by_datetime(
     vessel_config: vessel_manager.VesselConfig, min_time: datetime, max_time: datetime
 ) -> tuple[vessel_manager.Sensor, vessel_manager.Waterline]:
     """
@@ -524,11 +410,11 @@ def get_sensors(
     :return: Données des capteurs pour le moment donné.
     :rtype: tuple[vessel_manager.Sensor, vessel_manager.Waterline]
     """
-    sounder: vessel_manager.Sensor = get_sensor_with_validation(
-        vessel_config, "sounder", min_time, max_time
+    sounder: vessel_manager.Sensor = vessel_config.get_sensor_config_by_datetime(
+        "sounder", min_time, max_time
     )
-    waterline: vessel_manager.Waterline = get_sensor_with_validation(
-        vessel_config, "waterline", min_time, max_time
+    waterline: vessel_manager.Waterline = vessel_config.get_sensor_config_by_datetime(
+        "waterline", min_time, max_time
     )
 
     return sounder, waterline
@@ -561,7 +447,7 @@ def finalize_geodataframe(data_geodataframe: gpd.GeoDataFrame) -> gpd.GeoDataFra
 
 def get_export_file_name(
     data_geodataframe: gpd.GeoDataFrame,
-    vessel_config: vessel.VesselConfig,
+    vessel_config: vessel_manager.VesselConfig,
     datalogger_type: DataLoggerType,
 ) -> str:
     """
@@ -570,7 +456,7 @@ def get_export_file_name(
     :param data_geodataframe: Données traitées à exporter.
     :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
     :param vessel_config: Configuration du navire.
-    :type vessel_config: vessel.VesselConfig
+    :type vessel_config: vessel_manager.VesselConfig
     :param datalogger_type: Type de capteur.
     :type datalogger_type: DataLoggerType
     :return: Nom du fichier d'exportation.
@@ -587,47 +473,34 @@ def get_export_file_name(
 
 def export_processed_data(
     data_geodataframe: gpd.GeoDataFrame,
-    export_data_path: Path,
+    output_data_path: Path,
     file_type: export.FileTypes,
-    vessel_config: vessel.VesselConfig,
-    datalogger_type: DataLoggerType,
     **kwargs,
 ) -> None:
     """
     Exporte les données traitées dans un fichier GeoPackage.
 
     :param data_geodataframe: Données traitées à exporter.
-    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
-    :param export_data_path: Chemin du répertoire d'exportation.
-    :type export_data_path: Path
+    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :param output_data_path: Chemin du répertoire d'exportation.
+    :type output_data_path: Path
     :param file_type: Type de fichier de sortie.
     :type file_type: FileTypes
-    :param vessel_config: Configuration du navire.
-    :type vessel_config: vessel.VesselConfig
-    :param datalogger_type: Type de capteur.
-    :type datalogger_type: DataLoggerType
     """
     if "config_caris" not in kwargs and file_type == export.FileTypes.CSAR:
         LOGGER.warning(
             "La configuration de l'API Caris est requise pour exporter les données au format CSAR."
         )
 
-    name: str = get_export_file_name(
-        data_geodataframe=data_geodataframe,
-        vessel_config=vessel_config,
-        datalogger_type=datalogger_type,
-    )
-
-    output_path: Path = export_data_path / name
     logger.info(
-        f"Exportation des données traitées ({len(data_geodataframe)} sondes) au format {file_type} : {output_path}."
+        f"Exportation des données traitées ({len(data_geodataframe)} sondes) au format {file_type} : {output_data_path}."
     )
 
     try:
         export.export_geodataframe(
-            geodataframe=finalize_geodataframe(data_geodataframe=data_geodataframe),
+            geodataframe=data_geodataframe,
             file_type=file_type,
-            output_path=output_path,
+            output_path=output_data_path,
             **kwargs,
         )
         LOGGER.success(
@@ -644,7 +517,7 @@ def export_processed_data_to_file_types(
     data_geodataframe: gpd.GeoDataFrame,
     export_data_path: Path,
     file_types: Collection[export.FileTypes],
-    vessel_config: vessel.VesselConfig,
+    vessel_config: vessel_manager.VesselConfig,
     datalogger_type: DataLoggerType,
     **kwargs,
 ) -> None:
@@ -658,19 +531,26 @@ def export_processed_data_to_file_types(
     :param file_types: Liste des types de fichiers de sortie.
     :type file_types: Collection[FileTypes]
     :param vessel_config: Configuration du navire.
-    :type vessel_config: vessel.VesselConfig
+    :type vessel_config: vessel_manager.VesselConfig
     :param datalogger_type: Type de capteur.
     :type datalogger_type: DataLoggerType
     """
+    data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = (
+        finalize_geodataframe(data_geodataframe=data_geodataframe)
+    )
+
     with concurrent.futures.ThreadPoolExecutor() as executor:
         [
             executor.submit(
                 export_processed_data,
                 data_geodataframe=data_geodataframe,
-                export_data_path=export_data_path,
+                output_data_path=export_data_path
+                / get_export_file_name(
+                    data_geodataframe=data_geodataframe,
+                    vessel_config=vessel_config,
+                    datalogger_type=datalogger_type,
+                ),
                 file_type=file_type,
-                vessel_config=vessel_config,
-                datalogger_type=datalogger_type,
                 **kwargs,
             )
             for file_type in file_types
@@ -758,7 +638,7 @@ def processing_workflow(
         f"Récupération de la configuration du navire {vessel.id if isinstance(vessel, vessel_manager.VesselConfig) else vessel}."
     )
     # Get the sensors for the vessel
-    vessel_config: vessel_manager.VesselConfig = get_vessel_config(
+    vessel_config: vessel_manager.VesselConfig = vessel_manager.get_vessel_config(
         vessel, processing_config.vessel_manager
     )
 
@@ -785,7 +665,7 @@ def processing_workflow(
 
     LOGGER.success(f"{len(data)} sondes valides récupérées.")
 
-    sounder, waterline = get_sensors(
+    sounder, waterline = get_sensors_by_datetime(
         vessel_config=vessel_config,
         min_time=data[schema_ids.TIME_UTC].min(),
         max_time=data[schema_ids.TIME_UTC].max(),
@@ -996,6 +876,5 @@ def processing_workflow(
     # todo export en csar avec CarisBatchUtils -> mettre PACD ?
     # todo couche THU ?
 
-    # todo inclure une colonne Station (avec le nom et la time serie utilisée) ?
     # todo -> mettre template pour le nom dans le fichier de config dans le fichier de config
     # todo Fichier de config de vessel centralisé ?
