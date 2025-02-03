@@ -233,7 +233,9 @@ def resample_data(wl_dataframe: pd.DataFrame, time: str) -> pd.DataFrame:
     wl_resampled: pd.DataFrame = wl_dataframe.resample(time).asfreq()
     wl_resampled[schema_ids.TIME_SERIE_CODE] = wl_resampled[
         schema_ids.TIME_SERIE_CODE
-    ].fillna(f"{wl_dataframe[schema_ids.TIME_SERIE_CODE].unique()[0]}-interpolated")
+    ].fillna(
+        f"{wl_dataframe[schema_ids.TIME_SERIE_CODE].unique()[0]}-SplineInterpolation"
+    )
 
     return wl_resampled
 
