@@ -197,6 +197,7 @@ def add_tide_zone_id_to_geodataframe(
         schema_ids.ID,
         schema_ids.CODE,
         schema_ids.NAME,
+        schema_ids.TIME_SERIE,
     ]
 
     gdf_data_time_zone: gpd.GeoDataFrame[
@@ -547,6 +548,7 @@ def finalize_geodataframe(data_geodataframe: gpd.GeoDataFrame) -> gpd.GeoDataFra
     data_geodataframe[schema_ids.WATER_LEVEL_INFO] = data_geodataframe.apply(
         lambda row: schema.WaterLevelInfo(
             water_level_meter=row[schema_ids.WATER_LEVEL_METER],
+            time_series=row[schema_ids.TIME_SERIE],
             id=row[schema_ids.TIDE_ZONE_ID],
             code=row[schema_ids.TIDE_ZONE_CODE],
             name=row[schema_ids.TIDE_ZONE_NAME],
@@ -554,9 +556,7 @@ def finalize_geodataframe(data_geodataframe: gpd.GeoDataFrame) -> gpd.GeoDataFra
         axis=1,
     )
 
-    return data_geodataframe[
-        schema.DataLoggerSchema.__annotations__.keys()
-    ]  # todo ajouter colonne de zone de marée(id, code, name)
+    return data_geodataframe[schema.DataLoggerSchema.__annotations__.keys()]
 
 
 def get_export_file_name(
@@ -784,9 +784,6 @@ def processing_workflow(
     data = cleaner.clean_data(data, data_filter=processing_config.filter)
 
     LOGGER.success(f"{len(data)} sondes valides récupérées.")
-
-    # Export the parsed data
-    export.export_geodataframe_to_gpkg(data, export_data_path / "ParsedData.gpkg")
 
     sounder, waterline = get_sensors(
         vessel_config=vessel_config,
