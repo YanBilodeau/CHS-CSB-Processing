@@ -266,7 +266,9 @@ def export_geodataframe_to_csar_batch(
     csv_path: Path = output_path.with_name(f"{output_path.stem}_temp").with_suffix(
         ".csv"
     )
-    export_dataframe_to_csv(dataframe=geo_dataframe, output_path=csv_path)
+    export_dataframe_to_csv(
+        dataframe=geo_dataframe.fillna("<NA>"), output_path=csv_path
+    )
 
     LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier CSAR : '{output_path}'.")
 
