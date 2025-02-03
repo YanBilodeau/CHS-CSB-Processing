@@ -72,6 +72,7 @@ class DataLoggerWithTideZoneSchema(DataLoggerSchema):
     """
 
     Water_level_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
+    Time_serie: Series[str] = pa.Field(nullable=True)
     Tide_zone_id: Series[str] = pa.Field(nullable=True)
     Tide_zone_code: Series[str] = pa.Field(nullable=True)
     Tide_zone_name: Series[str] = pa.Field(nullable=True)
