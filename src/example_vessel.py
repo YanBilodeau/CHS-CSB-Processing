@@ -40,7 +40,7 @@ if __name__ == "__main__":
     waterline: vessel.Waterline = frosti.get_waterline(timestamp=time_stamp)
     print(waterline)
 
-    ssp_applied: vessel.SoundSpeedProfile = frosti.get_ssp_applied(timestamp=time_stamp)
+    ssp_applied: vessel.SoundSpeedProfile = frosti.get_sound_speed(timestamp=time_stamp)
     print(ssp_applied)
 
     attribute: vessel.BDBattribute = frosti.get_attribute(timestamp=time_stamp)
