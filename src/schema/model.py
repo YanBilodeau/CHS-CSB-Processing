@@ -42,7 +42,8 @@ class WaterLevelInfo:
         return (
             f"WaterLevelInfo({self.water_level_meter} m - "
             f"{self.time_series_code} - "
-            f"{self.id} - {self.name} - "
+            f"{self.id} - "
+            f"{self.name} - "
             f"{self.code})"
         )
 
