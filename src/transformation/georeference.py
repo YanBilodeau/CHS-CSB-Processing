@@ -78,7 +78,7 @@ def _interpolate_water_level(
     after_event: pd.Series,
     time_utc: pd.Timestamp,
     water_level_tolerance: pd.Timedelta,
-) -> float:
+) -> tuple[float, str | None]:
     """
     Interpole le niveau d'eau entre deux événements.
 
@@ -90,15 +90,15 @@ def _interpolate_water_level(
     :type time_utc: pd.Timestamp
     :param water_level_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
     :type water_level_tolerance: pd.Timedelta
-    :return: Valeur interpolée du niveau d'eau.
-    :rtype: float
+    :return: Valeur interpolée du niveau d'eau et de la time serie.
+    :rtype: tuple[float, str | None]
     """
     # Interpolation linéaire
     time_diff_event: np.float64 = (
         after_event[schema_ids.EVENT_DATE] - before_event[schema_ids.EVENT_DATE]
     ).total_seconds()
     if time_diff_event > (2 * water_level_tolerance.total_seconds()):
-        return np.nan
+        return np.nan, None
 
     value_diff_event: float = (
         after_event[schema_ids.VALUE] - before_event[schema_ids.VALUE]
@@ -111,7 +111,10 @@ def _interpolate_water_level(
         value_diff_event * (time_elapsed / time_diff_event)
     )
 
-    return round(interpolated_value, 3)
+    return (
+        round(interpolated_value, 3),
+        f"LinearInterpolation[{after_event[schema_ids.TIME_SERIE_CODE]} - {before_event[schema_ids.TIME_SERIE_CODE]}]",
+    )
 
 
 def _handle_missing_data(idx_sounding: int, tide_zone_id: str) -> float:
@@ -140,7 +143,7 @@ def _add_value_within_limit_if_applicable(
     idx_sounding: int,
     tide_zone_id: str,
     water_level_tolerance: pd.Timedelta,
-) -> np.float64 | float:
+) -> tuple[np.float64 | float, str | None]:
     """
     Ajoute la valeur du niveau d'eau si elle est dans les limites.
 
@@ -158,29 +161,32 @@ def _add_value_within_limit_if_applicable(
     :type tide_zone_id: str
     :param water_level_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
     :type water_level_tolerance: pd.Timedelta
-    :return: Valeur du niveau d'eau.
-    :rtype: np.float64 | float
+    :return: Valeur du niveau d'eau et de la time serie.
+    :rtype: tuple[np.float64 | float, str | None]
     """
     time_diff: float = abs(
         event_dates_wl[event_position_wl] - time_utc_sounding
     ).total_seconds()
 
     if time_diff <= water_level_tolerance.total_seconds():
-        return round(water_level_df.iloc[event_position_wl][schema_ids.VALUE], 3)
+        return (
+            round(water_level_df.iloc[event_position_wl][schema_ids.VALUE], 3),
+            water_level_df.iloc[event_position_wl][schema_ids.TIME_SERIE_CODE],
+        )
 
     LOGGER.debug(
         f"Pas de données de niveau d'eau suffisantes pour récupérer l'index {idx_sounding} avec une "
         f"tolérance de {water_level_tolerance} : (tide_zone_id={tide_zone_id})."
     )
 
-    return np.nan
+    return np.nan, None
 
 
 def _get_water_level_for_sounding(
     sounding: pd.Series,
     water_level_data: dict[str, pd.DataFrame],
     water_level_tolerance: pd.Timedelta,
-) -> np.float64 | float:
+) -> tuple[np.float64 | float, str | None]:
     """
     Récupère la valeur du niveau d'eau pour une sonde.
 
@@ -190,8 +196,8 @@ def _get_water_level_for_sounding(
     :type water_level_data: dict[str, pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]
     :param water_level_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
     :type water_level_tolerance: pd.Timedelta
-    :return: Valeur du niveau d'eau.
-    :rtype: np.float64 | float
+    :return: Valeur du niveau d'eau et de la time serie.
+    :rtype: tuple[np.float64 | float, str | None]
     """
     tide_zone_id: str = sounding.get(schema_ids.TIDE_ZONE_ID)
     time_utc_sounding: pd.Timestamp = sounding.get(schema_ids.TIME_UTC)
@@ -202,7 +208,7 @@ def _get_water_level_for_sounding(
         or water_level_data[tide_zone_id].empty
         or water_level_data[tide_zone_id] is None
     ):
-        return _handle_missing_data(idx_sounding, tide_zone_id)
+        return _handle_missing_data(idx_sounding, tide_zone_id), None
 
     water_level_df: pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema] = (
         water_level_data[tide_zone_id]
@@ -219,9 +225,12 @@ def _get_water_level_for_sounding(
 
     # Vérifier si [position_after - 1] est un match exact
     if event_dates_wl[position_after - 1] == time_utc_sounding:
-        return round(
-            water_level_df.iloc[position_after - 1][schema_ids.VALUE],
-            3,
+        return (
+            round(
+                water_level_df.iloc[position_after - 1][schema_ids.VALUE],
+                3,
+            ),
+            water_level_df.iloc[position_after - 1][schema_ids.TIME_SERIE_CODE],
         )
 
     # Vérifier si position_after est hors des limites
@@ -285,18 +294,31 @@ def get_water_levels(
     )
 
     dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=CPU_COUNT)
-    interpolated_values: pd.Series = dask_data.map_partitions(
+    interpolated_df: pd.DataFrame = dask_data.map_partitions(
         lambda gdf: gdf.apply(
-            _get_water_level_for_sounding,  #  todo : weighted average selon la distance?
+            lambda row: (
+                pd.Series(
+                    {
+                        "interpolated_value": result[0],
+                        "time_serie": result[1],
+                    }
+                )
+                if (
+                    result := _get_water_level_for_sounding(
+                        sounding=row,
+                        water_level_data=water_level_data,
+                        water_level_tolerance=water_level_tolerance,
+                    )
+                )
+                else pd.Series({"interpolated_value": np.nan, "time_serie": None})
+            ),
             axis=1,
-            water_level_data=water_level_data,
-            water_level_tolerance=water_level_tolerance,
         ),
-        meta=("x", "f8"),
+        meta=pd.DataFrame({"interpolated_value": [], "time_serie": []}),
     ).compute()  # todo optimiser le calcul de manière vectorisée
 
-    # Ajouter les valeurs interpolées à la colonne correspondante
-    data[schema_ids.WATER_LEVEL_METER] = interpolated_values
+    data[schema_ids.WATER_LEVEL_METER] = interpolated_df["interpolated_value"]
+    data[schema_ids.TIME_SERIE] = interpolated_df["time_serie"]
 
     LOGGER.debug(
         f"Récupération des niveaux d'eau terminée. Il reste {data['Water_level_meter'].isna().sum()} sondes sans niveau d'eau."
