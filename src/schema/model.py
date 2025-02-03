@@ -29,7 +29,7 @@ class WaterLevelInfo:
 
     water_level_meter: float = None
     """Le niveau d'eau en mètre."""
-    time_series_code: str = None
+    time_series: str = None
     """Le code de la série temporelle."""
     id: str = None
     """L'identifiant de la station."""
@@ -41,7 +41,7 @@ class WaterLevelInfo:
     def __str__(self) -> str:
         return (
             f"WaterLevelInfo({self.water_level_meter} m - "
-            f"{self.time_series_code} - "
+            f"{self.time_series} - "
             f"{self.id} - "
             f"{self.name} - "
             f"{self.code})"
