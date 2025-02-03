@@ -39,12 +39,16 @@ class WaterLevelInfo:
     """Le code de la station."""
 
     def __str__(self) -> str:
+        water_level: str = (
+            f"{self.water_level_meter} m" if self.water_level_meter else None
+        )
+
         return (
-            f"WaterLevelInfo({self.water_level_meter} m - "
-            f"{self.time_series} - "
-            f"{self.id} - "
-            f"{self.name} - "
-            f"{self.code})"
+            f"WaterLevelInfo({water_level if water_level else '<NA>'} - "
+            f"{self.time_series if water_level else '<NA>'} - "
+            f"{self.id if water_level else '<NA>'} - "
+            f"{self.name if water_level else '<NA>'} - "
+            f"{self.code if water_level else '<NA>'})"
         )
 
 
