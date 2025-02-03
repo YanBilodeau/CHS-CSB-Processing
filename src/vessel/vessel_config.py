@@ -274,7 +274,7 @@ class VesselConfig(BaseModel):
         """
         return self.get_sensor(sensor_name=ids.ATTRIBUTE, timestamp=timestamp)
 
-    def get_sensor_by_datetime(
+    def get_sensor_config_by_datetime(
         self,
         sensor_type: Literal[
             "sounder", "waterline", "motion", "sound_speed", "attribute", "navigation"
