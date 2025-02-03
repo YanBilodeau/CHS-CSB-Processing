@@ -23,11 +23,11 @@ IWLSapiDict = dict[
 ]
 
 
-PRIORITY = ["wlo", "wlp"]
+PRIORITY = [iwls.TimeSeries.WLO, iwls.TimeSeries.WLP]
 ENVIRONMENT_PUBLIC: iwls.APIEnvironment = iwls.APIEnvironment(
     name="PUBLIC", endpoint=iwls.EndpointPublic(), calls=15, period=1
 )
-PROFILE_PUBLIC: iwls.APIProfile = iwls.APIProfile(active="public")
+PROFILE_PUBLIC: iwls.APIProfile = iwls.APIProfile(active=iwls.EnvironmentType.PUBLIC)
 
 
 class TimeSeriesConfig(BaseModel):
