@@ -6,6 +6,7 @@ de navires en fonction du type.
 """
 
 from enum import StrEnum
+from typing import Any, Optional, Protocol
 
 from loguru import logger
 
@@ -26,6 +27,15 @@ class VesselConfigManagerType(StrEnum):
     """Gestionnaire de configuration de navires en JSON."""
     VesselConfigSQLiteManager = "VesselConfigSQLiteManager"
     """Gestionnaire de configuration de navires en SQLite."""
+
+
+class VesselManagerProtocol(Protocol):
+    """
+    Configuration du gestionnaire de configuration du navire.
+    """
+
+    manager_type: Optional[VesselConfigManagerType]
+    kwargs: Optional[dict[str, Any]] = None
 
 
 VESSEL_CONFIG_MANAGER_FACTORY: dict[
