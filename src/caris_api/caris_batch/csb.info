@@ -21,6 +21,7 @@
     <cif:Column>
       <cif:AttributeName>Z</cif:AttributeName>
       <cif:Multiplier>1</cif:Multiplier>
+      <cif:Ignore>&lt;NA&gt;</cif:Ignore>
       <cif:Orientation>down</cif:Orientation>
       <cif:Unit>m</cif:Unit>
       <cif:DataType>DOUBLE</cif:DataType>
