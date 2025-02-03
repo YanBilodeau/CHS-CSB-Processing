@@ -202,8 +202,9 @@ class DataParserABC(ABC):
         columns: dict[str, pd.Series] = {
             schema_ids.DEPTH_PROCESSED_METER: pd.Series(dtype="float64"),
             schema_ids.WATER_LEVEL_INFO: pd.Series(dtype="object"),
-            schema_ids.WATER_LEVEL_METER: pd.Series(dtype="float64"),
             schema_ids.UNCERTAINTY: pd.Series(dtype="float64"),
+            schema_ids.WATER_LEVEL_METER: pd.Series(dtype="float64"),
+            schema_ids.TIME_SERIE: pd.Series(dtype="string"),
             schema_ids.TIDE_ZONE_ID: pd.Series(dtype="string"),
             schema_ids.TIDE_ZONE_CODE: pd.Series(dtype="string"),
             schema_ids.TIDE_ZONE_NAME: pd.Series(dtype="string"),
