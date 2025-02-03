@@ -5,7 +5,6 @@ Ce module permet de récupérer la configuration du navire.
 """
 
 from functools import singledispatch
-from typing import Protocol, Optional, Any
 
 from loguru import logger
 
