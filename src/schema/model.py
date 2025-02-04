@@ -88,6 +88,18 @@ class DataLoggerWithTideZoneSchema(DataLoggerSchema):
         coerce = True
 
 
+class DataLoggerWithVoronoiSchema(DataLoggerSchema):
+    """
+    Schéma des données des DataLoggers avec les zones de Voronoi.
+    """
+
+    id: Series[str] = pa.Field(nullable=True)
+    code: Series[str] = pa.Field(nullable=True)
+    name: Series[str] = pa.Field(nullable=True)
+    Time_serie: Series[object] = pa.Field(nullable=True)
+    Water_level_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
+
+
 class WaterLevelSerieDataSchema(pa.DataFrameModel):
     """
     Schéma des séries temporelles.
