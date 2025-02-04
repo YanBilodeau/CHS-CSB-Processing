@@ -9,6 +9,7 @@ import functools
 from typing import Optional, Callable, Type, Any
 
 import geopandas as gpd
+import numpy as np
 import pandas as pd
 import pandera as pa
 from loguru import logger
@@ -27,7 +28,7 @@ class WaterLevelInfo:
     Classe pour les informations sur les niveaux d'eau.
     """
 
-    water_level_meter: float = None
+    water_level_meter: float = np.nan
     """Le niveau d'eau en mètre."""
     time_series: str = None
     """Le code de la série temporelle."""
@@ -40,7 +41,9 @@ class WaterLevelInfo:
 
     def __str__(self) -> str:
         water_level: str = (
-            f"{self.water_level_meter} m" if self.water_level_meter else None
+            f"{self.water_level_meter} m"
+            if not np.isnan(self.water_level_meter)
+            else None
         )
 
         return (
