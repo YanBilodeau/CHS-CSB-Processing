@@ -2,7 +2,7 @@
 Module principal pour le traitement des données des capteurs à bord des navires.
 
 Ce module contient le workflow de traitement des données des capteurs à bord des navires. Les données des capteurs sont
-récupérées à partir de fichiers bruts, nettoyées, filtrées, géoréférencées et exportées dans un format standardisé.
+récupérées à partir de fichiers bruts, nettoyées, filtrées, georéférencées et exportées dans un format standardisé.
 """
 
 import concurrent.futures
@@ -170,18 +170,11 @@ def add_tide_zone_id_to_geodataframe(
     LOGGER.debug(f"Récupération des zones de marées selon l'extension des données.")
 
     columns: list[str] = [
-        schema_ids.TIME_UTC,
-        schema_ids.LATITUDE_WGS84,
-        schema_ids.LONGITUDE_WGS84,
-        schema_ids.DEPTH_RAW_METER,
-        schema_ids.DEPTH_PROCESSED_METER,
-        schema_ids.WATER_LEVEL_METER,
-        schema_ids.WATER_LEVEL_INFO,
-        schema_ids.UNCERTAINTY,
-        schema_ids.GEOMETRY,
+        *schema.DataLoggerSchema.__annotations__.keys(),
         schema_ids.ID,
         schema_ids.CODE,
         schema_ids.NAME,
+        schema_ids.WATER_LEVEL_METER,
         schema_ids.TIME_SERIE,
     ]
 
@@ -261,7 +254,7 @@ def export_water_level_dataframe(
     :param station_title: Titre de la station.
     :type station_title: str
     :param wl_dataframe: DataFrame contenant les données de niveaux d'eau.
-    :type wl_dataframe: pd.DataFrame
+    :type wl_dataframe: pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]
     :param export_tide_path: Chemin du répertoire d'exportation des fichiers CSV.
     :type export_tide_path: Path
     """
