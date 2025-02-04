@@ -26,6 +26,7 @@ UNKNOWN_VESSEL_CONFIG: VesselConfig = VesselConfig(
         BDBattribute(
             time_stamp=UNKNOWN_DATE,
             pltfrm="unknown",
+            tecsou="unknown",
             sdghdw="unknown",
             poshdw="unknown",
             bureau="unknown",
