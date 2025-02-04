@@ -38,9 +38,9 @@ class CSBmetadata:
     """Technique de sondage"""
     waterline: float
     """Ligne d'eau"""
-    tvu: float  # Max entre TVU et TVU à 50m
+    tvu: float  # Min entre max TVU et TVU à 50m
     """Invertitude verticale"""
-    thu: float  # Max entre THU et THU à 50m
+    thu: float  # Min entre max THU et THU à 50m
     """Invertitude horizontale"""
     iho_order: str
     """Ordre IHO"""
