@@ -42,7 +42,7 @@
         "z": -4.0
       }
     ],
-    "ssp_applied": [
+    "sound_speed": [
       {
         "time_stamp": "2021-09-25T00:00:00Z",
         "ssp": false
@@ -93,7 +93,7 @@
         "z": 1.88
       }
     ],
-    "ssp_applied": [
+    "sound_speed": [
       {
         "time_stamp": "2021-09-25T00:00:00Z",
         "ssp": false
@@ -144,7 +144,7 @@
         "z": -2.28
       }
     ],
-    "ssp_applied": [
+    "sound_speed": [
       {
         "time_stamp": "2021-09-25T00:00:00Z",
         "ssp": false
@@ -195,7 +195,7 @@
         "z": 0.91
       }
     ],
-    "ssp_applied": [
+    "sound_speed": [
       {
         "time_stamp": "2021-09-25T00:00:00Z",
         "ssp": false
@@ -246,7 +246,7 @@
         "z": 0.0
       }
     ],
-    "ssp_applied": [
+    "sound_speed": [
       {
         "time_stamp": "2021-09-25T00:00:00Z",
         "ssp": false
@@ -298,7 +298,7 @@
         "z": 0.0
       }
     ],
-    "ssp_applied": [
+    "sound_speed": [
       {
         "time_stamp": "2021-09-25T00:00:00Z",
         "ssp": false,
