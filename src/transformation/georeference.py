@@ -386,38 +386,77 @@ def apply_georeference_bathymetry(
     return _run_dask_function_in_parallel(data=data, func=caculate_depth)
 
 
-def compute_tpu(
+def compute_tvu(
     data: gpd.GeoDataFrame,
     decimal_precision: int,
-    depth_coeficient_tpu: float = 0.04,
-    constant_tpu: float = 0.35,
+    depth_coeficient_tvu: float = 0.04,
+    constant_tvu: float = 0.35,
 ) -> gpd.GeoDataFrame:
     """
-    Calcule le TPU des données de bathymétrie.
+    Calcule le TVU des données de bathymétrie.
 
     :param data: Données brut de profondeur.
     :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     :param decimal_precision: Précision décimale pour les valeurs de profondeur.
     :type decimal_precision: int
-    :param depth_coeficient_tpu: Coefficient de profondeur.
-    :type depth_coeficient_tpu: float
-    :param constant_tpu: Constante du TPU.
-    :type constant_tpu: float
-    :return: Données de profondeur avec le TPU.
+    :param depth_coeficient_tvu: Coefficient de profondeur.
+    :type depth_coeficient_tvu: float
+    :param constant_tvu: Constante du TPU.
+    :type constant_tvu: float
+    :return: Données de profondeur avec le TVU.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
     LOGGER.debug(
-        f"Calcul du TPU des données de profondeur avec {CPU_COUNT} processus en parallèle."
+        f"Calcul du l'incertitude verticale des données de profondeur avec {CPU_COUNT} processus en parallèle."
     )
 
-    def calculate_uncertainty(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    def calculate_vertical_uncertainty(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         gdf.loc[:, schema_ids.UNCERTAINTY] = round(
-            (gdf[schema_ids.DEPTH_RAW_METER] * depth_coeficient_tpu) + constant_tpu,
+            (gdf[schema_ids.DEPTH_RAW_METER] * depth_coeficient_tvu) + constant_tvu,
             decimal_precision,
         )
         return gdf
 
-    return _run_dask_function_in_parallel(data=data, func=calculate_uncertainty)
+    return _run_dask_function_in_parallel(
+        data=data, func=calculate_vertical_uncertainty
+    )
+
+
+def compute_thu(
+    data: gpd.GeoDataFrame,
+    decimal_precision: int,
+    angular_opening: float = 20.0,
+    constant_thu: float = 3.0,
+) -> gpd.GeoDataFrame:
+    """
+    Calcule le THU des données de bathymétrie.
+
+    :param data: Données brut de profondeur.
+    :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
+    :param decimal_precision: Précision décimale pour les valeurs de profondeur.
+    :type decimal_precision: int
+    :param angular_opening: Ouverture angulaire du sondeur.
+    :type angular_opening: float
+    :param constant_thu: Constante du TPU.
+    :type constant_thu: float
+    :return: Données de profondeur avec le THU.
+    :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
+    """
+    LOGGER.debug(
+        f"Calcul de l'incertitude horizontale des données de profondeur avec {CPU_COUNT} processus en parallèle."
+    )
+    thu_depth_coeficient: float = np.tan(np.radians(angular_opening / 2))
+
+    def calculate_horizontal_uncertainty(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+        gdf.loc[:, schema_ids.THU] = round(
+            (gdf[schema_ids.DEPTH_RAW_METER] * thu_depth_coeficient) + constant_thu,
+            decimal_precision,
+        )
+        return gdf
+
+    return _run_dask_function_in_parallel(
+        data=data, func=calculate_horizontal_uncertainty
+    )
 
 
 def _run_dask_function_in_parallel(
@@ -513,9 +552,14 @@ def georeference_bathymetry(
         )
     )
 
-    LOGGER.info("Calcul du TPU des données de profondeur.")
+    LOGGER.info("Calcul de l'incertitude verticale des données de profondeur.")
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
-        compute_tpu(data=data_to_process, decimal_precision=decimal_precision)
+        compute_tvu(data=data_to_process, decimal_precision=decimal_precision)
+    )
+
+    LOGGER.info("Calcul de l'incertitude horizontale des données de profondeur.")
+    data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
+        compute_thu(data=data_to_process, decimal_precision=decimal_precision)
     )
 
     data.update(data_to_process)  # Mise à jour des données
