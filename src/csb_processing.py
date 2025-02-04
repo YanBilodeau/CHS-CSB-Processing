@@ -14,10 +14,12 @@ from typing import Optional, Collection, Sequence
 
 import geopandas as gpd
 from loguru import logger
+import numpy as np
 import pandas as pd
 
 import config
 import export
+import metadata
 from config.processing_config import FileTypes
 from ingestion import factory_parser, DataLoggerType
 import iwls_api_request as iwls
@@ -31,6 +33,9 @@ import tide.time_serie as time_serie
 import transformation.data_cleaning as cleaner
 import transformation.georeference as georeference
 import vessel as vessel_manager
+
+
+__version__ = "0.5.0"
 
 
 LOGGER = logger.bind(name="CSB-Processing.WorkFlow")
@@ -546,6 +551,62 @@ def export_processed_data_to_file_types(
         ]
 
 
+def export_metadata(
+    data_geodataframe: gpd.GeoDataFrame,
+    output_path: Path,
+    vessel_config: vessel_manager.VesselConfig,
+    datalogger_type: DataLoggerType,
+    tide_stations: Optional[Collection[str]],
+) -> None:
+    """
+    Exporte les métadonnées des données traitées.
+
+    :param data_geodataframe: Données traitées à exporter.
+    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :param output_path: Chemin du répertoire d'exportation.
+    :type output_path: Path
+    :param vessel_config: Configuration du navire.
+    :type vessel_config: vessel_manager.VesselConfig
+    :param datalogger_type: Type de capteur.
+    :type datalogger_type: DataLoggerType
+    :param tide_stations: Liste des stations de marées.
+    :type tide_stations: Optional[Collection[str]]
+    """
+    min_time: datetime = data_geodataframe[schema_ids.TIME_UTC].min()
+    max_time: datetime = data_geodataframe[schema_ids.TIME_UTC].max()
+    attributes: vessel_config.BDBattributes = (
+        vessel_config.get_sensor_config_by_datetime("attribute", min_time, max_time)
+    )
+
+    survey_metadata: metadata.CSBmetadata = metadata.CSBmetadata(
+        start_date=min_time,
+        end_date=max_time,
+        vessel=f"{vessel_config.id} - {vessel_config.name}",
+        sounding_hardware=f"{attributes.sdghdw} - {datalogger_type}",
+        soundding_technique=attributes.tecsou,
+        waterline=vessel_config.get_sensor_config_by_datetime(
+            "waterline", min_time, max_time
+        ).z,
+        sotfware_version=__version__,
+        tide_stations=tide_stations,
+        tvu=min(
+            data_geodataframe[schema_ids.UNCERTAINTY].max(),
+            round((50 * 0.04) + 0.35, 2),
+        ),  # todo mettre en paramètre
+        thu=min(
+            data_geodataframe[schema_ids.THU].max(),
+            round((50 * np.tan(np.radians(20) / 2)) + 3, 2),
+        ),  # todo mettre en paramètre
+        iho_order="unknown",  # todo
+    )
+
+    metadata.export_metadata_to_json(
+        metadata=survey_metadata,
+        output_path=output_path
+        / f"{get_export_file_name(data_geodataframe=data_geodataframe, vessel_config=vessel_config, datalogger_type=datalogger_type)}_metadata.json",
+    )
+
+
 def processing_workflow(
     files: Collection[Path],
     vessel: str | vessel_manager.VesselConfig,
@@ -677,6 +738,7 @@ def processing_workflow(
             )
         )
 
+        # Export the processed data
         export_processed_data_to_file_types(
             data_geodataframe=data,
             export_data_path=export_data_path,
@@ -684,6 +746,15 @@ def processing_workflow(
             vessel_config=vessel_config,
             datalogger_type=parser_files.datalogger_type,
             config_caris=caris_api_config,
+        )
+
+        # Export the metadata
+        export_metadata(
+            data_geodataframe=data,
+            output_path=export_data_path,
+            vessel_config=vessel_config,
+            datalogger_type=parser_files.datalogger_type,
+            tide_stations=None,
         )
 
         return None
@@ -847,6 +918,18 @@ def processing_workflow(
         config_caris=caris_api_config,
     )
 
+    # Export the metadata
+    export_metadata(
+        data_geodataframe=data,
+        output_path=export_data_path,
+        vessel_config=vessel_config,
+        datalogger_type=parser_files.datalogger_type,
+        tide_stations=[
+            get_station_title(gdf_voronoi=gdf_voronoi, station_id=station_id)
+            for station_id in wl_combineds_dict.keys()
+        ],
+    )
+
     # todo gérer la valeur np.nan dans les configurations des capteurs
 
     # todo à ajouter au BaseModel ?
@@ -863,7 +946,11 @@ def processing_workflow(
     # todo Identification des périodes en enlevant les trous de x temps dans add_tide_zone_id_to_geodataframe
 
     # todo export en csar avec CarisBatchUtils -> mettre PACD ?
-    # todo couche THU ?
 
     # todo -> mettre template pour le nom dans le fichier de config dans le fichier de config
+
     # todo Fichier de config de vessel centralisé ?
+
+    # todo metadonnées
+
+    # todo -> BlackBox
