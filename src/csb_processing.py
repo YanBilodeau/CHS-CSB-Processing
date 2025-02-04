@@ -171,11 +171,7 @@ def add_tide_zone_id_to_geodataframe(
 
     columns: list[str] = [
         *schema.DataLoggerSchema.__annotations__.keys(),
-        schema_ids.ID,
-        schema_ids.CODE,
-        schema_ids.NAME,
-        schema_ids.WATER_LEVEL_METER,
-        schema_ids.TIME_SERIE,
+        *schema.DataLoggerWithVoronoiSchema.__annotations__.keys(),
     ]
 
     gdf_data_time_zone: gpd.GeoDataFrame[
