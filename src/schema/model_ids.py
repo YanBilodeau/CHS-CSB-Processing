@@ -17,6 +17,8 @@ WATER_LEVEL_INFO: str = "Water_level_info"
 """Valeur de la constante Water_level_info."""
 UNCERTAINTY: str = "Uncertainty"
 """Valeur de la constante Uncertainty."""
+THU: str = "THU"
+"""Valeur de la constante THU."""
 GEOMETRY: str = "geometry"
 """Valeur de la constante geometry."""
 

@@ -67,6 +67,7 @@ class DataLoggerSchema(pa.DataFrameModel):
     Depth_processed_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
     Water_level_info: Series[object] = pa.Field(nullable=True)
     Uncertainty: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
+    THU: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
     geometry: GeoSeries
 
     class Config:
