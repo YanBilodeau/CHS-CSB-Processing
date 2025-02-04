@@ -34,6 +34,13 @@
       <cif:DataType>DOUBLE</cif:DataType>
       <cif:Index>6</cif:Index>
     </cif:Column>
+      <cif:Column>
+      <cif:AttributeName>THU</cif:AttributeName>
+      <cif:Multiplier>1</cif:Multiplier>
+      <cif:Unit>m</cif:Unit>
+      <cif:DataType>DOUBLE</cif:DataType>
+      <cif:Index>7</cif:Index>
+    </cif:Column>
     <cif:Column>
       <cif:AttributeName>WaterLevelInfo</cif:AttributeName>
       <cif:Multiplier>1</cif:Multiplier>
