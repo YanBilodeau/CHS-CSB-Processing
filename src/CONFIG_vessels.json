@@ -52,7 +52,8 @@
       {
         "time_stamp": "2021-09-25T00:00:00Z",
         "pltfrm": "Frosti",
-        "sdghdw": "1:found by Echo sounder",
+        "tecsou": "1:found by Echo sounder",
+        "sdghdw": "10",
         "poshdw": "10",
         "bureau": "",
         "restrn": "1"
@@ -102,7 +103,8 @@
       {
         "time_stamp": "2021-09-25T00:00:00Z",
         "pltfrm": "CHS1_OFM_Pangnirtung",
-        "sdghdw": "1:found by Echo sounder",
+        "tecsou": "1:found by Echo sounder",
+        "sdghdw": "10",
         "poshdw": "10",
         "bureau": "",
         "restrn": "1"
@@ -152,7 +154,8 @@
       {
         "time_stamp": "2021-09-25T00:00:00Z",
         "pltfrm": "CHS5_OFM_Nuliajuk",
-        "sdghdw": "1:found by Echo sounder",
+        "tecsou": "1:found by Echo sounder",
+        "sdghdw": "10",
         "poshdw": "10",
         "bureau": "",
         "restrn": "1"
@@ -202,7 +205,8 @@
       {
         "time_stamp": "2021-09-25T00:00:00Z",
         "pltfrm": "RDL_Jupiter_Actisense03_2024",
-        "sdghdw": "1:found by Echo sounder",
+        "tecsou": "1:found by Echo sounder",
+        "sdghdw": "10",
         "poshdw": "10",
         "bureau": "",
         "restrn": "1"
@@ -252,7 +256,8 @@
       {
         "time_stamp": "2021-09-25T00:00:00Z",
         "pltfrm": "ThaiDene_ParksCanada",
-        "sdghdw": "1:found by Echo sounder",
+        "tecsou": "1:found by Echo sounder",
+        "sdghdw": "10",
         "poshdw": "10",
         "bureau": "",
         "restrn": "1"
@@ -304,7 +309,8 @@
       {
         "time_stamp": "2021-09-25T00:00:00Z",
         "pltfrm": "Tuktoyaktuk",
-        "sdghdw": "1:found by Echo sounder",
+        "tecsou": "1:found by Echo sounder",
+        "sdghdw": "10",
         "poshdw": "10",
         "bureau": "",
         "restrn": "1"

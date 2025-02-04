@@ -72,6 +72,8 @@ class AttributeDict(dict):
     :param pltfrm: Plateforme.
     :type pltfrm: str
     :param sdghdw: Système de sondage.
+    :param tecsou: Technologie du sondeur.
+    :type tecsou: str
     :type sdghdw: str
     :param poshdw: Système de positionnement.
     :type poshdw: str
@@ -85,6 +87,8 @@ class AttributeDict(dict):
     """Date et heure."""
     pltfrm: str
     """Plateforme."""
+    tecsou: str
+    """Technologie du sondeur."""
     sdghdw: str
     """Système de sondage."""
     poshdw: str

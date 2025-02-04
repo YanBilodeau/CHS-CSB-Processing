@@ -70,6 +70,8 @@ class BDBattribute(BaseModel):
     :type time_stamp: datetime
     :param pltfrm: Plateforme.
     :type pltfrm: str
+    :param tecsou: Technologie du sondeur.
+    :type tecsou: str
     :param sdghdw: Système de sondage.
     :type sdghdw: str
     :param poshdw: Système de positionnement.
@@ -84,6 +86,8 @@ class BDBattribute(BaseModel):
     """Date et heure."""
     pltfrm: str
     """Plateforme."""
+    tecsou: str
+    """Technologie du sondeur."""
     sdghdw: str
     """Système de sondage."""
     poshdw: str
