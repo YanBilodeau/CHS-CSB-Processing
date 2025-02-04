@@ -445,7 +445,7 @@ def compute_thu(
     LOGGER.debug(
         f"Calcul de l'incertitude horizontale des données de profondeur avec {CPU_COUNT} processus en parallèle."
     )
-    thu_depth_coeficient: float = np.tan(np.radians(angular_opening / 2))
+    thu_depth_coeficient: float = np.tan(np.radians(angular_opening) / 2)
 
     def calculate_horizontal_uncertainty(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         gdf.loc[:, schema_ids.THU] = round(
