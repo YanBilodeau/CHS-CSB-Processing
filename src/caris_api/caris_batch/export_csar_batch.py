@@ -50,6 +50,8 @@ def export_geodataframe_to_csar(
             "DepthRaw",
             "--include-band",
             "WaterLevelInfo",
+            "--include-band",
+            "THU",
             "--info-file",
             INFO_FILE_PATH,
             # "--output-vertical-crs",
