@@ -4,7 +4,7 @@ Module pour la configuration du navire.
 Ce module contient les classes et les fonctions pour la configuration du navire.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import StrEnum
 from typing import Optional, Literal
 
@@ -21,6 +21,10 @@ from .vessel_models import VesselConfigDict
 
 
 LOGGER = logger.bind(name="CSB-Pipeline.Vessel.VesselConfig")
+
+
+UNKNOWN_DATE: datetime = datetime(1960, 1, 1, tzinfo=timezone.utc)
+UNKNOWN: str = "unknown"
 
 
 class AxisConvention(StrEnum):
@@ -82,19 +86,19 @@ class BDBattribute(BaseModel):
     :type restrn: str
     """
 
-    time_stamp: datetime
+    time_stamp: datetime = UNKNOWN_DATE
     """Date et heure."""
-    pltfrm: str
+    pltfrm: str = UNKNOWN
     """Plateforme."""
-    tecsou: str
+    tecsou: str = UNKNOWN
     """Technologie du sondeur."""
-    sdghdw: str
+    sdghdw: str = UNKNOWN
     """Système de sondage."""
-    poshdw: str
+    poshdw: str = UNKNOWN
     """Système de positionnement."""
-    bureau: str
+    bureau: str = UNKNOWN
     """Bureau du fournisseur de données."""
-    restrn: str
+    restrn: str = UNKNOWN
     """Restrictions de données."""
 
 

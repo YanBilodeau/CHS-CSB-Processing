@@ -11,9 +11,11 @@ from .vessel_config import (
 
 
 UNKNOWN_DATE: datetime = datetime(1960, 1, 1, tzinfo=timezone.utc)
+UNKNOWN: str = "unknown"
+
 UNKNOWN_VESSEL_CONFIG: VesselConfig = VesselConfig(
-    id="unknown",
-    name="unknown",
+    id=UNKNOWN,
+    name=UNKNOWN,
     axis_convention=AxisConvention.CARIS,
     navigation=[Sensor(time_stamp=UNKNOWN_DATE, x=0.0, y=0.0, z=0.0)],
     motion=[Sensor(time_stamp=UNKNOWN_DATE, x=0.0, y=0.0, z=0.0)],
@@ -25,12 +27,12 @@ UNKNOWN_VESSEL_CONFIG: VesselConfig = VesselConfig(
     attribute=[
         BDBattribute(
             time_stamp=UNKNOWN_DATE,
-            pltfrm="unknown",
-            tecsou="unknown",
-            sdghdw="unknown",
-            poshdw="unknown",
-            bureau="unknown",
-            restrn="unknown",
+            pltfrm=UNKNOWN,
+            tecsou=UNKNOWN,
+            sdghdw=UNKNOWN,
+            poshdw=UNKNOWN,
+            bureau=UNKNOWN,
+            restrn=UNKNOWN,
         )
     ],
 )
