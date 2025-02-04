@@ -5,6 +5,7 @@ Ce package contient les schémas des données.
 from .model import (
     DataLoggerSchema,
     DataLoggerWithTideZoneSchema,
+    DataLoggerWithVoronoiSchema,
     StationsSchema,
     TideZoneProtocolSchema,
     TideZoneStationSchema,
@@ -20,6 +21,7 @@ from .model import (
 __all__ = [
     "DataLoggerSchema",
     "DataLoggerWithTideZoneSchema",
+    "DataLoggerWithVoronoiSchema",
     "StationsSchema",
     "TideZoneProtocolSchema",
     "TideZoneStationSchema",
