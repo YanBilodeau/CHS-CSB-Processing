@@ -90,6 +90,7 @@ class CSBmetadata:
                     result[key] = value.isoformat()
                 else:
                     result[key] = value
+
         return result
 
 
