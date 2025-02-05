@@ -34,8 +34,8 @@ class CSBmetadata:
     """Matériel de sondage"""
     soundding_technique: str
     """Technique de sondage"""
-    waterline: float
-    """Ligne d'eau"""
+    sounder_draft: float
+    """Tirant d'eau du sondeur"""
     tvu: float
     """Invertitude verticale"""
     thu: float
