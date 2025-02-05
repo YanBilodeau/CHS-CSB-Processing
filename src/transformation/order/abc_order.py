@@ -18,16 +18,18 @@ class OrderType(IntEnum):
     order_2 = 4
     order_not_met = 5
 
-    @property
-    def name(self) -> str:
-        return {
-            OrderType.exclusive_order: "Exclusive Order",
-            OrderType.special_order: "Special Order",
-            OrderType.order_1a: "Order 1a",
-            OrderType.order_1b: "Order 1b",
-            OrderType.order_2: "Order 2",
-            OrderType.order_not_met: "Order not met",
-        }[self]
+    def __str__(self) -> str:
+        return order_name_map.get(self)
+
+
+order_name_map: dict[OrderType, str] = {
+    OrderType.exclusive_order: "Exclusive Order",
+    OrderType.special_order: "Special Order",
+    OrderType.order_1a: "Order 1a",
+    OrderType.order_1b: "Order 1b",
+    OrderType.order_2: "Order 2",
+    OrderType.order_not_met: "Order not met",
+}
 
 
 @dataclass
