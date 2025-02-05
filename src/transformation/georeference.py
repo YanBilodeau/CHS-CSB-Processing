@@ -559,7 +559,7 @@ def georeference_bathymetry(
     )
 
     LOGGER.info(
-        f"Géoréférencement des données bathymétriques : {len(data_to_process)} sondes à traiter."
+        f"Géoréférencement des données bathymétriques : {len(data_to_process):,} sondes à traiter."
     )
 
     LOGGER.info("Récupération des niveaux d'eau pour les sondes.")
@@ -604,13 +604,13 @@ def georeference_bathymetry(
 
     LOGGER.info(f"Géoréférencement des données bathymétrique terminé.")
     LOGGER.success(
-        f"{data_to_process['Depth_processed_meter'].notna().sum()} sondes géoréférencées."
+        f"{data_to_process['Depth_processed_meter'].notna().sum():,} sondes géoréférencées."
     )
 
     depth_nan: np.int64 = data[schema_ids.DEPTH_PROCESSED_METER].isna().sum()
     if depth_nan > 0:
         LOGGER.warning(
-            f"Il reste {depth_nan} sondes sans valeur de profondeur réduite."
+            f"Il reste {depth_nan:,} sondes sans valeur de profondeur réduite."
         )
 
     return data
