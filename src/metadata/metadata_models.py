@@ -67,7 +67,7 @@ class CSBmetadata:
         self.data_processing_software = self.data_processing_software.format(
             version=self.sotfware_version
         )
-        print(self.tide_stations)
+
         self.water_Level_reduction_method = (
             REDUCTION_METHOD.format(stations=", ".join(self.tide_stations))
             if self.tide_stations
