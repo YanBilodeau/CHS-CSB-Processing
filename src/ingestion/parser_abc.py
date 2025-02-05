@@ -167,7 +167,7 @@ class DataParserABC(ABC):
 
         if duplicates_count > 0:
             LOGGER.warning(
-                f"{duplicates_count} doublons ont été supprimés avec les mêmes valeurs pour les attributs : {colunms}."
+                f"{duplicates_count:,} doublons ont été supprimés avec les mêmes valeurs pour les attributs : {colunms}."
             )
 
         return data
