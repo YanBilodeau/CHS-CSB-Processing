@@ -479,11 +479,13 @@ def compute_order(
 
     def calculate_order(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         gdf.loc[:, schema_ids.IHO_ORDER] = gdf.apply(
-            lambda row: order.calculate_order(
-                depth=row[schema_ids.DEPTH_RAW_METER],
-                tvu=row[schema_ids.UNCERTAINTY],
-                thu=row[schema_ids.THU],
-            ).name,
+            lambda row: str(
+                order.calculate_order(
+                    depth=row[schema_ids.DEPTH_RAW_METER],
+                    tvu=row[schema_ids.UNCERTAINTY],
+                    thu=row[schema_ids.THU],
+                )
+            ),
             axis=1,
         )
 
