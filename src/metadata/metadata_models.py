@@ -6,13 +6,11 @@ Ce module contient les modèles de métadonnées pour les données du CSB.
 
 from dataclasses import dataclass, asdict, field
 from datetime import datetime
-import json
-from pathlib import Path
 from typing import Collection
 
 from loguru import logger
 
-LOGGER = logger.bind(name="CSB-Processing.Metadata")
+LOGGER = logger.bind(name="CSB-Processing.Metadata.Models")
 
 
 REDUCTION_METHOD = "The dataset has been reduced to CD thanks to predicted tides pulled from IWLS at the following stations: {stations}"
@@ -92,18 +90,3 @@ class CSBmetadata:
                     result[key] = value
 
         return result
-
-
-def export_metadata_to_json(metadata: CSBmetadata, output_path: Path) -> None:
-    """
-    Fonction pour exporter les métadonnées au format JSON.
-
-    :param metadata: Métadonnées à exporter.
-    :type metadata: CSBmetadata
-    :param output_path: Chemin du fichier de sortie.
-    :type output_path: Path
-    """
-    LOGGER.debug(f"Export des métadonnées au format JSON : {output_path}")
-
-    with open(output_path, "w", encoding="utf-8") as file:
-        json.dump(metadata.to_dict(), file, indent=4)  # type: ignore
