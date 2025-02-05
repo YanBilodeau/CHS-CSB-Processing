@@ -13,9 +13,10 @@ from loguru import logger
 LOGGER = logger.bind(name="CSB-Processing.Metadata.Models")
 
 
-REDUCTION_METHOD = "The dataset has been reduced to CD thanks to predicted tides pulled from IWLS at the following stations: {stations}"
+REDUCTION_METHOD = "The dataset has been reduced to CD thanks to predicted tides pulled from IWLS at the following stations: {stations}."
 """Méthode de réduction du niveau d'eau"""
 NO_TIDE_STATIONS = "The dataset has not been reduced to CD."
+"""Pas de stations de marée"""
 
 
 @dataclass
@@ -66,6 +67,7 @@ class CSBmetadata:
         self.data_processing_software = self.data_processing_software.format(
             version=self.sotfware_version
         )
+        print(self.tide_stations)
         self.water_Level_reduction_method = (
             REDUCTION_METHOD.format(stations=", ".join(self.tide_stations))
             if self.tide_stations
