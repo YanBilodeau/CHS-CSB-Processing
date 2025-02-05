@@ -55,5 +55,11 @@
       <cif:DataType>DOUBLE</cif:DataType>
       <cif:Index>3</cif:Index>
     </cif:Column>
+      <cif:Column>
+      <cif:AttributeName>IHO Order</cif:AttributeName>
+      <cif:Multiplier>1</cif:Multiplier>
+      <cif:DataType>STRING</cif:DataType>
+      <cif:Index>8</cif:Index>
+    </cif:Column>
   </cif:Delimited>
 </cif:FormatInformation>

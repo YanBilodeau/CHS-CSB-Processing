@@ -52,6 +52,8 @@ def export_geodataframe_to_csar(
             "WaterLevelInfo",
             "--include-band",
             "THU",
+            "--include-band",
+            "IHO Order",
             "--info-file",
             INFO_FILE_PATH,
             # "--output-vertical-crs",
