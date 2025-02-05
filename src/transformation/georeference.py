@@ -15,6 +15,7 @@ import pandas as pd
 from typing import Optional, Callable
 
 from .exception_tranformation import WaterLevelDataRequiredError
+from . import order
 from .transformation_models import SensorProtocol, WaterlineProtocol
 import schema
 from schema import model_ids as schema_ids
@@ -459,6 +460,38 @@ def compute_thu(
     )
 
 
+def compute_order(
+    data: gpd.GeoDataFrame,
+) -> gpd.GeoDataFrame:
+    """
+    Calcule l'ordre de la TVU et de la THU des données de bathymétrie.
+
+    :param data: Données brut de profondeur.
+    :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
+    :return: Données de profondeur avec l'ordre de la TVU et de la THU.
+    :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
+    """
+    LOGGER.debug(
+        f"Calcul de l'ordre IHO selon la TVU et de la THU des données de profondeur avec {CPU_COUNT} processus en parallèle."
+    )
+
+    # dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=CPU_COUNT)
+
+    def calculate_order(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+        gdf.loc[:, schema_ids.IHO_ORDER] = gdf.apply(
+            lambda row: order.calculate_order(
+                depth=row[schema_ids.DEPTH_RAW_METER],
+                tvu=row[schema_ids.UNCERTAINTY],
+                thu=row[schema_ids.THU],
+            ).name,
+            axis=1,
+        )
+
+        return gdf
+
+    return _run_dask_function_in_parallel(data=data, func=calculate_order)
+
+
 def _run_dask_function_in_parallel(
     data: gpd.GeoDataFrame,
     func: Callable[[gpd.GeoDataFrame], gpd.GeoDataFrame],
@@ -560,6 +593,11 @@ def georeference_bathymetry(
     LOGGER.info("Calcul de l'incertitude horizontale des données de profondeur.")
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
         compute_thu(data=data_to_process, decimal_precision=decimal_precision)
+    )
+
+    LOGGER.info("Calcul de l'ordre IHO selon la TVU et de la THU.")
+    data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
+        compute_order(data=data_to_process)
     )
 
     data.update(data_to_process)  # Mise à jour des données
