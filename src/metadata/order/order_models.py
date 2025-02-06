@@ -25,7 +25,7 @@ class OrderType(StrEnum):
     order_1a = "Order 1a"
     order_1b = "Order 1b"
     order_2 = "Order 2"
-    order_not_met = "Order not met"
+    order_not_met = "Order Not Met"
 
 
 @dataclass
@@ -141,17 +141,16 @@ class IHOorderQualifiquation:
         Convertit les données en un dictionnaire.
         """
         return {
-            order_type: (
-                getattr(self, order_type).__dict__()
-                if getattr(self, order_type)
-                else None
-            )
-            for order_type in [
-                "exclusive_order",
-                "special_order",
-                "order_1a",
-                "order_1b",
-                "order_2",
-                "order_not_met",
-            ]
+            "Exclusive Order": (
+                self.exclusive_order.__dict__() if self.exclusive_order else None
+            ),
+            "Special Order": (
+                self.special_order.__dict__() if self.special_order else None
+            ),
+            "Order 1a": self.order_1a.__dict__() if self.order_1a else None,
+            "Order 1b": self.order_1b.__dict__() if self.order_1b else None,
+            "Order 2": self.order_2.__dict__() if self.order_2 else None,
+            "Order Not Met": (
+                self.order_not_met.__dict__() if self.order_not_met else None
+            ),
         }
