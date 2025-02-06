@@ -27,4 +27,4 @@ def export_metadata_to_json(metadata: CSBmetadata, output_path: Path) -> None:
     LOGGER.debug(f"Export des métadonnées au format JSON : {output_path}")
 
     with open(output_path, "w", encoding="utf-8") as file:
-        json.dump(metadata.to_dict(), file, indent=4)  # type: ignore
+        json.dump(metadata.__dict__(), file, indent=4)  # type: ignore
