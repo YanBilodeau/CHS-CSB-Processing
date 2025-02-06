@@ -398,7 +398,7 @@ def compute_tvu(
 
     :param data: Données brut de profondeur.
     :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
-    :param decimal_precision: Précision décimale pour les valeurs de profondeur.
+    :param decimal_precision: Précision décimale pour les valeurs de TVU.
     :type decimal_precision: int
     :param depth_coeficient_tvu: Coefficient de profondeur.
     :type depth_coeficient_tvu: float
@@ -434,7 +434,7 @@ def compute_thu(
 
     :param data: Données brut de profondeur.
     :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
-    :param decimal_precision: Précision décimale pour les valeurs de profondeur.
+    :param decimal_precision: Précision décimale pour les valeurs de THU.
     :type decimal_precision: int
     :param angular_opening: Ouverture angulaire du sondeur.
     :type angular_opening: float
@@ -462,12 +462,15 @@ def compute_thu(
 
 def compute_order(
     data: gpd.GeoDataFrame,
+    decimal_precision: int,
 ) -> gpd.GeoDataFrame:
     """
     Calcule l'ordre de la TVU et de la THU des données de bathymétrie.
 
     :param data: Données brut de profondeur.
     :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
+    :param decimal_precision: Précision décimale pour les valeurs de TPU.
+    :type decimal_precision: int
     :return: Données de profondeur avec l'ordre de la TVU et de la THU.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
@@ -484,6 +487,7 @@ def compute_order(
                     depth=row[schema_ids.DEPTH_RAW_METER],
                     tvu=row[schema_ids.UNCERTAINTY],
                     thu=row[schema_ids.THU],
+                    decimal_precision=decimal_precision,
                 )
             ),
             axis=1,
@@ -599,7 +603,7 @@ def georeference_bathymetry(
 
     LOGGER.info("Calcul de l'ordre IHO selon la TVU et la THU.")
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
-        compute_order(data=data_to_process)
+        compute_order(data=data_to_process, decimal_precision=decimal_precision)
     )
 
     data.update(data_to_process)  # Mise à jour des données
