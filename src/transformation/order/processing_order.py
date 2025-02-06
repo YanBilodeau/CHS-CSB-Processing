@@ -11,28 +11,26 @@ from typing import Callable
 
 from loguru import logger
 
-from .abc_order import TVUorder, THUorder, OrderType
-from . import tvu_order
-from . import thu_order
+from .order_models import TVUorder, THUorder, OrderType
 
 
 LOGGER = logger.bind(name="CSB-Processing.Transformation.IHO.Order")
 
 
 tvu_order_map: dict[OrderType, TVUorder] = {
-    OrderType.EXCLUSIVE_ORDER: tvu_order.TVUexclusiveOrder(),
-    OrderType.SPECIAL_ORDER: tvu_order.TVUspecialOrder(),
-    OrderType.ORDER_1A: tvu_order.TVUorder1a(),
-    OrderType.ORDER_1B: tvu_order.TVUorder1b(),
-    OrderType.ORDER_2: tvu_order.TVUorder2(),
+    OrderType.EXCLUSIVE_ORDER: TVUorder(a=0.15, b=0.0075),
+    OrderType.SPECIAL_ORDER: TVUorder(a=0.25, b=0.0075),
+    OrderType.ORDER_1A: TVUorder(a=0.5, b=0.013),
+    OrderType.ORDER_1B: TVUorder(a=0.5, b=0.013),
+    OrderType.ORDER_2: TVUorder(a=1.0, b=0.023),
 }
 
 thu_order_map: dict[OrderType, THUorder] = {
-    OrderType.EXCLUSIVE_ORDER: thu_order.THUexclusiveOrder(),
-    OrderType.SPECIAL_ORDER: thu_order.THUspecialOrder(),
-    OrderType.ORDER_1A: thu_order.THUorder1a(),
-    OrderType.ORDER_1B: thu_order.THUorder1b(),
-    OrderType.ORDER_2: thu_order.THUorder2(),
+    OrderType.EXCLUSIVE_ORDER: THUorder(constant=1.0, coefficient_depth=0.0),
+    OrderType.SPECIAL_ORDER: THUorder(constant=2.0, coefficient_depth=0.0),
+    OrderType.ORDER_1A: THUorder(constant=5.0, coefficient_depth=0.05),
+    OrderType.ORDER_1B: THUorder(constant=5.0, coefficient_depth=0.05),
+    OrderType.ORDER_2: THUorder(constant=20.0, coefficient_depth=0.1),
 }
 
 
