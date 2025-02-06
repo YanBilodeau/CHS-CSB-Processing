@@ -11,24 +11,24 @@ from typing import Optional
 
 
 class OrderType(IntEnum):
-    exclusive_order = 0
-    special_order = 1
-    order_1a = 2
-    order_1b = 3
-    order_2 = 4
-    order_not_met = 5
+    EXCLUSIVE_ORDER = 0
+    SPECIAL_ORDER = 1
+    ORDER_1A = 2
+    ORDER_1B = 3
+    ORDER_2 = 4
+    ORDER_NOT_MET = 5
 
     def __str__(self) -> str:
-        return order_name_map.get(self)
+        return ORDER_NAME_MAP.get(self)
 
 
-order_name_map: dict[OrderType, str] = {
-    OrderType.exclusive_order: "Exclusive Order",
-    OrderType.special_order: "Special Order",
-    OrderType.order_1a: "Order 1a",
-    OrderType.order_1b: "Order 1b",
-    OrderType.order_2: "Order 2",
-    OrderType.order_not_met: "Order Not Met",
+ORDER_NAME_MAP: dict[OrderType, str] = {
+    OrderType.EXCLUSIVE_ORDER: "Exclusive Order",
+    OrderType.SPECIAL_ORDER: "Special Order",
+    OrderType.ORDER_1A: "Order 1a",
+    OrderType.ORDER_1B: "Order 1b",
+    OrderType.ORDER_2: "Order 2",
+    OrderType.ORDER_NOT_MET: "Order Not Met",
 }
 
 
