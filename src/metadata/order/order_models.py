@@ -57,6 +57,24 @@ class OrderStatistics:
     mean_thu: float
     """THU moyenne."""
 
+    def __dict__(self) -> dict:
+        """
+        Convertit les données en un dictionnaire.
+        """
+        return {
+            "Sounding Count": self.sounding_count,
+            "Count Pourcentage (%)": self.count_pourcentage,
+            "Min Depth (m)": self.min_depth,
+            "Max Depth (m)": self.max_depth,
+            "Mean Depth (m)": self.mean_depth,
+            "Min TVU (m)": self.min_tvu,
+            "Max TVU (m)": self.max_tvu,
+            "Mean TVU (m)": self.mean_tvu,
+            "Min THU (m)": self.min_thu,
+            "Max THU (m)": self.max_thu,
+            "Mean THU (m)": self.mean_thu,
+        }
+
 
 @dataclass
 class IHOorderQualifiquation:
@@ -117,3 +135,23 @@ class IHOorderQualifiquation:
             )
 
         return self
+
+    def __dict__(self) -> dict:
+        """
+        Convertit les données en un dictionnaire.
+        """
+        return {
+            order_type: (
+                getattr(self, order_type).__dict__()
+                if getattr(self, order_type)
+                else None
+            )
+            for order_type in [
+                "exclusive_order",
+                "special_order",
+                "order_1a",
+                "order_1b",
+                "order_2",
+                "order_not_met",
+            ]
+        }
