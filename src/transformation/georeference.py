@@ -472,7 +472,7 @@ def compute_order(
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
     LOGGER.debug(
-        f"Calcul de l'ordre IHO selon la TVU et de la THU des données de profondeur avec {CPU_COUNT} processus en parallèle."
+        f"Calcul de l'ordre IHO selon la TVU et la THU des données de profondeur avec {CPU_COUNT} processus en parallèle."
     )
 
     # dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=CPU_COUNT)
@@ -597,7 +597,7 @@ def georeference_bathymetry(
         compute_thu(data=data_to_process, decimal_precision=decimal_precision)
     )
 
-    LOGGER.info("Calcul de l'ordre IHO selon la TVU et de la THU.")
+    LOGGER.info("Calcul de l'ordre IHO selon la TVU et la THU.")
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
         compute_order(data=data_to_process)
     )
