@@ -10,6 +10,8 @@ from typing import Collection
 
 from loguru import logger
 
+from .iho_order import IHOorderQualifiquation
+
 LOGGER = logger.bind(name="CSB-Processing.Metadata.Models")
 
 
@@ -41,8 +43,6 @@ class CSBmetadata:
     """Invertitude verticale"""
     thu: float
     """Invertitude horizontale"""
-    iho_order: str
-    """Ordre IHO"""
     sotfware_version: str = field(repr=False, metadata={"exclude": True})
     """Version du logiciel"""
     tide_stations: Collection[str] = field(repr=False, metadata={"exclude": True})
@@ -59,6 +59,8 @@ class CSBmetadata:
     """Système de coordonnées horizontal"""
     vertical_coordinate_reference_system: str = "Chart Datum"
     """Système de coordonnées vertical"""
+    iho_order_statistic: IHOorderQualifiquation = None
+    """Statistiques des ordre IHO"""
 
     def __post_init__(self):
         """
