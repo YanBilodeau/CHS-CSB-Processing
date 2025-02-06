@@ -9,6 +9,7 @@ from .order.processing_order_qualification import (
     OrderStatistics,
     classify_iho_order,
 )
+from .plot import plot_metadata
 
 __all__ = [
     "CSBmetadata",
@@ -16,4 +17,5 @@ __all__ = [
     "IHOorderQualifiquation",
     "OrderStatistics",
     "classify_iho_order",
+    "plot_metadata",
 ]
