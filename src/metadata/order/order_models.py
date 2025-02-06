@@ -6,7 +6,6 @@ Ce module contient les modèles pour la qualification des données selon les ord
 
 from __future__ import annotations
 
-from abc import ABC
 from enum import StrEnum
 from dataclasses import dataclass, field
 from typing import Optional
@@ -29,106 +28,40 @@ class OrderEnum(StrEnum):
     ORDER_NOT_MET = "Order Not Met"
 
 
-@dataclass(frozen=True)
-class OrderType(ABC):
+ORDER_HIERARCHY: dict[OrderEnum, list[OrderEnum]] = {
+    OrderEnum.EXCLUSIVE_ORDER: [OrderEnum.EXCLUSIVE_ORDER],
+    OrderEnum.SPECIAL_ORDER: [OrderEnum.EXCLUSIVE_ORDER, OrderEnum.SPECIAL_ORDER],
+    OrderEnum.ORDER_1A: [
+        OrderEnum.EXCLUSIVE_ORDER,
+        OrderEnum.SPECIAL_ORDER,
+        OrderEnum.ORDER_1A,
+    ],
+    OrderEnum.ORDER_1B: [
+        OrderEnum.EXCLUSIVE_ORDER,
+        OrderEnum.SPECIAL_ORDER,
+        OrderEnum.ORDER_1A,
+        OrderEnum.ORDER_1B,
+    ],
+    OrderEnum.ORDER_2: [
+        OrderEnum.EXCLUSIVE_ORDER,
+        OrderEnum.SPECIAL_ORDER,
+        OrderEnum.ORDER_1A,
+        OrderEnum.ORDER_1B,
+        OrderEnum.ORDER_2,
+    ],
+    OrderEnum.ORDER_NOT_MET: list(OrderEnum),
+}
+
+
+@dataclass
+class OrderType:
     name: OrderEnum
     """Nom de l'ordre."""
-    order_within: list[OrderEnum] = None
+    order_within: list[OrderEnum] = field(init=False)
     """Ordres inclus."""
 
-
-@dataclass(frozen=True)
-class ExclusiveOrder(OrderType):
-    """
-    Ordre exclusif.
-    """
-
-    name: OrderEnum = OrderEnum.EXCLUSIVE_ORDER
-    order_within: list[OrderEnum] = field(
-        default_factory=lambda: [OrderEnum.EXCLUSIVE_ORDER]
-    )
-
-
-@dataclass(frozen=True)
-class SpecialOrder(OrderType):
-    """
-    Ordre spécial.
-    """
-
-    name: OrderEnum = OrderEnum.special_order
-    order_within: list[OrderEnum] = field(
-        default_factory=lambda: [OrderEnum.EXCLUSIVE_ORDER, OrderEnum.special_order]
-    )
-
-
-@dataclass(frozen=True)
-class Order1a(OrderType):
-    """
-    Ordre 1a.
-    """
-
-    name: OrderEnum = OrderEnum.order_1a
-    order_within: list[OrderEnum] = field(
-        default_factory=lambda: [
-            OrderEnum.EXCLUSIVE_ORDER,
-            OrderEnum.special_order,
-            OrderEnum.order_1a,
-        ]
-    )
-
-
-@dataclass(frozen=True)
-class Order1b(OrderType):
-    """
-    Ordre 1b.
-    """
-
-    name: OrderEnum = OrderEnum.order_1b
-    order_within: list[OrderEnum] = field(
-        default_factory=lambda: [
-            OrderEnum.EXCLUSIVE_ORDER,
-            OrderEnum.special_order,
-            OrderEnum.order_1a,
-            OrderEnum.order_1b,
-        ]
-    )
-
-
-@dataclass(frozen=True)
-class Order2(OrderType):
-    """
-    Ordre 2.
-    """
-
-    name: OrderEnum = OrderEnum.order_2
-    order_within: list[OrderEnum] = field(
-        default_factory=lambda: [
-            OrderEnum.EXCLUSIVE_ORDER,
-            OrderEnum.special_order,
-            OrderEnum.order_1a,
-            OrderEnum.order_1b,
-            OrderEnum.order_2,
-        ]
-    )
-
-
-@dataclass(frozen=True)
-class OrderNotMet(OrderType):
-    """
-    Ordre non respecté.
-    """
-
-    name: OrderEnum = OrderEnum.order_not_met
-    order_within: list[OrderEnum] = field(
-        default_factory=lambda: [
-            OrderEnum.EXCLUSIVE_ORDER,
-            OrderEnum.special_order,
-            OrderEnum.order_1a,
-            OrderEnum.order_1b,
-            OrderEnum.order_2,
-            OrderEnum.order_not_met,
-        ]
-    )
+    def __post_init__(self) -> None:
+        self.order_within = ORDER_HIERARCHY[self.name]
 
 
 @dataclass
