@@ -7,23 +7,39 @@ Ce module contient les fonctions pour classifier l'ordre IHO des données.
 from __future__ import annotations
 
 import geopandas as gpd
+import pandas as pd
 from loguru import logger
 
 import schema.model_ids as schema_ids
-from .order_models import OrderStatistics, IHOorderQualifiquation, OrderType
+from .order_models import (
+    OrderStatistics,
+    IHOorderQualifiquation,
+    OrderEnum,
+    OrderType,
+)
 
 
 LOGGER = logger.bind(name="CSB-Processing.Metadata.IHO.Order.Qualification")
 
 
+order_map: dict[OrderEnum, OrderType] = {
+    OrderEnum.EXCLUSIVE_ORDER: OrderType(OrderEnum.EXCLUSIVE_ORDER),
+    OrderEnum.SPECIAL_ORDER: OrderType(OrderEnum.SPECIAL_ORDER),
+    OrderEnum.ORDER_1A: OrderType(OrderEnum.ORDER_1A),
+    OrderEnum.ORDER_1B: OrderType(OrderEnum.ORDER_1B),
+    OrderEnum.ORDER_2: OrderType(OrderEnum.ORDER_2),
+    OrderEnum.ORDER_NOT_MET: OrderType(OrderEnum.ORDER_NOT_MET),
+}
+
+
 def calculate_order_statistics(
-    group: gpd.GeoDataFrame, data_count: int, decimal_precision: int
+    group: pd.DataFrame, data_count: int, decimal_precision: int
 ) -> OrderStatistics:
     """
     Calcule les statistiques pour un groupe de sondes selon son ordre IHO.
 
     :param group: Groupe de données à traiter.
-    :type group: gpd.GeoDataFrame
+    :type group: pd.DataFrame
     :param data_count: Nombre total de sondes.
     :type data_count: int
     :param decimal_precision: Précision des décimales.
@@ -34,8 +50,10 @@ def calculate_order_statistics(
     LOGGER.debug(f"Calcul des statistiques pour un groupe de sondes.")
 
     return OrderStatistics(
-        sounding_count=len(group),
-        count_pourcentage=(len(group) / data_count) * 100,
+        sounding_count_within_order=len(group),
+        sounding_pourcentage_within_order=round(
+            (len(group) / data_count) * 100, decimal_precision
+        ),
         min_depth=group[schema_ids.DEPTH_PROCESSED_METER].min(),
         max_depth=group[schema_ids.DEPTH_PROCESSED_METER].max(),
         mean_depth=round(
@@ -68,22 +86,28 @@ def classify_iho_order(
     grouped = data_geodataframe.groupby(schema_ids.IHO_ORDER)
     data_count: int = len(data_geodataframe)
 
-    def _calulate_order_statistics(order_type: OrderType) -> OrderStatistics | None:
-        return (
-            calculate_order_statistics(
-                group=grouped.get_group(order_type),
-                data_count=data_count,
-                decimal_precision=decimal_precision,
-            )
-            if order_type in grouped.groups
-            else None
+    def _calulate_order_statistics(order_type: OrderEnum) -> OrderStatistics | None:
+        grouped_orders_list: list[gpd.GeoDataFrame] = [
+            grouped.get_group(order)
+            for order in order_map[order_type].order_within
+            if order in grouped.groups
+        ]
+
+        if not grouped_orders_list:
+            LOGGER.debug(f"Aucun groupe trouvé pour l'ordre {order_type}.")
+            return None
+
+        return calculate_order_statistics(
+            group=pd.concat(grouped_orders_list),
+            data_count=data_count,
+            decimal_precision=decimal_precision,
         )
 
     return IHOorderQualifiquation(
-        exclusive_order=_calulate_order_statistics(OrderType.exclusive_order),
-        special_order=_calulate_order_statistics(OrderType.special_order),
-        order_1a=_calulate_order_statistics(OrderType.order_1a),
-        order_1b=_calulate_order_statistics(OrderType.order_1b),
-        order_2=_calulate_order_statistics(OrderType.order_2),
-        order_not_met=_calulate_order_statistics(OrderType.order_not_met),
-    ).round_percentages(decimal_precision)
+        exclusive_order=_calulate_order_statistics(OrderEnum.EXCLUSIVE_ORDER),
+        special_order=_calulate_order_statistics(OrderEnum.SPECIAL_ORDER),
+        order_1a=_calulate_order_statistics(OrderEnum.ORDER_1A),
+        order_1b=_calulate_order_statistics(OrderEnum.ORDER_1B),
+        order_2=_calulate_order_statistics(OrderEnum.ORDER_2),
+        order_not_met=_calulate_order_statistics(OrderEnum.ORDER_NOT_MET),
+    )
