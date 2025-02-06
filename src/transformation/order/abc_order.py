@@ -28,7 +28,7 @@ order_name_map: dict[OrderType, str] = {
     OrderType.order_1a: "Order 1a",
     OrderType.order_1b: "Order 1b",
     OrderType.order_2: "Order 2",
-    OrderType.order_not_met: "Order not met",
+    OrderType.order_not_met: "Order Not Met",
 }
 
 
