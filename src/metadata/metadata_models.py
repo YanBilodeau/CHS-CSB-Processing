@@ -10,7 +10,7 @@ from typing import Collection
 
 from loguru import logger
 
-from .iho_order import IHOorderQualifiquation
+from .order.order_models import IHOorderQualifiquation
 
 LOGGER = logger.bind(name="CSB-Processing.Metadata.Models")
 
