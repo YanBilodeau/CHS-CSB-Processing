@@ -4,7 +4,6 @@ Module qui contient les classes abstraites pour les ordres de transformation.
 Ce module contient les classes abstraites pour les ordres de transformation.
 """
 
-from abc import ABC
 from dataclasses import dataclass
 from enum import IntEnum
 from typing import Optional
@@ -33,16 +32,16 @@ ORDER_NAME_MAP: dict[OrderType, str] = {
 
 
 @dataclass
-class TVUorder(ABC):
-    a: Optional[float] = None
+class TVUorder:
+    a: Optional[float]
     """Représente la partie de l'incertitude qui ne varie pas avec la profondeur."""
-    b: Optional[float] = None
+    b: Optional[float]
     """Un coefficient qui représente la partie de l'incertitude qui varie avec la profondeur."""
 
 
 @dataclass
-class THUorder(ABC):
-    constant: Optional[float] = None
+class THUorder:
+    constant: Optional[float]
     """Représente la partie de l'incertitude qui ne varie pas avec la profondeur."""
-    coefficient_depth: Optional[float] = None
+    coefficient_depth: Optional[float]
     """Un coefficient qui représente la partie de l'incertitude qui varie avec la profondeur."""
