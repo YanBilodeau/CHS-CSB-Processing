@@ -36,8 +36,12 @@ class OrderStatistics:
 
     sounding_count: int
     """Nombre de sondages."""
-    count_pourcentage: float
+    sounding_pourcentage: float
     """Pourcentage du nombre de sondages."""
+    sounding_count_within_order: int
+    """Nombre de sondages respectant l'ordre."""
+    sounding_pourcentage_within_order: float
+    """Pourcentage du nombre de sondages respectant l'ordre."""
     min_depth: float
     """Profondeur minimale."""
     max_depth: float
@@ -63,7 +67,9 @@ class OrderStatistics:
         """
         return {
             "Sounding Count": self.sounding_count,
-            "Count Pourcentage (%)": self.count_pourcentage,
+            "Sounding Pourcentage (%)": self.sounding_pourcentage,
+            "Sounding Count Within Order": self.sounding_count_within_order,
+            "Sounding Pourcentage Within Order (%)": self.sounding_pourcentage_within_order,
             "Min Depth (m)": self.min_depth,
             "Max Depth (m)": self.max_depth,
             "Mean Depth (m)": self.mean_depth,
@@ -118,19 +124,19 @@ class IHOorderQualifiquation:
 
         valid_stats = [stat for stat in stats if stat is not None]
 
-        total_percentage = sum(stat.count_pourcentage for stat in valid_stats)
+        total_percentage = sum(stat.sounding_pourcentage for stat in valid_stats)
         rounded_total = round(total_percentage, decimal_precision)
         difference = 100 - rounded_total
 
         if valid_stats:
-            valid_stats[0].count_pourcentage += difference
+            valid_stats[0].sounding_pourcentage += difference
 
         for stat in valid_stats:
-            stat.count_pourcentage = round(stat.count_pourcentage, decimal_precision)
+            stat.sounding_pourcentage = round(stat.sounding_pourcentage, decimal_precision)
 
-        final_total = sum(stat.count_pourcentage for stat in valid_stats)
+        final_total = sum(stat.sounding_pourcentage for stat in valid_stats)
         if final_total != 100:
-            valid_stats[0].count_pourcentage += round(
+            valid_stats[0].sounding_pourcentage += round(
                 100 - final_total, decimal_precision
             )
 
