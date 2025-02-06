@@ -6,8 +6,9 @@ Ce module contient les modèles pour la qualification des données selon les ord
 
 from __future__ import annotations
 
+from abc import ABC
 from enum import StrEnum
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 
 from loguru import logger
@@ -15,17 +16,119 @@ from loguru import logger
 LOGGER = logger.bind(name="CSB-Processing.Metadata.IHO.Order.Models")
 
 
-class OrderType(StrEnum):
+class OrderEnum(StrEnum):
     """
     Types d'ordres IHO.
     """
 
-    exclusive_order = "Exclusive Order"
-    special_order = "Special Order"
-    order_1a = "Order 1a"
-    order_1b = "Order 1b"
-    order_2 = "Order 2"
-    order_not_met = "Order Not Met"
+    EXCLUSIVE_ORDER = "Exclusive Order"
+    SPECIAL_ORDER = "Special Order"
+    ORDER_1A = "Order 1a"
+    ORDER_1B = "Order 1b"
+    ORDER_2 = "Order 2"
+    ORDER_NOT_MET = "Order Not Met"
+
+
+@dataclass(frozen=True)
+class OrderType(ABC):
+    name: OrderEnum
+    """Nom de l'ordre."""
+    order_within: list[OrderEnum] = None
+    """Ordres inclus."""
+
+
+@dataclass(frozen=True)
+class ExclusiveOrder(OrderType):
+    """
+    Ordre exclusif.
+    """
+
+    name: OrderEnum = OrderEnum.EXCLUSIVE_ORDER
+    order_within: list[OrderEnum] = field(
+        default_factory=lambda: [OrderEnum.EXCLUSIVE_ORDER]
+    )
+
+
+@dataclass(frozen=True)
+class SpecialOrder(OrderType):
+    """
+    Ordre spécial.
+    """
+
+    name: OrderEnum = OrderEnum.special_order
+    order_within: list[OrderEnum] = field(
+        default_factory=lambda: [OrderEnum.EXCLUSIVE_ORDER, OrderEnum.special_order]
+    )
+
+
+@dataclass(frozen=True)
+class Order1a(OrderType):
+    """
+    Ordre 1a.
+    """
+
+    name: OrderEnum = OrderEnum.order_1a
+    order_within: list[OrderEnum] = field(
+        default_factory=lambda: [
+            OrderEnum.EXCLUSIVE_ORDER,
+            OrderEnum.special_order,
+            OrderEnum.order_1a,
+        ]
+    )
+
+
+@dataclass(frozen=True)
+class Order1b(OrderType):
+    """
+    Ordre 1b.
+    """
+
+    name: OrderEnum = OrderEnum.order_1b
+    order_within: list[OrderEnum] = field(
+        default_factory=lambda: [
+            OrderEnum.EXCLUSIVE_ORDER,
+            OrderEnum.special_order,
+            OrderEnum.order_1a,
+            OrderEnum.order_1b,
+        ]
+    )
+
+
+@dataclass(frozen=True)
+class Order2(OrderType):
+    """
+    Ordre 2.
+    """
+
+    name: OrderEnum = OrderEnum.order_2
+    order_within: list[OrderEnum] = field(
+        default_factory=lambda: [
+            OrderEnum.EXCLUSIVE_ORDER,
+            OrderEnum.special_order,
+            OrderEnum.order_1a,
+            OrderEnum.order_1b,
+            OrderEnum.order_2,
+        ]
+    )
+
+
+@dataclass(frozen=True)
+class OrderNotMet(OrderType):
+    """
+    Ordre non respecté.
+    """
+
+    name: OrderEnum = OrderEnum.order_not_met
+    order_within: list[OrderEnum] = field(
+        default_factory=lambda: [
+            OrderEnum.EXCLUSIVE_ORDER,
+            OrderEnum.special_order,
+            OrderEnum.order_1a,
+            OrderEnum.order_1b,
+            OrderEnum.order_2,
+            OrderEnum.order_not_met,
+        ]
+    )
 
 
 @dataclass
@@ -34,10 +137,6 @@ class OrderStatistics:
     Statistiques pour un ordre IHO.
     """
 
-    sounding_count: int
-    """Nombre de sondages."""
-    sounding_pourcentage: float
-    """Pourcentage du nombre de sondages."""
     sounding_count_within_order: int
     """Nombre de sondages respectant l'ordre."""
     sounding_pourcentage_within_order: float
@@ -66,8 +165,6 @@ class OrderStatistics:
         Convertit les données en un dictionnaire.
         """
         return {
-            "Sounding Count": self.sounding_count,
-            "Sounding Pourcentage (%)": self.sounding_pourcentage,
             "Sounding Count Within Order": self.sounding_count_within_order,
             "Sounding Pourcentage Within Order (%)": self.sounding_pourcentage_within_order,
             "Min Depth (m)": self.min_depth,
@@ -101,46 +198,52 @@ class IHOorderQualifiquation:
     order_not_met: Optional[OrderStatistics] = None
     """Statistiques pour l'ordre non respecté."""
 
-    def round_percentages(self, decimal_precision: int) -> IHOorderQualifiquation:
-        """
-        Arrondit les pourcentages de chaque OrderStatistics selon la précision décimale,
-        en s'assurant que le total des pourcentages soit de 100.
-
-        :param decimal_precision: Précision des décimales.
-        :type decimal_precision: int
-        :return: Qualification des données selon les ordres IHO.
-        :rtype: IHOorderQualifiquation
-        """
-        LOGGER.debug("Arrondissement des pourcentages des statistiques des ordres IHO.")
-
-        stats = [
-            self.exclusive_order,
-            self.special_order,
-            self.order_1a,
-            self.order_1b,
-            self.order_2,
-            self.order_not_met,
-        ]
-
-        valid_stats = [stat for stat in stats if stat is not None]
-
-        total_percentage = sum(stat.sounding_pourcentage for stat in valid_stats)
-        rounded_total = round(total_percentage, decimal_precision)
-        difference = 100 - rounded_total
-
-        if valid_stats:
-            valid_stats[0].sounding_pourcentage += difference
-
-        for stat in valid_stats:
-            stat.sounding_pourcentage = round(stat.sounding_pourcentage, decimal_precision)
-
-        final_total = sum(stat.sounding_pourcentage for stat in valid_stats)
-        if final_total != 100:
-            valid_stats[0].sounding_pourcentage += round(
-                100 - final_total, decimal_precision
-            )
-
-        return self
+    # def round_percentages(self, decimal_precision: int) -> IHOorderQualifiquation:
+    #     """
+    #     Arrondit les pourcentages de chaque OrderStatistics selon la précision décimale,
+    #     en s'assurant que le total des pourcentages soit de 100.
+    #
+    #     :param decimal_precision: Précision des décimales.
+    #     :type decimal_precision: int
+    #     :return: Qualification des données selon les ordres IHO.
+    #     :rtype: IHOorderQualifiquation
+    #     """
+    #     LOGGER.debug("Arrondissement des pourcentages des statistiques des ordres IHO.")
+    #
+    #     stats = [
+    #         self.exclusive_order,
+    #         self.special_order,
+    #         self.order_1a,
+    #         self.order_1b,
+    #         self.order_2,
+    #         self.order_not_met,
+    #     ]
+    #
+    #     valid_stats = [stat for stat in stats if stat is not None]
+    #
+    #     total_percentage = sum(
+    #         stat.sounding_pourcentage_within_order for stat in valid_stats
+    #     )
+    #     rounded_total = round(total_percentage, decimal_precision)
+    #     difference = 100 - rounded_total
+    #
+    #     if valid_stats:
+    #         valid_stats[0].sounding_pourcentage_within_order += difference
+    #
+    #     for stat in valid_stats:
+    #         stat.sounding_pourcentage_within_order = round(
+    #             stat.sounding_pourcentage_within_order, decimal_precision
+    #         )
+    #
+    #     final_total = sum(
+    #         stat.sounding_pourcentage_within_order for stat in valid_stats
+    #     )
+    #     if final_total != 100:
+    #         valid_stats[0].sounding_pourcentage_within_order += round(
+    #             100 - final_total, decimal_precision
+    #         )
+    #
+    #     return self
 
     def __dict__(self) -> dict:
         """

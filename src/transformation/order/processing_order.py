@@ -20,19 +20,19 @@ LOGGER = logger.bind(name="CSB-Processing.Transformation.IHO.Order")
 
 
 tvu_order_map: dict[OrderType, TVUorder] = {
-    OrderType.exclusive_order: tvu_order.TVUexclusiveOrder(),
-    OrderType.special_order: tvu_order.TVUspecialOrder(),
-    OrderType.order_1a: tvu_order.TVUorder1a(),
-    OrderType.order_1b: tvu_order.TVUorder1b(),
-    OrderType.order_2: tvu_order.TVUorder2(),
+    OrderType.EXCLUSIVE_ORDER: tvu_order.TVUexclusiveOrder(),
+    OrderType.SPECIAL_ORDER: tvu_order.TVUspecialOrder(),
+    OrderType.ORDER_1A: tvu_order.TVUorder1a(),
+    OrderType.ORDER_1B: tvu_order.TVUorder1b(),
+    OrderType.ORDER_2: tvu_order.TVUorder2(),
 }
 
 thu_order_map: dict[OrderType, THUorder] = {
-    OrderType.exclusive_order: thu_order.THUexclusiveOrder(),
-    OrderType.special_order: thu_order.THUspecialOrder(),
-    OrderType.order_1a: thu_order.THUorder1a(),
-    OrderType.order_1b: thu_order.THUorder1b(),
-    OrderType.order_2: thu_order.THUorder2(),
+    OrderType.EXCLUSIVE_ORDER: thu_order.THUexclusiveOrder(),
+    OrderType.SPECIAL_ORDER: thu_order.THUspecialOrder(),
+    OrderType.ORDER_1A: thu_order.THUorder1a(),
+    OrderType.ORDER_1B: thu_order.THUorder1b(),
+    OrderType.ORDER_2: thu_order.THUorder2(),
 }
 
 
@@ -115,7 +115,7 @@ def _calculate_order(
             )
             >= uncertainty
         ),
-        OrderType.order_not_met,
+        OrderType.ORDER_NOT_MET,
     )
 
 
