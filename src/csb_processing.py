@@ -487,7 +487,7 @@ def export_processed_data(
         )
 
     logger.info(
-        f"Exportation des données traitées ({len(data_geodataframe)} sondes) au format {file_type} : {output_data_path}."
+        f"Exportation des données traitées ({len(data_geodataframe):,} sondes) au format {file_type} : {output_data_path}."
     )
 
     try:
@@ -551,12 +551,33 @@ def export_processed_data_to_file_types(
         ]
 
 
+def classify_iho_order(
+    data_geodataframe: gpd.GeoDataFrame, decimal_precision: int
+) -> metadata.IHOorderQualifiquation:
+    """
+    Classifie l'ordre IHO des données.
+
+    :param data_geodataframe: Données traitées à classifier.
+    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :param decimal_precision: Précision des décimales.
+    :type decimal_precision: int
+    :return: La qualification des données selon les ordres IHO.
+    :rtype: IHOorderQualifiquation
+    """
+    LOGGER.debug(f"Classification de l'ordre IHO des données.")
+
+    return metadata.classify_iho_order(
+        data_geodataframe=data_geodataframe, decimal_precision=decimal_precision
+    )
+
+
 def export_metadata(
     data_geodataframe: gpd.GeoDataFrame,
     output_path: Path,
     vessel_config: vessel_manager.VesselConfig,
     datalogger_type: DataLoggerType,
     tide_stations: Optional[Collection[str]],
+    decimal_precision: int,
 ) -> None:
     """
     Exporte les métadonnées des données traitées.
@@ -571,11 +592,19 @@ def export_metadata(
     :type datalogger_type: DataLoggerType
     :param tide_stations: Liste des stations de marées.
     :type tide_stations: Optional[Collection[str]]
+    :param decimal_precision: Précision des décimales.
+    :type decimal_precision: int
     """
     min_time: datetime = data_geodataframe[schema_ids.TIME_UTC].min()
     max_time: datetime = data_geodataframe[schema_ids.TIME_UTC].max()
     attributes: vessel_config.BDBattributes = (
         vessel_config.get_sensor_config_by_datetime("attribute", min_time, max_time)
+    )
+    waterline: vessel_manager.Waterline = vessel_config.get_sensor_config_by_datetime(
+        "waterline", min_time, max_time
+    )
+    sounder: vessel_manager.Sensor = vessel_config.get_sensor_config_by_datetime(
+        "sounder", min_time, max_time
     )
 
     survey_metadata: metadata.CSBmetadata = metadata.CSBmetadata(
@@ -584,20 +613,24 @@ def export_metadata(
         vessel=f"{vessel_config.id} - {vessel_config.name}",
         sounding_hardware=f"{attributes.sdghdw} - {datalogger_type}",
         soundding_technique=attributes.tecsou,
-        waterline=vessel_config.get_sensor_config_by_datetime(
-            "waterline", min_time, max_time
-        ).z,
+        sounder_draft=sounder.z - waterline.z,
         sotfware_version=__version__,
         tide_stations=tide_stations,
         tvu=min(
             data_geodataframe[schema_ids.UNCERTAINTY].max(),
-            round((50 * 0.04) + 0.35, 2),
+            round(
+                (50 * 0.04) + 0.35, decimal_precision
+            ),  # Min entre max TVU et TVU à 50m
         ),  # todo mettre en paramètre
         thu=min(
             data_geodataframe[schema_ids.THU].max(),
-            round((50 * np.tan(np.radians(20) / 2)) + 3, 2),
+            round(
+                (50 * np.tan(np.radians(20) / 2)) + 3, decimal_precision
+            ),  # Min entre max THU et THU à 50m
         ),  # todo mettre en paramètre
-        iho_order="unknown",  # todo
+        iho_order_statistic=classify_iho_order(
+            data_geodataframe=data_geodataframe, decimal_precision=decimal_precision
+        ),
     )
 
     metadata.export_metadata_to_json(
@@ -640,7 +673,7 @@ def processing_workflow(
     )
     # Configure the logger
     configure_logger(
-        log_path / f"{datetime.now().strftime('%Y-%m-%d')}_CSB-Processing.log",
+        log_path / f"CHS-CSB-Processing.log",
         std_level=processing_config.options.log_level,
         log_file_level="DEBUG",
     )
@@ -713,7 +746,7 @@ def processing_workflow(
     LOGGER.info(f"Nettoyage et filtrage des données.")
     data = cleaner.clean_data(data, data_filter=processing_config.filter)
 
-    LOGGER.success(f"{len(data)} sondes valides récupérées.")
+    LOGGER.success(f"{len(data):,} sondes valides récupérées.")
 
     sounder, waterline = get_sensors_by_datetime(
         vessel_config=vessel_config,
@@ -755,6 +788,7 @@ def processing_workflow(
             vessel_config=vessel_config,
             datalogger_type=parser_files.datalogger_type,
             tide_stations=None,
+            decimal_precision=processing_config.options.decimal_precision,
         )
 
         return None
@@ -918,6 +952,13 @@ def processing_workflow(
         config_caris=caris_api_config,
     )
 
+    gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema] = (
+        voronoi.get_voronoi_geodataframe(
+            stations_handler=stations_handler,
+            time_series=iwls_api_config.time_series.priority,
+        )
+    )
+
     # Export the metadata
     export_metadata(
         data_geodataframe=data,
@@ -928,6 +969,7 @@ def processing_workflow(
             get_station_title(gdf_voronoi=gdf_voronoi, station_id=station_id)
             for station_id in wl_combineds_dict.keys()
         ],
+        decimal_precision=processing_config.options.decimal_precision,
     )
 
     # todo gérer la valeur np.nan dans les configurations des capteurs
@@ -937,6 +979,7 @@ def processing_workflow(
     #  base_tpu_wlo = 1
     #  base_tpu_wlp = 2
     # todo mettre en paramètre (wlo 1 ? et wlp 2 ?), mettre le coefficient et la constante en paramètre
+
     # todo tpu si apply_water_level=False ?
 
     # todo utilise cache pour les TimeSeries, peut-être utile si plusieurs itérations
@@ -948,9 +991,5 @@ def processing_workflow(
     # todo export en csar avec CarisBatchUtils -> mettre PACD ?
 
     # todo -> mettre template pour le nom dans le fichier de config dans le fichier de config
-
-    # todo Fichier de config de vessel centralisé ?
-
-    # todo metadonnées
 
     # todo -> BlackBox
