@@ -779,6 +779,7 @@ def processing_workflow(
                     processing_config.georeference.water_level_tolerance
                 ),
                 apply_water_level=apply_water_level,
+                decimal_precision=processing_config.options.decimal_precision,
             )
         )
 
@@ -790,7 +791,9 @@ def processing_workflow(
             vessel_config=vessel_config,
             datalogger_type=parser_files.datalogger_type,
             config_caris=caris_api_config if caris_api_config else None,
-            args=caris_api_config.args if caris_api_config else None,
+            args=(
+                caris_api_config.args if caris_api_config else None
+            ),  # todo est-ce qu'on le met ici?
         )
 
         # Export the metadata
@@ -928,6 +931,7 @@ def processing_workflow(
                         processing_config.georeference.water_level_tolerance
                     ),
                     apply_water_level=apply_water_level,
+                    decimal_precision=processing_config.options.decimal_precision,
                 )
             )
 
