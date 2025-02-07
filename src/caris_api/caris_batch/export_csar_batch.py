@@ -20,7 +20,7 @@ EPSG_WGS84: str = "EPSG:4326"
 
 
 def export_geodataframe_to_csar(
-    data: Path, output_path: Path, config: CarisConfigProtocol
+    data: Path, output_path: Path, config: CarisConfigProtocol, args: list[str] = None
 ) -> None:
     """
     Exporte un Geodataframe vers un fichier CSAR.
@@ -31,6 +31,8 @@ def export_geodataframe_to_csar(
     :type output_path: Path
     :param config: La configuration de Caris.
     :type config: CarisConfigProtocol
+    :param args: Les arguments supplémentaires pour Caris Batch.
+    :type args: list[str]
     """
     command: list[str] = make_command_line(
         caris_batch_environment=config.caris_batch,
@@ -56,9 +58,8 @@ def export_geodataframe_to_csar(
             "IHO Order",
             "--info-file",
             INFO_FILE_PATH,
-            # "--output-vertical-crs",
-            # "PACD",
-        ],
+        ]
+        + (args if args else []),
         source=[str(data)],
         destination=[str(output_path)],
     )
