@@ -648,7 +648,6 @@ def export_metadata(
         metadata=survey_metadata.__dict__(),
         title=name,
         output_path=output_path.with_suffix(".html"),
-        show_plot=True,  # todo enlever
     )
 
 
