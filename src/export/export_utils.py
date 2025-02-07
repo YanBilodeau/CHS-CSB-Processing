@@ -249,7 +249,11 @@ def export_geodataframe_to_csar_api(
 
 
 def export_geodataframe_to_csar_batch(
-    geo_dataframe: gpd.GeoDataFrame, output_path: Path, config_caris, **kwargs
+    geo_dataframe: gpd.GeoDataFrame,
+    output_path: Path,
+    config_caris,
+    args: list[str] = None,
+    **kwargs,
 ) -> None:
     """
     Sauvegarde le GeoDataFrame dans un fichier CSAR.
@@ -260,6 +264,8 @@ def export_geodataframe_to_csar_batch(
     :type output_path: Path
     :param config_caris: La configuration de l'API Caris.
     :type config_caris: CarisAPIConfigProtocol
+    :param args: Les arguments supplémentaires pour Caris Batch.
+    :type args
     """
     from caris_api import export_csar_batch
 
@@ -273,7 +279,10 @@ def export_geodataframe_to_csar_batch(
     LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier CSAR : '{output_path}'.")
 
     export_csar_batch.export_geodataframe_to_csar(
-        data=csv_path, output_path=sanitize_path_name(output_path), config=config_caris
+        data=csv_path,
+        output_path=sanitize_path_name(output_path),
+        config=config_caris,
+        args=args,
     )
 
     csv_path.unlink()
