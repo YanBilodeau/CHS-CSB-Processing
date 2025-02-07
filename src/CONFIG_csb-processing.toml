@@ -75,11 +75,11 @@ json_config_path = "./CONFIG_vessels.json"
 # Niveau de log {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 log_level = "INFO"
 # Valeur minimale de 1 {int}
-max_iterations = 10
+max_iterations = 5
 # Liste des formats d'export des données traitées {"geojson", "gpkg", "csar", "parquet", "feather", "csv"}
-export_format = ["gpkg", "csar"]
+export_format = ["gpkg"]
 # Nombre de décimales significatives pour les données traitées {int}.
-decimal_precision = 2
+decimal_precision = 1
 
 [CARIS.Environment]
 # Chemin d'accès à l'installation des logiciels CARIS {str}.
@@ -87,7 +87,9 @@ base_path = "C:/Program Files/CARIS"
 # Logiciel de traitement de données CARIS {"BASE Editor", "HIPS and SIPS"}
 software = "BASE Editor"
 # Version de CARIS {str}.
-version = "5.5"
+version = "6.1"
 # Version de l'API de Python utilisée par CARIS {str}.
 # Doit être la même version que l'interpreteur Python utilisé.
 python_version = "3.11"
+# Arguments supplémentaires pour CarisBatch {list[str]}.
+args= ["--output-vertical-crs", "PACD"]
