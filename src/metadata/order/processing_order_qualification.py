@@ -86,7 +86,7 @@ def classify_iho_order(
     grouped = data_geodataframe.groupby(schema_ids.IHO_ORDER)
     data_count: int = len(data_geodataframe)
 
-    def _calulate_order_statistics(order_type: OrderEnum) -> OrderStatistics | None:
+    def _calulate_order_statistics(order_type: OrderEnum) -> OrderStatistics:
         grouped_orders_list: list[gpd.GeoDataFrame] = [
             grouped.get_group(order)
             for order in order_map[order_type].order_within
@@ -95,7 +95,10 @@ def classify_iho_order(
 
         if not grouped_orders_list:
             LOGGER.debug(f"Aucun groupe trouvé pour l'ordre {order_type}.")
-            return None
+
+            return OrderStatistics(
+                sounding_pourcentage_within_order=0, sounding_count_within_order=0
+            )
 
         return calculate_order_statistics(
             group=pd.concat(grouped_orders_list),
