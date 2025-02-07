@@ -66,6 +66,7 @@ class CarisAPIConfig(BaseModel):
     python_version: str
     python_path: Path = Field(default=None)
     caris_batch: Path = Field(default=None)
+    args: list[str] = Field(default=None)
 
     def __init__(self, **values) -> None:
         super().__init__(**values)
