@@ -239,7 +239,7 @@ def plot_time_series_dataframe(
     if not dataframes:
         raise ValueError("Aucun DataFrame n'a été fourni.")
 
-    LOGGER.debug(f"Affichage des graphiques des niveaux d'eau pour : {titles}.")
+    LOGGER.debug(f"Génération des graphiques des niveaux d'eau pour : {titles}.")
 
     if len(dataframes) != len(titles):
         raise ValueError("Le nombre de DataFrames doit être égal au nombre de titres.")
