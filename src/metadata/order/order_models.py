@@ -98,17 +98,21 @@ class OrderStatistics:
         Convertit les données en un dictionnaire.
         """
         return {
-            "Sounding Count Within Order": self.sounding_count_within_order,
-            "Sounding Pourcentage Within Order (%)": self.sounding_pourcentage_within_order,
-            "Min Depth (m)": self.min_depth,
-            "Max Depth (m)": self.max_depth,
-            "Mean Depth (m)": self.mean_depth,
-            "Min TVU (m)": self.min_tvu,
-            "Max TVU (m)": self.max_tvu,
-            "Mean TVU (m)": self.mean_tvu,
-            "Min THU (m)": self.min_thu,
-            "Max THU (m)": self.max_thu,
-            "Mean THU (m)": self.mean_thu,
+            key: value
+            for key, value in {
+                "Sounding Count Within Order": self.sounding_count_within_order,
+                "Sounding Within Order (%)": self.sounding_pourcentage_within_order,
+                "Min Depth (m)": self.min_depth,
+                "Max Depth (m)": self.max_depth,
+                "Mean Depth (m)": self.mean_depth,
+                "Min TVU (m)": self.min_tvu,
+                "Max TVU (m)": self.max_tvu,
+                "Mean TVU (m)": self.mean_tvu,
+                "Min THU (m)": self.min_thu,
+                "Max THU (m)": self.max_thu,
+                "Mean THU (m)": self.mean_thu,
+            }.items()
+            if value is not None
         }
 
 
