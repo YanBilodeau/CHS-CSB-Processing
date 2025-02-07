@@ -187,16 +187,16 @@ class IHOorderQualifiquation:
         Convertit les données en un dictionnaire.
         """
         return {
-            "Exclusive Order": (
+            OrderEnum.EXCLUSIVE_ORDER: (
                 self.exclusive_order.__dict__() if self.exclusive_order else None
             ),
-            "Special Order": (
+            OrderEnum.SPECIAL_ORDER: (
                 self.special_order.__dict__() if self.special_order else None
             ),
-            "Order 1a": self.order_1a.__dict__() if self.order_1a else None,
-            "Order 1b": self.order_1b.__dict__() if self.order_1b else None,
-            "Order 2": self.order_2.__dict__() if self.order_2 else None,
-            "Order Not Met": (
+            OrderEnum.ORDER_1A: self.order_1a.__dict__() if self.order_1a else None,
+            OrderEnum.ORDER_1B: self.order_1b.__dict__() if self.order_1b else None,
+            OrderEnum.ORDER_2: self.order_2.__dict__() if self.order_2 else None,
+            OrderEnum.ORDER_NOT_MET: (
                 self.order_not_met.__dict__() if self.order_not_met else None
             ),
         }
