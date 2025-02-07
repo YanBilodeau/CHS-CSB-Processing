@@ -156,6 +156,7 @@ def plot_statistics(
                 name=name,
                 marker=dict(size=10, color=color),
                 showlegend=True,
+                # fill="tonextx",
             )
         )
 
@@ -177,7 +178,7 @@ def plot_depth_statistics(iho_order_statistic: dict) -> go.Figure:
         iho_order_statistic,
         keys=["Min Depth (m)", "Max Depth (m)", "Mean Depth (m)"],
         colors=[
-            "rgba(205,92,92, 0.25)",
+            "rgba(205,92,92, 0.35)",
             "rgba(205,92,92, 0.95)",
             "rgba(205,92,92, 0.65)",
         ],
@@ -198,7 +199,7 @@ def plot_tvu_statistics(iho_order_statistic: dict) -> go.Figure:
         iho_order_statistic,
         keys=["Min TVU (m)", "Max TVU (m)", "Mean TVU (m)"],
         colors=[
-            "rgba(92,205,92, 0.25)",
+            "rgba(92,205,92, 0.35)",
             "rgba(92,205,92, 0.95)",
             "rgba(92,205,92, 0.65)",
         ],
@@ -219,7 +220,7 @@ def plot_thu_statistics(iho_order_statistic: dict) -> go.Figure:
         iho_order_statistic,
         keys=["Min THU (m)", "Max THU (m)", "Mean THU (m)"],
         colors=[
-            "rgba(92,92,205, 0.25)",
+            "rgba(92,92,205, 0.35)",
             "rgba(92,92,205, 0.95)",
             "rgba(92,92,205, 0.65)",
         ],
@@ -408,14 +409,14 @@ def plot_metadata(
         for trace_ in figure.data:
             fig.add_trace(trace_, row=row, col=col)
 
-    depth_fig = plot_depth_statistics(metadata["IHO Order Statistic"])
-    add_traces_to_figure(depth_fig, row=4, col=1)
+    thu_fig = plot_thu_statistics(metadata["IHO Order Statistic"])
+    add_traces_to_figure(thu_fig, row=7, col=1)
 
     tvu_fig = plot_tvu_statistics(metadata["IHO Order Statistic"])
     add_traces_to_figure(tvu_fig, row=6, col=1)
 
-    thu_fig = plot_thu_statistics(metadata["IHO Order Statistic"])
-    add_traces_to_figure(thu_fig, row=7, col=1)
+    depth_fig = plot_depth_statistics(metadata["IHO Order Statistic"])
+    add_traces_to_figure(depth_fig, row=4, col=1)
 
     update_layout(
         fig=fig,
