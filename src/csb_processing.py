@@ -595,6 +595,13 @@ def export_metadata(
     :param decimal_precision: Précision des décimales.
     :type decimal_precision: int
     """
+    output_path: Path = (
+        output_path
+        / f"{get_export_file_name(data_geodataframe=data_geodataframe, vessel_config=vessel_config, datalogger_type=datalogger_type)}_metadata.json"
+    )
+
+    LOGGER.info(f"Exportation des métadonnées des données traitées : {output_path}.")
+
     min_time: datetime = data_geodataframe[schema_ids.TIME_UTC].min()
     max_time: datetime = data_geodataframe[schema_ids.TIME_UTC].max()
     attributes: vessel_config.BDBattributes = (
@@ -608,11 +615,11 @@ def export_metadata(
     )
 
     survey_metadata: metadata.CSBmetadata = metadata.CSBmetadata(
-        start_date=min_time,
-        end_date=max_time,
+        start_date=min_time.strftime("%Y-%m-%d"),
+        end_date=max_time.strftime("%Y-%m-%d"),
         vessel=f"{vessel_config.id} - {vessel_config.name}",
-        sounding_hardware=f"{attributes.sdghdw} - {datalogger_type}",
-        soundding_technique=attributes.tecsou,
+        sounding_hardware=f"{datalogger_type} - {attributes.sdghdw}",
+        sounding_technique=attributes.tecsou,
         sounder_draft=sounder.z - waterline.z,
         sotfware_version=__version__,
         tide_stations=tide_stations,
@@ -633,10 +640,11 @@ def export_metadata(
         ),
     )
 
-    metadata.export_metadata_to_json(
-        metadata=survey_metadata,
-        output_path=output_path
-        / f"{get_export_file_name(data_geodataframe=data_geodataframe, vessel_config=vessel_config, datalogger_type=datalogger_type)}_metadata.json",
+    metadata.export_metadata_to_json(metadata=survey_metadata, output_path=output_path)
+
+    metadata.plot_metadata(
+        metadata=survey_metadata.__dict__(),
+        output_path=output_path.with_suffix(".html"),
     )
 
 
