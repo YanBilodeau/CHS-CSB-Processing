@@ -786,7 +786,8 @@ def processing_workflow(
             file_types=processing_config.options.export_format,
             vessel_config=vessel_config,
             datalogger_type=parser_files.datalogger_type,
-            config_caris=caris_api_config,
+            config_caris=caris_api_config if caris_api_config else None,
+            args=caris_api_config.args if caris_api_config else None,
         )
 
         # Export the metadata
@@ -957,7 +958,8 @@ def processing_workflow(
         file_types=processing_config.options.export_format,
         vessel_config=vessel_config,
         datalogger_type=parser_files.datalogger_type,
-        config_caris=caris_api_config,
+        config_caris=caris_api_config if caris_api_config else None,
+        args=caris_api_config.args if caris_api_config else None,
     )
 
     gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema] = (
