@@ -39,6 +39,11 @@ def create_plotly_table(df: pd.DataFrame, header_labels: list[str]) -> go.Table:
     :return: Table Plotly contenant les données du DataFrame.
     :rtype: go.Table
     """
+    formats = [
+        ",.0f" if row[0] == "Sounding Count Within Order" else None
+        for row in df.itertuples(index=False)
+    ]
+
     return go.Table(
         columnwidth=[2, 3],
         header=dict(
@@ -51,6 +56,7 @@ def create_plotly_table(df: pd.DataFrame, header_labels: list[str]) -> go.Table:
             values=[df[col] for col in df.columns],
             fill_color=CELL_COLOR,
             align="left",
+            format=[None, formats],
         ),
     )
 
@@ -156,7 +162,6 @@ def plot_statistics(
                 name=name,
                 marker=dict(size=10, color=color),
                 showlegend=True,
-                # fill="tonextx",
             )
         )
 
@@ -309,7 +314,7 @@ def update_layout(
         ),
         xaxis_title=dict(text="Survey Order", font=dict(weight="bold")),
         yaxis_title=dict(
-            text="Percentage of Soundings in Survey Order",
+            text="Percentage (%)",
             font=dict(weight="bold"),
         ),
         xaxis2_title=dict(text="Survey Order", font=dict(weight="bold")),
@@ -380,7 +385,7 @@ def plot_metadata(
         subplot_titles=(
             "Metadata Table",
             "Survey Order Statistics",
-            "Percentage of Soundings in Survey Order",
+            "Soundings in Survey Order",
             "",
             "",
             "Depths by Order",
