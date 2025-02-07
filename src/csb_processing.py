@@ -35,7 +35,7 @@ import transformation.georeference as georeference
 import vessel as vessel_manager
 
 
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 
 
 LOGGER = logger.bind(name="CSB-Processing.WorkFlow")
@@ -595,10 +595,12 @@ def export_metadata(
     :param decimal_precision: Précision des décimales.
     :type decimal_precision: int
     """
-    output_path: Path = (
-        output_path
-        / f"{get_export_file_name(data_geodataframe=data_geodataframe, vessel_config=vessel_config, datalogger_type=datalogger_type)}_metadata.json"
+    name: str = get_export_file_name(
+        data_geodataframe=data_geodataframe,
+        vessel_config=vessel_config,
+        datalogger_type=datalogger_type,
     )
+    output_path: Path = output_path / f"{name}_metadata.json"
 
     LOGGER.info(f"Exportation des métadonnées des données traitées : {output_path}.")
 
@@ -644,7 +646,9 @@ def export_metadata(
 
     metadata.plot_metadata(
         metadata=survey_metadata.__dict__(),
+        title=name,
         output_path=output_path.with_suffix(".html"),
+        show_plot=True,  # todo enlever
     )
 
 
@@ -997,8 +1001,6 @@ def processing_workflow(
     # todo dans ce fichier, dans tide.time_serie.time_serie_dataframe et transformation.georeference
 
     # todo Identification des périodes en enlevant les trous de x temps dans add_tide_zone_id_to_geodataframe
-
-    # todo export en csar avec CarisBatchUtils -> mettre PACD ?
 
     # todo -> mettre template pour le nom dans le fichier de config dans le fichier de config
 
