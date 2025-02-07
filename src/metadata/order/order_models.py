@@ -74,23 +74,23 @@ class OrderStatistics:
     """Nombre de sondages respectant l'ordre."""
     sounding_pourcentage_within_order: float
     """Pourcentage du nombre de sondages respectant l'ordre."""
-    min_depth: float
+    min_depth: Optional[float] = None
     """Profondeur minimale."""
-    max_depth: float
+    max_depth: Optional[float] = None
     """Profondeur maximale."""
-    mean_depth: float
+    mean_depth: Optional[float] = None
     """Profondeur moyenne."""
-    min_tvu: float
+    min_tvu: Optional[float] = None
     """TVU minimale."""
-    max_tvu: float
+    max_tvu: Optional[float] = None
     """TVU maximale."""
-    mean_tvu: float
+    mean_tvu: Optional[float] = None
     """TVU moyenne."""
-    min_thu: float
+    min_thu: Optional[float] = None
     """THU minimale."""
-    max_thu: float
+    max_thu: Optional[float] = None
     """THU maximale."""
-    mean_thu: float
+    mean_thu: Optional[float] = None
     """THU moyenne."""
 
     def __dict__(self) -> dict:
