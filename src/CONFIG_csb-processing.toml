@@ -1,18 +1,29 @@
 [IWLS.API.TimeSeries]
 # Liste des séries temporelles à récupérer selon leur priorité d'utilisation. {"wlo", "wlp"}
+# List of time series to retrieve according to their priority of use. {"wlo", "wlp"}
 priority = ["wlo", "wlp"]
 # Intervalle de temps maximal sans données avant de déclencher l'intepolation et le remplissage des données.
 # Laisser vide "" pour désactiver. {format str "<number> <min|h>"}
+# Maximum time interval without data before triggering interpolation and data filling.
+# Leave empty "" to disable. {format str "<number> <min|h>"}
 max_time_gap = "1 min"
 # Seuil en dessous duquel les données manquantes sont interpolées et au-dessus desquelles elles sont remplies par
 # la time serie suivante. Laisser vide "" pour désactiver, seulement le remplissge sera alors effectué.
+# {format str "<number> <min|h>"}
+# Threshold below which missing data is interpolated and above which it is filled by the next time series.
+# Leave empty "" to disable, only filling will then be performed.
 # {format str "<number> <min|h>"}
 threshold_interpolation-filling = "6 h"
 # Liste des valeurs de qualité à filtrer pour wlo.
 # Flag de l'API privée {"GOOD", "NOT_EVAL", "QUESTIONABLE", "BAD", "MISSING"}.
 # Flag de l'API publique {"1", "2", "3"}. 1 = Good, 2 = Not evaluated, 3 = Questionable
+# List of quality values to filter for wlo.
+# Private API flag {"GOOD", "NOT_EVAL", "QUESTIONABLE", "BAD", "MISSING"}.
+# Public API flag {"1", "2", "3"}. 1 = Good, 2 = Not evaluated, 3 = Questionable
 wlo_qc_flag_filter = ["NOT_EVAL", "QUESTIONABLE", "BAD", "MISSING", "2", "3"]
 # Temps tampon pour les données de la série temporelle à récupérer pour les interpolations.
+# {format str "<number> <min|h>"}
+# Buffer time for the time series data to retrieve for interpolations.
 # {format str "<number> <min|h>"}
 buffer_time = "24 h"
 
@@ -24,8 +35,10 @@ active = "public"
 name = "DEV"
 endpoint = "EndpointPrivateDev"
 # Nombre maximal d'appels par période de temps {int}.
+# Maximum number of calls per time period {int}.
 calls = 15
 # Période de temps en secondes {int}.
+# Time period in seconds {int}.
 period = 1
 
 [IWLS.API.Environment.prod]
@@ -42,54 +55,78 @@ period = 1
 
 [IWLS.API.Cache]
 # Durée de vie maximale des données en secondes {int}.
+# Maximum data lifetime in seconds {int}.
 ttl = 604800
 # Répertoire de stockage des données dans le cache {str}. Il est possible de spécifier un chemin absolu ou relatif.
 # Exemple de chemin relatif : "./cache" pour un répertoire "cache" à la racine du projet.
+# Directory for storing cached data {str}. You can specify an absolute or relative path.
+# Example of a relative path: "./cache" for a "cache" directory at the root of the project.
 cache_path = "./cache"
 
 [DATA.Transformation.filter]
 # Valeurs minimales et maximales de latitude et longitude pour filtrer les données {int, float}.
 # Commenter les lignes suivantes pour utiliser les valeurs par défaut.
+# Minimum and maximum latitude and longitude values for filtering data {int, float}.
+# Comment out the following lines to use the default values.
 min_latitude = -90
 max_latitude = 90
 min_longitude = -180
 max_longitude = 180
 # Valeurs minimales et maximales de profondeur pour filtrer les données {int, float}
+# Minimum and maximum depth values for filtering data {int, float}
 min_depth = 0
 # Ce paramètre est désactivé par défaut.
+# This parameter is disabled by default.
 # max_depth = 1000
 
 [DATA.Georeference.water_level]
 # Écart maximal en minutes entre les données et les niveaux d'eau à récupérer pour le géoréférencement
 # {format str "<number> <min|h>"}.
+# Maximum time difference in minutes between the data and the water levels to retrieve for georeferencing
+# {format str "<number> <min|h>"}.
 water_level_tolerance = "15 min"
 
 [CSB.Processing.vessel]
 # Nom du gestionnaire de configuration des navires {"VesselConfigJsonManager"}
+# Name of the vessel configuration manager {"VesselConfigJsonManager"}
 manager_type = "VesselConfigJsonManager"
 # Chemin du fichier de configuration des navires {str}. Il est possible de spécifier un chemin absolu ou relatif.
 # Exemple de chemin relatif : "./TCSB_VESSELSLIST.json" pour un fichier "TCSB_VESSELSLIST.json" à la racine du projet.
+# Path to the vessel configuration file {str}. You can specify an absolute or relative path.
+# Example of a relative path: "./TCSB_VESSELSLIST.json" for a "TCSB_VESSELSLIST.json" file at the root of the project.
 json_config_path = "./CONFIG_vessels.json"
 
 [CSB.Processing.options]
 # Niveau de log {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 log_level = "INFO"
-# Valeur minimale de 1 {int}
+# Nombre maximal d'itérations pour la réduction des données au zéro des cartes. Valeur minimale de 1 {int}
+# Maximum number of iterations for reducing data to chart datum. Minimum value of 1 {int}
 max_iterations = 5
 # Liste des formats d'export des données traitées {"geojson", "gpkg", "csar", "parquet", "feather", "csv"}
+# List of export formats for processed data {"geojson", "gpkg", "csar", "parquet", "feather", "csv"}
 export_format = ["gpkg"]
-# Nombre de décimales significatives pour les données traitées {int}.
+# Nombre de décimales significatives à conserver pour les données traitées {int}.
+# Number of significant decimals to keep for processed data {int}.
 decimal_precision = 1
 
 [CARIS.Environment]
+# Cette section est utilisée pour configurer l'environnement de CARIS si vous voulez exporter les données au format *.csar.
+# This section is used to configure the CARIS environment if you want to export the data in *.csar format.
+
 # Chemin d'accès à l'installation des logiciels CARIS {str}.
+# Path to the installation of CARIS software {str}.
 base_path = "C:/Program Files/CARIS"
 # Logiciel de traitement de données CARIS {"BASE Editor", "HIPS and SIPS"}
+# CARIS data processing software {"BASE Editor", "HIPS and SIPS"}
 software = "BASE Editor"
 # Version de CARIS {str}.
+# Version of CARIS {str}.
 version = "6.1"
 # Version de l'API de Python utilisée par CARIS {str}.
 # Doit être la même version que l'interpreteur Python utilisé.
+# Version of the Python API used by CARIS {str}.
+# Must be the same version as the Python interpreter used.
 python_version = "3.11"
 # Arguments supplémentaires pour CarisBatch {list[str]}.
+# Additional arguments for CarisBatch {list[str]}.
 args= ["--output-vertical-crs", "PACD"]
