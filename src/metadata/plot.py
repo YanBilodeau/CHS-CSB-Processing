@@ -12,6 +12,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+from metadata.order.order_models import OrderEnum
 
 LOGGER = logger.bind(name="CSB-Processing.Metadata.Plot")
 
@@ -28,7 +29,7 @@ HEADER_COLOR: str = "rgba(205,92,92, 0.65)"
 CELL_COLOR: str = "lavender"
 
 
-def create_plotly_table(df: pd.DataFrame, header_labels: list[str]) -> go.Table:
+def create_table_data(df: pd.DataFrame, header_labels: list[str]) -> go.Table:
     """
     Génère une table Plotly à partir d'un DataFrame.
 
@@ -92,7 +93,7 @@ def plot_iho_order_statistic_bar(iho_order_statistic: dict) -> go.Bar:
     )
 
 
-def plot_iho_order_statistics(iho_order_statistic: dict) -> go.Figure:
+def create_table_iho_order_statistics(iho_order_statistic: dict) -> go.Figure:
     """
     Crée une figure contenant les statistiques des ordres IHO sous forme de tableaux.
 
@@ -107,7 +108,7 @@ def plot_iho_order_statistics(iho_order_statistic: dict) -> go.Figure:
         if stats["Sounding Count Within Order"] != 0
     }
 
-    fig = make_subplots(
+    fig: go.Figure = make_subplots(
         rows=len(data),
         cols=1,
         subplot_titles=list(data.keys()),
@@ -118,7 +119,7 @@ def plot_iho_order_statistics(iho_order_statistic: dict) -> go.Figure:
     for index, (order, stats) in enumerate(data.items(), start=1):
         df = pd.DataFrame([stats]).transpose().reset_index()
         df.columns = [order, "Value"]
-        fig.add_trace(create_plotly_table(df, [order, "Value"]), row=index, col=1)
+        fig.add_trace(create_table_data(df, [order, "Value"]), row=index, col=1)
 
     return fig
 
@@ -341,36 +342,14 @@ def update_layout(
     )
 
 
-def plot_metadata(
-    metadata: dict,
-    title: str,
-    output_path: Optional[Path] = None,
-    show_plot: bool = False,
-) -> None:
+def create_metadata_figure() -> go.Figure:
     """
-    Affiche et sauvegarde les métadonnées des levés hydrographiques.
+    Crée une figure Plotly avec des sous-graphiques pour les métadonnées des levés hydrographiques.
 
-    :param metadata: Dictionnaire contenant les métadonnées du levé hydrographique.
-    :type metadata: Dict
-    :param title: Titre de la figure.
-    :type title: str
-    :param output_path: Chemin de sortie pour la figure.
-    :type output_path: Optional[Path]
-    :param show_plot: Indique si la figure doit être affichée.
-    :type show_plot: bool
+    :return: Figure Plotly contenant les sous-graphiques.
+    :rtype: go.Figure
     """
-    LOGGER.debug(f"Génération des graphiques des métadonnées pour : {title}.")
-
-    df = (
-        pd.DataFrame(
-            [{k: v for k, v in metadata.items() if k != "IHO Order Statistic"}]
-        )
-        .transpose()
-        .reset_index()
-    )
-    df.columns = ["Metadata", "Value"]
-
-    fig = make_subplots(
+    fig: go.Figure = make_subplots(
         rows=7,
         cols=2,
         specs=[
@@ -401,14 +380,52 @@ def plot_metadata(
         column_widths=[0.6, 0.4],
     )
 
-    fig.add_trace(create_plotly_table(df, ["Metadata", "Value"]), row=1, col=1)
-    fig.add_trace(
-        plot_iho_order_statistic_bar(metadata["IHO Order Statistic"]), row=2, col=1
-    )
+    return fig
 
-    iho_order_fig: go.Figure = plot_iho_order_statistics(
-        metadata["IHO Order Statistic"]
+
+def plot_metadata(
+    metadata: dict,
+    title: str,
+    output_path: Optional[Path] = None,
+    show_plot: bool = False,
+) -> None:
+    """
+    Affiche et sauvegarde les métadonnées des levés hydrographiques.
+
+    :param metadata: Dictionnaire contenant les métadonnées du levé hydrographique.
+    :type metadata: Dict
+    :param title: Titre de la figure.
+    :type title: str
+    :param output_path: Chemin de sortie pour la figure.
+    :type output_path: Optional[Path]
+    :param show_plot: Indique si la figure doit être affichée.
+    :type show_plot: bool
+    """
+    LOGGER.debug(f"Génération des graphiques des métadonnées pour : {title}.")
+
+    fig: go.Figure = create_metadata_figure()
+
+    df: pd.DataFrame = (
+        pd.DataFrame(
+            [{k: v for k, v in metadata.items() if k != "IHO Order Statistic"}]
+        )
+        .transpose()
+        .reset_index()
     )
+    df.columns = ["Metadata", "Value"]
+
+    fig.add_trace(create_table_data(df, ["Metadata", "Value"]), row=1, col=1)
+
+    statistic: dict[OrderEnum, dict[str, float | int]] = {}
+    for key, value in metadata["IHO Order Statistic"].items():
+        statistic[key] = value
+
+        if value["Sounding Within Order (%)"] == 100:
+            break
+
+    fig.add_trace(plot_iho_order_statistic_bar(statistic), row=2, col=1)
+
+    iho_order_fig: go.Figure = create_table_iho_order_statistics(statistic)
     for i, trace in enumerate(iho_order_fig.data, start=1):
         fig.add_trace(trace, row=i, col=2)
 
@@ -416,13 +433,13 @@ def plot_metadata(
         for trace_ in figure.data:
             fig.add_trace(trace_, row=row, col=col)
 
-    thu_fig: go.Figure = plot_thu_statistics(metadata["IHO Order Statistic"])
+    thu_fig: go.Figure = plot_thu_statistics(statistic)
     add_traces_to_figure(thu_fig, row=7, col=1)
 
-    tvu_fig: go.Figure = plot_tvu_statistics(metadata["IHO Order Statistic"])
+    tvu_fig: go.Figure = plot_tvu_statistics(statistic)
     add_traces_to_figure(tvu_fig, row=6, col=1)
 
-    depth_fig: go.Figure = plot_depth_statistics(metadata["IHO Order Statistic"])
+    depth_fig: go.Figure = plot_depth_statistics(statistic)
     add_traces_to_figure(depth_fig, row=4, col=1)
 
     update_layout(
