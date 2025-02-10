@@ -6,6 +6,8 @@ Ce module contient les fonctions pour classifier l'ordre IHO des données.
 
 from __future__ import annotations
 
+import math
+
 import geopandas as gpd
 import pandas as pd
 from loguru import logger
@@ -32,6 +34,11 @@ order_map: dict[OrderEnum, OrderType] = {
 }
 
 
+def truncate(number: float, decimal_precision) -> float:
+    factor = 10**decimal_precision
+    return math.trunc(number * factor) / factor
+
+
 def calculate_order_statistics(
     group: pd.DataFrame, data_count: int, decimal_precision: int
 ) -> OrderStatistics:
@@ -51,7 +58,7 @@ def calculate_order_statistics(
 
     return OrderStatistics(
         sounding_count_within_order=len(group),
-        sounding_pourcentage_within_order=round(
+        sounding_pourcentage_within_order=truncate(
             (len(group) / data_count) * 100, decimal_precision
         ),
         min_depth=group[schema_ids.DEPTH_PROCESSED_METER].min(),
