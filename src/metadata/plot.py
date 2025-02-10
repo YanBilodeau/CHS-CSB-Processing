@@ -406,7 +406,9 @@ def plot_metadata(
         plot_iho_order_statistic_bar(metadata["IHO Order Statistic"]), row=2, col=1
     )
 
-    iho_order_fig = plot_iho_order_statistics(metadata["IHO Order Statistic"])
+    iho_order_fig: go.Figure = plot_iho_order_statistics(
+        metadata["IHO Order Statistic"]
+    )
     for i, trace in enumerate(iho_order_fig.data, start=1):
         fig.add_trace(trace, row=i, col=2)
 
@@ -414,13 +416,13 @@ def plot_metadata(
         for trace_ in figure.data:
             fig.add_trace(trace_, row=row, col=col)
 
-    thu_fig = plot_thu_statistics(metadata["IHO Order Statistic"])
+    thu_fig: go.Figure = plot_thu_statistics(metadata["IHO Order Statistic"])
     add_traces_to_figure(thu_fig, row=7, col=1)
 
-    tvu_fig = plot_tvu_statistics(metadata["IHO Order Statistic"])
+    tvu_fig: go.Figure = plot_tvu_statistics(metadata["IHO Order Statistic"])
     add_traces_to_figure(tvu_fig, row=6, col=1)
 
-    depth_fig = plot_depth_statistics(metadata["IHO Order Statistic"])
+    depth_fig: go.Figure = plot_depth_statistics(metadata["IHO Order Statistic"])
     add_traces_to_figure(depth_fig, row=4, col=1)
 
     update_layout(
