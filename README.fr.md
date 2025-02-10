@@ -182,7 +182,7 @@ json_config_path = "./TCSB_VESSELSLIST.json"  # Chemin vers le fichier de config
 
 [CSB.Processing.options]
 log_level = "INFO"  # Niveau de log : {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}.
-max_iterations = 10  # Nombre maximal d'itérations {int}.
+max_iterations = 5  # Nombre maximal d'itérations {int}.
 export_format = ["gpkg", "csv"]  # Formats de fichier pour l'exportation des données traitées.
 decimal_precision = 1  # Précision des décimales pour les données traitées.
 
