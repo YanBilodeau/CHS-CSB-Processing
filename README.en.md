@@ -221,6 +221,7 @@ python_version = "3.11"  # Python version to use.
   - `software`: CARIS software used (e.g., `"BASE Editor"`, `"HIPS and SIPS"`).
   - `version`: Specific version of CARIS software (e.g., `"5.5"`).
   - `python_version`: Python version used by the CARIS API (e.g., `"3.11"`).
+  - `args` : Additional arguments to pass for exporting data in CSAR format.
 
 ---
 

@@ -225,6 +225,8 @@ python_version = "3.11"  # Version de Python utilisée par l'API CARIS.
   - `software` : Logiciel CARIS utilisé (ex. : `"BASE Editor"`, `"HIPS and SIPS"`).
   - `version` : Version spécifique du logiciel CARIS (ex. : `"5.5"`).
   - `python_version` : Version de Python utilisée par l'API CARIS (ex. : `"3.11"`).
+  - `args` : Arguments supplémentaires pour l'exportation au format CSAR.
+  
 ---
 
 ## Fichier des navires (Vessels)
