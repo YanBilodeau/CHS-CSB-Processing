@@ -187,6 +187,7 @@ base_path = "C:/Program Files/CARIS"  # Path to the CARIS installation directory
 software = "BASE Editor"  # CARIS software to use.
 version = "5.5"  # CARIS software version.   
 python_version = "3.11"  # Python version to use.  
+args = []  # Additional arguments for exporting data in CSAR format.
 ```
 
 ### Main Sections

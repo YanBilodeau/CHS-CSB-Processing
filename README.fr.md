@@ -191,6 +191,7 @@ base_path = "C:/Program Files/CARIS"  # Chemin d'installation des logiciels CARI
 software = "BASE Editor"  # Logiciel CARIS utilisé.
 version = "5.5"  # Version spécifique du logiciel CARIS.
 python_version = "3.11"  # Version de Python utilisée par l'API CARIS.
+args = []  # Arguments supplémentaires pour l'exportation au format CSAR.
 ```
 
 ### Sections principales
