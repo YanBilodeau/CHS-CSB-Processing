@@ -18,6 +18,8 @@ REDUCTION_METHOD = "The dataset has been reduced to CD thanks to predicted tides
 """Méthode de réduction du niveau d'eau"""
 NO_TIDE_STATIONS = "The dataset has not been reduced to CD."
 """Pas de stations de marée"""
+CHART_DATUM = "Chart Datum"
+"""Niveau de référence des cartes"""
 
 
 @dataclass
@@ -46,6 +48,8 @@ class CSBmetadata:
     """Version du logiciel"""
     tide_stations: Collection[str] = field(repr=False, metadata={"exclude": True})
     """Stations de marée"""
+    vertical_coordinate_reference_system: str = field(init=False)
+    """Système de coordonnées vertical"""
     water_Level_reduction_method: str = field(init=False)
     """Méthode de réduction du niveau d'eau"""
     positioning_method: str = "WAAS"
@@ -54,8 +58,6 @@ class CSBmetadata:
     """Résolution des données"""
     horizontal_coordinate_reference_system: str = "WGS 84 - EPSG:4326"
     """Système de coordonnées horizontal"""
-    vertical_coordinate_reference_system: str = "Chart Datum"
-    """Système de coordonnées vertical"""
     data_processing_software: str = "CHS-CSB-Processing {version}"
     """Logiciel de traitement des données"""
     iho_order_statistic: IHOorderQualifiquation = None
@@ -73,6 +75,10 @@ class CSBmetadata:
             REDUCTION_METHOD.format(stations=", ".join(self.tide_stations))
             if self.tide_stations
             else NO_TIDE_STATIONS
+        )
+
+        self.vertical_coordinate_reference_system = (
+            CHART_DATUM if self.tide_stations else None
         )
 
     def __dict__(self) -> dict:
