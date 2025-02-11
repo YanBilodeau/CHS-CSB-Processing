@@ -278,7 +278,7 @@ Here is an example file:
         "z": -0.65
       }
     ],
-    "ssp_applied": [
+    "sound_speed": [
       {
         "time_stamp": "2021-09-25T00:00:00Z",
         "ssp": false,
