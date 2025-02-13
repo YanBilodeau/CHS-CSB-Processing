@@ -25,7 +25,7 @@ COLOR_PALETTE: list[str] = [
     "rgba(205,92,92, 0.8)",
     "rgba(205,92,92, 1.0)",
 ]
-HEADER_COLOR: str = "rgba(205,92,92, 0.65)"
+HEADER_COLOR: str = "rgba(205,92,92, 1.0)"
 CELL_COLOR: str = "lavender"
 
 
