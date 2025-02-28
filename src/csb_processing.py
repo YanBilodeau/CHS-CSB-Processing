@@ -946,6 +946,25 @@ def processing_workflow(
         run += 1
         last_run_stations = list(wl_combineds.keys())
 
+    nan_sonding: int = data[schema_ids.DEPTH_PROCESSED_METER].isna().sum()
+    not_nan_sonding: int = data[schema_ids.DEPTH_PROCESSED_METER].notna().sum()
+    if not not_nan_sonding:
+        LOGGER.warning(
+            f"Aucune sonde n'a été réduite au zéro des cartes. Aucune information de niveau d'eau est disponible pour "
+            f"ces dates et ces stations dans IWLS avec {run - 1} itérations. Vous pouvez traiter les données "
+            f"avec un nombre d'itération plus élevé ou sans appliquer le niveau d'eau (--apply-water-level False)."
+        )
+        return
+
+    elif not nan_sonding:
+        LOGGER.success(f"{not_nan_sonding} sondes ont été réduites au zéro des cartes.")
+
+    else:
+        LOGGER.info(
+            f"{not_nan_sonding} sondes ont été réduites au zéro des cartes. "
+            f"{nan_sonding} sondes sont sans niveau d'eau pour la réduction."
+        )
+
     # Plot the water level data for each station
     if wl_combineds_dict:
         plot_water_levels(
