@@ -90,7 +90,8 @@ class CarisModuleImporter:
 
         return caris
 
-    def _import_bathy_db(self) -> ModuleType:
+    @staticmethod
+    def _import_bathy_db() -> ModuleType:
         """
         Méthode permettant d'importer le module caris.bathy.db.
 
@@ -103,7 +104,8 @@ class CarisModuleImporter:
 
         return bathy_db
 
-    def _import_coverage(self) -> ModuleType:
+    @staticmethod
+    def _import_coverage() -> ModuleType:
         """
         Méthode permettant d'importer le module caris.coverage.
 
