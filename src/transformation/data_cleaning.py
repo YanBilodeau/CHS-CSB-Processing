@@ -181,7 +181,7 @@ def clean_longitude(
     return geodataframe
 
 
-cleaning_function: tuple[Type[DataCleaningFunction], ...] = (
+CLEANING_FUNCTION: tuple[Type[DataCleaningFunction], ...] = (
     clean_depth,
     clean_time,
     clean_latitude,
@@ -210,7 +210,7 @@ def clean_data(
     LOGGER.debug("Nettoyage des données.")
 
     if cleaning_func is None:
-        cleaning_func = cleaning_function
+        cleaning_func = CLEANING_FUNCTION
 
     for func in cleaning_func:
         if isinstance(func, str):
