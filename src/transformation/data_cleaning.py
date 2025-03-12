@@ -25,6 +25,8 @@ MIN_LONGITUDE: int | float = -180
 MAX_LONGITUDE: int | float = 180
 MIN_DEPTH: int | float = 0
 MAX_DEPTH: int | float | None = None
+MIN_SPEED: int | float | None = None
+MAX_SPEED: int | float | None = None
 
 
 def clean_depth(
@@ -171,11 +173,54 @@ def clean_longitude(
     )
     if invalid_longitudes.any():
         LOGGER.warning(
-            f"{invalid_longitudes.sum()} entrées ont des longitudes invalides et seront suppressées."
+            f"{invalid_longitudes.sum()} entrées ont des longitudes invalides et seront supprimées."
         )
 
     geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
         ~invalid_longitudes
+    ]
+
+    return geodataframe
+
+
+def clean_speed(
+    geodataframe: gpd.GeoDataFrame,
+    min_speed: int | float = None,
+    max_speed: int | float = None,
+    **kwargs,
+) -> gpd.GeoDataFrame:
+    """
+    Fonction qui nettoie les données de vitesse.
+
+    :param geodataframe: Le GeoDataFrame à nettoyer.
+    :type geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :param min_speed: La vitesse minimale.
+    :type min_speed: Optional[int | float]
+    :param max_speed: La vitesse maximale.
+    :type max_speed: Optional[int | float}
+    :return: Le GeoDataFrame nettoyé.
+    """
+    LOGGER.debug(
+        f"Nettoyage des données de vitesse {[schema_ids.SPEED]}."
+        f"Vitesse minimale : {min_speed}, vitesse maximale : {max_speed}."
+    )
+
+    invalid_speeds: pd.Series = (~geodataframe[schema_ids.SPEED].isna()) & (
+        (geodataframe[schema_ids.SPEED] < min_speed if min_speed is not None else False)
+        | (
+            geodataframe[schema_ids.SPEED] > max_speed
+            if max_speed is not None
+            else False
+        )
+    )
+
+    if invalid_speeds.any():
+        LOGGER.warning(
+            f"{invalid_speeds.sum()} entrées ont des vitesses invalides et seront supprimées."
+        )
+
+    geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
+        ~invalid_speeds
     ]
 
     return geodataframe
@@ -186,6 +231,7 @@ CLEANING_FUNCTION: tuple[Type[DataCleaningFunction], ...] = (
     clean_time,
     clean_latitude,
     clean_longitude,
+    clean_speed,
 )
 
 
@@ -228,6 +274,8 @@ def clean_data(
             max_longitude=data_filter.max_longitude if data_filter else MAX_LONGITUDE,
             min_depth=data_filter.min_depth if data_filter else MIN_DEPTH,
             max_depth=data_filter.max_depth if data_filter else MAX_DEPTH,
+            min_speed=data_filter.min_speed if data_filter else MIN_SPEED,
+            max_speed=data_filter.max_speed if data_filter else MAX_SPEED,
         )
 
     return geodataframe
