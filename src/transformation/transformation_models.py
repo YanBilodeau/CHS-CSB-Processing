@@ -18,6 +18,8 @@ class DataFilterConfigProtocol(Protocol):
     :param max_longitude: (int | float) La longitude maximale.
     :param min_depth: (int | float) La profondeur minimale.
     :param max_depth: (Optional[int | float]) La profonde maximale.
+    :param min_speed: (Optional[int | float]) La vitesse minimale.
+    :param max_speed: (Optional[int | float]) La vitesse maximale.
     """
 
     min_latitude: int | float
@@ -32,6 +34,10 @@ class DataFilterConfigProtocol(Protocol):
     """La profondeur minimale."""
     max_depth: Optional[int | float]
     """La profondeur maximale."""
+    min_speed: Optional[int | float]
+    """La vitesse minimale."""
+    max_speed: Optional[int | float]
+    """La vitesse maximale."""
 
 
 class SensorProtocol(Protocol):
