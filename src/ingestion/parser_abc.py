@@ -213,10 +213,9 @@ class DataParserABC(ABC):
             schema_ids.TIDE_ZONE_NAME: pd.Series(dtype="string"),
         }
 
-        LOGGER.debug(f"Ajout de colonnes vides aux données : {columns.keys()}.")
-
         for column_name, empty_column in columns.items():
             if column_name not in data.columns:
+                LOGGER.debug(f"Ajout de la colonne {column_name} avec des valeurs nan.")
                 data[column_name] = empty_column
 
         return data
