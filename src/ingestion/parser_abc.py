@@ -200,6 +200,7 @@ class DataParserABC(ABC):
         :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
         """
         columns: dict[str, pd.Series] = {
+            schema_ids.SPEED: pd.Series(dtype="float64"),
             schema_ids.DEPTH_PROCESSED_METER: pd.Series(dtype="float64"),
             schema_ids.WATER_LEVEL_INFO: pd.Series(dtype="object"),
             schema_ids.UNCERTAINTY: pd.Series(dtype="float64"),
@@ -215,7 +216,8 @@ class DataParserABC(ABC):
         LOGGER.debug(f"Ajout de colonnes vides aux données : {columns.keys()}.")
 
         for column_name, empty_column in columns.items():
-            data[column_name] = empty_column
+            if column_name not in data.columns:
+                data[column_name] = empty_column
 
         return data
 
