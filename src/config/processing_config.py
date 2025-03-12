@@ -28,6 +28,8 @@ MIN_LONGITUDE: int | float = -180
 MAX_LONGITUDE: int | float = 180
 MIN_DEPTH: int | float = 0
 MAX_DEPTH: int | float | None = None
+MIN_SPEED: int | float | None = None
+MAX_SPEED: int | float | None = None
 
 WATER_LEVEL_TOLERANCE: str = "15 min"
 
@@ -82,6 +84,10 @@ class DataFilterConfig(BaseModel):
     """La profondeur minimale."""
     max_depth: Optional[int | float] = MAX_DEPTH
     """La profondeur maximale."""
+    min_speed: Optional[int | float] = MIN_SPEED
+    """La vitesse minimale."""
+    max_speed: Optional[int | float] = MAX_SPEED
+    """La vitesse maximale."""
 
     @field_validator("min_latitude", "max_latitude")
     def validate_latitude(cls, value: int | float) -> int | float:
@@ -293,6 +299,16 @@ def get_data_config(
                 max_longitude=(data_filter.get("max_longitude") or MAX_LONGITUDE),
                 min_depth=(data_filter.get("min_depth") or MIN_DEPTH),
                 max_depth=(data_filter.get("max_depth") or MAX_DEPTH),
+                min_speed=(
+                    data_filter.get("min_speed")
+                    if data_filter.get("min_speed") is not None
+                    else MIN_SPEED
+                ),
+                max_speed=(
+                    data_filter.get("max_speed")
+                    if data_filter.get("max_speed") is not None
+                    else MAX_SPEED
+                ),
             )
             if data_filter
             else DataFilterConfig()
