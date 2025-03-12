@@ -72,6 +72,8 @@ min_latitude = -90
 max_latitude = 90
 min_longitude = -180
 max_longitude = 180
+# min_speed = 0
+# max_speed = 30
 # Valeurs minimales et maximales de profondeur pour filtrer les données {int, float}
 # Minimum and maximum depth values for filtering data {int, float}
 min_depth = 0
@@ -129,4 +131,4 @@ version = "6.1"
 python_version = "3.11"
 # Arguments supplémentaires pour CarisBatch {list[str]}.
 # Additional arguments for CarisBatch {list[str]}.
-args= ["--output-vertical-crs", "PACD"]
+args = ["--output-vertical-crs", "PACD"]
