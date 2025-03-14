@@ -30,7 +30,7 @@ from tide.plot import plot_time_series_dataframe
 import tide.stations as stations
 import tide.voronoi as voronoi
 import tide.time_serie as time_serie
-import transformation.data_cleaning as cleaner
+import filter.data_cleaning as cleaner
 import transformation.georeference as georeference
 import vessel as vessel_manager
 
