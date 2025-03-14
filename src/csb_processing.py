@@ -35,7 +35,7 @@ import transformation.georeference as georeference
 import vessel as vessel_manager
 
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 
 
 LOGGER = logger.bind(name="CSB-Processing.WorkFlow")
@@ -481,7 +481,7 @@ def export_processed_data(
     :param file_type: Type de fichier de sortie.
     :type file_type: FileTypes
     """
-    if "config_caris" not in kwargs and file_type == export.FileTypes.CSAR:
+    if file_type == export.FileTypes.CSAR and "config_caris" not in kwargs:
         LOGGER.warning(
             "La configuration de l'API Caris est requise pour exporter les données au format CSAR."
         )
@@ -498,7 +498,7 @@ def export_processed_data(
             **kwargs,
         )
         LOGGER.success(
-            f"Exportation des données traitées au format {file_type} complété."
+            f"Exportation des données traitées au format {file_type} complété : {output_data_path}."
         )
 
     except Exception as error:
@@ -507,12 +507,39 @@ def export_processed_data(
         )
 
 
+def split_data_by_iho_order(
+    data_geodataframe: gpd.GeoDataFrame,
+) -> dict[str, gpd.GeoDataFrame]:
+    """
+    Regroupe et sépare le GeoDataFrame par ordre IHO.
+
+    :param data_geodataframe: Le GeoDataFrame à séparer.
+    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
+    :return: Un dictionnaire contenant les GeoDataFrames séparés par ordre IHO.
+    :rtype: dict[str, gpd.GeoDataFrame]
+    """
+    LOGGER.debug(f"Séparation du GeoDataFrame par ordre de levé OHI.")
+
+    grouped_data = {}
+    for iho_order, group in data_geodataframe.groupby(
+        schema_ids.IHO_ORDER
+    ):  # todo : dropna=False ?
+        key = "NAN" if pd.isna(iho_order) else str(iho_order)
+        grouped_data[key] = group
+        LOGGER.debug(f"Ordre IHO {iho_order}: {len(group):,} sondes")
+
+    LOGGER.debug(f"Ordre IHO : {grouped_data.keys()}")
+
+    return grouped_data  # type: ignore
+
+
 def export_processed_data_to_file_types(
     data_geodataframe: gpd.GeoDataFrame,
     export_data_path: Path,
     file_types: Collection[export.FileTypes],
     vessel_config: vessel_manager.VesselConfig,
     datalogger_type: DataLoggerType,
+    groub_by_iho_order: bool = True,
     **kwargs,
 ) -> None:
     """
@@ -528,27 +555,43 @@ def export_processed_data_to_file_types(
     :type vessel_config: vessel_manager.VesselConfig
     :param datalogger_type: Type de capteur.
     :type datalogger_type: DataLoggerType
+    :param groub_by_iho_order: Regrouper les données par ordre IHO.
+    :type groub_by_iho_order: bool
     """
     data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = (
         finalize_geodataframe(data_geodataframe=data_geodataframe)
     )
 
+    output_base_path: Path = export_data_path / get_export_file_name(
+        data_geodataframe=data_geodataframe,
+        vessel_config=vessel_config,
+        datalogger_type=datalogger_type,
+    )
+
+    grouped_data: dict[str | None, gpd.GeoDataFrame] = {"ALL": data_geodataframe}
+
+    if groub_by_iho_order:
+        iho_order_data: dict[str | None, gpd.GeoDataFrame] = split_data_by_iho_order(
+            data_geodataframe=data_geodataframe
+        )
+        grouped_data.update(iho_order_data)
+
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        [
-            executor.submit(
-                export_processed_data,
-                data_geodataframe=data_geodataframe,
-                output_data_path=export_data_path
-                / get_export_file_name(
-                    data_geodataframe=data_geodataframe,
-                    vessel_config=vessel_config,
-                    datalogger_type=datalogger_type,
-                ),
-                file_type=file_type,
-                **kwargs,
-            )
-            for file_type in file_types
-        ]
+        for group_key, group_df in grouped_data.items():
+            if group_df.empty:
+                continue
+
+            suffix = "" if group_key == "ALL" else f"_{group_key}"
+            output_path = output_base_path.with_name(f"{output_base_path.name}{suffix}")
+
+            for file_type in file_types:
+                executor.submit(
+                    export_processed_data,
+                    data_geodataframe=group_df,
+                    output_data_path=output_path,
+                    file_type=file_type,
+                    **kwargs,
+                )
 
 
 def classify_iho_order(
@@ -794,6 +837,7 @@ def processing_workflow(
             vessel_config=vessel_config,
             datalogger_type=parser_files.datalogger_type,
             config_caris=caris_api_config if caris_api_config else None,
+            groub_by_iho_order=processing_config.options.group_by_iho_order,
         )
 
         # Export the metadata
@@ -986,6 +1030,7 @@ def processing_workflow(
         datalogger_type=parser_files.datalogger_type,
         config_caris=caris_api_config if caris_api_config else None,
         args=caris_api_config.args if caris_api_config else None,
+        groub_by_iho_order=processing_config.options.group_by_iho_order,
     )
 
     gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema] = (
