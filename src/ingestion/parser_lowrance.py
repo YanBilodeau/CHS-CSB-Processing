@@ -27,9 +27,10 @@ DTYPE_DICT: dict[str, str] = {
     ids.LONGITUDE_LOWRANCE: ids.FLOAT64,
     ids.LATITUDE_LOWRANCE: ids.FLOAT64,
     ids.DEPTH_LOWRANCE: ids.FLOAT64,
+    ids.SPEED_LOWRANCE: ids.FLOAT64,
 }
 
-COLUMN_EXCEPTIONS: list[ColumnException] = [
+MANDATORY_COLUMN_EXCEPTIONS: list[ColumnException] = [
     ColumnException(column_name=ids.TIME_LOWRANCE, error=ParsingDataframeTimeError),
     ColumnException(
         column_name=ids.LONGITUDE_LOWRANCE, error=ParsingDataframeLongitudeError
@@ -62,11 +63,14 @@ class DataParserLowrance(DataParserABC):
             f"Chargement du fichier de données brutes de type {ids.LOWRANCE} : {file}"
         )
 
-        dtype_dict = dtype_dict or DTYPE_DICT
+        if dtype_dict is None:
+            dtype_dict = DTYPE_DICT
 
         dataframe: pd.DataFrame = pd.read_csv(file)
         self.validate_columns(
-            dataframe=dataframe, file=file, column_exceptions=COLUMN_EXCEPTIONS
+            dataframe=dataframe,
+            file=file,
+            column_exceptions=MANDATORY_COLUMN_EXCEPTIONS,
         )
         dataframe = self.convert_dtype(
             dataframe=dataframe,
@@ -109,6 +113,7 @@ class DataParserLowrance(DataParserABC):
                 ids.DEPTH_LOWRANCE: schema_ids.DEPTH_RAW_METER,
                 ids.LONGITUDE_LOWRANCE: schema_ids.LONGITUDE_WGS84,
                 ids.LATITUDE_LOWRANCE: schema_ids.LATITUDE_WGS84,
+                ids.SPEED_LOWRANCE: schema_ids.SPEED_KN,
             }
         )
 
@@ -154,6 +159,29 @@ class DataParserLowrance(DataParserABC):
 
         return data
 
+    @staticmethod
+    def convert_speed_to_knots(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+        """
+        Méthode permettant de convertir les vitesses en mètres par seconde en noeuds.
+
+        :param data: Le geodataframe à transformer.
+        :type data: gpd.GeoDataFrame
+        :return: Le geodataframe transformé.
+        :rtype: gpd.GeoDataFrame
+        """
+        if schema_ids.SPEED_KN not in data.columns:
+            LOGGER.warning(
+                f"La colonne '{schema_ids.SPEED_KN}' n'est pas présente dans le geodataframe."
+            )
+            return data
+
+        LOGGER.debug(
+            f"Conversion des mètres par seconde en noeuds de la colonne '{schema_ids.SPEED_KN}'."
+        )
+        data[schema_ids.SPEED_KN] = round(data[schema_ids.SPEED_KN] * 1.94384, 3)
+
+        return data
+
     def transform(self, data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         """
         Méthode permettant de transformer le geodataframe pour respecter le schéma de données.
@@ -168,5 +196,6 @@ class DataParserLowrance(DataParserABC):
         data = self.rename_columns(data)
         data = self.remove_special_characters_from_columns(data)
         data = self.convert_depth_to_meters(data)
+        data = self.convert_speed_to_knots(data)
 
         return data
