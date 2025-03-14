@@ -64,9 +64,9 @@ ttl = 604800
 cache_path = "./cache"
 
 [DATA.Transformation.filter]
-# Valeurs minimales et maximales de latitude et longitude pour filtrer les données {int, float}.
+# Valeurs minimales et maximales de latitude, longitude et vitesse pour filtrer les données {int, float}.
 # Commenter les lignes suivantes pour utiliser les valeurs par défaut.
-# Minimum and maximum latitude and longitude values for filtering data {int, float}.
+# Minimum and maximum latitude, longitude and speed values for filtering data {int, float}.
 # Comment out the following lines to use the default values.
 min_latitude = -90
 max_latitude = 90
@@ -110,6 +110,9 @@ export_format = ["gpkg"]
 # Nombre de décimales significatives à conserver pour les données traitées {int}.
 # Number of significant decimals to keep for processed data {int}.
 decimal_precision = 1
+# Permet de séparer les fichiers exportés par ordre de levé OHI. {bool}
+# Allows to separate the exported files by OHI survey order. {bool}
+groub_by_iho_order = true
 
 [CARIS.Environment]
 # Cette section est utilisée pour configurer l'environnement de CARIS si vous voulez exporter les données au format *.csar.
