@@ -11,7 +11,7 @@ import pandas as pd
 import schema
 from schema import model_ids as schema_ids
 
-LOGGER = logger.bind(name="CSB-Processing.Transformation.DatetimeFilter")
+LOGGER = logger.bind(name="CSB-Processing.Filter.Datetime")
 
 
 def clean_time(geodataframe: gpd.GeoDataFrame, **kwargs) -> gpd.GeoDataFrame:

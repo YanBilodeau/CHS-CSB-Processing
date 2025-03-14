@@ -17,7 +17,7 @@ from .position_filter import clean_latitude, clean_longitude
 from .speed_filter import clean_speed
 import schema
 
-LOGGER = logger.bind(name="CSB-Processing.Transformation.DataCleaning")
+LOGGER = logger.bind(name="CSB-Processing.Filter.DataCleaning")
 
 DataCleaningFunction = Callable[[gpd.GeoDataFrame, Any], gpd.GeoDataFrame]
 
