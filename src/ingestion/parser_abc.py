@@ -20,6 +20,14 @@ from schema import model_ids as schema_ids
 LOGGER = logger.bind(name="CSB-Processing.Ingestion.Parser.ABC")
 
 
+MANDATORY_COLUNMS: list[str] = [
+    schema_ids.TIME_UTC,
+    schema_ids.LATITUDE_WGS84,
+    schema_ids.LONGITUDE_WGS84,
+    schema_ids.DEPTH_RAW_METER,
+]
+
+
 @dataclass
 class DataParserABC(ABC):
     """
@@ -96,8 +104,6 @@ class DataParserABC(ABC):
                 f"Des erreurs de conversion ont été détectées dans le fichier {file} : {warnings_list.captured_warnings}."
             )
 
-        dataframe.dropna(subset=list(dtype_dict.keys()) + [time_column], inplace=True)
-
         return dataframe
 
     @abstractmethod
@@ -146,6 +152,22 @@ class DataParserABC(ABC):
         pass
 
     @staticmethod
+    def drop_na(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+        """
+        Méthode permettant de supprimer les lignes contenant des valeurs manquantes.
+
+        :param data: Le geodataframe à nettoyer.
+        :type data: gpd.GeoDataFrame
+        :return: Le geodataframe nettoyé.
+        :rtype: gpd.GeoDataFrame
+        """
+        LOGGER.debug(
+            f"Suppression des valeurs manquantes sur les colonnes obligatoires : {MANDATORY_COLUNMS}."
+        )
+
+        return data.dropna(subset=MANDATORY_COLUNMS)
+
+    @staticmethod
     def remove_duplicates(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         """
         Méthode permettant de supprimer les doublons du geodataframe.
@@ -155,22 +177,15 @@ class DataParserABC(ABC):
         :return: Le geodataframe nettoyé.
         :rtype: gpd.GeoDataFrame
         """
-        colunms: list[str] = [
-            schema_ids.TIME_UTC,
-            schema_ids.LATITUDE_WGS84,
-            schema_ids.LONGITUDE_WGS84,
-            schema_ids.DEPTH_RAW_METER,
-        ]
-
         LOGGER.debug("Suppression des doublons.")
 
         initial_count: int = len(data)
-        data: gpd.GeoDataFrame = data.drop_duplicates(subset=colunms)
+        data: gpd.GeoDataFrame = data.drop_duplicates(subset=MANDATORY_COLUNMS)
         duplicates_count: int = initial_count - len(data)
 
         if duplicates_count > 0:
             LOGGER.warning(
-                f"{duplicates_count:,} doublons ont été supprimés avec les mêmes valeurs pour les attributs : {colunms}."
+                f"{duplicates_count:,} doublons ont été supprimés avec les mêmes valeurs pour les attributs : {MANDATORY_COLUNMS}."
             )
 
         return data
@@ -203,7 +218,7 @@ class DataParserABC(ABC):
         :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
         """
         columns: dict[str, pd.Series] = {
-            schema_ids.SPEED: pd.Series(dtype="float64"),
+            schema_ids.SPEED_KN: pd.Series(dtype="float64"),
             schema_ids.DEPTH_PROCESSED_METER: pd.Series(dtype="float64"),
             schema_ids.WATER_LEVEL_INFO: pd.Series(dtype="object"),
             schema_ids.UNCERTAINTY: pd.Series(dtype="float64"),
@@ -241,10 +256,11 @@ class DataParserABC(ABC):
         data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = parser.transform(
             data=data_geodataframe
         )
+        data_geodataframe = parser.drop_na(data=data_geodataframe)
+        data_geodataframe = parser.remove_duplicates(data=data_geodataframe)
         data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
             parser.add_empty_columns_to_geodataframe(data=data_geodataframe)
         )
-        data_geodataframe = parser.remove_duplicates(data=data_geodataframe)
         data_geodataframe = parser.sort_geodataframe_by_datetime(data=data_geodataframe)
 
         return data_geodataframe
