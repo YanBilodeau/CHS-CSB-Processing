@@ -56,6 +56,8 @@ def export_geodataframe_to_csar(
             "THU",
             "--include-band",
             "IHO Order",
+            "--include-band",
+            "Speed",
             "--info-file",
             INFO_FILE_PATH,
         ]
