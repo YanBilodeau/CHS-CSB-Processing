@@ -43,7 +43,7 @@ CLEANING_FUNCTION: tuple[Type[DataCleaningFunction], ...] = (
 def clean_data(
     geodataframe: gpd.GeoDataFrame,
     cleaning_func: Optional[Collection[DataCleaningFunction | str]] = None,
-    data_filter: Optional[DataFilterConfigProtocol] = None,
+    data_filter_config: Optional[DataFilterConfigProtocol] = None,
 ) -> gpd.GeoDataFrame:
     """
     Fonction qui nettoie les données à partir d'une collection de fonctions de nettoyage.
@@ -52,8 +52,8 @@ def clean_data(
     :type geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
     :param cleaning_func: Les fonctions de nettoyage.
     :type cleaning_func: Collection[DataCleaningFunction | str]
-    :param data_filter: La configuration de nettoyage.
-    :type data_filter: DataFilterConfigProtocol
+    :param data_filter_config: La configuration de nettoyage.
+    :type data_filter_config: DataFilterConfigProtocol
     :return: Le GeoDataFrame nettoyé.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     :raises DataCleaningFunctionError: Si la fonction de nettoyage n'existe pas.
@@ -73,14 +73,26 @@ def clean_data(
 
         geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = func(
             geodataframe,
-            min_latitude=data_filter.min_latitude if data_filter else MIN_LATITUDE,
-            max_latitude=data_filter.max_latitude if data_filter else MAX_LATITUDE,
-            min_longitude=data_filter.min_longitude if data_filter else MIN_LONGITUDE,
-            max_longitude=data_filter.max_longitude if data_filter else MAX_LONGITUDE,
-            min_depth=data_filter.min_depth if data_filter else MIN_DEPTH,
-            max_depth=data_filter.max_depth if data_filter else MAX_DEPTH,
-            min_speed=data_filter.min_speed if data_filter else MIN_SPEED,
-            max_speed=data_filter.max_speed if data_filter else MAX_SPEED,
+            min_latitude=(
+                data_filter_config.min_latitude if data_filter_config else MIN_LATITUDE
+            ),
+            max_latitude=(
+                data_filter_config.max_latitude if data_filter_config else MAX_LATITUDE
+            ),
+            min_longitude=(
+                data_filter_config.min_longitude
+                if data_filter_config
+                else MIN_LONGITUDE
+            ),
+            max_longitude=(
+                data_filter_config.max_longitude
+                if data_filter_config
+                else MAX_LONGITUDE
+            ),
+            min_depth=data_filter_config.min_depth if data_filter_config else MIN_DEPTH,
+            max_depth=data_filter_config.max_depth if data_filter_config else MAX_DEPTH,
+            min_speed=data_filter_config.min_speed if data_filter_config else MIN_SPEED,
+            max_speed=data_filter_config.max_speed if data_filter_config else MAX_SPEED,
         )
 
     return geodataframe
