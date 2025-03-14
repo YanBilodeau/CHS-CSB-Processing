@@ -42,6 +42,7 @@ SURVEY_TYPE_LOWRANCE: str = "SurveyType"
 PRIMARY_LOWRANCE: str = "Primary"
 """Valeur de la constante pour le type de relevé primaire des données Lowrance."""
 SPEED_LOWRANCE: str = "GNSSSpeed[m/s]"
+"""Valeur de la constante pour la colonne de vitesse des données Lowrance."""
 
 # Constantes pour les noms des colonnes des données Actisense.
 ACTISENSE: str = "Actisense"
