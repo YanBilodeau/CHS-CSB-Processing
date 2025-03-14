@@ -128,7 +128,7 @@ class DataParserABC(ABC):
         :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(
-            f"Conversion des fichiers de données brutes en geodataframe : {files}"
+            f"Conversion des fichiers de données brutes en geodataframe : {files}."
         )
 
         geodataframe_list = []
