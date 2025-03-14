@@ -28,7 +28,7 @@ DTYPE_DICT: dict[str, str] = {
     ids.DEPTH_OFM: ids.FLOAT64,
 }
 
-COLUMN_EXCEPTIONS: list[ColumnException] = [
+MANDATORY_COLUMN_EXCEPTIONS: list[ColumnException] = [
     ColumnException(column_name=ids.TIME_OFM, error=ParsingDataframeTimeError),
     ColumnException(
         column_name=ids.LONGITUDE_OFM, error=ParsingDataframeLongitudeError
@@ -63,7 +63,9 @@ class DataParserOFM(DataParserABC):
 
         dataframe: pd.DataFrame = pd.read_csv(file)
         self.validate_columns(
-            dataframe=dataframe, file=file, column_exceptions=COLUMN_EXCEPTIONS
+            dataframe=dataframe,
+            file=file,
+            column_exceptions=MANDATORY_COLUMN_EXCEPTIONS,
         )
         dataframe = self.convert_dtype(
             dataframe=dataframe,
