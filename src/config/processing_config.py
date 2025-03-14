@@ -221,7 +221,6 @@ class OptionsConfig(BaseModel):
     group_by_iho_order: bool = False
     """Grouper les données par ordre IHO pour l'exportation."""
 
-
     @field_validator("max_iterations")
     def validate_max_iterations(cls, value: int) -> int:
         """
