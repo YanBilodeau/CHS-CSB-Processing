@@ -201,14 +201,18 @@ def clean_speed(
     :return: Le GeoDataFrame nettoyé.
     """
     LOGGER.debug(
-        f"Nettoyage des données de vitesse {[schema_ids.SPEED]}."
+        f"Nettoyage des données de vitesse {[schema_ids.SPEED_KN]}."
         f"Vitesse minimale : {min_speed}, vitesse maximale : {max_speed}."
     )
 
-    invalid_speeds: pd.Series = (~geodataframe[schema_ids.SPEED].isna()) & (
-        (geodataframe[schema_ids.SPEED] < min_speed if min_speed is not None else False)
+    invalid_speeds: pd.Series = (~geodataframe[schema_ids.SPEED_KN].isna()) & (
+        (
+            geodataframe[schema_ids.SPEED_KN] < min_speed
+            if min_speed is not None
+            else False
+        )
         | (
-            geodataframe[schema_ids.SPEED] > max_speed
+            geodataframe[schema_ids.SPEED_KN] > max_speed
             if max_speed is not None
             else False
         )
