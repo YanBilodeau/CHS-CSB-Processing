@@ -217,6 +217,10 @@ class OptionsConfig(BaseModel):
     export_format: list[FileTypes] = EXPORT_FORMAT
     """Les formats de fichiers pour l'exportation."""
     decimal_precision: int = DECIMAL_PRECISION
+    """La précision décimale pour les calculs."""
+    group_by_iho_order: bool = False
+    """Grouper les données par ordre IHO pour l'exportation."""
+
 
     @field_validator("max_iterations")
     def validate_max_iterations(cls, value: int) -> int:
