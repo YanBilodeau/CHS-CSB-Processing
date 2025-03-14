@@ -106,16 +106,17 @@ class DataParserLowrance(DataParserABC):
         :return: Le geodataframe renommé.
         :rtype: gpd.GeoDataFrame
         """
-        LOGGER.debug(f"Renommage des colonnes du geodataframe.")
-        data: gpd.GeoDataFrame[schema.DataLoggerSchema] = data.rename(
-            columns={
-                ids.TIME_LOWRANCE: schema_ids.TIME_UTC,
-                ids.DEPTH_LOWRANCE: schema_ids.DEPTH_RAW_METER,
-                ids.LONGITUDE_LOWRANCE: schema_ids.LONGITUDE_WGS84,
-                ids.LATITUDE_LOWRANCE: schema_ids.LATITUDE_WGS84,
-                ids.SPEED_LOWRANCE: schema_ids.SPEED_KN,
-            }
-        )
+        columns = {
+            ids.TIME_LOWRANCE: schema_ids.TIME_UTC,
+            ids.DEPTH_LOWRANCE: schema_ids.DEPTH_RAW_METER,
+            ids.LONGITUDE_LOWRANCE: schema_ids.LONGITUDE_WGS84,
+            ids.LATITUDE_LOWRANCE: schema_ids.LATITUDE_WGS84,
+            ids.SPEED_LOWRANCE: schema_ids.SPEED_KN,
+        }
+
+        LOGGER.debug(f"Renommage des colonnes du geodataframe : {columns}")
+
+        data: gpd.GeoDataFrame[schema.DataLoggerSchema] = data.rename(columns=columns)
 
         return data
 
