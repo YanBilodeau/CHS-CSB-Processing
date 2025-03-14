@@ -86,7 +86,8 @@ class DataParserABC(ABC):
             )
 
             for column_ in dtype_dict.keys():
-                dataframe[column_] = pd.to_numeric(dataframe[column_], errors="coerce")
+                if column_ in dataframe.columns:
+                    dataframe[column_] = pd.to_numeric(dataframe[column_], errors="coerce")
 
         if warnings_list.captured_warnings:
             LOGGER.warning(
