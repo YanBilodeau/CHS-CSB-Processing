@@ -798,7 +798,7 @@ def processing_workflow(
 
     # Clean the data
     LOGGER.info(f"Nettoyage et filtrage des données.")
-    data = cleaner.clean_data(data, data_filter=processing_config.filter)
+    data = cleaner.clean_data(data, data_filter_config=processing_config.filter)
     if data.empty:
         LOGGER.warning(f"Aucune sonde valide à traiter.")
         return
