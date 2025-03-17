@@ -2,7 +2,7 @@
 Ce package contient les fonctions d'export des données.
 """
 
-from .export_utils import (
+from .export_format import (
     export_geodataframe_to_geojson,
     export_geodataframe_to_shapefile,
     export_geodataframe_to_gpkg,
