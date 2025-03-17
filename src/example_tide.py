@@ -9,7 +9,7 @@ from config.iwls_api_config import (
     IWLSAPIConfig,
 )
 import iwls_api_request as iwls
-from export.export_utils import (
+from export.export_format import (
     export_geodataframe_to_geojson,
     export_dataframe_to_csv,
 )
