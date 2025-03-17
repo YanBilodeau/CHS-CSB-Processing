@@ -112,7 +112,7 @@ export_format = ["gpkg"]
 decimal_precision = 1
 # Permet de séparer les fichiers exportés par ordre de levé OHI. {bool}
 # Allows to separate the exported files by OHI survey order. {bool}
-group_by_iho_order = true
+group_by_iho_order = false
 
 [CARIS.Environment]
 # Cette section est utilisée pour configurer l'environnement de CARIS si vous voulez exporter les données au format *.csar.
