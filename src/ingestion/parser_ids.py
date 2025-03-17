@@ -25,6 +25,8 @@ DEPTH_OFM: str = "DEPTH"
 """Valeur de la constante pour la colonne de profondeur des données OFM."""
 TIME_OFM: str = "TIME"
 """Valeur de la constante pour la colonne de temps des données OFM."""
+TIMESTAMP_OFM: str = "TimeStamp"
+"""Valeur de la constante pour la colonne de timestamp des données OFM."""
 
 # Constantes pour les noms des colonnes des données Lowrance.
 LOWRANCE: str = "Lowrance"
