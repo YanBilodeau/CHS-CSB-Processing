@@ -28,6 +28,10 @@ DTYPE_DICT: dict[str, str] = {
     ids.DEPTH_OFM: ids.FLOAT64,
 }
 
+DTYPE_DICT_SPEED: dict[str, str] = {
+    schema_ids.SPEED_KN: ids.FLOAT64,
+}
+
 MANDATORY_COLUMN_EXCEPTIONS: list[ColumnException] = [
     ColumnException(column_name=ids.TIME_OFM, error=ParsingDataframeTimeError),
     ColumnException(
@@ -82,7 +86,75 @@ class DataParserOFM(DataParserABC):
             ),
         )
 
+        gdf = self.add_speed_data_to_gdf(data=gdf, file=file.with_suffix(".csv"))
+
         return gdf
+
+    def add_speed_data_to_gdf(
+        self, data: gpd.GeoDataFrame, file: Path
+    ) -> gpd.GeoDataFrame:
+        """
+        Ajoute les données de vitesse au GeoDataFrame à partir d'un fichier associé.
+
+        :param data: Le GeoDataFrame original
+        :param file: Le chemin du fichier source principal
+        :return: Le GeoDataFrame avec les données de vitesse ajoutées
+        """
+        if not file.exists():
+            LOGGER.warning(f"Le fichier de vitesse n'existe pas : {file}.")
+
+            return data
+
+        try:
+            LOGGER.debug(f"Chargement du fichier de vitesse : {file}.")
+            speed_gdf = pd.read_csv(file)
+
+            speed_columns = [col for col in speed_gdf.columns if "Sog" in col]
+            if not speed_columns:
+                LOGGER.warning(
+                    f"Aucune colonne contenant 'Sog' n'a été trouvée dans le fichier : {file}."
+                )
+
+                return data
+
+            speed_column = speed_columns[0]
+            LOGGER.debug(
+                f"Colonne de vitesse trouvée : {speed_column} dans le fichier : {file}."
+            )
+
+            # Renommer et sélectionner uniquement les colonnes nécessaires
+            speed_gdf = speed_gdf.rename(
+                columns={
+                    ids.TIMESTAMP_OFM: schema_ids.TIME_UTC,
+                    speed_column: schema_ids.SPEED_KN,
+                }
+            )[[schema_ids.TIME_UTC, schema_ids.SPEED_KN]]
+
+            # Arrondir à 3 décimales
+            speed_gdf[schema_ids.SPEED_KN] = speed_gdf[schema_ids.SPEED_KN].round(3)
+
+            # Convertir les types de données
+            self.convert_dtype(
+                dataframe=speed_gdf,
+                dtype_dict=DTYPE_DICT_SPEED,
+                time_column=schema_ids.TIME_UTC,
+                file=file,
+            )
+
+            # Fusionner les données de vitesse avec le GeoDataFrame original
+            return data.merge(
+                speed_gdf,
+                left_on=ids.TIME_OFM,
+                right_on=schema_ids.TIME_UTC,
+                how="left",
+            ).drop(columns=schema_ids.TIME_UTC)
+
+        except Exception as e:
+            LOGGER.error(
+                f"Erreur lors du chargement du fichier de vitesse : {file}. {e}"
+            )
+
+            return data
 
     def transform(self, data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         """
