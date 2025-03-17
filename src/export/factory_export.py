@@ -13,7 +13,7 @@ from typing import Callable, Any
 import geopandas as gpd
 from plotly.matplotlylib import Exporter
 
-from .export_utils import (
+from .export_format import (
     export_geodataframe_to_geojson,
     export_geodataframe_to_gpkg,
     export_geodataframe_to_csar_batch,
