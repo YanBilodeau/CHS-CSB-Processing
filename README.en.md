@@ -166,6 +166,8 @@ min_latitude = -90
 max_latitude = 90
 min_longitude = -180
 max_longitude = 180
+# min_speed = 0
+# max_speed = 30
 min_depth = 0
 # max_depth = 1000 # Maximum depth value (disabled by default).
 
@@ -181,6 +183,7 @@ log_level = "INFO"  # Log level: {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL
 max_iterations = 5  # Maximum number of iterations {int}.
 export_format = ["gpkg", "csv"]  # Formats of files for exporting processed data.
 decimal_precision = 1  # Decimal precision for processed data.
+group_by_iho_order = false  # Group data by IHO order.
 
 [CARIS.Environment]
 base_path = "C:/Program Files/CARIS"  # Path to the CARIS installation directory.
@@ -207,7 +210,7 @@ args = []  # Additional arguments for exporting data in CSAR format.
 - `[IWLS.API.Cache]` (Optional): Defines cache management.
   - `ttl`: Cache data lifetime (in seconds).
   - `cache_path`: Directory for cache storage.
-- `[DATA.Transformation.filter]` (Optional): Defines geographic and depth limits for filtering data.
+- `[DATA.Transformation.filter]` (Optional): Defines geographic, depth and speed limits for filtering data.
 - `[DATA.Georeference.water_level]` (Optional): Defines tolerance for georeferencing based on water levels (format: `"<number> <unit>"`, e.g., `"15 min"`).
 - `[CSB.Processing.vessel]` (Optional): Configures the vessel manager and vessel file. Required only if you use vessels for georeferencing.
   - `manager_type`: Type of vessel manager (e.g., `"VesselConfigJsonManager"`).
@@ -217,6 +220,7 @@ args = []  # Additional arguments for exporting data in CSAR format.
   - `max_iterations` : Maximum number of iterations.
   - `export_format` : List of file formats for exporting processed data {`"geojson"`, `"gpkg"`, `"csar"`, `"parquet"`, `"feather"`, `"csv"`} (e.g. : [`"gpkg"`, `"csv"`]).
   - `decimal_precision` : Number of significant decimal places for processed data.
+  - `group_by_iho_order` : Group data by IHO order.
 - `[CARIS.Environment]` (Optional): CARIS environment-specific parameters. Used to export data in CSAR format.
   - `base_path`: Path to CARIS software installation (default: `"C:/Program Files/CARIS"`).
   - `software`: CARIS software used (e.g., `"BASE Editor"`, `"HIPS and SIPS"`).

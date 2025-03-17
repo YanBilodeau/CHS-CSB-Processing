@@ -170,6 +170,8 @@ min_latitude = -90
 max_latitude = 90
 min_longitude = -180
 max_longitude = 180
+# min_speed = 0
+# max_speed = 30
 min_depth = 0
 # max_depth = 1000 # Valeur maximale de profondeur (désactivée par défaut).
 
@@ -185,6 +187,7 @@ log_level = "INFO"  # Niveau de log : {"DEBUG", "INFO", "WARNING", "ERROR", "CRI
 max_iterations = 5  # Nombre maximal d'itérations {int}.
 export_format = ["gpkg", "csv"]  # Formats de fichier pour l'exportation des données traitées.
 decimal_precision = 1  # Précision des décimales pour les données traitées.
+group_by_iho_order = false  # Regrouper les données par ordre IHO.
 
 [CARIS.Environment]
 base_path = "C:/Program Files/CARIS"  # Chemin d'installation des logiciels CARIS.
@@ -211,7 +214,7 @@ args = []  # Arguments supplémentaires pour l'exportation au format CSAR.
 - `[IWLS.API.Cache]` (Optionnel) : Définit la gestion du cache.
   - `ttl` : Durée de vie des données en cache (en secondes).
   - `cache_path` : Répertoire pour le stockage du cache.
-- `[DATA.Transformation.filter]` (Optionnel) : Définit les limites géographiques et de profondeur pour filtrer les données.
+- `[DATA.Transformation.filter]` (Optionnel) : Définit les limites géographiques, de profondeur et de vitesse pour filtrer les données.
 - `[DATA.Georeference.water_level]` (Optionnel) : Définit la tolérance pour le géoréférencement basé sur les niveaux d'eau. (format : `"<nombre> <unité>"`, ex. : `"15 min"`).
 - `[CSB.Processing.vessel]` (Optionnel) : Configure le gestionnaire et le fichier des navires. Obligatoire seulement si vous utilisez des navires pour le géoréférencement.
   - `manager_type` : Type de gestionnaire de navires (ex. : `"VesselConfigJsonManager"`).
@@ -221,6 +224,7 @@ args = []  # Arguments supplémentaires pour l'exportation au format CSAR.
   - `max_iterations` : Nombre maximal d'itérations.
   - `export_format` : Liste des formats de fichier pour l'exportation des données traitées : {`"geojson"`, `"gpkg"`, `"csar"`, `"parquet"`, `"feather"`, `"csv"`} (ex. : [`"gpkg"`, `"csv"`]).
   - `decimal_precision` : Nombre de décimales significatives pour les données traitées.
+  - `group_by_iho_order` : Regrouper les données par ordre IHO : {`true`, `false`}.
 - `[CARIS.Environment]` (Optionnel) : Paramètres spécifiques à l'environnement CARIS. Sert à exporter les données au format CSAR.
   - `base_path` : Chemin d'installation des logiciels CARIS (par défaut : `"C:/Program Files/CARIS"`).
   - `software` : Logiciel CARIS utilisé (ex. : `"BASE Editor"`, `"HIPS and SIPS"`).
