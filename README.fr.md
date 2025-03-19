@@ -131,7 +131,7 @@ python cli.py <files> [options]
 ## Diagramme du flux de traitement
 
 ```mermaid
-flowchart LR
+flowchart TD
     %% Styles globaux pour le diagramme
     classDef start fill:#66FF66,stroke:#009900,stroke-width:2px,color:#000000,font-weight:bold
     classDef process fill:#B9E0FF,stroke:#0078D7,stroke-width:1px
