@@ -140,7 +140,7 @@ flowchart TD
 
     %% Diagram nodes
     Start[Begin CSB workflow] --> Config[Loading configurations]
-    Config --> CarisConfig{CSAR format required?}
+    Config --> CarisConfig{CSAR format required ?}
     CarisConfig -->|Yes| LoadCarisAPI[Loading Caris API configuration]
     CarisConfig -->|No| VesselConfig["<b>Loading vessel manager</b>
     • Retrieving vessel configuration"]
@@ -157,12 +157,12 @@ flowchart TD
     • Invalid coordinate filtering
     • Invalid timestamp filtering
     • Min/max speed filtering"]
-    CleanData --> CheckData{Valid data?}
+    CleanData --> CheckData{Valid data ?}
     CheckData -->|No| EndNoData[End: no valid data]
     CheckData -->|Yes| Outliers[Outlier detection]
     Outliers --> GetSensors[Retrieving sensor configurations based on vessel]
 
-    GetSensors --> ApplyWL{Apply water level?}
+    GetSensors --> ApplyWL{Apply water level ?}
     ApplyWL -->|No| GeoreferenceNoWL["<b>Georeferencing without water level:</b>
     • TVU calculation
     • THU calculation
@@ -173,7 +173,7 @@ flowchart TD
     ApplyWL -->|Yes| LoadIWLS[Loading IWLS API configuration]
     LoadIWLS --> RunIter["run = 1, excluded_stations = (empty)"]
 
-    RunIter --> IterCheck{run <= max_iterations?}
+    RunIter --> IterCheck{run <= max_iterations ?}
     IterCheck -->|No| EndMaxRun[Incomplete processing: max iterations reached]
     EndMaxRun --> PlotWL
     %% EndMaxRun --> PlotWLMax[Creating available water level charts]
@@ -195,8 +195,8 @@ flowchart TD
     • THU calculation
     • Survey order calculation"]
 
-    Georeference --> DataComplete{Processing completed?
-    DEPTH_PROCESSED_METER without NaN?}
+    Georeference --> DataComplete{Processing completed ?
+    DEPTH_PROCESSED_METER without NaN ?}
     DataComplete -->|Yes| PlotWL[Creating water level charts]
 
     DataComplete -->|No| AddExcluded[Adding problematic stations

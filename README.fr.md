@@ -199,7 +199,7 @@ flowchart TD
     • Calcul de l'ordre de levé"]
 
     Georeference --> DataComplete{Traitement complété ?
-    DEPTH_PROCESSED_METER sans NaN?}
+    DEPTH_PROCESSED_METER sans NaN ?}
     DataComplete -->|Oui| PlotWL[Création des graphiques des niveaux d'eau]
 
     DataComplete -->|Non| AddExcluded[Ajout des stations problématiques
