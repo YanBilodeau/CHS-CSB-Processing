@@ -131,12 +131,12 @@ python cli.py <files> [options]
 flowchart TD
     %% Global styles for the diagram
     classDef start fill:#66FF66,stroke:#009900,stroke-width:2px,color:#000000,font-weight:bold
-    classDef process fill:#B9E0FF,stroke:#0078D7,stroke-width:1px
+    classDef process fill:#B9E0FF,stroke:#0078D7,stroke-width:1px,color:#000000
     classDef decision fill:#FFD700,stroke:#B8860B,stroke-width:1px,color:#000000
     classDef endNode fill:#FFA500,stroke:#FF4500,stroke-width:2px,color:#000000,font-weight:bold
-    classDef highlighted fill:#CCEBFF,stroke:#0078D7,stroke-width:1px,font-weight:bold
-    classDef iteration fill:#FF9ED2,stroke:#E63F8B,stroke-width:1px
-    classDef export fill:#CCFFCC,stroke:#009900,stroke-width:1px
+    classDef highlighted fill:#CCEBFF,stroke:#0078D7,stroke-width:1px,color:#000000,font-weight:bold
+    classDef iteration fill:#FF9ED2,stroke:#E63F8B,stroke-width:1px,color:#000000
+    classDef export fill:#CCFFCC,stroke:#009900,stroke-width:1px,color:#000000
 
     %% Diagram nodes
     Start[Begin CSB workflow] --> Config[Loading configurations]
