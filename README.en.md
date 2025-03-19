@@ -11,6 +11,7 @@
       - [`--waterline`](#--waterline)
       - [`--config`](#--config)
       - [`--apply-water-level`](#--apply-water-level)
+  - [Processing Flow Diagram](#processing-flow-diagram)
   - [Configuration File (TOML)](#configuration-file-toml)
     - [Main Sections](#main-sections)
   - [Vessel File (Vessels)](#vessel-file-vessels)
@@ -121,6 +122,102 @@ python cli.py <files> [options]
 - **Example**:
   ```bash
   python cli.py /data/file1.csv --apply-water-level True
+
+---
+
+## Processing Flow Diagram
+
+```mermaid
+flowchart TD
+    %% Global styles for the diagram
+    classDef start fill:#66FF66,stroke:#009900,stroke-width:2px,color:#000000,font-weight:bold
+    classDef process fill:#B9E0FF,stroke:#0078D7,stroke-width:1px
+    classDef decision fill:#FFD700,stroke:#B8860B,stroke-width:1px,color:#000000
+    classDef endNode fill:#FFA500,stroke:#FF4500,stroke-width:2px,color:#000000,font-weight:bold
+    classDef highlighted fill:#CCEBFF,stroke:#0078D7,stroke-width:1px,font-weight:bold
+    classDef iteration fill:#FF9ED2,stroke:#E63F8B,stroke-width:1px
+    classDef export fill:#CCFFCC,stroke:#009900,stroke-width:1px
+
+    %% Diagram nodes
+    Start[Begin CSB workflow] --> Config[Loading configurations]
+    Config --> CarisConfig{CSAR format required?}
+    CarisConfig -->|Yes| LoadCarisAPI[Loading Caris API configuration]
+    CarisConfig -->|No| VesselConfig["<b>Loading vessel manager</b>
+    • Retrieving vessel configuration"]
+    LoadCarisAPI --> VesselConfig
+
+    VesselConfig --> ParseFiles["<b>Parsing raw files:</b>
+    • Format identification
+    • Data reading
+    • Conversion to GeoDataFrame
+    • Pre-filtering of data"]
+    ParseFiles --> CleanData["<b>Data cleaning and filtering:</b>
+    • Duplicate removal
+    • Min/max depth filtering
+    • Invalid coordinate filtering
+    • Invalid timestamp filtering
+    • Min/max speed filtering"]
+    CleanData --> CheckData{Valid data?}
+    CheckData -->|No| EndNoData[End: no valid data]
+    CheckData -->|Yes| Outliers[Outlier detection]
+    Outliers --> GetSensors[Retrieving sensor configurations based on vessel]
+
+    GetSensors --> ApplyWL{Apply water level?}
+    ApplyWL -->|No| GeoreferenceNoWL["<b>Georeferencing without water level:</b>
+    • TVU calculation
+    • THU calculation
+    • Survey order calculation"]
+    GeoreferenceNoWL --> ExportNoWL[Exporting data & metadata]
+    ExportNoWL --> EndNoWL[End: georeferenced data without water level]
+
+    ApplyWL -->|Yes| LoadIWLS[Loading IWLS API configuration]
+    LoadIWLS --> RunIter["run = 1, excluded_stations = (empty)"]
+
+    RunIter --> IterCheck{run <= max_iterations?}
+    IterCheck -->|No| EndMaxRun[Incomplete processing: max iterations reached]
+    EndMaxRun --> PlotWL
+    %% EndMaxRun --> PlotWLMax[Creating available water level charts]
+    %% PlotWLMax --> ExportDataMax[Exporting partially processed data]
+    %% ExportDataMax --> ExportMetadataMax[Exporting metadata]
+    %% ExportMetadataMax --> EndMaxComplete[End: export of available data]
+
+    IterCheck -->|Yes| GetVoronoi["Retrieving tidal zones (Voronoi)
+    without excluded stations"]
+    GetVoronoi --> GetTideInfo[Retrieving tidal zone information
+    intersecting with data]
+
+    GetTideInfo --> GetWaterLevel[Retrieving water level data
+    for each station]
+    GetWaterLevel --> ExportWL[Exporting water level data]
+    ExportWL --> Georeference["<b>Georeferencing bathymetric data:</b>
+    • Applying water levels
+    • TVU calculation
+    • THU calculation
+    • Survey order calculation"]
+
+    Georeference --> DataComplete{Processing completed?
+    DEPTH_PROCESSED_METER without NaN?}
+    DataComplete -->|Yes| PlotWL[Creating water level charts]
+
+    DataComplete -->|No| AddExcluded[Adding problematic stations
+    to exclude]
+    AddExcluded --> Increment[run += 1]
+    Increment --> IterCheck
+
+    PlotWL --> ExportData[Exporting processed data]
+    ExportData --> ExportMetadata[Exporting metadata]
+    ExportMetadata --> End[End: georeferenced data with water level]
+
+    %% Applying styles to nodes
+    class Start start
+    class Config,LoadCarisAPI,VesselConfig,GetSensors,LoadIWLS process
+    class CarisConfig,ApplyWL,IterCheck,DataComplete,CheckData decision
+    class EndNoData,EndNoWL,EndMaxRun,EndMaxComplete,End endNode
+    class ParseFiles,CleanData,GeoreferenceNoWL,Georeference highlighted
+    class RunIter,GetVoronoi,GetTideInfo,GetWaterLevel,AddExcluded,Increment iteration
+    class ExportNoWL,ExportWL,PlotWL,PlotWLMax,ExportData,ExportDataMax,ExportMetadata,ExportMetadataMax export
+    class Outliers process
+```
 
 ---
 
