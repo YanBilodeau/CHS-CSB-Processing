@@ -372,7 +372,7 @@ def apply_georeference_bathymetry(
         f"Application des niveaux d'eau et des bras de levier aux sondes avec {CPU_COUNT} processus en parallèle."
     )
 
-    def caculate_depth(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    def calculate_depth(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         gdf.loc[:, schema_ids.DEPTH_PROCESSED_METER] = round(
             (
                 gdf[schema_ids.DEPTH_RAW_METER]
@@ -384,7 +384,7 @@ def apply_georeference_bathymetry(
         )
         return gdf
 
-    return _run_dask_function_in_parallel(data=data, func=caculate_depth)
+    return _run_dask_function_in_parallel(data=data, func=calculate_depth)
 
 
 def compute_tvu(
