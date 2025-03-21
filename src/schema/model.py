@@ -47,7 +47,7 @@ class WaterLevelInfo:
         )
 
         return (
-            f"WaterLevelInfo({water_level if water_level else '<NA>'} - "
+            f"WaterLevelInfo("
             f"{self.time_series if water_level else '<NA>'} - "
             f"{self.id if water_level else '<NA>'} - "
             f"{self.name if water_level else '<NA>'} - "
@@ -66,6 +66,7 @@ class DataLoggerSchema(pa.DataFrameModel):
     Depth_raw_meter: Series[pd.Float64Dtype()]
     Depth_processed_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
     Speed_kn: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
+    Water_level_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
     Water_level_info: Series[object] = pa.Field(nullable=True)
     Uncertainty: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
     THU: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
@@ -81,7 +82,6 @@ class DataLoggerWithTideZoneSchema(DataLoggerSchema):
     Schéma des données des DataLoggers avec les zones de marées.
     """
 
-    Water_level_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
     Time_serie: Series[str] = pa.Field(nullable=True)
     Tide_zone_id: Series[str] = pa.Field(nullable=True)
     Tide_zone_code: Series[str] = pa.Field(nullable=True)
@@ -100,7 +100,6 @@ class DataLoggerWithVoronoiSchema(DataLoggerSchema):
     code: Series[str] = pa.Field(nullable=True)
     name: Series[str] = pa.Field(nullable=True)
     Time_serie: Series[object] = pa.Field(nullable=True)
-    Water_level_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
 
 
 class WaterLevelSerieDataSchema(pa.DataFrameModel):
