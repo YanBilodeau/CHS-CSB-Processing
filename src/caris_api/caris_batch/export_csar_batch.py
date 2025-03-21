@@ -58,6 +58,8 @@ def export_geodataframe_to_csar(
             "IHO Order",
             "--include-band",
             "Speed",
+            "--include-band",
+            "WaterLevel",
             "--info-file",
             INFO_FILE_PATH,
         ]
