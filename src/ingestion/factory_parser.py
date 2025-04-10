@@ -65,7 +65,14 @@ ACTISENSE_HEADER: Header = (
 )
 """Entête des fichiers Actisense."""
 
-BLACKBOX_HEADER: None = None
+BLACKBOX_HEADER: Header = (
+    ids.TIME_BLACKBOX,
+    ids.DATE_BLACKBOX,
+    ids.LATITUDE_BLACKBOX,
+    ids.LONGITUDE_BLACKBOX,
+    ids.SPEED_BLACKBOX,
+    ids.DEPTH_BLACKBOX,
+)
 """Entête des fichiers BlackBox."""
 
 
