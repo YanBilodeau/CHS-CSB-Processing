@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 import concurrent.futures
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Collection
+from typing import Collection, Optional
 
 import geopandas as gpd
 from loguru import logger
@@ -66,8 +66,8 @@ class DataParserABC(ABC):
     def convert_dtype(
         dataframe: pd.DataFrame,
         dtype_dict: dict[str, str],
-        time_column: str,
         file: Path,
+        time_column: Optional[str] = None,
     ) -> pd.DataFrame:
         """
         Méthode permettant de convertir et nettoyer le dataframe.
@@ -77,21 +77,22 @@ class DataParserABC(ABC):
         :param dtype_dict: Un dictionnaire de type de données.
         :type dtype_dict: dict[str, str]
         :param time_column: Le nom de la colonne de temps.
-        :type time_column: str
+        :type time_column: str | None
         :param file: Le fichier source.
         :type file: Path
         :return: Le dataframe converti et nettoyé.
         :rtype: pd.DataFrame
         """
         LOGGER.debug(
-            f"Conversion du dtype des colonnes {[column_ for column_ in dtype_dict.keys()] + [time_column]}"
-            f" et suppresion des données NAN du dataframe : {file}."
+            f"Conversion du dtype des colonnes {[column_ for column_ in dtype_dict.keys()] + [time_column] if time_column is not None else []} "
+            f" du dataframe : {file}."
         )
 
         with WarningCapture() as warnings_list:
-            dataframe[time_column] = pd.to_datetime(
-                dataframe[time_column], errors="coerce"
-            )
+            if time_column is not None:
+                dataframe[time_column] = pd.to_datetime(
+                    dataframe[time_column], errors="coerce"
+                )
 
             for column_ in dtype_dict.keys():
                 if column_ in dataframe.columns:
