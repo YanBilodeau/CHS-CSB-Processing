@@ -784,6 +784,7 @@ def processing_workflow(
     parser_files: factory_parser.ParserFiles = factory_parser.get_files_parser(
         files=files
     )
+    datalogger_type: DataLoggerType = parser_files.datalogger_type
 
     LOGGER.debug(parser_files)
 
@@ -835,7 +836,7 @@ def processing_workflow(
             export_data_path=export_data_path,
             file_types=processing_config.options.export_format,
             vessel_config=vessel_config,
-            datalogger_type=parser_files.datalogger_type,
+            datalogger_type=datalogger_type,
             config_caris=caris_api_config if caris_api_config else None,
             groub_by_iho_order=processing_config.options.group_by_iho_order,
         )
@@ -845,7 +846,7 @@ def processing_workflow(
             data_geodataframe=data,
             output_path=export_data_path,
             vessel_config=vessel_config,
-            datalogger_type=parser_files.datalogger_type,
+            datalogger_type=datalogger_type,
             tide_stations=None,
             decimal_precision=processing_config.options.decimal_precision,
         )
@@ -1027,7 +1028,7 @@ def processing_workflow(
         export_data_path=export_data_path,
         file_types=processing_config.options.export_format,
         vessel_config=vessel_config,
-        datalogger_type=parser_files.datalogger_type,
+        datalogger_type=datalogger_type,
         config_caris=caris_api_config if caris_api_config else None,
         args=caris_api_config.args if caris_api_config else None,
         groub_by_iho_order=processing_config.options.group_by_iho_order,
@@ -1045,7 +1046,7 @@ def processing_workflow(
         data_geodataframe=data,
         output_path=export_data_path,
         vessel_config=vessel_config,
-        datalogger_type=parser_files.datalogger_type,
+        datalogger_type=datalogger_type,
         tide_stations=[
             get_station_title(gdf_voronoi=gdf_voronoi, station_id=station_id)
             for station_id in wl_combineds_dict.keys()
