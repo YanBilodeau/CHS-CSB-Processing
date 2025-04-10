@@ -13,6 +13,7 @@ from loguru import logger
 from . import parser_ids as ids
 from .parser_abc import DataParserABC
 from .parser_dcdb import DataParserBCDB
+from .parser_black_box import DataParserBlackBox
 from .parser_lowrance import DataParserLowrance
 from .parser_ofm import DataParserOFM
 from .parser_exception import ParserIdentifierError
@@ -73,7 +74,7 @@ FACTORY_PARSER: dict[tuple[Header | None, str], Type[DataParserABC]] = {
     (OFM_HEADER, ids.EXTENSION_XYZ): DataParserOFM,
     (LOWRANCE_HEADER, ids.EXTENSION_CSV): DataParserLowrance,
     (ACTISENSE_HEADER, ids.EXTENSION_CSV): "Actisense",
-    (BLACKBOX_HEADER, ids.EXTENSION_TXT): "BlackBox",
+    (BLACKBOX_HEADER, ids.EXTENSION_TXT): DataParserBlackBox,
 }
 """Dictionnaire associant les entêtes et les extensions aux parsers."""
 

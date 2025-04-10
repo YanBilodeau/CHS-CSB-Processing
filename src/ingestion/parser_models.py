@@ -11,6 +11,7 @@ from typing import Type, TypeVar
 
 from . import parser_ids as ids
 from .parser_abc import DataParserABC
+from .parser_black_box import DataParserBlackBox
 from .parser_dcdb import DataParserBCDB
 from .parser_lowrance import DataParserLowrance
 from .parser_ofm import DataParserOFM
@@ -38,6 +39,7 @@ DATA_TYPE_MAPPING: {Type[DataParserABC], DataLoggerType} = {
     DataParserOFM: DataLoggerType.OFM,
     DataParserBCDB: DataLoggerType.DCDB,
     DataParserLowrance: DataLoggerType.LOWRANCE,
+    DataParserBlackBox: DataLoggerType.BLACKBOX,
 }
 """Dictionnaire permettant de faire le lien entre un parser et un type de données."""
 
