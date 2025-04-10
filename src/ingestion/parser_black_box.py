@@ -23,24 +23,22 @@ LOGGER = logger.bind(name=f"CSB-Processing.Ingestion.Parser.{ids.LOWRANCE}")
 
 
 DTYPE_DICT: dict[str, str] = {
-    schema_ids.DEPTH_RAW_METER: ids.FLOAT64,
-    schema_ids.LATITUDE_WGS84: ids.FLOAT64,
-    schema_ids.LONGITUDE_WGS84: ids.FLOAT64,
-    schema_ids.SPEED_KN: ids.FLOAT64,
+    ids.DEPTH_BLACKBOX: ids.FLOAT64,
+    ids.LATITUDE_BLACKBOX: ids.FLOAT64,
+    ids.LONGITUDE_BLACKBOX: ids.FLOAT64,
+    ids.SPEED_BLACKBOX: ids.FLOAT64,
 }
 
 MANDATORY_COLUMN_EXCEPTIONS: list[ColumnException] = [
     ColumnException(column_name=ids.TIME_BLACKBOX, error=ParsingDataframeTimeError),
     ColumnException(column_name=ids.DATE_BLACKBOX, error=ParsingDataframeTimeError),
     ColumnException(
-        column_name=schema_ids.LONGITUDE_WGS84, error=ParsingDataframeLongitudeError
+        column_name=ids.LONGITUDE_BLACKBOX, error=ParsingDataframeLongitudeError
     ),
     ColumnException(
-        column_name=schema_ids.LATITUDE_WGS84, error=ParsingDataframeLatitudeError
+        column_name=ids.LATITUDE_BLACKBOX, error=ParsingDataframeLatitudeError
     ),
-    ColumnException(
-        column_name=schema_ids.DEPTH_RAW_METER, error=ParsingDataframeDepthError
-    ),
+    ColumnException(column_name=ids.DEPTH_BLACKBOX, error=ParsingDataframeDepthError),
 ]
 
 
@@ -67,18 +65,7 @@ class DataParserBlackBox(DataParserABC):
         if dtype_dict is None:
             dtype_dict = DTYPE_DICT
 
-        dataframe: pd.DataFrame = pd.read_csv(
-            file,
-            header=None,
-            names=[
-                ids.TIME_BLACKBOX,
-                ids.DATE_BLACKBOX,
-                schema_ids.LATITUDE_WGS84,
-                schema_ids.LONGITUDE_WGS84,
-                schema_ids.SPEED_KN,
-                schema_ids.DEPTH_RAW_METER,
-            ],
-        )
+        dataframe: pd.DataFrame = pd.read_csv(file)
         self.validate_columns(
             dataframe=dataframe,
             file=file,
@@ -93,7 +80,6 @@ class DataParserBlackBox(DataParserABC):
             errors="coerce",
             utc=True,
         )
-
         dataframe = self.convert_dtype(
             dataframe=dataframe,
             dtype_dict=dtype_dict,
@@ -107,8 +93,8 @@ class DataParserBlackBox(DataParserABC):
         gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
             data=dataframe,
             geometry=gpd.points_from_xy(
-                x=dataframe[schema_ids.LONGITUDE_WGS84],
-                y=dataframe[schema_ids.LATITUDE_WGS84],
+                x=dataframe[ids.LONGITUDE_BLACKBOX],
+                y=dataframe[ids.LATITUDE_BLACKBOX],
                 crs=ids.EPSG_WGS84,
             ),
         )
@@ -124,6 +110,14 @@ class DataParserBlackBox(DataParserABC):
         :return: Le geodataframe transformé.
         :rtype: gpd.GeoDataFrame
         """
-        LOGGER.debug(f"Transformation du geodataframe.")
+        LOGGER.debug(f"Renommage des colonnes du geodataframe.")
+        data: gpd.GeoDataFrame = data.rename(
+            columns={
+                ids.DEPTH_BLACKBOX: schema_ids.DEPTH_RAW_METER,
+                ids.LONGITUDE_BLACKBOX: schema_ids.LONGITUDE_WGS84,
+                ids.LATITUDE_BLACKBOX: schema_ids.LATITUDE_WGS84,
+                ids.SPEED_LOWRANCE: schema_ids.SPEED_KN,
+            }
+        )
 
         return data
