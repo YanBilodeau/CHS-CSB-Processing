@@ -77,6 +77,10 @@ PGN_ACTISENSE: str = "PGN"
 # Constantes pour les noms des colonnes des données BlackBox.
 BLACKBOX: str = "BlackBox"
 """Valeur de la constante pour le type de données BlackBox."""
+TIME_BLACKBOX: str = "Time"
+"""Valeur de la constante pour la colonne de temps des données BlackBox."""
+DATE_BLACKBOX: str = "Date"
+"""Valeur de la constante pour la colonne de date des données BlackBox."""
 
 # Constantes pour les dtypes des données.
 FLOAT64: str = "float64"
