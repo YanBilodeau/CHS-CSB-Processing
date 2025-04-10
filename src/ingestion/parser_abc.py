@@ -166,7 +166,16 @@ class DataParserABC(ABC):
             f"Suppression des valeurs manquantes sur les colonnes obligatoires : {MANDATORY_COLUNMS}."
         )
 
-        return data.dropna(subset=MANDATORY_COLUNMS)
+        initial_count: int = len(data)
+        data = data.dropna(subset=MANDATORY_COLUNMS)
+        missing_values_count: int = initial_count - len(data)
+
+        if missing_values_count > 0:
+            LOGGER.warning(
+                f"{missing_values_count:,} lignes avec des valeurs manquantes ont été supprimées pour les attributs : {MANDATORY_COLUNMS}."
+            )
+
+        return data
 
     @staticmethod
     def remove_duplicates(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
@@ -257,6 +266,8 @@ class DataParserABC(ABC):
         data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = parser.transform(
             data=data_geodataframe
         )
+        LOGGER.debug(f"{len(data_geodataframe):,} sondes de données brutes.")
+
         data_geodataframe = parser.drop_na(data=data_geodataframe)
         data_geodataframe = parser.remove_duplicates(data=data_geodataframe)
         data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
