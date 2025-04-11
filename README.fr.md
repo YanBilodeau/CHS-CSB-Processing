@@ -53,7 +53,8 @@ Les formats de fichiers pris en charge sont les suivants :
             `DateTime[UTC]` dans l'entête. Ces fichiers sont le résultat des fichiers `SL3` de Lowrance exportés par 
             l'outil [SL3Reader](https://github.com/halmaia/SL3Reader).
 - Actisense : à venir.
-- BlackBox : à venir.
+  - BlackBox : extension `.TXT` sans entête avec les colonnes dans l'ordre `Time`, `Date`, `Latitude`, `Longitude`, `Speed (km/h)` 
+            et `Depth (m)`.
 
 ---
 

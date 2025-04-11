@@ -53,7 +53,7 @@ The supported file formats are as follows:
             `DateTime[UTC]` in the header. These files are the result of `SL3` files from Lowrance exported by 
             the tool [SL3Reader](https://github.com/halmaia/SL3Reader).
 - Actisense: coming soon.
-- BlackBox: coming soon.
+- BlackBox: `.TXT` extension without header with columns in the order `Time`, `Date`, `Latitude`, `Longitude`, `Speed (km/h)` and `Depth (m)`.
 
 ---
 
