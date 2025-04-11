@@ -75,7 +75,7 @@ class DataParserBlackBox(DataParserABC):
                 ids.DATE_BLACKBOX,
                 schema_ids.LATITUDE_WGS84,
                 schema_ids.LONGITUDE_WGS84,
-                schema_ids.SPEED_KN,
+                ids.SPEED_BLACKBOX,
                 schema_ids.DEPTH_RAW_METER,
             ],
         )
@@ -115,6 +115,28 @@ class DataParserBlackBox(DataParserABC):
 
         return gdf
 
+    @staticmethod
+    def convert_speed_to_knots(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+        """
+        Méthode permettant de convertir les vitesses en mètres par seconde en noeuds.
+
+        :param data: Le geodataframe à transformer.
+        :type data: gpd.GeoDataFrame
+        :return: Le geodataframe transformé.
+        :rtype: gpd.GeoDataFrame
+        """
+        if ids.SPEED_BLACKBOX not in data.columns:
+            LOGGER.warning(
+                f"La colonne '{ids.SPEED_BLACKBOX}' n'est pas présente dans le geodataframe."
+            )
+            return data
+
+        LOGGER.debug(f"Conversion de la vitesse (km/h) en noeuds.")
+        data[schema_ids.SPEED_KN] = round(data[ids.SPEED_BLACKBOX] * 0.539957, 3)
+        data = data.drop(columns=[ids.SPEED_BLACKBOX])
+
+        return data
+
     def transform(self, data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         """
         Méthode permettant de transformer le geodataframe pour respecter le schéma de données.
@@ -125,5 +147,7 @@ class DataParserBlackBox(DataParserABC):
         :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(f"Transformation du geodataframe.")
+
+        data = self.convert_speed_to_knots(data)
 
         return data
