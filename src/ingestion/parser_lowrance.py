@@ -151,12 +151,9 @@ class DataParserLowrance(DataParserABC):
         :return: Le geodataframe transformé.
         :rtype: gpd.GeoDataFrame
         """
-        LOGGER.debug(
-            f"Conversion des pieds en mètres de la colonne '{schema_ids.DEPTH_RAW_METER}'."
-        )
-        data[schema_ids.DEPTH_RAW_METER] = round(
-            data[schema_ids.DEPTH_RAW_METER] * 0.3048, 3
-        )
+        LOGGER.debug(f"Conversion de la profondeur (pieds) en mètres.")
+        data[schema_ids.DEPTH_RAW_METER] = round(data[ids.DEPTH_LOWRANCE] * 0.3048, 3)
+        data = data.drop(columns=[ids.DEPTH_LOWRANCE])
 
         return data
 
@@ -170,16 +167,15 @@ class DataParserLowrance(DataParserABC):
         :return: Le geodataframe transformé.
         :rtype: gpd.GeoDataFrame
         """
-        if schema_ids.SPEED_KN not in data.columns:
+        if ids.SPEED_LOWRANCE not in data.columns:
             LOGGER.warning(
-                f"La colonne '{schema_ids.SPEED_KN}' n'est pas présente dans le geodataframe."
+                f"La colonne '{ids.SPEED_LOWRANCE}' n'est pas présente dans le geodataframe."
             )
             return data
 
-        LOGGER.debug(
-            f"Conversion des mètres par seconde en noeuds de la colonne '{schema_ids.SPEED_KN}'."
-        )
-        data[schema_ids.SPEED_KN] = round(data[schema_ids.SPEED_KN] * 1.94384, 3)
+        LOGGER.debug(f"Conversion de la vitesse (m/s) en noeuds.")
+        data[schema_ids.SPEED_KN] = round(data[ids.SPEED_LOWRANCE] * 1.94384, 3)
+        data = data.drop(columns=[ids.SPEED_LOWRANCE])
 
         return data
 
@@ -194,9 +190,9 @@ class DataParserLowrance(DataParserABC):
         """
         LOGGER.debug("Transformation du geodataframe.")
 
-        data = self.rename_columns(data)
-        data = self.remove_special_characters_from_columns(data)
         data = self.convert_depth_to_meters(data)
         data = self.convert_speed_to_knots(data)
+        data = self.rename_columns(data)
+        data = self.remove_special_characters_from_columns(data)
 
         return data
