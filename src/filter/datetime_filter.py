@@ -33,7 +33,7 @@ def clean_time(geodataframe: gpd.GeoDataFrame, **kwargs) -> gpd.GeoDataFrame:
 
     if invalid_dates.any():
         LOGGER.warning(
-            f"{invalid_dates.sum()} entrées ont des dates invalides et seront supprimées."
+            f"{invalid_dates.sum():,} entrées ont des dates invalides et seront supprimées."
         )
 
     geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[

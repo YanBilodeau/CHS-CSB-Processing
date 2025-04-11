@@ -49,7 +49,7 @@ def clean_depth(
 
     if invalid_depths.any():
         LOGGER.warning(
-            f"{invalid_depths.sum()} entrées ont des profondeurs invalides et seront supprimées."
+            f"{invalid_depths.sum():,} entrées ont des profondeurs invalides et seront supprimées."
         )
 
     geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[

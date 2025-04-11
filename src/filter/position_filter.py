@@ -44,7 +44,7 @@ def clean_latitude(
     )
     if invalid_latitudes.any():
         LOGGER.warning(
-            f"{invalid_latitudes.sum()} entrées ont des latitudes invalides et seront supprimées."
+            f"{invalid_latitudes.sum():,} entrées ont des latitudes invalides et seront supprimées."
         )
 
     geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[

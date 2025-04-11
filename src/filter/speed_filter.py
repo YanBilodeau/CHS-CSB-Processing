@@ -51,7 +51,7 @@ def clean_speed(
 
     if invalid_speeds.any():
         LOGGER.warning(
-            f"{invalid_speeds.sum()} entrées ont des vitesses invalides et seront supprimées."
+            f"{invalid_speeds.sum():,} entrées ont des vitesses invalides et seront supprimées."
         )
 
     geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
