@@ -18,6 +18,7 @@ from .parser_lowrance import DataParserLowrance
 from .parser_ofm import DataParserOFM
 from .parser_exception import ParserIdentifierError
 from .parser_models import ParserFiles
+from .parser_wibl import DataParserWIBL
 
 LOGGER = logger.bind(name="CSB-Processing.Ingestion.Parser.Factory")
 
@@ -68,6 +69,9 @@ ACTISENSE_HEADER: Header = (
 BLACKBOX_HEADER: None = None
 """Entête des fichiers BlackBox."""
 
+WIBL_HEADER: None = None
+"""Entête des fichiers WIBL."""
+
 
 FACTORY_PARSER: dict[tuple[Header | None, str], Type[DataParserABC]] = {
     (DCDB_HEADER, ids.EXTENSION_CSV): DataParserBCDB,
@@ -75,8 +79,11 @@ FACTORY_PARSER: dict[tuple[Header | None, str], Type[DataParserABC]] = {
     (LOWRANCE_HEADER, ids.EXTENSION_CSV): DataParserLowrance,
     (ACTISENSE_HEADER, ids.EXTENSION_CSV): "Actisense",
     (BLACKBOX_HEADER, ids.EXTENSION_TXT): DataParserBlackBox,
+    (WIBL_HEADER, ids.EXTENSION_GEOJSON): DataParserWIBL,
 }
 """Dictionnaire associant les entêtes et les extensions aux parsers."""
+
+NO_HEADER: tuple[str, ...] = (ids.EXTENSION_GEOJSON,)
 
 
 def get_header(file: Path) -> tuple[str, ...] | None:
@@ -89,6 +96,11 @@ def get_header(file: Path) -> tuple[str, ...] | None:
     :rtype: tuple[str, ...] | None
     """
     LOGGER.debug(f"Lecture de l'entête du fichier : {file}.")
+
+    if file.suffix in NO_HEADER:
+        LOGGER.debug(f"Le fichier {file} n'a pas d'entête.")
+
+        return None
 
     try:
         header: pd.DataFrame = pd.read_csv(file, nrows=0)
@@ -139,8 +151,9 @@ def get_parser_factory(file: Path) -> Type[DataParserABC]:
     """
     LOGGER.debug(f"Récupération du parser associé au fichier : {file}.")
 
-    header_file: tuple[str, ...] | None = get_header(file)
     extension: str = get_extension(file)
+    header_file: tuple[str, ...] | None = get_header(file)
+
     key: tuple[Header | None, str] = (header_file, extension)
 
     if key in FACTORY_PARSER:

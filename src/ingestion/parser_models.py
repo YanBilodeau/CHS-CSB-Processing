@@ -16,6 +16,7 @@ from .parser_dcdb import DataParserBCDB
 from .parser_lowrance import DataParserLowrance
 from .parser_ofm import DataParserOFM
 from .parser_exception import MultipleParsersError
+from .parser_wibl import DataParserWIBL
 
 
 class DataLoggerType(StrEnum):
@@ -23,16 +24,18 @@ class DataLoggerType(StrEnum):
     Enumération des types de données.
     """
 
-    OFM: str = ids.OFM
+    OFM = ids.OFM
     """Type de données OFM."""
-    DCDB: str = ids.DCDB
+    DCDB = ids.DCDB
     """Type de données DCDB."""
-    LOWRANCE: str = ids.LOWRANCE
+    LOWRANCE = ids.LOWRANCE
     """Type de données Lowrance."""
-    ACTISENSE: str = ids.ACTISENSE
+    ACTISENSE = ids.ACTISENSE
     """Type de données Actisense."""
-    BLACKBOX: str = ids.BLACKBOX
+    BLACKBOX = ids.BLACKBOX
     """Type de données BlackBox."""
+    WIBL = ids.WIBL
+    """Type de données WIBL."""
 
 
 DATA_TYPE_MAPPING: {Type[DataParserABC], DataLoggerType} = {
@@ -40,6 +43,7 @@ DATA_TYPE_MAPPING: {Type[DataParserABC], DataLoggerType} = {
     DataParserBCDB: DataLoggerType.DCDB,
     DataParserLowrance: DataLoggerType.LOWRANCE,
     DataParserBlackBox: DataLoggerType.BLACKBOX,
+    DataParserWIBL: DataLoggerType.WIBL,
 }
 """Dictionnaire permettant de faire le lien entre un parser et un type de données."""
 
