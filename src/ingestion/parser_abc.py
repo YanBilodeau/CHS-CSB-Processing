@@ -93,6 +93,9 @@ class DataParserABC(ABC):
                 dataframe[time_column] = pd.to_datetime(
                     dataframe[time_column], errors="coerce"
                 )
+                dataframe[time_column] = dataframe[time_column].astype(
+                    "datetime64[ns, UTC]"
+                )
 
             for column_ in dtype_dict.keys():
                 if column_ in dataframe.columns:
