@@ -90,6 +90,14 @@ DEPTH_BLACKBOX: str = "Depth"
 SPEED_BLACKBOX: str = "Speed"
 """Valeur de la constante pour la colonne de vitesse des données BlackBox."""
 
+# Constantes pour les noms des colonnes des données WIBL.
+WIBL: str = "WIBL"
+"""Valeur de la constante pour le type de données WIBL."""
+DEPTH_WIBL: str = "depth"
+"""Valeur de la constante pour la colonne de profondeur des données WIBL."""
+TIME_WIBL: str = "time"
+"""Valeur de la constante pour la colonne de temps des données WIBL."""
+
 # Constantes pour les dtypes des données.
 FLOAT64: str = "float64"
 """Valeur de la constante pour le type de données float64."""
@@ -103,3 +111,5 @@ EXTENSION_XYZ: str = ".xyz"
 """Valeur de la constante pour l'extension de fichier XYZ."""
 EXTENSION_TXT: str = ".TXT"
 """Valeur de la constante pour l'extension de fichier TXT."""
+EXTENSION_GEOJSON: str = ".geojson"
+"""Valeur de la constante pour l'extension de fichier GeoJSON."""
