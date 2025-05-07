@@ -14,7 +14,7 @@ from .order.order_models import IHOorderQualifiquation
 LOGGER = logger.bind(name="CSB-Processing.Metadata.Models")
 
 
-REDUCTION_METHOD = "The dataset has been reduced to CD thanks to predicted tides pulled from IWLS at the following stations: {stations}."
+REDUCTION_METHOD = "The dataset has been reduced to CD thanks to water level pulled from IWLS at the following stations: {stations}."
 """Méthode de réduction du niveau d'eau"""
 NO_TIDE_STATIONS = "The dataset has not been reduced to CD."
 """Pas de stations de marée"""
