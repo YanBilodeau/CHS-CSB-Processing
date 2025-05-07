@@ -64,16 +64,16 @@ class DataParserABC(ABC):
 
     @staticmethod
     def convert_dtype(
-        dataframe: pd.DataFrame,
+        dataframe: pd.DataFrame | gpd.GeoDataFrame,
         dtype_dict: dict[str, str],
         file: Path,
         time_column: Optional[str] = None,
-    ) -> pd.DataFrame:
+    ) -> pd.DataFrame | gpd.GeoDataFrame:
         """
         Méthode permettant de convertir et nettoyer le dataframe.
 
         :param dataframe: Le dataframe à convertir.
-        :type dataframe: pd.DataFrame
+        :type dataframe: pd.DataFrame | gpd.GeoDataFrame
         :param dtype_dict: Un dictionnaire de type de données.
         :type dtype_dict: dict[str, str]
         :param time_column: Le nom de la colonne de temps.
@@ -81,7 +81,7 @@ class DataParserABC(ABC):
         :param file: Le fichier source.
         :type file: Path
         :return: Le dataframe converti et nettoyé.
-        :rtype: pd.DataFrame
+        :rtype: pd.DataFrame | gpd.GeoDataFrame
         """
         LOGGER.debug(
             f"Conversion du dtype des colonnes {[column_ for column_ in dtype_dict.keys()] + [time_column] if time_column is not None else []} "
