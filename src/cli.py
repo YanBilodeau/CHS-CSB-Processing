@@ -27,7 +27,7 @@ def is_valid_file(file: Path) -> bool:
     :return: Vrai si le fichier est valide, faux sinon.
     :rtype: bool
     """
-    return file.suffix.lower() in {".csv", ".txt", ".xyz"}
+    return file.suffix.lower() in {".csv", ".txt", ".xyz", ".geojson"}
 
 
 def get_files(paths: Collection[Path]) -> list[Path]:
