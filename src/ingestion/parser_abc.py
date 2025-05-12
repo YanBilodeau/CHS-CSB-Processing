@@ -250,7 +250,7 @@ class DataParserABC(ABC):
                 LOGGER.debug(f"Ajout de la colonne {column_name} avec des valeurs nan.")
 
                 data[column_name] = empty_column
-                if empty_column.dtype == "object":  # todo valider
+                if empty_column.dtype == "object":
                     data[column_name] = data[column_name].apply(lambda _: [])
 
         return data
