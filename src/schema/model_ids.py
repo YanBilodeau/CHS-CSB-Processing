@@ -23,6 +23,8 @@ THU: str = "THU"
 """Valeur de la constante THU."""
 IHO_ORDER: str = "IHO_order"
 """Valeur de la constante IHO_order."""
+STATUS: str = "Status"
+"""Valeur de la constante Status."""
 GEOMETRY: str = "geometry"
 """Valeur de la constante geometry."""
 
