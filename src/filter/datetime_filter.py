@@ -10,11 +10,12 @@ import pandas as pd
 
 import schema
 from schema import model_ids as schema_ids
+from .status import Status
 
 LOGGER = logger.bind(name="CSB-Processing.Filter.Datetime")
 
 
-def clean_time(geodataframe: gpd.GeoDataFrame, **kwargs) -> gpd.GeoDataFrame:
+def filter_time(geodataframe: gpd.GeoDataFrame, **kwargs) -> gpd.GeoDataFrame:
     """
     Fonction qui nettoie les données de temps.
 
@@ -32,12 +33,14 @@ def clean_time(geodataframe: gpd.GeoDataFrame, **kwargs) -> gpd.GeoDataFrame:
     )
 
     if invalid_dates.any():
-        LOGGER.warning(
-            f"{invalid_dates.sum():,} entrées ont des dates invalides et seront supprimées."
-        )
+        LOGGER.warning(f"{invalid_dates.sum():,} entrées ont des dates invalides.")
 
-    geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
-        ~invalid_dates
-    ]
+        geodataframe.loc[invalid_dates, schema_ids.OUTLIER] = geodataframe.loc[
+            invalid_dates, schema_ids.OUTLIER
+        ].apply(lambda x: x + [Status.REJECTED_BY_TIME_FILTER])
+
+    # geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
+    #     ~invalid_dates
+    # ]
 
     return geodataframe

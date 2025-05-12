@@ -10,11 +10,12 @@ import pandas as pd
 
 import schema
 from schema import model_ids as schema_ids
+from .status import Status
 
 LOGGER = logger.bind(name="CSB-Processing.Filter.Speed")
 
 
-def clean_speed(
+def filter_speed(
     geodataframe: gpd.GeoDataFrame,
     min_speed: int | float | None,
     max_speed: int | float | None,
@@ -50,12 +51,14 @@ def clean_speed(
     )
 
     if invalid_speeds.any():
-        LOGGER.warning(
-            f"{invalid_speeds.sum():,} entrées ont des vitesses invalides et seront supprimées."
-        )
+        LOGGER.warning(f"{invalid_speeds.sum():,} entrées ont des vitesses invalides.")
 
-    geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
-        ~invalid_speeds
-    ]
+        geodataframe.loc[invalid_speeds, schema_ids.OUTLIER] = geodataframe.loc[
+            invalid_speeds, schema_ids.OUTLIER
+        ].apply(lambda x: x + [Status.REJECTED_BY_SPEED_FILTER])
+
+    # geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
+    #     ~invalid_speeds
+    # ]
 
     return geodataframe

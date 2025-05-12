@@ -10,11 +10,12 @@ import pandas as pd
 
 import schema
 from schema import model_ids as schema_ids
+from .status import Status
 
 LOGGER = logger.bind(name="CSB-Processing.Filter.Depth")
 
 
-def clean_depth(
+def depth_depth(
     geodataframe: gpd.GeoDataFrame,
     min_depth: int | float,
     max_depth: int | float | None,
@@ -49,11 +50,15 @@ def clean_depth(
 
     if invalid_depths.any():
         LOGGER.warning(
-            f"{invalid_depths.sum():,} entrées ont des profondeurs invalides et seront supprimées."
+            f"{invalid_depths.sum():,} entrées ont des profondeurs invalides."
         )
 
-    geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
-        ~invalid_depths
-    ]
+        geodataframe.loc[invalid_depths, schema_ids.OUTLIER] = geodataframe.loc[
+            invalid_depths, schema_ids.OUTLIER
+        ].apply(lambda x: x + [Status.REJECTED_BY_DEPTH_FILTER])
+
+    # geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
+    #     ~invalid_depths
+    # ]
 
     return geodataframe

@@ -10,11 +10,12 @@ import pandas as pd
 
 import schema
 from schema import model_ids as schema_ids
+from .status import Status
 
 LOGGER = logger.bind(name="CSB-Processing.Filter.Position")
 
 
-def clean_latitude(
+def filter_latitude(
     geodataframe: gpd.GeoDataFrame,
     min_latitude: int | float,
     max_latitude: int | float,
@@ -44,17 +45,21 @@ def clean_latitude(
     )
     if invalid_latitudes.any():
         LOGGER.warning(
-            f"{invalid_latitudes.sum():,} entrées ont des latitudes invalides et seront supprimées."
+            f"{invalid_latitudes.sum():,} entrées ont des latitudes invalides."
         )
 
-    geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
-        ~invalid_latitudes
-    ]
+        geodataframe.loc[invalid_latitudes, schema_ids.OUTLIER] = geodataframe.loc[
+            invalid_latitudes, schema_ids.OUTLIER
+        ].apply(lambda x: x + [Status.REJECTED_BY_LATITUDE_FILTER])
+
+    # geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
+    #     ~invalid_latitudes
+    # ]
 
     return geodataframe
 
 
-def clean_longitude(
+def filter_longitude(
     geodataframe: gpd.GeoDataFrame,
     min_longitude: int | float,
     max_longitude: int | float,
@@ -84,11 +89,15 @@ def clean_longitude(
     )
     if invalid_longitudes.any():
         LOGGER.warning(
-            f"{invalid_longitudes.sum()} entrées ont des longitudes invalides et seront supprimées."
+            f"{invalid_longitudes.sum()} entrées ont des longitudes invalides."
         )
 
-    geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
-        ~invalid_longitudes
-    ]
+        geodataframe.loc[invalid_longitudes, schema_ids.OUTLIER] = geodataframe.loc[
+            invalid_longitudes, schema_ids.OUTLIER
+        ].apply(lambda x: x + [Status.REJECTED_BY_LONGITUDE_FILTER])
+
+    # geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
+    #     ~invalid_longitudes
+    # ]
 
     return geodataframe
