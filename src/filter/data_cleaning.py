@@ -9,12 +9,12 @@ from typing import Collection, Optional, Callable, Any, Type
 import geopandas as gpd
 from loguru import logger
 
-from .datetime_filter import clean_time
-from .depth_filter import clean_depth
+from .datetime_filter import filter_time
+from .depth_filter import depth_depth
 from .exception_filter import DataCleaningFunctionError
 from .filter_models import DataFilterConfigProtocol
-from .position_filter import clean_latitude, clean_longitude
-from .speed_filter import clean_speed
+from .position_filter import filter_latitude, filter_longitude
+from .speed_filter import filter_speed
 import schema
 
 LOGGER = logger.bind(name="CSB-Processing.Filter.DataCleaning")
@@ -32,11 +32,11 @@ MAX_SPEED: int | float | None = None
 
 
 CLEANING_FUNCTION: tuple[Type[DataCleaningFunction], ...] = (
-    clean_depth,
-    clean_time,
-    clean_latitude,
-    clean_longitude,
-    clean_speed,
+    depth_depth,
+    filter_time,
+    filter_latitude,
+    filter_longitude,
+    filter_speed,
 )
 
 
