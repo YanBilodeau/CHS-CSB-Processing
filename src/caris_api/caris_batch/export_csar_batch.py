@@ -60,6 +60,8 @@ def export_geodataframe_to_csar(
             "Speed",
             "--include-band",
             "WaterLevel",
+            "--include-band",
+            "Outlier",
             "--info-file",
             INFO_FILE_PATH,
         ]
