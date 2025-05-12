@@ -43,15 +43,35 @@ class FileTypes(StrEnum):
     Enumération des types de fichiers de sortie.
     """
 
-    GEOJSON: str = "geojson"
-    GPKG: str = "gpkg"
-    CSAR: str = "csar"
-    PARQUET: str = "parquet"
-    FEATHER: str = "feather"
-    CSV: str = "csv"
+    GEOJSON = "geojson"
+    GPKG = "gpkg"
+    CSAR = "csar"
+    PARQUET = "parquet"
+    FEATHER = "feather"
+    CSV = "csv"
 
 
 EXPORT_FORMAT: list[str] = [FileTypes.GPKG]
+
+
+class Filter(StrEnum):
+    """
+    Enum for status codes.
+    """
+
+    SPEED_FILTER = "SPEED_FILTER"
+    LATITUDE_FILTER = "LATITUDE_FILTER"
+    LONGITUDE_FILTER = "LONGITUDE_FILTER"
+    TIME_FILTER = "TIME_FILTER"
+    DEPTH_FILTER = "DEPTH_FILTER"
+
+
+FILTER_TO_APPLY = [
+    Filter.LATITUDE_FILTER,
+    Filter.LONGITUDE_FILTER,
+    Filter.TIME_FILTER,
+    Filter.DEPTH_FILTER,
+]
 
 
 class DataFilterConfig(BaseModel):
@@ -88,6 +108,8 @@ class DataFilterConfig(BaseModel):
     """La vitesse minimale."""
     max_speed: Optional[int | float] = MAX_SPEED
     """La vitesse maximale."""
+    filter_to_apply: Optional[list[Filter]] = FILTER_TO_APPLY
+    """Les filtres à appliquer."""
 
     @field_validator("min_latitude", "max_latitude")
     def validate_latitude(cls, value: int | float) -> int | float:
@@ -308,10 +330,11 @@ def get_data_config(
                     else MIN_SPEED
                 ),
                 max_speed=(
-                    data_filter.get("max_speed")
+                    data_filter.get("max_speed", MAX_SPEED)
                     if data_filter.get("max_speed") is not None
                     else MAX_SPEED
                 ),
+                filter_to_apply=data_filter.get("filter_to_apply", FILTER_TO_APPLY),
             )
             if data_filter
             else DataFilterConfig()
