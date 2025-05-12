@@ -15,7 +15,9 @@ from .exception_filter import DataCleaningFunctionError
 from .filter_models import DataFilterConfigProtocol
 from .position_filter import filter_latitude, filter_longitude
 from .speed_filter import filter_speed
+from .status import FILTER_STATUS_MAPPING, Status
 import schema
+from schema import model_ids as schema_ids
 
 LOGGER = logger.bind(name="CSB-Processing.Filter.DataCleaning")
 
@@ -38,6 +40,52 @@ CLEANING_FUNCTION: tuple[Type[DataCleaningFunction], ...] = (
     filter_longitude,
     filter_speed,
 )
+
+
+def filter_data_by_outlier_tags(
+    geodataframe: gpd.GeoDataFrame, tags_to_suppress: list[Status]
+) -> gpd.GeoDataFrame:
+    """
+    Filtre les données du geodataframe en supprimant les lignes contenant certains tags d'outliers.
+
+    :param geodataframe: Le GeoDataFrame à filtrer
+    :type geodataframe: gpd.GeoDataFrame
+    :param tags_to_suppress: Liste des tags/statuts à supprimer
+    :type tags_to_suppress: list[Status]
+    :return: Le GeoDataFrame filtré
+    :rtype: gpd.GeoDataFrame
+    """
+    if not tags_to_suppress:
+        return geodataframe
+
+    LOGGER.info(f"Suppression des données avec les tags suivants : {tags_to_suppress}.")
+
+    # Compter le nombre de sondes supprimées par tag
+    initial_count = len(geodataframe)
+    counts_by_tag = {}
+
+    for tag in tags_to_suppress:
+        # Identifier les lignes contenant ce tag spécifique
+        mask = geodataframe[schema_ids.OUTLIER].apply(lambda x: tag in x)
+        counts_by_tag[tag] = mask.sum()
+
+    # Journal des comptages par tag
+    for tag, count in counts_by_tag.items():
+        if count > 0:
+            LOGGER.warning(f"{count:,} sondes supprimées avec le filtre '{tag}'.")
+
+    # Appliquer le filtre
+    geodataframe = geodataframe[
+        ~geodataframe[schema_ids.OUTLIER].apply(
+            lambda x: any(tag in x for tag in tags_to_suppress)
+        )
+    ]
+
+    # Compter le nombre de sondes restantes
+    final_count = len(geodataframe)
+    LOGGER.success(f"Nombre de sondes supprimées : {initial_count - final_count:,}.")
+
+    return geodataframe
 
 
 def clean_data(
@@ -94,5 +142,11 @@ def clean_data(
             min_speed=data_filter_config.min_speed if data_filter_config else MIN_SPEED,
             max_speed=data_filter_config.max_speed if data_filter_config else MAX_SPEED,
         )
+
+    tags_to_suppress: list[Status] = [
+        FILTER_STATUS_MAPPING[tag] for tag in data_filter_config.filter_to_apply  # type: ignore
+    ]
+
+    geodataframe = filter_data_by_outlier_tags(geodataframe, tags_to_suppress)
 
     return geodataframe
