@@ -237,7 +237,7 @@ class DataParserABC(ABC):
             schema_ids.UNCERTAINTY: pd.Series(dtype="float64"),
             schema_ids.THU: pd.Series(dtype="float64"),
             schema_ids.IHO_ORDER: pd.Series(dtype="string"),
-            schema_ids.OUTLIER: pd.Series(dtype="string"),
+            schema_ids.OUTLIER: pd.Series(dtype="object"),
             schema_ids.WATER_LEVEL_METER: pd.Series(dtype="float64"),
             schema_ids.TIME_SERIE: pd.Series(dtype="string"),
             schema_ids.TIDE_ZONE_ID: pd.Series(dtype="string"),
@@ -248,7 +248,10 @@ class DataParserABC(ABC):
         for column_name, empty_column in columns.items():
             if column_name not in data.columns:
                 LOGGER.debug(f"Ajout de la colonne {column_name} avec des valeurs nan.")
+
                 data[column_name] = empty_column
+                if empty_column.dtype == "object":  # todo valider
+                    data[column_name] = data[column_name].apply(lambda _: [])
 
         return data
 

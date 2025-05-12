@@ -71,7 +71,7 @@ class DataLoggerSchema(pa.DataFrameModel):
     Uncertainty: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
     THU: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
     IHO_order: Series[str] = pa.Field(nullable=True)
-    Outlier: Series[str] = pa.Field(nullable=True)
+    Outlier: Series[object] = pa.Field(nullable=True)
     geometry: GeoSeries
 
     class Config:
