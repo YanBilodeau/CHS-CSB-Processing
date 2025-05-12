@@ -37,3 +37,5 @@ class DataFilterConfigProtocol(Protocol):
     """La vitesse minimale."""
     max_speed: Optional[int | float]
     """La vitesse maximale."""
+    filter_to_apply: list[str]
+    """Les filtres à appliquer."""
