@@ -289,7 +289,7 @@ def validate_schemas(
             result = func(*args, **kwargs)
 
             # Valider le résultat de la fonction
-            if return_schema is not None:
+            if return_schema is not None and not result.empty:
                 validate_schema(result, return_schema)
 
             return result
