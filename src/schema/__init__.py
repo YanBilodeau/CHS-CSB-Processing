@@ -15,6 +15,8 @@ from .model import (
     validate_schema,
     validate_schemas,
     WaterLevelInfo,
+    OutlierInfo,
+    Status,
 )
 
 
@@ -31,4 +33,6 @@ __all__ = [
     "validate_schema",
     "validate_schemas",
     "WaterLevelInfo",
+    "OutlierInfo",
+    "Status",
 ]

@@ -4,7 +4,8 @@ Module qui contient les schémas des dataframes.
 Ce module contient les schémas des dataframes des DataLoggers, des stations, des séries temporelles et des zones de marées.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from enum import StrEnum
 import functools
 from typing import Optional, Callable, Type, Any
 
@@ -53,6 +54,24 @@ class WaterLevelInfo:
             f"{self.name if water_level else '<NA>'} - "
             f"{self.code if water_level else '<NA>'})"
         )
+
+
+class Status(StrEnum):
+    """
+    Enum pour les statuts de filtrage des données.
+    """
+
+    ACCEPTED = "accepted"
+    REJECTED_BY_SPEED_FILTER = "rejected by speed filter"
+    REJECTED_BY_LATITUDE_FILTER = "rejected by latitude filter"
+    REJECTED_BY_LONGITUDE_FILTER = "rejected by longitude filter"
+    REJECTED_BY_TIME_FILTER = "rejected by time filter"
+    REJECTED_BY_DEPTH_FILTER = "rejected by depth filter"
+
+
+@dataclass
+class OutlierInfo:
+    tags: list[Status] = field(default_factory=list)
 
 
 class DataLoggerSchema(pa.DataFrameModel):
