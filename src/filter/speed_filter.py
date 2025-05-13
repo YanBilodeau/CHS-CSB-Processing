@@ -55,7 +55,7 @@ def filter_speed(
 
         geodataframe.loc[invalid_speeds, schema_ids.OUTLIER] = geodataframe.loc[
             invalid_speeds, schema_ids.OUTLIER
-        ].apply(lambda x: x + [Status.REJECTED_BY_SPEED_FILTER])
+        ].apply(lambda x: x.tags.append(Status.REJECTED_BY_SPEED_FILTER) or x)
 
     # geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
     #     ~invalid_speeds

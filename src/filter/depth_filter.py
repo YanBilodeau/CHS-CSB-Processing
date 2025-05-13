@@ -55,7 +55,13 @@ def depth_depth(
 
         geodataframe.loc[invalid_depths, schema_ids.OUTLIER] = geodataframe.loc[
             invalid_depths, schema_ids.OUTLIER
-        ].apply(lambda x: x + [Status.REJECTED_BY_DEPTH_FILTER])
+        ].apply(lambda x: x.tags.append(Status.REJECTED_BY_DEPTH_FILTER) or x)
+
+        geodataframe.loc[invalid_depths, schema_ids.OUTLIER] = geodataframe.loc[
+            invalid_depths, schema_ids.OUTLIER
+        ].apply(
+            lambda x: x.tags.append(Status.REJECTED_BY_SPEED_FILTER) or x
+        )  # todo enlever
 
     # geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
     #     ~invalid_depths

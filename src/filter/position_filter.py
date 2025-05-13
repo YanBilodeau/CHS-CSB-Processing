@@ -50,7 +50,7 @@ def filter_latitude(
 
         geodataframe.loc[invalid_latitudes, schema_ids.OUTLIER] = geodataframe.loc[
             invalid_latitudes, schema_ids.OUTLIER
-        ].apply(lambda x: x + [Status.REJECTED_BY_LATITUDE_FILTER])
+        ].apply(lambda x: x.tags.append(Status.REJECTED_BY_LATITUDE_FILTER) or x)
 
     # geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
     #     ~invalid_latitudes
@@ -94,7 +94,7 @@ def filter_longitude(
 
         geodataframe.loc[invalid_longitudes, schema_ids.OUTLIER] = geodataframe.loc[
             invalid_longitudes, schema_ids.OUTLIER
-        ].apply(lambda x: x + [Status.REJECTED_BY_LONGITUDE_FILTER])
+        ].apply(lambda x: x.tags.append(Status.REJECTED_BY_LONGITUDE_FILTER) or x)
 
     # geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
     #     ~invalid_longitudes

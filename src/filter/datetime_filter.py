@@ -37,7 +37,7 @@ def filter_time(geodataframe: gpd.GeoDataFrame, **kwargs) -> gpd.GeoDataFrame:
 
         geodataframe.loc[invalid_dates, schema_ids.OUTLIER] = geodataframe.loc[
             invalid_dates, schema_ids.OUTLIER
-        ].apply(lambda x: x + [Status.REJECTED_BY_TIME_FILTER])
+        ].apply(lambda x: x.tags.append(Status.REJECTED_BY_TIME_FILTER) or x)
 
     # geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
     #     ~invalid_dates
