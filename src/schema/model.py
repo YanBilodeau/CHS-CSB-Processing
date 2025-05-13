@@ -73,6 +73,9 @@ class Status(StrEnum):
 class OutlierInfo:
     tags: list[Status] = field(default_factory=list)
 
+    def __str__(self) -> str:
+        return " | ".join(map(str, self.tags)) if self.tags else ""
+
 
 class DataLoggerSchema(pa.DataFrameModel):
     """
