@@ -717,7 +717,7 @@ def processing_workflow(
     """
     if not files:
         LOGGER.warning(f"Aucun fichier à traiter.")
-        return
+        return None
 
     export_data_path, export_tide_path, log_path = get_data_structure(output)
 
@@ -725,6 +725,7 @@ def processing_workflow(
     processing_config: config.CSBprocessingConfig = config.get_data_config(
         config_file=config_path
     )
+
     # Configure the logger
     configure_logger(
         log_path / f"CHS-CSB-Processing.log",
@@ -754,7 +755,7 @@ def processing_workflow(
             LOGGER.error(
                 f"La configuration de Caris est obligatoire pour l'exportation en format *csar : {error}."
             )
-            return
+            return None
 
         raise error
 
@@ -790,7 +791,7 @@ def processing_workflow(
 
     if not parser_files.files:
         LOGGER.warning(f"Aucun fichier valide à traiter.")
-        return
+        return None
 
     # Parse the data
     data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
@@ -802,7 +803,7 @@ def processing_workflow(
     data = cleaner.clean_data(data, data_filter_config=processing_config.filter)
     if data.empty:
         LOGGER.warning(f"Aucune sonde valide à traiter.")
-        return
+        return None
 
     LOGGER.success(f"{len(data):,} sondes valides récupérées.")
 
@@ -910,6 +911,14 @@ def processing_workflow(
             tide_zone=gdf_voronoi,
         )
 
+        if tide_zonde_info.empty:
+            LOGGER.warning(
+                f"Aucune zone de marée ne touche les données brutes restantes ("
+                f"{data[schema_ids.DEPTH_PROCESSED_METER].isna().sum()} sondes). "
+                f"Valider la position des sondes et les zones de marée."
+            )
+            break
+
         for zone, min_time, max_time, time_series in tide_zonde_info.itertuples(
             index=False
         ):
@@ -1002,7 +1011,7 @@ def processing_workflow(
             f"ces dates et ces stations dans IWLS avec {run - 1} itérations. Vous pouvez traiter les données "
             f"avec un nombre d'itération plus élevé ou sans appliquer le niveau d'eau (--apply-water-level False)."
         )
-        return
+        return None
 
     elif not nan_sonding:
         LOGGER.success(f"{not_nan_sonding} sondes ont été réduites au zéro des cartes.")
@@ -1054,6 +1063,8 @@ def processing_workflow(
         decimal_precision=processing_config.options.decimal_precision,
     )
 
+    return None
+
     # todo gérer la valeur np.nan dans les configurations des capteurs
 
     # todo à ajouter au BaseModel ?
@@ -1070,6 +1081,4 @@ def processing_workflow(
 
     # todo Identification des périodes en enlevant les trous de x temps dans add_tide_zone_id_to_geodataframe
 
-    # todo -> mettre template pour le nom dans le fichier de config dans le fichier de config
-
-    # todo -> BlackBox
+    # todo -> mettre template pour le nom dans le fichier de config
