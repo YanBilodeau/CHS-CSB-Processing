@@ -155,4 +155,4 @@ def clean_data(
 
     geodataframe = filter_data_by_outlier_tags(geodataframe, tags_to_suppress)
 
-    return geodataframe  # todo à tester, voir la liste des tags et tester plusieurs jeux de données
+    return geodataframe
