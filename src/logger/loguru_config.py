@@ -49,7 +49,7 @@ def formatter(record) -> str:
         f"<{color_tag}>"
         "{extra[name]: <50}"
         f"</{color_tag}> | "
-        "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | </white></bold> "
+        "<fg #ABA2A2>{time:YYYY-MM-DD HH:mm:ss}</fg #ABA2A2> | </white></bold> "
         "<level>{level: ^8}</level> <bold><white>-</white></bold> <level>{message}</level>\n"
         "<level>{exception}</level>"
     )
