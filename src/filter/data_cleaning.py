@@ -15,7 +15,7 @@ from .exception_filter import DataCleaningFunctionError
 from .filter_models import DataFilterConfigProtocol
 from .position_filter import filter_latitude, filter_longitude
 from .speed_filter import filter_speed
-from .status import FILTER_STATUS_MAPPING, Status
+from .filter_models import FILTER_STATUS_MAPPING, Status
 import schema
 from schema import model_ids as schema_ids
 
@@ -66,7 +66,9 @@ def filter_data_by_outlier_tags(
 
     for tag in tags_to_suppress:
         # Identifier les lignes contenant ce tag spécifique
-        mask = geodataframe[schema_ids.OUTLIER].apply(lambda x: tag in x)
+        mask = geodataframe[schema_ids.OUTLIER].apply(
+            lambda x: x is not None and tag in x.tags
+        )
         counts_by_tag[tag] = mask.sum()
 
     # Journal des comptages par tag
@@ -77,13 +79,17 @@ def filter_data_by_outlier_tags(
     # Appliquer le filtre
     geodataframe = geodataframe[
         ~geodataframe[schema_ids.OUTLIER].apply(
-            lambda x: any(tag in x for tag in tags_to_suppress)
+            lambda x: any(
+                tag in (x.tags if x is not None else []) for tag in tags_to_suppress
+            )
         )
     ]
 
     # Compter le nombre de sondes restantes
     final_count = len(geodataframe)
-    LOGGER.success(f"Nombre de sondes supprimées : {initial_count - final_count:,}.")
+    difference_count = initial_count - final_count
+    if difference_count > 0:
+        LOGGER.success(f"Nombre de sondes supprimées : {difference_count:,}.")
 
     return geodataframe
 
@@ -149,4 +155,4 @@ def clean_data(
 
     geodataframe = filter_data_by_outlier_tags(geodataframe, tags_to_suppress)
 
-    return geodataframe
+    return geodataframe  # todo à tester, voir la liste des tags et tester plusieurs jeux de données
