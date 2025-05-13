@@ -10,7 +10,7 @@ import pandas as pd
 
 import schema
 from schema import model_ids as schema_ids
-from .status import Status
+from .filter_models import Status
 
 LOGGER = logger.bind(name="CSB-Processing.Filter.Depth")
 
