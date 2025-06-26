@@ -388,7 +388,7 @@ def plot_metadata(
     title: str,
     output_path: Optional[Path] = None,
     show_plot: bool = False,
-) -> None:
+) -> go.Figure:
     """
     Affiche et sauvegarde les métadonnées des levés hydrographiques.
 
@@ -400,6 +400,8 @@ def plot_metadata(
     :type output_path: Optional[Path]
     :param show_plot: Indique si la figure doit être affichée.
     :type show_plot: bool
+    :return: Figure Plotly contenant les métadonnées.
+    :rtype: go.Figure
     """
     LOGGER.debug(f"Génération des graphiques des métadonnées pour : {title}.")
 
@@ -453,4 +455,9 @@ def plot_metadata(
     if show_plot:
         fig.show()
     if output_path:
-        fig.write_html(output_path)
+        fig.write_html(output_path.with_suffix(".html"))
+        fig.write_image(
+            output_path.with_suffix(".pdf"), height=2800, width=1800, scale=2
+        )
+
+    return fig
