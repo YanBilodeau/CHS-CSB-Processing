@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, Collection, Sequence
+from typing import Optional, Collection, Sequence, Iterable
 
 import geopandas as gpd
 from loguru import logger
@@ -690,7 +690,7 @@ def export_metadata(
     metadata.plot_metadata(
         metadata=survey_metadata.__dict__(),
         title=name,
-        output_path=output_path.with_suffix(".html"),
+        output_path=output_path,
     )
 
 
@@ -700,6 +700,7 @@ def processing_workflow(
     output: Path,
     config_path: Optional[Path] = CONFIG_FILE,
     apply_water_level: Optional[bool] = True,
+    extra_logger: Optional[Iterable[dict]] = None,
 ) -> None:
     """
     Workflow de traitement des données.
@@ -714,6 +715,8 @@ def processing_workflow(
     :type config_path: Optional[Path]
     :param apply_water_level: Appliquer le niveau d'eau aux données.
     :type apply_water_level: Optional[bool]
+    :param extra_logger: Liste d'objets de configuration supplémentaires pour le logger.
+    :type extra_logger: Optional[Iterable[dict]]
     """
     if not files:
         LOGGER.warning(f"Aucun fichier à traiter.")
@@ -731,6 +734,7 @@ def processing_workflow(
         log_path / f"CHS-CSB-Processing.log",
         std_level=processing_config.options.log_level,
         log_file_level="DEBUG",
+        extra_logger=extra_logger,
     )
 
     # Log the parameters of the workflow
