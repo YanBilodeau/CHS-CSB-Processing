@@ -11,7 +11,7 @@ from pathlib import Path
 from random import choice, seed
 from socket import gethostname
 from threading import Lock
-from typing import Optional
+from typing import Optional, Iterable
 
 from loguru import logger
 
@@ -78,6 +78,7 @@ def configure_logger(
     rotation: str | int = "1 day",
     retention: str | int = "30 days",
     enqueue: bool = True,
+    extra_logger: Optional[Iterable[dict]] = None,
 ) -> None:
     """
     Fonction de configuration du logger loguru.
@@ -94,6 +95,8 @@ def configure_logger(
     :type retention: str | int
     :param enqueue: Indique si les messages doivent être enfilés.
     :type enqueue: bool
+    :param extra_logger: Liste de dictionnaires pour des loggers supplémentaires.
+    :type extra_logger: Optional[Iterable[dict]]
     """
     logger.remove()
 
@@ -121,6 +124,10 @@ def configure_logger(
                 enqueue=enqueue,
             )
         )
+
+    if extra_logger:
+        for extra in extra_logger:
+            handlers.append(extra)
 
     logger.configure(
         handlers=handlers,
