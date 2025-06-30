@@ -1,7 +1,7 @@
 @echo off
 
 set "python=D:\Outils-SHC\code\Python\python.exe"
-set "processing=%CD%\src\nicegui_ui.py"
+set "processing=%CD%\src\web_ui.py"
 
 echo Starting CSB Processing GUI with NiceGUI...
 echo Python path: %python%
