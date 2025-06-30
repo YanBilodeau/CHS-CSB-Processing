@@ -16,7 +16,7 @@ from .vessel_config import VesselConfig
 from .vessel_config_manager_abc import VesselConfigManagerABC
 
 
-LOGGER = logger.bind(name="CSB-Pipeline.Vessel.VesselConfig.Factory")
+LOGGER = logger.bind(name="CSB-Processing.Vessel.VesselConfig.Factory")
 
 
 @singledispatch

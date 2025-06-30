@@ -20,7 +20,7 @@ from . import vessel_ids as ids
 from .vessel_models import VesselConfigDict
 
 
-LOGGER = logger.bind(name="CSB-Pipeline.Vessel.VesselConfig")
+LOGGER = logger.bind(name="CSB-Processing.Vessel.VesselConfig")
 
 
 UNKNOWN_DATE: datetime = datetime(1960, 1, 1, tzinfo=timezone.utc)
