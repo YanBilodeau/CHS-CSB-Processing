@@ -90,13 +90,13 @@ DEPTH_BLACKBOX: str = "Depth"
 SPEED_BLACKBOX: str = "Speed"
 """Valeur de la constante pour la colonne de vitesse des données BlackBox."""
 
-# Constantes pour les noms des colonnes des données WIBL.
-WIBL: str = "WIBL"
-"""Valeur de la constante pour le type de données WIBL."""
-DEPTH_WIBL: str = "depth"
-"""Valeur de la constante pour la colonne de profondeur des données WIBL."""
-TIME_WIBL: str = "time"
-"""Valeur de la constante pour la colonne de temps des données WIBL."""
+# Constantes pour les noms des colonnes des données B12-CSB.
+B12_CSB: str = "B12-CSB"
+"""Valeur de la constante pour le type de données B12-CSB."""
+DEPTH_B12_CSB: str = "depth"
+"""Valeur de la constante pour la colonne de profondeur des données B12-CSB."""
+TIME_B12_CSB: str = "time"
+"""Valeur de la constante pour la colonne de temps des données B12-CSB."""
 
 # Constantes pour les dtypes des données.
 FLOAT64: str = "float64"

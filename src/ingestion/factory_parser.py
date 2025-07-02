@@ -18,7 +18,7 @@ from .parser_lowrance import DataParserLowrance
 from .parser_ofm import DataParserOFM
 from .parser_exception import ParserIdentifierError
 from .parser_models import ParserFiles
-from .parser_wibl import DataParserWIBL
+from .parser_b12_csb import DataParserB12CSB
 
 LOGGER = logger.bind(name="CSB-Processing.Ingestion.Parser.Factory")
 
@@ -69,8 +69,8 @@ ACTISENSE_HEADER: Header = (
 BLACKBOX_HEADER: None = None
 """Entête des fichiers BlackBox."""
 
-WIBL_HEADER: None = None
-"""Entête des fichiers WIBL."""
+B12_CSB_HEADER: None = None
+"""Entête des fichiers B12-CSB."""
 
 
 FACTORY_PARSER: dict[tuple[Header | None, str], Type[DataParserABC]] = {
@@ -79,7 +79,7 @@ FACTORY_PARSER: dict[tuple[Header | None, str], Type[DataParserABC]] = {
     (LOWRANCE_HEADER, ids.EXTENSION_CSV): DataParserLowrance,
     (ACTISENSE_HEADER, ids.EXTENSION_CSV): "Actisense",
     (BLACKBOX_HEADER, ids.EXTENSION_TXT): DataParserBlackBox,
-    (WIBL_HEADER, ids.EXTENSION_GEOJSON): DataParserWIBL,
+    (B12_CSB_HEADER, ids.EXTENSION_GEOJSON): DataParserB12CSB,
 }
 """Dictionnaire associant les entêtes et les extensions aux parsers."""
 

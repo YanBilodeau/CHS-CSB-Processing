@@ -1,5 +1,5 @@
 """
-Module permettant de parser les données de type WIBL.
+Module permettant de parser les données de type B12_CSB.
 """
 
 from pathlib import Path
@@ -17,24 +17,24 @@ from .parsing_exception import (
 )
 
 
-LOGGER = logger.bind(name=f"CSB-Processing.Ingestion.Parser.{ids.WIBL}")
+LOGGER = logger.bind(name=f"CSB-Processing.Ingestion.Parser.{ids.B12_CSB}")
 
 
 DTYPE_DICT: dict[str, str] = {
-    ids.DEPTH_WIBL: ids.FLOAT64,
+    ids.DEPTH_B12_CSB: ids.FLOAT64,
     schema_ids.LONGITUDE_WGS84: ids.FLOAT64,
     schema_ids.LATITUDE_WGS84: ids.FLOAT64,
 }
 
 MANDATORY_COLUMN_EXCEPTIONS: list[ColumnException] = [
-    ColumnException(column_name=ids.TIME_WIBL, error=ParsingDataframeTimeError),
-    ColumnException(column_name=ids.DEPTH_WIBL, error=ParsingDataframeDepthError),
+    ColumnException(column_name=ids.TIME_B12_CSB, error=ParsingDataframeTimeError),
+    ColumnException(column_name=ids.DEPTH_B12_CSB, error=ParsingDataframeDepthError),
 ]
 
 
-class DataParserWIBL(DataParserABC):
+class DataParserB12CSB(DataParserABC):
     """
-    Classe permettant de parser les données de type WIBL.
+    Classe permettant de parser les données de type B12-CSB.
     """
 
     def read(self, file: Path, dtype_dict: dict[str, str] = None) -> gpd.GeoDataFrame:
@@ -49,7 +49,7 @@ class DataParserWIBL(DataParserABC):
         :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(
-            f"Chargement d'un fichier de données brutes de type {ids.WIBL} : {file}"
+            f"Chargement d'un fichier de données brutes de type {ids.B12_CSB} : {file}"
         )
 
         if dtype_dict is None:
@@ -69,7 +69,7 @@ class DataParserWIBL(DataParserABC):
         gdf = self.convert_dtype(
             dataframe=gdf,
             dtype_dict=dtype_dict,
-            time_column=ids.TIME_WIBL,
+            time_column=ids.TIME_B12_CSB,
             file=file,
         )
 
@@ -89,8 +89,8 @@ class DataParserWIBL(DataParserABC):
         LOGGER.debug(f"Renommage des colonnes du geodataframe.")
         data: gpd.GeoDataFrame = data.rename(
             columns={
-                ids.TIME_WIBL: schema_ids.TIME_UTC,
-                ids.DEPTH_WIBL: schema_ids.DEPTH_RAW_METER,
+                ids.TIME_B12_CSB: schema_ids.TIME_UTC,
+                ids.DEPTH_B12_CSB: schema_ids.DEPTH_RAW_METER,
             }
         )
 
