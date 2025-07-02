@@ -3,7 +3,7 @@
 set "python=D:\Outils-SHC\code\Python\python.exe"
 set "processing=%CD%\src\web_ui.py"
 
-echo Starting CSB Processing GUI with NiceGUI...
+echo Starting CSB Processing Web UI...
 echo Python path: %python%
 echo Python script path: %processing%
 
@@ -19,12 +19,12 @@ if not exist "%processing%" (
     exit /b 1
 )
 
-echo Running NiceGUI application...
+echo Running CSB processing application...
 %python% %processing%
 
 if %ERRORLEVEL% neq 0 (
     echo ERROR: Application terminated with error code %ERRORLEVEL%
     pause
 ) else (
-    echo GUI closed successfully.
+    echo Application closed successfully.
 )
