@@ -20,6 +20,11 @@ class FileManager:
         self.files: list[dict[str, Any]] = []
 
     @staticmethod
+    def _is_numeric_extension(extension: str) -> bool:
+        """Check if the extension is numeric (e.g., .1, .2, .3)."""
+        return extension.startswith(".") and extension[1:].isdigit()
+
+    @staticmethod
     def open_file_dialog() -> list[str]:
         """Open file selection dialog and return selected file paths."""
         try:
@@ -35,6 +40,7 @@ class FileManager:
                 ("Text files", "*.txt"),
                 ("XYZ files", "*.xyz"),
                 ("GeoJSON files", "*.geojson"),
+                ("WIBL files", "*.*"),
                 ("All files", "*.*"),
             ]
 
@@ -132,8 +138,12 @@ class FileManager:
                     LOGGER.debug(f"File not found: {file_path}")
                     continue
 
-                # Check file extension
-                if file_path.suffix.lower() not in self.ALLOWED_EXTENSIONS:
+                # Check file extension (known extensions or numeric extensions)
+                extension = file_path.suffix.lower()
+                if (
+                    extension not in self.ALLOWED_EXTENSIONS
+                    and not self._is_numeric_extension(extension)
+                ):
                     LOGGER.debug(f"Unsupported format: {file_name}")
                     continue
 
