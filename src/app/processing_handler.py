@@ -28,7 +28,17 @@ def is_valid_file(file: Path) -> bool:
     :return: Vrai si le fichier est valide, faux sinon.
     :rtype: bool
     """
-    return file.suffix.lower() in {".csv", ".txt", ".xyz", ".geojson"}
+    extension = file.suffix.lower()
+
+    # Vérifier les extensions connues
+    if extension in {".csv", ".txt", ".xyz", ".geojson"}:
+        return True
+
+    # Vérifier si l'extension est un nombre (ex: .1, .2, .3)
+    if extension.startswith(".") and extension[1:].isdigit():
+        return True
+
+    return False
 
 
 def get_files(paths: Iterable[Path]) -> list[Path]:
