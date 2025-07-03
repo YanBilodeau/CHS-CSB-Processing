@@ -272,6 +272,11 @@ class DataParserABC(ABC):
         """
         parser = cls()
         data_geodataframe: gpd.GeoDataFrame = parser.read_files(files=files)
+
+        if data_geodataframe.empty:
+            LOGGER.warning("Aucune donnée trouvée dans les fichiers.")
+            return data_geodataframe
+
         data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = parser.transform(
             data=data_geodataframe
         )
