@@ -137,10 +137,7 @@ def get_header(
         LOGGER.debug(f"Le fichier {file} n'a pas d'entête.")
 
         return None
-    print(header)
-    print(header.columns)
-    for c in header.columns:
-        print(c, type(c))
+
     LOGGER.debug(f"Entête du fichier {file} : {header.columns.tolist()}.")
 
     return tuple(header.columns.tolist())
