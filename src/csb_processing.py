@@ -802,6 +802,10 @@ def processing_workflow(
         parser_files.parser.from_files(files=parser_files.files)
     )
 
+    if data.empty:
+        LOGGER.warning(f"Aucune donnée valide à traiter.")
+        return None
+
     # Clean the data
     LOGGER.info(f"Nettoyage et filtrage des données.")
     data = cleaner.clean_data(data, data_filter_config=processing_config.filter)
@@ -878,7 +882,7 @@ def processing_workflow(
 
     excluded_stations: list[str] = []
     wl_combineds_dict: dict[
-        str, list[pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]
+        str, list[pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]  # type: ignore
     ] = defaultdict(list)
 
     last_run_stations: list[str] = []
