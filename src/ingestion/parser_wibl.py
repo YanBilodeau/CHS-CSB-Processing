@@ -3,7 +3,7 @@ Module permettant de parser les données de type WIBL.
 """
 
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 import json
 
 import geopandas as gpd
