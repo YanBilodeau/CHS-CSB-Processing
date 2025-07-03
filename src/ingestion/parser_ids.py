@@ -98,18 +98,35 @@ DEPTH_B12_CSB: str = "depth"
 TIME_B12_CSB: str = "time"
 """Valeur de la constante pour la colonne de temps des données B12-CSB."""
 
+# Constantes pour les noms des colonnes des données WIBL.
+WIBL: str = "WIBL"
+
 # Constantes pour les dtypes des données.
 FLOAT64: str = "float64"
 """Valeur de la constante pour le type de données float64."""
 EPSG_WGS84: str = "EPSG:4326"
 """Valeur de la constante pour le code EPSG 4326."""
 
-# Constantes pour les extensions de fichier.
-EXTENSION_CSV: str = ".csv"
-"""Valeur de la constante pour l'extension de fichier CSV."""
-EXTENSION_XYZ: str = ".xyz"
-"""Valeur de la constante pour l'extension de fichier XYZ."""
-EXTENSION_TXT: str = ".TXT"
-"""Valeur de la constante pour l'extension de fichier TXT."""
-EXTENSION_GEOJSON: str = ".geojson"
-"""Valeur de la constante pour l'extension de fichier GeoJSON."""
+# Constantes pour les extensions de fichier (patterns regex).
+EXTENSION_CSV: str = r"\.csv$"
+"""Pattern regex pour l'extension de fichier CSV."""
+EXTENSION_XYZ: str = r"\.xyz$"
+"""Pattern regex pour l'extension de fichier XYZ."""
+EXTENSION_TXT: str = r"\.TXT$"
+"""Pattern regex pour l'extension de fichier TXT."""
+EXTENSION_GEOJSON: str = r"\.geojson$"
+"""Pattern regex pour l'extension de fichier GeoJSON."""
+EXTENSION_WIBL: str = r"\.\d+$"
+"""Pattern regex pour l'extension de fichier WIBL (extension numérique)."""
+
+# Constantes pour les valeurs normalisées des extensions
+NORMALIZED_CSV: str = ".csv"
+"""Valeur normalisée pour l'extension CSV."""
+NORMALIZED_XYZ: str = ".xyz"
+"""Valeur normalisée pour l'extension XYZ."""
+NORMALIZED_TXT: str = ".TXT"
+"""Valeur normalisée pour l'extension TXT."""
+NORMALIZED_GEOJSON: str = ".geojson"
+"""Valeur normalisée pour l'extension GeoJSON."""
+NORMALIZED_WIBL: str = ".wibl"
+"""Valeur normalisée pour l'extension WIBL."""
