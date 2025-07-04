@@ -18,7 +18,7 @@ from app import (
     ThemeManager,
     Validator,
     UIRunner,
-    FileSelectionComponent,
+    FileSelectionComponentNative,
     OptionsComponent,
     HeaderComponent,
     ProcessingHandler,
@@ -29,58 +29,47 @@ from app import (
     StatusSection,
     LogSection,
     GuiType,
+    DependencyContainer,
 )
+
 
 LOGGER = logger.bind(name="CSB-Processing.UI")
 
 
 class CSBProcessingUI:
-    def __init__(self):
-        # Configuration management
-        self.config_manager = ConfigManager()
+    def __init__(
+        self,
+        config_manager: ConfigManager,
+        file_manager: FileManager,
+        validator: Validator,
+        theme_manager: ThemeManager,
+        file_operations: FileOperations,
+        log_handler: UILogHandler,
+        log_display: LogDisplay,
+        status_display: StatusDisplay,
+        ui_event_handler: UIEventHandler,
+        file_display: FileDisplay,
+        file_selection_component: FileSelectionComponentNative,
+    ):
+        # Injection des dépendances
+        self.config_manager = config_manager
+        self.file_manager = file_manager
+        self.validator = validator
+        self.theme_manager = theme_manager
+        self.file_operations = file_operations
+        self.log_handler = log_handler
+        self.log_display = log_display
+        self.status_display = status_display
+        self.ui_event_handler = ui_event_handler
+        self.file_display = file_display
+        self.file_selection_component = file_selection_component
 
-        # File management
-        self.file_manager = FileManager()
+        # Configuration du callback pour file_display
+        self.file_display.remove_callback = self.remove_file
 
-        # Initialize validation
-        self.validator = Validator(self.file_manager.get_files, self.config_manager)
-
-        # Theme management
-        self.theme_manager = ThemeManager(dark_mode=True)
-
-        # File operations
-        self.file_operations = FileOperations(
-            self.config_manager, self.file_manager, self.validator
-        )
-
-        # Log handling
-        self.log_handler = UILogHandler()
-        self.log_handler.setup_logger()
-        self.log_display = LogDisplay(self.log_handler)
-
-        # UI elements
-        self.status_display = StatusDisplay()
+        # État interne
         self.main_container = None
-
-        # Processing handler
         self.processing_handler = None
-
-        # Event handler
-        self.ui_event_handler = UIEventHandler(
-            self.config_manager,
-            self.file_operations,
-            self.validator,
-            log_display=self.log_display,
-        )
-
-        # Initialize UI components
-        self.file_display = FileDisplay(
-            get_files_callback=self.file_manager.get_files,
-            remove_callback=self.remove_file,
-        )
-        self.file_selection_component = FileSelectionComponent(
-            self.file_manager, self.validator, self.file_display
-        )
 
     def remove_file(self, file_info: dict[str, Any]):
         """Remove a file from the upload list."""
@@ -130,7 +119,25 @@ class CSBProcessingUI:
 
 def main():
     """Main function to run the application."""
-    runner = UIRunner(main_ui=CSBProcessingUI(), gui=GuiType.NATIVE)
+    # Configuration du conteneur de dépendances
+    container = DependencyContainer()
+
+    # Création de l'UI avec injection de dépendances
+    main_ui = CSBProcessingUI(
+        config_manager=container.get_config_manager(),
+        file_manager=container.get_file_manager(),
+        validator=container.get_validator(),
+        theme_manager=container.get_theme_manager(),
+        file_operations=container.get_file_operations(),
+        log_handler=container.get_log_handler(),
+        log_display=container.get_log_display(),
+        status_display=container.get_status_display(),
+        ui_event_handler=container.get_ui_event_handler(),
+        file_display=container.get_file_display(),
+        file_selection_component=container.get_file_selection_component(),
+    )
+
+    runner = UIRunner(main_ui=main_ui, gui=GuiType.NATIVE)
 
     try:
         runner.run()

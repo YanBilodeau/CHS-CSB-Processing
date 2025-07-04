@@ -17,6 +17,7 @@ from .processing_handler import ProcessingHandler
 from .ui_events import UIEventHandler
 from .ui_validation import Validator
 from .runner import UIRunner, GuiType
+from .dependancy_container import DependencyContainer
 
 
 __all__ = [
@@ -40,4 +41,5 @@ __all__ = [
     "LogSection",
     "UIRunner",
     "GuiType",
+    "DependencyContainer",
 ]
