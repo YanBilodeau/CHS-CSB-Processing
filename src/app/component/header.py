@@ -34,6 +34,5 @@ class HeaderComponent:
         ui.markdown(
             """
         This application allows you to process CSB bathymetric data files and georeference them.
-        Select files (.csv, .txt, .xyz, .geojson) to get started.
         """
         ).classes("text-center text-gray-600 mb-6")
