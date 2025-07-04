@@ -2,12 +2,19 @@
 Application runner for CSB Processing UI.
 """
 
+from enum import StrEnum
 from typing import Protocol
 
 from loguru import logger
-from nicegui import ui
+from nicegui import ui, app
 
 from . import network_helper
+
+
+LOGGER = logger.bind(name="CSB-Processing.Runner")
+
+app.native.window_args["maximized"] = True
+app.native.window_args["shadow"] = True
 
 
 class MainUIProtocol(Protocol):
@@ -18,18 +25,23 @@ class MainUIProtocol(Protocol):
         ...
 
 
-LOGGER = logger.bind(name="CSB-Processing.Runner")
+class GuiType(StrEnum):
+    """Enumeration for GUI types."""
+
+    WEB = "web"
+    NATIVE = "native"
 
 
 class UIRunner:
     """Runner for the CSB Processing UI application."""
 
-    def __init__(self, main_ui: MainUIProtocol) -> None:
+    def __init__(self, main_ui: MainUIProtocol, gui: GuiType) -> None:
         """
         Initialize the UIRunner with the main UI component.
 
         """
         self.app = main_ui
+        self.gui = gui
 
     def run(self) -> None:
         """Run the CSB Processing UI application."""
@@ -45,6 +57,7 @@ class UIRunner:
                 show=True,
                 reload=False,
                 favicon="🌊",
+                window_size=(1024, 1080) if self.gui == GuiType.NATIVE else None,
             )
 
         except Exception as e:

@@ -4,6 +4,8 @@ This module provides a web graphical interface for processing bathymetric data f
 It allows executing the same functionalities as the CLI but through a web interface.
 """
 
+from typing import Any
+
 from loguru import logger
 from nicegui import ui
 
@@ -26,6 +28,7 @@ from app import (
     ProcessingSection,
     StatusSection,
     LogSection,
+    GuiType,
 )
 
 LOGGER = logger.bind(name="CSB-Processing.UI")
@@ -79,7 +82,7 @@ class CSBProcessingUI:
             self.file_manager, self.validator, self.file_display
         )
 
-    def remove_file(self, file_info):
+    def remove_file(self, file_info: dict[str, Any]):
         """Remove a file from the upload list."""
         return self.ui_event_handler.remove_file(
             file_info, self.file_selection_component
@@ -127,7 +130,7 @@ class CSBProcessingUI:
 
 def main():
     """Main function to run the application."""
-    runner = UIRunner(CSBProcessingUI())
+    runner = UIRunner(main_ui=CSBProcessingUI(), gui=GuiType.NATIVE)
 
     try:
         runner.run()
