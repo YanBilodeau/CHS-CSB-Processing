@@ -10,7 +10,9 @@ class FileDisplay:
     """Component for displaying selected files."""
 
     def __init__(
-        self, get_files_callback: Callable[[], list[dict]], remove_callback: Callable
+        self,
+        get_files_callback: Callable[[], list[dict]],
+        remove_callback: Callable | None = None,
     ) -> None:
         self.get_files: Callable[[], list[dict]] = get_files_callback
         self.remove_callback: Callable = remove_callback
