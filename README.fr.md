@@ -42,7 +42,7 @@ de données bathymétriques. Il couvre chaque paramètre et fournit des exemples
 ## Description
 
 Ce module est conçu pour automatiser le traitement des fichiers de données bathymétriques. Il permet de :
-- Identifier et charger les fichiers appropriés (CSV, TXT, XYZ).
+- Identifier et charger les fichiers appropriés (CSV, TXT, XYZ, GeoJSON).
 - Effectuer un géoréférencement basé sur des configurations spécifiques.
 - Gérer les identifiants de navires et les configurations associées.
 
@@ -53,8 +53,9 @@ Les formats de fichiers pris en charge sont les suivants :
             `DateTime[UTC]` dans l'entête. Ces fichiers sont le résultat des fichiers `SL3` de Lowrance exportés par 
             l'outil [SL3Reader](https://github.com/halmaia/SL3Reader).
 - Actisense : à venir.
-  - BlackBox : extension `.TXT` sans entête avec les colonnes dans l'ordre `Time`, `Date`, `Latitude`, `Longitude`, `Speed (km/h)` 
-            et `Depth (m)`.
+- BlackBox : extension `.TXT` sans entête avec les colonnes dans l'ordre `Time`, `Date`, `Latitude`, `Longitude`, `Speed (km/h)` 
+          et `Depth (m)`.
+- [WIBL](https://github.com/CCOMJHC/WIBL/tree/main) : extension numérique (ex: `.1`, `.2`, `.3`, etc.).
 
 ---
 
@@ -272,6 +273,13 @@ max_longitude = 180
 # max_speed = 30
 min_depth = 0
 # max_depth = 1000 # Valeur maximale de profondeur (désactivée par défaut).
+filter_to_apply = [
+  "LATITUDE_FILTER",
+  "LONGITUDE_FILTER",
+  "TIME_FILTER",
+  "SPEED_FILTER",
+  "DEPTH_FILTER"
+]
 
 [DATA.Georeference.water_level]
 water_level_tolerance = "15 min"  # Tolérance en pour le géoréférencement des niveaux d'eau.
@@ -312,7 +320,9 @@ args = []  # Arguments supplémentaires pour l'exportation au format CSAR.
 - `[IWLS.API.Cache]` (Optionnel) : Définit la gestion du cache.
   - `ttl` : Durée de vie des données en cache (en secondes).
   - `cache_path` : Répertoire pour le stockage du cache.
-- `[DATA.Transformation.filter]` (Optionnel) : Définit les limites géographiques, de profondeur et de vitesse pour filtrer les données.
+- `[DATA.Transformation.filter]` (Optionnel) : Définit les limites géographiques, de profondeur et de vitesse pour tagger les données incohérentes.
+  - `filter_to_apply` : Liste des filtres à appliquer. Les données sont directement rejectées si le filtre est appliqué, sinon les données sont simplement taggées. Les filtres disponibles sont : `LATITUDE_FILTER` (Filtre de latitude), `LONGITUDE_FILTER` (Filtre de longitude), `TIME_FILTER` (Filtre de temps), `SPEED_FILTER` (Filtre de vitesse).
+    - `DEPTH_FILTER` : Filtre de profondeur.
 - `[DATA.Georeference.water_level]` (Optionnel) : Définit la tolérance pour le géoréférencement basé sur les niveaux d'eau. (format : `"<nombre> <unité>"`, ex. : `"15 min"`).
 - `[CSB.Processing.vessel]` (Optionnel) : Configure le gestionnaire et le fichier des navires. Obligatoire seulement si vous utilisez des navires pour le géoréférencement.
   - `manager_type` : Type de gestionnaire de navires (ex. : `"VesselConfigJsonManager"`).

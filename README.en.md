@@ -42,7 +42,7 @@ bathymetric data files. It covers every parameter and provides practical example
 ## Description
 
 This module is designed to automate the processing of bathymetric data files. It allows you to:
-- Identify and load appropriate files (CSV, TXT, XYZ).
+- Identify and load appropriate files (CSV, TXT, XYZ, GeoJSON).
 - Perform georeferencing based on specific configurations.
 - Manage vessel identifiers and associated configurations.
 
@@ -54,6 +54,7 @@ The supported file formats are as follows:
             the tool [SL3Reader](https://github.com/halmaia/SL3Reader).
 - Actisense: coming soon.
 - BlackBox: `.TXT` extension without header with columns in the order `Time`, `Date`, `Latitude`, `Longitude`, `Speed (km/h)` and `Depth (m)`.
+- [WIBL](https://github.com/CCOMJHC/WIBL/tree/main): numeric extension (e.g., `.1`, `.2`, `.3`, etc.).
 
 ---
 
@@ -267,6 +268,13 @@ max_longitude = 180
 # max_speed = 30
 min_depth = 0
 # max_depth = 1000 # Maximum depth value (disabled by default).
+filter_to_apply = [
+  "LATITUDE_FILTER",
+  "LONGITUDE_FILTER",
+  "TIME_FILTER",
+  "SPEED_FILTER",
+  "DEPTH_FILTER"
+]
 
 [DATA.Georeference.water_level]
 water_level_tolerance = "15 min"  # Tolerance for georeferencing water levels.
@@ -307,7 +315,8 @@ args = []  # Additional arguments for exporting data in CSAR format.
 - `[IWLS.API.Cache]` (Optional): Defines cache management.
   - `ttl`: Cache data lifetime (in seconds).
   - `cache_path`: Directory for cache storage.
-- `[DATA.Transformation.filter]` (Optional): Defines geographic, depth and speed limits for filtering data.
+- `[DATA.Transformation.filter]` (Optional): Defines geographic, depth and speed limits for tagging inconsistent data.
+  - `filter_to_apply`: List of filters to apply. Data is directly rejected if the filter is applied, otherwise data is simply tagged. Available filters are: `LATITUDE_FILTER` (Latitude filter), `LONGITUDE_FILTER` (Longitude filter), `TIME_FILTER` (Time filter), `SPEED_FILTER` (Speed filter), `DEPTH_FILTER`: Depth filter.
 - `[DATA.Georeference.water_level]` (Optional): Defines tolerance for georeferencing based on water levels (format: `"<number> <unit>"`, e.g., `"15 min"`).
 - `[CSB.Processing.vessel]` (Optional): Configures the vessel manager and vessel file. Required only if you use vessels for georeferencing.
   - `manager_type`: Type of vessel manager (e.g., `"VesselConfigJsonManager"`).
