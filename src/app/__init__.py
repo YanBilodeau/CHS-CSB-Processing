@@ -3,7 +3,10 @@ from .component.log_display import LogDisplay
 from .component.status_display import StatusDisplay
 from .component.theme_manager import ThemeManager
 from .component.header import HeaderComponent
-from .component.file_selection_component import FileSelectionComponent
+from .component.file_selection_component import (
+    FileSelectionComponentNative,
+    FileSelectionComponentWeb,
+)
 from .component.options_component import OptionsComponent
 from .component.ui_sections import ProcessingSection, StatusSection, LogSection
 from .config_manager import ConfigManager
@@ -24,7 +27,8 @@ __all__ = [
     "ThemeManager",
     "LogDisplay",
     "Validator",
-    "FileSelectionComponent",
+    "FileSelectionComponentNative",
+    "FileSelectionComponentWeb",
     "OptionsComponent",
     "HeaderComponent",
     "ConfigManager",
