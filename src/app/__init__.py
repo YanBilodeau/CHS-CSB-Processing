@@ -13,7 +13,7 @@ from .log_handler import UILogHandler
 from .processing_handler import ProcessingHandler
 from .ui_events import UIEventHandler
 from .ui_validation import Validator
-from .runner import UIRunner
+from .runner import UIRunner, GuiType
 
 
 __all__ = [
@@ -35,4 +35,5 @@ __all__ = [
     "StatusSection",
     "LogSection",
     "UIRunner",
+    "GuiType",
 ]
