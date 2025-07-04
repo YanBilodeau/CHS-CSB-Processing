@@ -15,6 +15,8 @@ class FileManager:
     """Handles file operations for the application."""
 
     ALLOWED_EXTENSIONS = {".csv", ".txt", ".xyz", ".geojson"}
+    # This set contains the allowed file extensions for bathymetric data files.
+    # WIBL files are not included in the allowed extensions, as they are handled separately wwith _is_numeric_extension.
 
     def __init__(self) -> None:
         self.files: list[dict[str, Any]] = []
