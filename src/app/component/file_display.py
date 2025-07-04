@@ -46,6 +46,8 @@ class FileDisplay:
                 for file_info in files:
                     self._create_file_card(file_info)
 
+        ui.update()
+
     def _create_file_card(self, file_info: dict) -> None:
         """Create a card for a single file."""
         with ui.card().classes("w-full p-3 border-l-4 border-blue-400"):
