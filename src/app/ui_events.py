@@ -2,8 +2,11 @@
 UI Event Handler for CSB-Processing
 """
 
+from typing import Any
+
 from loguru import logger
 
+from .component.file_selection_component import FileSelectionComponentProtocol
 from .component.log_display import LogDisplay
 from .component.notifications import show_notification
 from .config_manager import ConfigManager
@@ -26,7 +29,11 @@ class UIEventHandler:
         self.validator = validator
         self.log_display = log_display
 
-    def remove_file(self, file_info, file_selection_component) -> None:
+    def remove_file(
+        self,
+        file_info: dict[str, Any],
+        file_selection_component: FileSelectionComponentProtocol,
+    ) -> None:
         """Remove a file from the upload list."""
         try:
             no_files_remaining = self.file_operations.remove_file(file_info)
