@@ -2,11 +2,10 @@
 UI Event Handler for CSB-Processing
 """
 
-from typing import Any
+from typing import Any, Protocol
 
 from loguru import logger
 
-from .component.file_selection_component import FileSelectionComponentProtocol
 from .component.log_display import LogDisplay
 from .component.notifications import show_notification
 from .config_manager import ConfigManager
@@ -14,6 +13,14 @@ from .file_operations import FileOperations
 from .ui_validation import Validator
 
 LOGGER = logger.bind(name="CSB-Processing.UI.Events")
+
+
+class FileSelectionComponentProtocol(Protocol):
+    """Protocol for file selection component."""
+
+    def set_warning_visible(self, visible: bool) -> None:
+        """Set the visibility of the warning label."""
+        ...
 
 
 class UIEventHandler:
