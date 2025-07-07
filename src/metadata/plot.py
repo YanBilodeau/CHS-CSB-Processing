@@ -416,7 +416,9 @@ def plot_metadata(
     )
     df.columns = ["Metadata", "Value"]
 
-    fig.add_trace(create_table_data(df, ["Metadata", "Value"]), row=1, col=1)
+    metadata_table: go.Table = create_table_data(df, ["Metadata", "Value"])
+    metadata_fig: go.Figure = go.Figure(data=[metadata_table])
+    fig.add_trace(metadata_table, row=1, col=1)
 
     statistic: dict[OrderEnum, dict[str, float | int]] = {}
     for key, value in metadata["IHO Order Statistic"].items():
@@ -456,8 +458,11 @@ def plot_metadata(
         fig.show()
     if output_path:
         fig.write_html(output_path.with_suffix(".html"))
-        fig.write_image(
-            output_path.with_suffix(".pdf"), height=2800, width=1800, scale=2
+        metadata_fig.write_image(
+            output_path.with_suffix(".pdf"),
+            height=1400,
+            width=850,
+            scale=2,
         )
 
     return fig
