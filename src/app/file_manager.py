@@ -4,9 +4,13 @@ File management utilities for the CSB Processing application.
 
 import tkinter as tk
 from tkinter import filedialog
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable
+
+from nicegui import app
 from loguru import logger
+import webview
 
 LOGGER = logger.bind(name="CSB-Processing.FileManager")
 
@@ -27,65 +31,27 @@ class FileManager:
         return extension.startswith(".") and extension[1:].isdigit()
 
     @staticmethod
-    def open_file_dialog() -> list[str]:
-        """Open file selection dialog and return selected file paths."""
-        try:
-            # Create a root window and hide it
-            root = tk.Tk()
-            root.withdraw()
-            root.attributes("-topmost", True)
-
-            # Define file types
-            filetypes: list[tuple[str, str]] = [
-                ("Data files", "*.csv;*.txt;*.xyz;*.geojson"),
-                ("CSV files", "*.csv"),
-                ("Text files", "*.txt"),
-                ("XYZ files", "*.xyz"),
-                ("GeoJSON files", "*.geojson"),
-                ("WIBL files", "*.*"),
-                ("All files", "*.*"),
-            ]
-
-            # Open file dialog
-            selected_files = filedialog.askopenfilenames(
-                title="Select bathymetric data files",
-                filetypes=filetypes,
-                parent=root,
-            )
-
-            # Destroy the root window
-            root.destroy()
-
-            return list(selected_files) if selected_files else []
-
-        except Exception as ex:
-            LOGGER.error(f"Error opening file dialog: {ex}")
-            raise
-
-    @staticmethod
-    def open_directory_dialog(initial_dir: str = None) -> str:
+    async def open_directory_dialog(initial_dir: str = "") -> str:
         """Open directory selection dialog and return selected directory."""
         try:
-            # Create a root window and hide it
-            root = tk.Tk()
-            root.withdraw()
-            root.attributes("-topmost", True)
-
-            # Open directory dialog
-            selected_directory = filedialog.askdirectory(
-                title="Select output directory",
-                parent=root,
-                initialdir=initial_dir,
+            result = await app.native.main_window.create_file_dialog(
+                dialog_type=webview.FOLDER_DIALOG,
+                allow_multiple=True,
+                directory=initial_dir,
             )
 
-            # Destroy the root window
-            root.destroy()
+            if result:
+                if isinstance(result, Sequence) and len(result) > 0:
+                    return str(result[0])
 
-            return selected_directory if selected_directory else ""
+                return str(result)
+
+            return ""
 
         except Exception as ex:
             LOGGER.error(f"Error opening directory dialog: {ex}")
-            raise
+
+            return ""
 
     @staticmethod
     def open_config_dialog(initial_dir: str = None) -> str:
@@ -119,7 +85,7 @@ class FileManager:
             LOGGER.error(f"Error opening config file dialog: {ex}")
             raise
 
-    def add_files(self, file_paths: list[str]) -> int:
+    def add_files(self, file_paths: Iterable[Path]) -> int:
         """Add files to the collection and return number of added files."""
         added_count: int = 0
 
