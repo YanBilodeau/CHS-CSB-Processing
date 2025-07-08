@@ -2,8 +2,6 @@
 File management utilities for the CSB Processing application.
 """
 
-import tkinter as tk
-from tkinter import filedialog
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, Iterable
@@ -54,32 +52,26 @@ class FileManager:
             return ""
 
     @staticmethod
-    def open_config_dialog(initial_dir: str = None) -> str:
+    async def open_config_dialog(initial_dir: str = "") -> str:
         """Open config file selection dialog and return selected file."""
         try:
-            # Create a root window and hide it
-            root = tk.Tk()
-            root.withdraw()
-            root.attributes("-topmost", True)
-
             # Define file types for TOML files
-            filetypes: list[tuple[str, str]] = [
-                ("TOML files", "*.toml"),
-                ("All files", "*.*"),
+            file_types: list[str] = [
+                "TOML files (*.toml)",
+                "All files (*.*)",
             ]
-
-            # Open file dialog
-            selected_file = filedialog.askopenfilename(
-                title="Select TOML configuration file",
-                filetypes=filetypes,
-                parent=root,
-                initialdir=initial_dir,
+            result = await app.native.main_window.create_file_dialog(
+                directory=initial_dir,
+                file_types=file_types,
             )
 
-            # Destroy the root window
-            root.destroy()
+            if result:
+                if isinstance(result, Sequence) and len(result) > 0:
+                    return str(result[0])
 
-            return selected_file if selected_file else ""
+                return str(result)
+
+            return ""
 
         except Exception as ex:
             LOGGER.error(f"Error opening config file dialog: {ex}")
