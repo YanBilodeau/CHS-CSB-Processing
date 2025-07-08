@@ -5,17 +5,13 @@ Contains all protocol definitions for type checking and interface contracts.
 """
 
 from pathlib import Path
-from typing import Protocol
+from typing import Protocol, Collection
 
 
 class FileManagerProtocol(Protocol):
     """Protocol for file management operations."""
 
-    def open_file_dialog(self) -> list[str]:
-        """Open a file dialog and return selected file paths."""
-        ...
-
-    def add_files(self, file_paths: list[str]) -> int:
+    def add_files(self, file_paths: Collection[Path]) -> int:
         """Add files to the manager and return the count of added files."""
         ...
 
@@ -75,7 +71,7 @@ class EventHandlerProtocol(Protocol):
         """Update the configuration path."""
         ...
 
-    def select_output_directory(self) -> str:
+    async def select_output_directory(self) -> str:
         """Select an output directory and return the path."""
         ...
 
