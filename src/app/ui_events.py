@@ -62,13 +62,15 @@ class UIEventHandler:
         """Update config_path when input changes."""
         self.config_manager.update_config_path(path)
 
-    def select_output_directory(self) -> str:
+    async def select_output_directory(self) -> str:
         """Select output directory and return the selected path."""
         try:
-            selected_path = self.file_operations.select_output_directory()
+            selected_path = await self.file_operations.select_output_directory()
             if selected_path:
                 return selected_path
+
             return ""
+
         except Exception as ex:
             LOGGER.error(f"Error in select_output_directory: {ex}")
             if self.log_display:

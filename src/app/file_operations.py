@@ -49,13 +49,13 @@ class FileOperations:
         """Get files from file manager - delegation method."""
         return self.file_manager.get_files()
 
-    def select_output_directory(self, output_warning_label=None) -> str | None:
+    async def select_output_directory(self, output_warning_label=None) -> str | None:
         """Open directory selection dialog."""
         try:
-            selected_directory = self.file_manager.open_directory_dialog(
+            selected_directory = await self.file_manager.open_directory_dialog(
                 str(self.config_manager.output_path)
                 if self.config_manager.output_path != Path()
-                else None
+                else ""
             )
 
             if selected_directory:

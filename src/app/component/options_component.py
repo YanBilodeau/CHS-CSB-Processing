@@ -47,10 +47,10 @@ class OptionsComponent:
         """Handle config path change."""
         self.ui_event_handler.update_config_path(e.args[0])
 
-    def _handle_select_output_directory(self):
+    async def _handle_select_output_directory(self):
         """Handle output directory selection."""
         try:
-            selected_path = self.ui_event_handler.select_output_directory()
+            selected_path = await self.ui_event_handler.select_output_directory()
             if selected_path and self.output_input:
                 self.output_input.value = selected_path
                 # Cacher le label d'avertissement si un chemin valide est sélectionné
