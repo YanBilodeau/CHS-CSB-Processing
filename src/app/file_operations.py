@@ -84,13 +84,13 @@ class FileOperations:
             )
             return None
 
-    def select_config_file(self) -> str | None:
+    async def select_config_file(self) -> str | None:
         """Open config file selection dialog."""
         try:
-            selected_file = self.file_manager.open_config_dialog(
-                self.config_manager.config_path.parent
+            selected_file = await self.file_manager.open_config_dialog(
+                str(self.config_manager.config_path.parent)
                 if self.config_manager.config_path != Path()
-                else None
+                else ""
             )
 
             if selected_file:

@@ -63,12 +63,13 @@ class OptionsComponent:
                 f"Error opening directory dialog: {str(ex)}", type="negative"
             )
 
-    def _handle_select_config_file(self):
+    async def _handle_select_config_file(self) -> None:
         """Handle config file selection."""
         try:
-            selected_path = self.ui_event_handler.select_config_file()
+            selected_path = await self.ui_event_handler.select_config_file()
             if selected_path and self.config_input:
                 self.config_input.value = selected_path
+
         except Exception as ex:
             LOGGER.error(f"Error in select_config_file: {ex}")
             ui.notification(f"Error opening file dialog: {str(ex)}", type="negative")

@@ -77,13 +77,15 @@ class UIEventHandler:
                 self.log_display.show()
             raise
 
-    def select_config_file(self) -> str:
+    async def select_config_file(self) -> str:
         """Select config file and return the selected path."""
         try:
-            selected_path = self.file_operations.select_config_file()
+            selected_path = await self.file_operations.select_config_file()
             if selected_path:
                 return selected_path
+
             return ""
+
         except Exception as ex:
             LOGGER.error(f"Error in select_config_file: {ex}")
             if self.log_display:
