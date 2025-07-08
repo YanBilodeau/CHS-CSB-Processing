@@ -6,7 +6,7 @@ Contains the FileSelectionComponent for handling file selection functionality.
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Generator
+from typing import Generator, Collection
 import tempfile
 
 from nicegui import ui, app, events
@@ -118,7 +118,7 @@ class FileSelectionComponentNative(FileSelectionComponentABC):
             LOGGER.error(f"Error opening file dialog: {ex}")
             ui.notification(f"Error opening file dialog: {str(ex)}", type="negative")
 
-    def _add_selected_files(self, file_paths):
+    def _add_selected_files(self, file_paths: Collection[Path]):
         """Add selected files from dialog."""
         try:
             added_count = self.file_manager.add_files(file_paths)
@@ -259,7 +259,7 @@ class FileSelectionComponentWeb(FileSelectionComponentABC):
         except Exception as ex:
             LOGGER.error(f"Error saving uploaded file {file_info.name}: {ex}")
 
-    def _add_uploaded_files(self, file_paths):
+    def _add_uploaded_files(self, file_paths: Collection[Path]):
         """Add uploaded files to file manager."""
         try:
             added_count = self.file_manager.add_files(file_paths)
