@@ -64,9 +64,9 @@ ttl = 604800
 cache_path = "./cache"
 
 [DATA.Transformation.filter]
-# Valeurs minimales et maximales de latitude, longitude et vitesse pour filtrer les données {int, float}.
+# Valeurs minimales et maximales de latitude, longitude et vitesse pour tagger les données {int, float}.
 # Commenter les lignes suivantes pour utiliser les valeurs par défaut.
-# Minimum and maximum latitude, longitude and speed values for filtering data {int, float}.
+# Minimum and maximum latitude, longitude and speed values for tagging data {int, float}.
 # Comment out the following lines to use the default values.
 min_latitude = -90
 max_latitude = 90
@@ -74,19 +74,21 @@ min_longitude = -180
 max_longitude = 180
 min_speed = 0
 max_speed = 30
-# Valeurs minimales et maximales de profondeur pour filtrer les données {int, float}
-# Minimum and maximum depth values for filtering data {int, float}
+# Valeurs minimales et maximales de profondeur pour tagger les données {int, float}
+# Minimum and maximum depth values for taffing data {int, float}
 min_depth = 0
 # Ce paramètre est désactivé par défaut.
 # This parameter is disabled by default.
-# max_depth = 1000
+max_depth = 15000
 # Liste des filtres à appliquer sur les données. Supprime directement les données qui ne passent pas le filtre.
 # List of filters to apply on the data. Directly removes data that does not pass the filter.
 # {"SPEED_FILTER", "LATITUDE_FILTER", "LONGITUDE_FILTER", "TIME_FILTER", "DEPTH_FILTER"}.
 filter_to_apply = [
     "LATITUDE_FILTER",
     "LONGITUDE_FILTER",
-    "TIME_FILTER"
+    "TIME_FILTER",
+    "SPEED_FILTER",
+    "DEPTH_FILTER",
 ]
 
 [DATA.Georeference.water_level]
