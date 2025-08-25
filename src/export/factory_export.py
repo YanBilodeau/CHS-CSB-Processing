@@ -28,12 +28,12 @@ class FileTypes(StrEnum):
     Enumération des types de fichiers de sortie.
     """
 
-    GEOJSON: str = "geojson"
-    GPKG: str = "gpkg"
-    CSAR: str = "csar"
-    PARQUET: str = "parquet"
-    FEATHER: str = "feather"
-    CSV: str = "csv"
+    GEOJSON = "geojson"
+    GPKG = "gpkg"
+    CSAR = "csar"
+    PARQUET = "parquet"
+    FEATHER = "feather"
+    CSV = "csv"
 
 
 @dataclass(frozen=True)
