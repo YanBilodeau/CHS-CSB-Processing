@@ -1022,12 +1022,14 @@ def processing_workflow(
         return None
 
     elif not nan_sonding:
-        LOGGER.success(f"{not_nan_sonding} sondes ont été réduites au zéro des cartes.")
+        LOGGER.success(
+            f"{not_nan_sonding:,} sondes ont été réduites au zéro des cartes."
+        )
 
     else:
         LOGGER.info(
-            f"{not_nan_sonding} sondes ont été réduites au zéro des cartes. "
-            f"{nan_sonding} sondes sont sans niveau d'eau pour la réduction."
+            f"{not_nan_sonding:,} sondes ont été réduites au zéro des cartes. "
+            f"{nan_sonding:,} sondes sont sans niveau d'eau pour la réduction."
         )
 
     # Plot the water level data for each station
