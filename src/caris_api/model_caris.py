@@ -13,3 +13,4 @@ class CarisConfigProtocol(Protocol):
     python_version: str
     python_path: Path
     caris_batch: Path
+    args: list[str]
