@@ -6,32 +6,19 @@ de différents formats.
 """
 
 from pathlib import Path
-import re
 from typing import Optional, Any
 
 import geopandas as gpd
 import pandas as pd
 from loguru import logger
 
+from .crs import transform_geodataframe_crs
+from .path import sanitize_path_name
+from . import geotiff
+
+
 LOGGER = logger.bind(name="CSB-Processing.Export")
 WGS84 = 4326
-
-
-def transform_geodataframe_crs(geodataframe: gpd.GeoDataFrame, to_epsg: int) -> None:
-    """
-    Fonction qui transforme le système de coordonnées d'un GeoDataFrame.
-
-    :param geodataframe: Le GeoDataFrame.
-    :type geodataframe: gpd.GeoDataFrame
-    :param to_epsg: Le code EPSG de la projection.
-    :type to_epsg: int
-    """
-    epsg_input: int = geodataframe.crs.to_epsg()
-    if to_epsg is not None and epsg_input != to_epsg:
-        LOGGER.debug(
-            f"Transformation du GeoDataFrame du EPSG:{geodataframe.crs.to_epsg()} au EPSG:{to_epsg}."
-        )
-        geodataframe.to_crs(epsg=to_epsg, inplace=True)
 
 
 def transform_additional_geometry_columns_to_wkt(
@@ -223,6 +210,39 @@ def export_geodataframe_to_feather(
     geodataframe.to_feather(sanitize_path_name(output_path))
 
 
+def export_geodataframe_to_geotiff(
+    geodataframe: gpd.GeoDataFrame,
+    output_path: Path,
+    column: str = "Depth_processed_meter",
+    resolution: float = 0.00002,
+    to_epsg: Optional[int] = WGS84,
+    **kwargs: Any,
+) -> None:
+    """
+    Exporte un GeoDataFrame en fichier GeoTIFF en rasterisant les géométries
+
+    :param geodataframe: Le GeoDataFrame à exporter.
+    :type geodataframe: gpd.GeoDataFrame
+    :param output_path: Le chemin du fichier de sortie.
+    :type output_path: Path
+    :param column: Le nom de la colonne contenant les valeurs à rasteriser.
+    :type column: str
+    :param resolution: La résolution du raster en unités de la CRS
+    :type resolution: float
+    :param to_epsg: Le code EPSG de la CRS cible
+    :type to_epsg: Optional[int]
+    :raises ValueError: Si le GeoDataFrame n'a pas de CRS défini ou si les dimensions du raster sont invalides.
+    """
+    geotiff.export_geodataframe_to_geotiff(
+        geodataframe=geodataframe,
+        output_path=output_path,
+        column=column,
+        resolution=resolution,
+        to_epsg=to_epsg,
+        **kwargs,
+    )
+
+
 def export_geodataframe_to_csar_api(
     geo_dataframe: gpd.GeoDataFrame, output_path: Path, config_caris, **kwargs
 ) -> None:
@@ -302,20 +322,3 @@ def export_dataframe_to_csv(
     LOGGER.debug(f"Sauvegarde du DataFrame en fichier CSV : '{output_path}'.")
 
     dataframe.to_csv(sanitize_path_name(output_path), index=False)
-
-
-def sanitize_path_name(path: Path) -> Path:
-    """
-    Fonction qui remplace les caractères invalides dans le nom d'un fichier.
-
-    :param path: Le chemin du fichier.
-    :type path: Path
-    :return: Le chemin du fichier avec un nom sans caractères invalides.
-    :rtype: Path
-    """
-    LOGGER.debug(f"Validation du nom du fichier : '{path.name}'.")
-
-    invalid_chars = r'[<>:"/\\|?*]'
-    sanitized_name = re.sub(invalid_chars, "_", path.name)
-
-    return path.with_name(sanitized_name)

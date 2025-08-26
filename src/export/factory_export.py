@@ -20,6 +20,7 @@ from .export_format import (
     export_geodataframe_to_feather,
     export_geodataframe_to_parquet,
     export_geodataframe_to_csv,
+    export_geodataframe_to_geotiff,
 )
 
 
@@ -34,6 +35,7 @@ class FileTypes(StrEnum):
     PARQUET = "parquet"
     FEATHER = "feather"
     CSV = "csv"
+    GEOTIFF = "geotiff"
 
 
 @dataclass(frozen=True)
@@ -68,6 +70,9 @@ FACTORY_EXPORT_GEODATAFRAME: dict[FileTypes, Exporter] = {
         extension=".feather", function=export_geodataframe_to_feather
     ),
     FileTypes.CSV: Exporter(extension=".csv", function=export_geodataframe_to_csv),
+    FileTypes.GEOTIFF: Exporter(
+        extension=".tiff", function=export_geodataframe_to_geotiff
+    ),
 }
 
 
