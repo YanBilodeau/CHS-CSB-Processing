@@ -856,7 +856,7 @@ def processing_workflow(
             datalogger_type=datalogger_type,
             config_caris=caris_api_config if caris_api_config else None,
             resolution=processing_config.export.resolution,
-            groub_by_iho_order=processing_config.options.group_by_iho_order,
+            groub_by_iho_order=processing_config.export.group_by_iho_order,
         )
 
         # Export the metadata
@@ -1059,7 +1059,7 @@ def processing_workflow(
         datalogger_type=datalogger_type,
         config_caris=caris_api_config if caris_api_config else None,
         resolution=processing_config.export.resolution,
-        groub_by_iho_order=processing_config.options.group_by_iho_order,
+        groub_by_iho_order=processing_config.export.group_by_iho_order,
     )
 
     gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema] = (

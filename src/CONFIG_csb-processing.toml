@@ -115,6 +115,9 @@ export_format = ["gpkg", "geotiff"]
 # Résolution spatiale en degrés pour les exports au format raster GeoTIFF {float}.
 # Spatial resolution in degrees for exports in GeoTIFF raster format {float}.
 resolution = 0.00005
+# Permet de séparer les fichiers exportés par ordre de levé OHI. {bool}
+# Allows to separate the exported files by OHI survey order. {bool}
+group_by_iho_order = false
 
 [CSB.Processing.options]
 # Niveau de log {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
@@ -125,9 +128,6 @@ max_iterations = 5
 # Nombre de décimales significatives à conserver pour les données traitées {int}.
 # Number of significant decimals to keep for processed data {int}.
 decimal_precision = 1
-# Permet de séparer les fichiers exportés par ordre de levé OHI. {bool}
-# Allows to separate the exported files by OHI survey order. {bool}
-group_by_iho_order = false
 
 [CARIS.Environment]
 # Cette section est utilisée pour configurer l'environnement de CARIS si vous voulez exporter les données au format *.csar.

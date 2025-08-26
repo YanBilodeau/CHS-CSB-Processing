@@ -238,6 +238,8 @@ class ExportConfig(BaseModel):
     """Les formats de fichiers pour l'exportation."""
     resolution: Optional[int | float] = RESOLUTION
     """La résolution pour l'exportation en GeoTIFF."""
+    group_by_iho_order: bool = False
+    """Grouper les données par ordre IHO pour l'exportation."""
 
     @field_validator("resolution")
     def validate_resolution(cls, value: Optional[int | float]) -> Optional[int | float]:
@@ -261,8 +263,6 @@ class OptionsConfig(BaseModel):
     """Le nombre maximal d'itérations pour le traitement."""
     decimal_precision: int = DECIMAL_PRECISION
     """La précision décimale pour les calculs."""
-    group_by_iho_order: bool = False
-    """Grouper les données par ordre IHO pour l'exportation."""
 
     @field_validator("max_iterations")
     def validate_max_iterations(cls, value: int) -> int:
