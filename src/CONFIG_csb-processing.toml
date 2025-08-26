@@ -115,8 +115,8 @@ log_level = "INFO"
 # Maximum number of iterations for reducing data to chart datum. Minimum value of 1 {int}
 max_iterations = 5
 # Liste des formats d'export des données traitées {"geojson", "gpkg", "csar", "parquet", "feather", "csv"}
-# List of export formats for processed data {"geojson", "gpkg", "csar", "parquet", "feather", "csv"}
-export_format = ["gpkg"]
+# List of export formats for processed data {"geojson", "gpkg", "csar", "parquet", "feather", "csv", "geotiff"}
+export_format = ["gpkg", "geotiff"]
 # Nombre de décimales significatives à conserver pour les données traitées {int}.
 # Number of significant decimals to keep for processed data {int}.
 decimal_precision = 1
