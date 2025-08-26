@@ -167,7 +167,7 @@ def export_geodataframe_to_geotiff(
     geodataframe: gpd.GeoDataFrame,
     output_path: Path,
     column: str = "Depth_processed_meter",
-    resolution: float = 0.00002,
+    resolution: Optional[float] = 0.00005,
     to_epsg: Optional[int] = WGS84,
     **kwargs: Any,
 ) -> None:
@@ -186,7 +186,9 @@ def export_geodataframe_to_geotiff(
     :type to_epsg: Optional[int]
     :raises ValueError: Si le GeoDataFrame n'a pas de CRS défini ou si les dimensions du raster sont invalides.
     """
-    LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier GeoTIFF : '{output_path}'.")
+    LOGGER.debug(
+        f"Sauvegarde du GeoDataFrame en fichier GeoTIFF (résolution: {resolution}) : '{output_path}'."
+    )
 
     _validate_and_transform_crs(geodataframe, to_epsg)
     width, height, transform = _compute_grid(geodataframe, resolution)
