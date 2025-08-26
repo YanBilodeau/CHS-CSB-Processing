@@ -49,6 +49,7 @@ class FileTypes(StrEnum):
     PARQUET = "parquet"
     FEATHER = "feather"
     CSV = "csv"
+    GEOTIFF = "geotiff"
 
 
 EXPORT_FORMAT: list[str] = [FileTypes.GPKG]
