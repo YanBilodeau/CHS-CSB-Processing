@@ -458,11 +458,16 @@ def plot_metadata(
         fig.show()
     if output_path:
         fig.write_html(output_path.with_suffix(".html"))
-        metadata_fig.write_image(
-            output_path.with_suffix(".pdf"),
-            height=1400,
-            width=850,
-            scale=2,
-        )
+
+        try:
+            metadata_fig.write_image(
+                output_path.with_suffix(".pdf"),
+                height=1400,
+                width=850,
+                scale=2,
+            )
+
+        except Exception as e:
+            LOGGER.error(f"Erreur lors de la sauvegarde du PDF : {e}")
 
     return fig
