@@ -469,6 +469,7 @@ def export_processed_data(
     data_geodataframe: gpd.GeoDataFrame,
     output_data_path: Path,
     file_type: export.FileTypes,
+    resolution: float,
     **kwargs,
 ) -> None:
     """
@@ -480,6 +481,8 @@ def export_processed_data(
     :type output_data_path: Path
     :param file_type: Type de fichier de sortie.
     :type file_type: FileTypes
+    :param resolution: Résolution pour les formats raster.
+    :type resolution: float
     """
     if file_type == export.FileTypes.CSAR and "config_caris" not in kwargs:
         LOGGER.warning(
@@ -495,6 +498,7 @@ def export_processed_data(
             geodataframe=data_geodataframe,
             file_type=file_type,
             output_path=output_data_path,
+            resolution=resolution,
             **kwargs,
         )
         LOGGER.success(
@@ -539,7 +543,8 @@ def export_processed_data_to_file_types(
     file_types: Collection[export.FileTypes],
     vessel_config: vessel_manager.VesselConfig,
     datalogger_type: DataLoggerType,
-    groub_by_iho_order: bool = True,
+    resolution: Optional[float] = 0.00005,
+    groub_by_iho_order: Optional[bool] = True,
     **kwargs,
 ) -> None:
     """
@@ -555,6 +560,8 @@ def export_processed_data_to_file_types(
     :type vessel_config: vessel_manager.VesselConfig
     :param datalogger_type: Type de capteur.
     :type datalogger_type: DataLoggerType
+    :param resolution: Résolution pour les formats raster.
+    :type resolution: float
     :param groub_by_iho_order: Regrouper les données par ordre IHO.
     :type groub_by_iho_order: bool
     """
@@ -590,6 +597,7 @@ def export_processed_data_to_file_types(
                     data_geodataframe=group_df,
                     output_data_path=output_path,
                     file_type=file_type,
+                    resolution=resolution,
                     **kwargs,
                 )
 
@@ -751,11 +759,11 @@ def processing_workflow(
     try:
         caris_api_config: config.CarisAPIConfig | None = (
             config.get_caris_api_config(config_file=config_path)
-            if FileTypes.CSAR in processing_config.options.export_format
+            if FileTypes.CSAR in processing_config.export.export_format
             else None
         )
     except config.CarisConfigError as error:
-        if FileTypes.CSAR in processing_config.options.export_format:
+        if FileTypes.CSAR in processing_config.export.export_format:
             LOGGER.error(
                 f"La configuration de Caris est obligatoire pour l'exportation en format *csar : {error}."
             )
@@ -843,10 +851,11 @@ def processing_workflow(
         export_processed_data_to_file_types(
             data_geodataframe=data,
             export_data_path=export_data_path,
-            file_types=processing_config.options.export_format,
+            file_types=processing_config.export.export_format,
             vessel_config=vessel_config,
             datalogger_type=datalogger_type,
             config_caris=caris_api_config if caris_api_config else None,
+            resolution=processing_config.export.resolution,
             groub_by_iho_order=processing_config.options.group_by_iho_order,
         )
 
@@ -1045,11 +1054,11 @@ def processing_workflow(
     export_processed_data_to_file_types(
         data_geodataframe=data,
         export_data_path=export_data_path,
-        file_types=processing_config.options.export_format,
+        file_types=processing_config.export.export_format,
         vessel_config=vessel_config,
         datalogger_type=datalogger_type,
         config_caris=caris_api_config if caris_api_config else None,
-        args=caris_api_config.args if caris_api_config else None,
+        resolution=processing_config.export.resolution,
         groub_by_iho_order=processing_config.options.group_by_iho_order,
     )
 

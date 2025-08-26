@@ -36,6 +36,7 @@ WATER_LEVEL_TOLERANCE: str = "15 min"
 INFO: str = "INFO"
 MAX_ITERATIONS: int = 10
 DECIMAL_PRECISION: int = 1
+RESOLUTION: int | float = 0.00005
 
 
 class FileTypes(StrEnum):
@@ -228,6 +229,27 @@ class VesselManagerConfig(BaseModel):
     kwargs: Optional[dict[str, Any]] = None
 
 
+class ExportConfig(BaseModel):
+    """
+    Classe de configuration pour l'exportation des données.
+    """
+
+    export_format: list[FileTypes] = EXPORT_FORMAT
+    """Les formats de fichiers pour l'exportation."""
+    resolution: Optional[int | float] = RESOLUTION
+    """La résolution pour l'exportation en GeoTIFF."""
+
+    @field_validator("resolution")
+    def validate_resolution(cls, value: Optional[int | float]) -> Optional[int | float]:
+        if value is None:
+            return RESOLUTION
+
+        if value <= 0:
+            raise ValueError("La résolution doit être positive.")
+
+        return value
+
+
 class OptionsConfig(BaseModel):
     """
     Classe de configuration pour les options de traitement.
@@ -237,8 +259,6 @@ class OptionsConfig(BaseModel):
     """Le niveau de log."""
     max_iterations: int = MAX_ITERATIONS
     """Le nombre maximal d'itérations pour le traitement."""
-    export_format: list[FileTypes] = EXPORT_FORMAT
-    """Les formats de fichiers pour l'exportation."""
     decimal_precision: int = DECIMAL_PRECISION
     """La précision décimale pour les calculs."""
     group_by_iho_order: bool = False
@@ -283,6 +303,7 @@ class CSBprocessingConfig(BaseModel):
     filter: DataFilterConfig
     georeference: DataGeoreferenceConfig
     vessel_manager: Optional[VesselManagerConfig]
+    export: ExportConfig = ExportConfig()
     options: OptionsConfig = OptionsConfig()
 
 
@@ -311,6 +332,9 @@ def get_data_config(
     )
     vessel_config: ConfigDict = (
         config_data.get("CSB", {}).get("Processing", {}).get("vessel")
+    )
+    export_config: ConfigDict = (
+        config_data.get("CSB", {}).get("Processing", {}).get("export")
     )
     options_config: ConfigDict = (
         config_data.get("CSB", {}).get("Processing", {}).get("options")
@@ -361,6 +385,7 @@ def get_data_config(
             if vessel_config
             else None
         ),
+        export=(ExportConfig(**export_config) if export_config else ExportConfig()),
         options=(
             OptionsConfig(**options_config) if options_config else OptionsConfig()
         ),

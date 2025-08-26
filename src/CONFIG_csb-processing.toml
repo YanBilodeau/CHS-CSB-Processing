@@ -108,15 +108,20 @@ manager_type = "VesselConfigJsonManager"
 # Example of a relative path: "./TCSB_VESSELSLIST.json" for a "TCSB_VESSELSLIST.json" file at the root of the project.
 json_config_path = "./CONFIG_vessels.json"
 
+[CSB.Processing.export]
+# Liste des formats d'export des données traitées {"geojson", "gpkg", "csar", "parquet", "feather", "csv"}
+# List of export formats for processed data {"geojson", "gpkg", "csar", "parquet", "feather", "csv", "geotiff"}
+export_format = ["gpkg", "geotiff"]
+# Résolution spatiale en degrés pour les exports au format raster GeoTIFF {float}.
+# Spatial resolution in degrees for exports in GeoTIFF raster format {float}.
+resolution = 0.00005
+
 [CSB.Processing.options]
 # Niveau de log {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 log_level = "INFO"
 # Nombre maximal d'itérations pour la réduction des données au zéro des cartes. Valeur minimale de 1 {int}
 # Maximum number of iterations for reducing data to chart datum. Minimum value of 1 {int}
 max_iterations = 5
-# Liste des formats d'export des données traitées {"geojson", "gpkg", "csar", "parquet", "feather", "csv"}
-# List of export formats for processed data {"geojson", "gpkg", "csar", "parquet", "feather", "csv", "geotiff"}
-export_format = ["gpkg", "geotiff"]
 # Nombre de décimales significatives à conserver pour les données traitées {int}.
 # Number of significant decimals to keep for processed data {int}.
 decimal_precision = 1
