@@ -116,7 +116,7 @@ json_config_path = "./CONFIG_vessels.json"
 [CSB.Processing.export]
 # Liste des formats d'export des données traitées {"geojson", "gpkg", "csar", "parquet", "feather", "csv"}
 # List of export formats for processed data {"geojson", "gpkg", "csar", "parquet", "feather", "csv", "geotiff"}
-export_format = ["gpkg", "geotiff"]
+export_format = ["gpkg"]
 # Résolution spatiale en degrés pour les exports au format raster GeoTIFF {float}.
 # Spatial resolution in degrees for exports in GeoTIFF raster format {float}.
 resolution = 0.00005
