@@ -1,15 +1,9 @@
-# CHS-CSB-Processing
-
-CHS-CSB-Processing est présentement en développement. Plusieurs fonctionnalités sont encore incomplètes ou en cours de développement.
-Vous pouvez visiter la [documentation](https://chs-csb-processing.readthedocs.io/fr/latest/) pour plus d'informations.
-
----
-
 # Table des matières
 
 - [CHS-CSB-Processing](#chs-csb-processing)
-- [Tutoriel d'utilisation de l'interface en ligne de commande pour le traitement des fichiers bathymétriques](#tutoriel-dutilisation-de-linterface-en-ligne-de-commande-pour-le-traitement-des-fichiers-bathymétriques)
   - [Description](#description)
+- [Interface graphique utilisateur (GUI)](#interface-graphique-utilisateur-gui)
+- [Tutoriel d'utilisation de l'interface en ligne de commande pour le traitement des fichiers bathymétriques](#tutoriel-dutilisation-de-linterface-en-ligne-de-commande-pour-le-traitement-des-fichiers-bathymétriques)
   - [Commande principale](#commande-principale)
     - [Options disponibles](#options-disponibles)
       - [`files`](#files)
@@ -18,24 +12,25 @@ Vous pouvez visiter la [documentation](https://chs-csb-processing.readthedocs.io
       - [`--waterline`](#--waterline)
       - [`--config`](#--config)
       - [`--apply-water-level`](#--apply-water-level)
-  - [Diagramme du flux de traitement](#diagramme-du-flux-de-traitement)
-  - [Fichier de configuration (TOML)](#fichier-de-configuration-toml)
-    - [Sections principales](#sections-principales)
-  - [Fichier des navires (Vessels)](#fichier-des-navires-vessels)
-    - [Description des champs](#description-des-champs)
   - [Gestion des erreurs](#gestion-des-erreurs)
     - [Fichiers invalides](#fichiers-invalides)
     - [Paramètres manquants](#paramètres-manquants)
   - [Exemple d'utilisation complet](#exemple-dutilisation-complet)
     - [Commande](#commande)
     - [Étapes détaillées](#étapes-détaillées)
+- [Diagramme du flux de traitement](#diagramme-du-flux-de-traitement)
+- [Fichier de configuration (TOML)](#fichier-de-configuration-toml)
+  - [Sections principales](#sections-principales)
+- [Fichier des navires (Vessels)](#fichier-des-navires-vessels)
+  - [Description des champs](#description-des-champs)
+
 
 ---
 
-# Tutoriel d'utilisation de l'interface en ligne de commande pour le traitement des fichiers bathymétriques
+# CHS-CSB-Processing
 
-Ce tutoriel explique en détail comment utiliser le module de ligne de commande pour traiter et géoréférencer des fichiers 
-de données bathymétriques. Il couvre chaque paramètre et fournit des exemples pratiques.
+CHS-CSB-Processing est présentement en développement. Plusieurs fonctionnalités sont encore incomplètes ou en cours de développement.
+Vous pouvez visiter la [documentation](https://chs-csb-processing.readthedocs.io/fr/latest/) pour plus d'informations.
 
 ---
 
@@ -56,6 +51,23 @@ Les formats de fichiers pris en charge sont les suivants :
 - BlackBox : extension `.TXT` sans entête avec les colonnes dans l'ordre `Time`, `Date`, `Latitude`, `Longitude`, `Speed (km/h)` 
           et `Depth (m)`.
 - [WIBL](https://github.com/CCOMJHC/WIBL/tree/main) : extension numérique (ex: `.1`, `.2`, `.3`, etc.).
+
+---
+
+# Interface graphique utilisateur (GUI)
+
+Une interface graphique utilisateur (GUI) est disponible pour faciliter l'utilisation du module. Vous pouvez la lancer en exécutant la commande suivante dans le terminal :
+
+```bash
+python web_ui.py
+```
+
+---
+
+# Tutoriel d'utilisation de l'interface en ligne de commande pour le traitement des fichiers bathymétriques
+
+Ce tutoriel explique en détail comment utiliser le module de ligne de commande pour traiter et géoréférencer des fichiers 
+de données bathymétriques. Il couvre chaque paramètre et fournit des exemples pratiques.
 
 ---
 
@@ -127,10 +139,44 @@ python cli.py <files> [options]
   ```bash
   python cli.py /data/fichier1.csv --apply-water-level True
   ```
-  
+
 ---
 
-## Diagramme du flux de traitement
+## Gestion des erreurs
+
+Le module inclut une gestion robuste des erreurs pour éviter les interruptions inattendues. Voici les principaux cas pris en charge :
+
+### Fichiers invalides
+- **Problème** : Si un fichier fourni n'est pas valide (format incorrect ou inexistant).
+- **Solution** : Le script journalise une erreur et ignore les fichiers non valides.
+  ```bash
+  [ERROR] Aucun fichier valide à traiter.
+  ```
+
+### Paramètres manquants
+- **Problème** : Si un paramètre obligatoire comme `--output` est omis ou qu'il n'y a pas de fichiers à traiter.
+- **Solution** : Le script affiche un message d'erreur expliquant le paramètre manquant.
+  ```bash
+  [ERROR] Le paramètre --output est obligatoire.
+  ```
+---
+
+## Exemple d'utilisation complet
+
+### Commande
+```bash
+python cli.py /data/fichier1.csv /data/dossier --output /data/output --vessel NAVIRE123 --config /config/config.toml --apply-water-level True
+```
+
+### Étapes détaillées
+1. **Préparer les fichiers** : Assurez-vous que les fichiers sont au format pris en charge (`.csv`, `.txt`, `.xyz`).
+2. **Créer une configuration** : Modifiez un fichier TOML pour définir vos paramètres spécifiques.
+3. **Exécuter la commande** : Fournissez les chemins des fichiers, le répertoire de sortie, et d'autres options comme l'identifiant du navire.
+4. **Vérifier les résultats** : Consultez le répertoire de sortie pour les fichiers traités et les journaux pour toute erreur ou avertissement.
+
+---
+
+# Diagramme du flux de traitement
 
 ```mermaid
 flowchart TD
@@ -226,7 +272,7 @@ flowchart TD
 
 ---
 
-## Fichier de configuration (TOML)
+# Fichier de configuration (TOML)
 
 Le fichier de configuration au format TOML permet de définir les paramètres pour le traitement. 
 Voici un exemple du fichier de configuration par défaut (./src/CONFIG_csb-processing.toml) :
@@ -306,7 +352,7 @@ python_version = "3.11"  # Version de Python utilisée par l'API CARIS.
 args = []  # Arguments supplémentaires pour l'exportation au format CSAR.
 ```
 
-### Sections principales
+## Sections principales
 
 - `[IWLS.API.TimeSeries]` (Optionnel) : Paramètres pour les séries temporelles. Si aucun paramètre n'est défini, les valeurs par défaut seront utilisées et aucune interpolation ne sera effectuée.
   - `priority` : Liste des séries temporelles à utiliser selon leur priorité (ex. : [`"wlo"`, `"wlp"`]).
@@ -360,7 +406,7 @@ args = []  # Arguments supplémentaires pour l'exportation au format CSAR.
   
 ---
 
-## Fichier des navires (Vessels)
+# Fichier des navires (Vessels)
 
 Le fichier de configuration des navires est un fichier JSON contenant les informations nécessaires pour chaque navire, telles que 
 l'identifiant, les conventions d'axes, et les données associées. Le chemin du fichier JSON est défini dans le fichier 
@@ -423,7 +469,7 @@ de configuration TOML. Voici un exemple de fichier :
 ]
 ```
 
-### Description des champs
+## Description des champs
 
 - **`id`** : Identifiant unique du navire.
 - **`name`** : Nom du navire.
@@ -436,39 +482,5 @@ de configuration TOML. Voici un exemple de fichier :
 
 Pour tous les attributs `time_stamp`, le format doit être ISO 8601 (ex. : `"2021-09-25T00:00:00Z"`). De plus, le `time_stamp` 
 indique la date à partir de laquelle la configuration est valide.
-
----
-
-## Gestion des erreurs
-
-Le module inclut une gestion robuste des erreurs pour éviter les interruptions inattendues. Voici les principaux cas pris en charge :
-
-### Fichiers invalides
-- **Problème** : Si un fichier fourni n'est pas valide (format incorrect ou inexistant).
-- **Solution** : Le script journalise une erreur et ignore les fichiers non valides.
-  ```bash
-  [ERROR] Aucun fichier valide à traiter.
-  ```
-
-### Paramètres manquants
-- **Problème** : Si un paramètre obligatoire comme `--output` est omis ou qu'il n'y a pas de fichiers à traiter.
-- **Solution** : Le script affiche un message d'erreur expliquant le paramètre manquant.
-  ```bash
-  [ERROR] Le paramètre --output est obligatoire.
-  ```
----
-
-## Exemple d'utilisation complet
-
-### Commande
-```bash
-python cli.py /data/fichier1.csv /data/dossier --output /data/output --vessel NAVIRE123 --config /config/config.toml --apply-water-level True
-```
-
-### Étapes détaillées
-1. **Préparer les fichiers** : Assurez-vous que les fichiers sont au format pris en charge (`.csv`, `.txt`, `.xyz`).
-2. **Créer une configuration** : Modifiez un fichier TOML pour définir vos paramètres spécifiques.
-3. **Exécuter la commande** : Fournissez les chemins des fichiers, le répertoire de sortie, et d'autres options comme l'identifiant du navire.
-4. **Vérifier les résultats** : Consultez le répertoire de sortie pour les fichiers traités et les journaux pour toute erreur ou avertissement.
 
 ---

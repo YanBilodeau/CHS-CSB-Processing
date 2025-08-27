@@ -1,8 +1,9 @@
 # Table of Contents
 
 - [CHS-CSB-Processing](#chs-csb-processing)
-- [Command-Line Interface Tutorial for Bathymetric File Processing](#command-line-interface-tutorial-for-bathymetric-file-processing)
   - [Description](#description)
+- [Graphical User Interface (GUI)](#graphical-user-interface-gui)
+- [Command-Line Interface Tutorial for Bathymetric File Processing](#command-line-interface-tutorial-for-bathymetric-file-processing)
   - [Main Command](#main-command)
     - [Available Options](#available-options)
       - [`files`](#files)
@@ -11,17 +12,18 @@
       - [`--waterline`](#--waterline)
       - [`--config`](#--config)
       - [`--apply-water-level`](#--apply-water-level)
-  - [Processing Flow Diagram](#processing-flow-diagram)
-  - [Configuration File (TOML)](#configuration-file-toml)
-    - [Main Sections](#main-sections)
-  - [Vessel File (Vessels)](#vessel-file-vessels)
-    - [Field Descriptions](#field-descriptions)
   - [Error Handling](#error-handling)
     - [Invalid Files](#invalid-files)
     - [Missing Parameters](#missing-parameters)
   - [Complete Usage Example](#complete-usage-example)
     - [Command](#command)
     - [Detailed Steps](#detailed-steps)
+- [Processing Flow Diagram](#processing-flow-diagram)
+- [Configuration File (TOML)](#configuration-file-toml)
+  - [Main Sections](#main-sections)
+- [Vessel File (Vessels)](#vessel-file-vessels)
+  - [Field Descriptions](#field-descriptions)
+
 
 ---
 
@@ -29,13 +31,6 @@
 
 CHS-CSB-Processing is currently under development. Several features are still incomplete or under development.
 You can visit the [documentation](https://chs-csb-processing.readthedocs.io/en/latest/) for more information.
-
----
-
-# Command-Line Interface Tutorial for Bathymetric File Processing
-
-This tutorial provides a detailed explanation of how to use the command-line module to process and georeference 
-bathymetric data files. It covers every parameter and provides practical examples.
 
 ---
 
@@ -55,6 +50,23 @@ The supported file formats are as follows:
 - Actisense: coming soon.
 - BlackBox: `.TXT` extension without header with columns in the order `Time`, `Date`, `Latitude`, `Longitude`, `Speed (km/h)` and `Depth (m)`.
 - [WIBL](https://github.com/CCOMJHC/WIBL/tree/main): numeric extension (e.g., `.1`, `.2`, `.3`, etc.).
+
+---
+
+# Graphical User Interface (GUI)
+
+A graphical user interface (GUI) is available to facilitate the processing of bathymetric files. You can launch the GUI by running the following command:
+
+```bash
+python web_ui.py
+```
+
+---
+
+# Command-Line Interface Tutorial for Bathymetric File Processing
+
+This tutorial provides a detailed explanation of how to use the command-line module to process and georeference 
+bathymetric data files. It covers every parameter and provides practical examples.
 
 ---
 
@@ -126,7 +138,41 @@ python cli.py <files> [options]
 
 ---
 
-## Processing Flow Diagram
+## Error Handling
+
+The module includes robust error handling to avoid unexpected interruptions. Below are the main cases covered:
+
+### Invalid Files
+- **Issue**: If a provided file is invalid (incorrect format or non-existent).
+- **Solution**: The script logs an error and skips invalid files.
+  ```bash
+  [ERROR] No valid files to process.
+  ```
+
+### Missing Parameters
+- **Issue**: If a required parameter such as `--output` is missing.
+- **Solution**: The script displays an error message explaining the missing parameter.
+  ```bash
+  [ERROR] The --output parameter is required.
+  ```
+---
+
+## Complete Usage Example
+
+### Command
+```bash
+python cli.py /data/file1.csv /data/folder --output /data/output --vessel VESSEL123 --config /config/config.toml --apply-water-level True
+```
+
+### Detailed Steps
+1. **Prepare Files**: Ensure the files are in a supported format (`.csv`, `.txt`, `.xyz`).
+2. **Create Configuration**: Modify a TOML file to define your specific parameters.
+3. **Run Command**: Provide the file paths, output directory, and other options such as the vessel identifier.
+4. **Verify Results**: Check the output directory for processed files and logs for any errors or warnings.
+
+---
+
+# Processing Flow Diagram
 
 ```mermaid
 flowchart TD
@@ -222,7 +268,7 @@ flowchart TD
 
 ---
 
-## Configuration File (TOML)
+# Configuration File (TOML)
 
 The TOML configuration file defines parameters for processing. Below is an example of the default configuration file (./src/CONFIG_csb-processing.toml):
 
@@ -301,7 +347,7 @@ python_version = "3.11"  # Python version to use.
 args = []  # Additional arguments for exporting data in CSAR format.
 ```
 
-### Main Sections
+## Main Sections
 
 - `[IWLS.API.TimeSeries]` (Optional): Parameters for time series. If no parameter is defined, default values will be used and no interpolation will be performed.
   - `priority`: List of time series to use by priority (e.g., `"wlo"`, `"wlp"`).
@@ -355,7 +401,7 @@ args = []  # Additional arguments for exporting data in CSAR format.
 
 ---
 
-## Vessel File (Vessels)
+# Vessel File (Vessels)
 
 The vessel configuration file is a JSON file containing the necessary information for each vessel, such as the 
 identifier, axis conventions, and associated data. The path to the JSON file is defined in the TOML configuration file. 
@@ -418,7 +464,7 @@ Here is an example file:
 ]
 ```
 
-### Field Descriptions
+## Field Descriptions
 
 - **`id`**: Unique vessel identifier.
 - **`name`**: Vessel name.
@@ -431,39 +477,5 @@ Here is an example file:
 
 For all `time_stamp` attributes, the format must be ISO 8601 (e.g., `"2021-09-25T00:00:00Z"`). Additionally, the 
 `time_stamp` indicates the date from which the configuration is valid.
-
----
-
-## Error Handling
-
-The module includes robust error handling to avoid unexpected interruptions. Below are the main cases covered:
-
-### Invalid Files
-- **Issue**: If a provided file is invalid (incorrect format or non-existent).
-- **Solution**: The script logs an error and skips invalid files.
-  ```bash
-  [ERROR] No valid files to process.
-  ```
-
-### Missing Parameters
-- **Issue**: If a required parameter such as `--output` is missing.
-- **Solution**: The script displays an error message explaining the missing parameter.
-  ```bash
-  [ERROR] The --output parameter is required.
-  ```
----
-
-## Complete Usage Example
-
-### Command
-```bash
-python cli.py /data/file1.csv /data/folder --output /data/output --vessel VESSEL123 --config /config/config.toml --apply-water-level True
-```
-
-### Detailed Steps
-1. **Prepare Files**: Ensure the files are in a supported format (`.csv`, `.txt`, `.xyz`).
-2. **Create Configuration**: Modify a TOML file to define your specific parameters.
-3. **Run Command**: Provide the file paths, output directory, and other options such as the vessel identifier.
-4. **Verify Results**: Check the output directory for processed files and logs for any errors or warnings.
 
 ---
