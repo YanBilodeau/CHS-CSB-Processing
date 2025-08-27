@@ -283,12 +283,15 @@ water_level_tolerance = "15 min"  # Tolerance for georeferencing water levels.
 manager_type = "VesselConfigJsonManager"
 json_config_path = "./TCSB_VESSELSLIST.json"  # Path to vessel configuration file.
 
+[CSB.Processing.export]
+export_format = ["gpkg", "csv"]  # Formats of files for exporting processed data.
+resolution = 0.0005  # Grid resolution for exporting data in raster format (in degrees).
+group_by_iho_order = false  # Group data by IHO order.
+
 [CSB.Processing.options]
 log_level = "INFO"  # Log level: {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}.
 max_iterations = 5  # Maximum number of iterations {int}.
-export_format = ["gpkg", "csv"]  # Formats of files for exporting processed data.
 decimal_precision = 1  # Decimal precision for processed data.
-group_by_iho_order = false  # Group data by IHO order.
 
 [CARIS.Environment]
 base_path = "C:/Program Files/CARIS"  # Path to the CARIS installation directory.
@@ -306,27 +309,43 @@ args = []  # Additional arguments for exporting data in CSAR format.
   - `threshold_interpolation_filling`: Threshold for interpolation and filling missing data (e.g., `"4 h"`).
   - `wlo_qc_flag_filter`: Quality filters for WLO data.
   - `buffer_time`: Buffer time for interpolations (format: `"<number> <unit>"`, e.g., `"24 h"`).
+
 - `[IWLS.API.Profile]` (Optional): Defines the active profile (`"dev"`, `"prod"`, `"public"`). A public profile is used by default with 15 calls per second.
+
 - `[IWLS.API.Environment.<profile>]` (Optional): Environment-specific parameters
   - `name`: Name of the environment (e.g., `"PUBLIC"`).
   - `endpoint`: API endpoint (e.g., `"EndpointPublic"`). Note that only public endpoints are accessible to everyone.
   - `calls`: Maximum number of calls per period.
   - `period`: Time period for calls.
+
 - `[IWLS.API.Cache]` (Optional): Defines cache management.
   - `ttl`: Cache data lifetime (in seconds).
   - `cache_path`: Directory for cache storage.
+
 - `[DATA.Transformation.filter]` (Optional): Defines geographic, depth and speed limits for tagging inconsistent data.
-  - `filter_to_apply`: List of filters to apply. Data is directly rejected if the filter is applied, otherwise data is simply tagged. Available filters are: `LATITUDE_FILTER` (Latitude filter), `LONGITUDE_FILTER` (Longitude filter), `TIME_FILTER` (Time filter), `SPEED_FILTER` (Speed filter), `DEPTH_FILTER`: Depth filter.
+  - `filter_to_apply`: List of filters to apply. Data is directly rejected if the filter is applied, otherwise data is simply tagged. Available filters are:
+    - `"DEPTH_FILTER"` : Depth filter (based on `min_depth` and `max_depth`).
+    - `"LATITUDE_FILTER"` : Latitude filter (based on `min_latitude` and `max_latitude`).
+    - `"LONGITUDE_FILTER"` : Longitude filter (based on `min_longitude` and `max_longitude`).
+    - `"TIME_FILTER"` : Time filter (based on valid timestamps).
+    - `"SPEED_FILTER"` : Speed filter (based on `min_speed` and `max_speed`).
+
 - `[DATA.Georeference.water_level]` (Optional): Defines tolerance for georeferencing based on water levels (format: `"<number> <unit>"`, e.g., `"15 min"`).
+
 - `[CSB.Processing.vessel]` (Optional): Configures the vessel manager and vessel file. Required only if you use vessels for georeferencing.
   - `manager_type`: Type of vessel manager (e.g., `"VesselConfigJsonManager"`).
   - `json_config_path` (Used with `"VesselConfigJsonManager"`): Path to the vessel configuration file.
+
+- `[CSB.Processing.export]` (Optional): Export parameters.
+  - `resolution`: Grid resolution for exporting data in raster format (in degrees).
+  - `export_format`: List of file formats for exporting processed data {`"geojson"`, `"gpkg"`, `"csar"`, `"parquet"`, `"feather"`, `"csv"`, `"geotiff"`} (e.g. : [`"gpkg"`, `"csv"`]).
+  - `group_by_iho_order` : Group data by IHO order.
+
 - `[CSB.Processing.options]` (Optional): Processing options.
   - `log_level` : Log level: {`"DEBUG"`, `"INFO"`, `"WARNING"`, `"ERROR"`, `"CRITICAL"`}.
   - `max_iterations` : Maximum number of iterations.
-  - `export_format` : List of file formats for exporting processed data {`"geojson"`, `"gpkg"`, `"csar"`, `"parquet"`, `"feather"`, `"csv"`} (e.g. : [`"gpkg"`, `"csv"`]).
   - `decimal_precision` : Number of significant decimal places for processed data.
-  - `group_by_iho_order` : Group data by IHO order.
+
 - `[CARIS.Environment]` (Optional): CARIS environment-specific parameters. Used to export data in CSAR format.
   - `base_path`: Path to CARIS software installation (default: `"C:/Program Files/CARIS"`).
   - `software`: CARIS software used (e.g., `"BASE Editor"`, `"HIPS and SIPS"`).

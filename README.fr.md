@@ -288,17 +288,20 @@ water_level_tolerance = "15 min"  # Tolérance en pour le géoréférencement de
 manager_type = "VesselConfigJsonManager"
 json_config_path = "./TCSB_VESSELSLIST.json"  # Chemin vers le fichier de configuration des navires.
 
+[CSB.Processing.export]
+export_format = ["gpkg", "csv"]  # Formats de fichier pour l'exportation des données traitées.
+resolution = 0.00005  # Résolution pour les formats raster (en degrés).
+group_by_iho_order = false  # Regrouper les données par ordre IHO.
+
 [CSB.Processing.options]
 log_level = "INFO"  # Niveau de log : {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}.
 max_iterations = 5  # Nombre maximal d'itérations {int}.
-export_format = ["gpkg", "csv"]  # Formats de fichier pour l'exportation des données traitées.
 decimal_precision = 1  # Précision des décimales pour les données traitées.
-group_by_iho_order = false  # Regrouper les données par ordre IHO.
 
 [CARIS.Environment]
 base_path = "C:/Program Files/CARIS"  # Chemin d'installation des logiciels CARIS.
 software = "BASE Editor"  # Logiciel CARIS utilisé.
-version = "5.5"  # Version spécifique du logiciel CARIS.
+version = "6.1"  # Version spécifique du logiciel CARIS.
 python_version = "3.11"  # Version de Python utilisée par l'API CARIS.
 args = []  # Arguments supplémentaires pour l'exportation au format CSAR.
 ```
@@ -311,32 +314,47 @@ args = []  # Arguments supplémentaires pour l'exportation au format CSAR.
   - `threshold_interpolation_filling` : Seuil pour l'interpolation et le remplissage des données manquantes (ex. : `"4 h"`).
   - `wlo_qc_flag_filter` : Filtres de qualité pour les données WLO.
   - `buffer_time` : Temps tampon pour les interpolations. (format : `"<nombre> <unité>"`, ex. : `"24 h"`).
+
 - `[IWLS.API.Profile]` (Optionnel) : Définit le profil actif (`"dev"`, `"prod"`, `"public"`). Un profil public est utilisé par défaut avec 15 appels par seconde.
+
 - `[IWLS.API.Environment.<profil>]` (Optionnel) : Paramètres spécifiques aux environnements
   - `name` : Nom de l'environnement (ex. : `"PUBLIC"`).
   - `endpoint` : Point de terminaison de l'API `"EndpointPublic"`). À noter, seulement les points de terminaison publics sont accessibles à tous.
   - `calls` : Nombre maximal d'appels par période.
   - `period` : Période de temps pour les appels.
+
 - `[IWLS.API.Cache]` (Optionnel) : Définit la gestion du cache.
   - `ttl` : Durée de vie des données en cache (en secondes).
   - `cache_path` : Répertoire pour le stockage du cache.
+
 - `[DATA.Transformation.filter]` (Optionnel) : Définit les limites géographiques, de profondeur et de vitesse pour tagger les données incohérentes.
-  - `filter_to_apply` : Liste des filtres à appliquer. Les données sont directement rejectées si le filtre est appliqué, sinon les données sont simplement taggées. Les filtres disponibles sont : `LATITUDE_FILTER` (Filtre de latitude), `LONGITUDE_FILTER` (Filtre de longitude), `TIME_FILTER` (Filtre de temps), `SPEED_FILTER` (Filtre de vitesse).
-    - `DEPTH_FILTER` : Filtre de profondeur.
+  - `filter_to_apply` : Liste des filtres à appliquer. Les données sont directement rejectées si le filtre est appliqué, sinon les données sont simplement taggées. Les filtres disponibles sont :
+    - `DEPTH_FILTER` : Filtre de profondeur (limite définit selon `min_depth` et `max_depth`).
+    - `LATITUDE_FILTER` : Filtre de latitude (limite définit selon `min_latitude` et `max_latitude`).
+    - `LONGITUDE_FILTER` : Filtre de longitude (limite définit selon `min_longitude` et `max_longitude`).
+    - `TIME_FILTER` : Filtre de temps (vérifie les timestamps valides).
+    - `SPEED_FILTER` : Filtre de vitesse (limite définit selon `min_speed` et `max_speed`).
+
 - `[DATA.Georeference.water_level]` (Optionnel) : Définit la tolérance pour le géoréférencement basé sur les niveaux d'eau. (format : `"<nombre> <unité>"`, ex. : `"15 min"`).
+
 - `[CSB.Processing.vessel]` (Optionnel) : Configure le gestionnaire et le fichier des navires. Obligatoire seulement si vous utilisez des navires pour le géoréférencement.
   - `manager_type` : Type de gestionnaire de navires (ex. : `"VesselConfigJsonManager"`).
   - `json_config_path` (Utilisé avec `"VesselConfigJsonManager"`) : Chemin vers le fichier de configuration des navires.
+
+- `[CSB.Processing.export]` (Optionnel) : Paramètres pour l'exportation des données traitées.
+  - `export_format` : Liste des formats de fichier pour l'exportation des données traitées : {`"geojson"`, `"gpkg"`, `"csar"`, `"parquet"`, `"feather"`, `"csv"`, `"geotiff"`} (ex. : [`"gpkg"`, `"csv"`]).
+  - `resolution` : Résolution pour les formats raster (en degrés).
+  - `group_by_iho_order` : Regrouper les données par ordre IHO : {`true`, `false`}.
+
 - `[CSB.Processing.options]` (Optionnel) : Options de traitement. 
   - `log_level` : Niveau de journalisation : {`"DEBUG"`, `"INFO"`, `"WARNING"`, `"ERROR"`, `"CRITICAL"`}.
   - `max_iterations` : Nombre maximal d'itérations.
-  - `export_format` : Liste des formats de fichier pour l'exportation des données traitées : {`"geojson"`, `"gpkg"`, `"csar"`, `"parquet"`, `"feather"`, `"csv"`} (ex. : [`"gpkg"`, `"csv"`]).
   - `decimal_precision` : Nombre de décimales significatives pour les données traitées.
-  - `group_by_iho_order` : Regrouper les données par ordre IHO : {`true`, `false`}.
+
 - `[CARIS.Environment]` (Optionnel) : Paramètres spécifiques à l'environnement CARIS. Sert à exporter les données au format CSAR.
   - `base_path` : Chemin d'installation des logiciels CARIS (par défaut : `"C:/Program Files/CARIS"`).
   - `software` : Logiciel CARIS utilisé (ex. : `"BASE Editor"`, `"HIPS and SIPS"`).
-  - `version` : Version spécifique du logiciel CARIS (ex. : `"5.5"`).
+  - `version` : Version spécifique du logiciel CARIS (ex. : `"6.1"`).
   - `python_version` : Version de Python utilisée par l'API CARIS (ex. : `"3.11"`).
   - `args` : Arguments supplémentaires pour l'exportation au format CSAR.
   
