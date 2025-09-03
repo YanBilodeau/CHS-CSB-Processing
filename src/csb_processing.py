@@ -699,6 +699,9 @@ def export_metadata(
         metadata=survey_metadata.__dict__(),
         title=name,
         output_path=output_path,
+        dataframe=data_geodataframe,
+        nbins_x=35,
+        nbins_y=35,  # todo : mettre en paramètre
     )
 
 
