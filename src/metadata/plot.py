@@ -10,9 +10,13 @@ from typing import Optional
 from loguru import logger
 import pandas as pd
 import plotly.graph_objects as go
+import numpy as np
 from plotly.subplots import make_subplots
 
-from metadata.order.order_models import OrderEnum
+from .order.order_models import OrderEnum
+from .order.s44_computation import ORDERS_CONFIG, compute_threshold
+from schema import model_ids as schema_ids
+
 
 LOGGER = logger.bind(name="CSB-Processing.Metadata.Plot")
 
@@ -25,8 +29,24 @@ COLOR_PALETTE: list[str] = [
     "rgba(205,92,92, 0.8)",
     "rgba(205,92,92, 1.0)",
 ]
+
 HEADER_COLOR: str = "rgba(205,92,92, 1.0)"
+
 CELL_COLOR: str = "lavender"
+
+ORDER_LABELS: dict[int, str] = {
+    0: "Exclusive Order",
+    1: "Special Order",
+    2: "Order 1a",
+    3: "Order 2",
+}
+
+ORDER_LINE_COLORS: dict[int, str] = {
+    0: "rgba(220,220,220,0.85)",  # Gris très pâle
+    1: "rgba(160,160,160,0.85)",  # Gris moyen-pâle
+    2: "rgba(100,100,100,0.85)",  # Gris moyen-foncé
+    3: "rgba(40,40,40,0.85)",  # Gris très foncé
+}
 
 
 def create_table_data(df: pd.DataFrame, header_labels: list[str]) -> go.Table:
@@ -124,114 +144,404 @@ def create_table_iho_order_statistics(iho_order_statistic: dict) -> go.Figure:
     return fig
 
 
-def plot_statistics(
-    iho_order_statistic: dict, keys: list[str], colors: list[str], y_title: str
-) -> go.Figure:
+def format_order_label(value: object) -> str:
     """
-    Génère un graphique des statistiques par ordre IHO.
+    Formate une valeur d'ordre en une étiquette lisible.
 
-    :param iho_order_statistic: Dictionnaire contenant les statistiques des ordres IHO.
-    :type iho_order_statistic: dict
-    :param keys: Liste des clés pour les données à tracer.
-    :type keys: list[str]
-    :param colors: Liste des couleurs pour les traces.
-    :type colors: list[str]
-    :param y_title: Titre de l'axe des y.
-    :type y_title: str
-    :return: Figure Plotly contenant les statistiques.
-    :rtype: go.Figure
+    :param value: Valeur de l'ordre (int ou None)
+    :type value: object
+    :return: Étiquette formatée
+    :rtype: str
     """
-    orders = [
-        order
-        for order in iho_order_statistic
-        if any(iho_order_statistic[order].get(key) is not None for key in keys)
-    ]
+    if value is None:
+        return ""
 
-    data = {
-        key: [iho_order_statistic[order].get(key, None) for order in orders]
-        for key in keys
-    }
+    try:
+        iv = int(value)  # type: ignore
 
-    fig = go.Figure()
+    except Exception as e:
+        LOGGER.debug(f"Ne peut pas convertir en int: {value} ({e})")
 
-    for (name, values), color in zip(data.items(), colors):
-        fig.add_trace(
+        return str(value)
+
+    return ORDER_LABELS.get(iv, str(iv))
+
+
+def plot_depth_uncertainty_statistics_trace(
+    dataframe: pd.DataFrame,
+    nbins_x: int,
+    nbins_y: int,
+    uncertainty_band=schema_ids.UNCERTAINTY,
+    depth_band=schema_ids.DEPTH_PROCESSED_METER,
+    order_band=schema_ids.IHO_ORDER,
+) -> go.Heatmap:
+    """
+    Génère une trace heatmap 2D pour integration dans une figure existante.
+
+    :param dataframe: DataFrame contenant les données
+    :type dataframe: pd.DataFrame
+    :param nbins_x: Nombre de bins en X
+    :type nbins_x: int
+    :param nbins_y: Nombre de bins en Y
+    :type nbins_y: int
+    :param uncertainty_band: Nom de la colonne d'incertitude (TVU ou TH
+    :type uncertainty_band: str
+    :param depth_band: Nom de la colonne de profondeur
+    :type depth_band: str
+    :param order_band: Nom de la colonne d'ordre S44
+    :type order_band: str
+    :return: Trace heatmap 2D
+    :rtype: go.Heatmap
+    """
+    clean_data = dataframe[[uncertainty_band, depth_band, order_band]].dropna()
+    x_data = clean_data[uncertainty_band].values
+    y_data = clean_data[depth_band].values
+
+    counts, x_edges, y_edges = np.histogram2d(x_data, y_data, bins=[nbins_x, nbins_y])
+    x_centers = (x_edges[:-1] + x_edges[1:]) / 2
+    y_centers = (y_edges[:-1] + y_edges[1:]) / 2
+
+    return go.Heatmap(
+        z=counts.T,
+        x=x_centers,
+        y=y_centers,
+        colorscale=[
+            [0.0, "white"],
+            [0.01, "rgb(245,185,185)"],
+            [1.0, "rgb(140,20,20)"],
+        ],
+        colorbar=dict(title="Nombre de points"),
+        hovertemplate=(
+            "<b>Uncertainty:</b> %{x:.3f}<br>"
+            "<b>Depth:</b> %{y:.2f}<br>"
+            "<b>Number of points:</b> %{z}<br>"
+            "<extra></extra>"
+        ),
+        showlegend=False,
+        showscale=False,
+    )
+
+
+def create_threshold_line_uncertainty_traces(
+    dataframe: pd.DataFrame, nbins_x, nbins_y
+) -> list[go.Scatter]:
+    """
+    Crée une liste de traces Scatter représentant les lignes de seuil TVU=f(depth)
+    pour chaque ordre, en utilisant les mêmes formules (a, b) que le calcul de bande.
+    Les lignes sont calculées sur les centres des mêmes binnings que la heatmap.
+
+    :param dataframe: DataFrame contenant les données
+    :type dataframe: pd.DataFrame
+    :param nbins_x: Nombre de bins en X
+    :type nbins_x: int
+    :param nbins_y: Nombre de bins en Y
+    :type nbins_y: int
+    :return: Liste de traces Scatter représentant les lignes de seuil TVU=f(depth)
+    :rtype: list[go.Scatter]
+    """
+    clean_data = dataframe[
+        [schema_ids.UNCERTAINTY, schema_ids.DEPTH_PROCESSED_METER]
+    ].dropna()
+    if clean_data.empty:
+        return []
+
+    x_data = clean_data[schema_ids.UNCERTAINTY].values
+    y_data = clean_data[schema_ids.DEPTH_PROCESSED_METER].values
+
+    # Recréer les mêmes centres que la heatmap pour un overlay parfait
+    _, x_edges, y_edges = np.histogram2d(x_data, y_data, bins=[nbins_x, nbins_y])
+    y_centers = (y_edges[:-1] + y_edges[1:]) / 2
+
+    valid_mask = np.ones_like(y_centers, dtype=bool)
+    traces: list[go.Scatter] = []
+
+    for cfg in ORDERS_CONFIG:
+        a = float(cfg["a"])
+        b = float(cfg["b"])
+        thresholds = compute_threshold(
+            valid_depth=y_centers, valid_mask=valid_mask, a=a, b=b
+        )
+
+        order: int = int(cfg["order"])
+        name = f"{ORDER_LABELS.get(order, f'Order {order}')} Threshold"
+        color = ORDER_LINE_COLORS.get(order, "rgba(0,0,0,0.85)")
+
+        traces.append(
             go.Scatter(
-                x=orders,
-                y=values,
-                mode="lines+markers",
+                x=thresholds,
+                y=y_centers,
+                mode="lines",
                 name=name,
-                marker=dict(size=10, color=color),
+                line=dict(color=color, width=3, dash="solid"),
+                hovertemplate="<b>%{text}</b><br>Uncertainty: %{x:.3f}<br>Depth: %{y:.2f}<extra></extra>",
+                text=[name] * thresholds.shape[0],
+                showlegend=False,
+            )
+        )
+
+    return traces
+
+
+def create_threshold_line_thu_traces(
+    dataframe: pd.DataFrame, nbins_x: int, nbins_y: int
+) -> list[go.Scatter]:
+    """
+    Crée une liste de traces Scatter représentant les lignes de seuil THU=f(depth)
+    pour chaque ordre, en utilisant pos_func défini dans ORDERS_CONFIG.
+    Les lignes sont calculées sur les centres des mêmes binnings que la heatmap THU.
+
+    :param dataframe: DataFrame contenant les données
+    :type dataframe: pd.DataFrame
+    :param nbins_x: Nombre de bins en X
+    :type nbins_x: int
+    :param nbins_y: Nombre de bins en Y
+    :type nbins_y: int
+    :return: Liste de traces Scatter représentant les lignes de seuil THU=f(depth)
+    :rtype: list[go.Scatter]
+    """
+    clean_data = dataframe[[schema_ids.THU, schema_ids.DEPTH_PROCESSED_METER]].dropna()
+    if clean_data.empty:
+        return []
+
+    x_data = clean_data[schema_ids.THU].values
+    y_data = clean_data[schema_ids.DEPTH_PROCESSED_METER].values
+
+    # Même binning que la heatmap THU pour un overlay parfait
+    _, x_edges, y_edges = np.histogram2d(x_data, y_data, bins=[nbins_x, nbins_y])
+    y_centers = (y_edges[:-1] + y_edges[1:]) / 2
+
+    traces: list[go.Scatter] = []
+    for cfg in ORDERS_CONFIG:
+        order: int = int(cfg["order"])
+        name = f"{ORDER_LABELS.get(order, f'Order {order}')} Threshold"
+        color = ORDER_LINE_COLORS.get(order, "rgba(0,0,0,0.85)")
+
+        thresholds = np.vectorize(cfg["pos_func"])(y_centers)
+
+        traces.append(
+            go.Scatter(
+                x=thresholds,
+                y=y_centers,
+                mode="lines",
+                name=name,
+                line=dict(color=color, width=3, dash="solid"),
+                hovertemplate="<b>%{text}</b><br>THU: %{x:.3f}<br>Depth: %{y:.2f}<extra></extra>",
+                text=[name] * thresholds.shape[0],
                 showlegend=True,
             )
         )
 
-    fig.update_layout(yaxis_title=y_title)
-
-    return fig
+    return traces
 
 
-def plot_depth_statistics(iho_order_statistic: dict) -> go.Figure:
+def add_regression_line_trace(
+    dataframe: pd.DataFrame,
+    uncertainty_band: str,
+    x_range: Optional[tuple[float, float]] = None,
+    y_range: Optional[tuple[float, float]] = None,
+) -> go.Scatter:
     """
-    Génère un graphique des statistiques de profondeur par ordre IHO.
-
-    :param iho_order_statistic: Dictionnaire contenant les statistiques des ordres IHO.
-    :type iho_order_statistic: Dict
-    :return: Figure Plotly contenant les statistiques de profondeur.
-    :rtype: go.Figure
+    Compute a linear regression of Uncertainty as a function of Depth and
+    return a trace plotting x = a·Depth + b (x=uncertainty, y=depth).
     """
-    return plot_statistics(
-        iho_order_statistic,
-        keys=["Min Depth (m)", "Max Depth (m)", "Mean Depth (m)"],
-        colors=[
-            "rgba(205,92,92, 0.35)",
-            "rgba(205,92,92, 0.95)",
-            "rgba(205,92,92, 0.65)",
-        ],
-        y_title="Depth (m)",
+    clean_data = dataframe[
+        [uncertainty_band, schema_ids.DEPTH_PROCESSED_METER]
+    ].dropna()
+
+    if clean_data.empty or len(clean_data) < 2:
+        return go.Scatter(
+            x=[], y=[], mode="lines", name="Regression Line", visible=False
+        )
+
+    # Auto ranges if not provided
+    if x_range is None:
+        x_range = (
+            float(clean_data[uncertainty_band].min()),
+            float(clean_data[uncertainty_band].max()),
+        )
+    if y_range is None:
+        y_range = (
+            float(clean_data[schema_ids.DEPTH_PROCESSED_METER].min()),
+            float(clean_data[schema_ids.DEPTH_PROCESSED_METER].max()),
+        )
+
+    # Fit: Uncertainty = a * Depth + b
+    a, b = np.polyfit(
+        clean_data[schema_ids.DEPTH_PROCESSED_METER], clean_data[uncertainty_band], 1
+    )
+
+    # Generate the line over the visible Y range, then compute X
+    y_line = np.linspace(y_range[0], y_range[1], 200)
+    x_line = a * y_line + b
+
+    # Keep points within the visible X range
+    mask = (x_line >= x_range[0]) & (x_line <= x_range[1])
+    x_line_filtered = x_line[mask]
+    y_line_filtered = y_line[mask]
+
+    # R² (same as squared correlation in simple linear regression)
+    r2 = (
+        np.corrcoef(
+            clean_data[uncertainty_band], clean_data[schema_ids.DEPTH_PROCESSED_METER]
+        )[0, 1]
+        ** 2
+    )
+
+    return go.Scatter(
+        x=x_line_filtered,
+        y=y_line_filtered,
+        mode="lines",
+        name=f"Linear regression (R² = {r2:.3f})",
+        line=dict(color="black", width=3, dash="dash"),
+        hovertemplate=(
+            f"<b>Linear Regression</b>"
+            f"<br>Uncertainty = {a:.3f} × Depth + {b:.3f}<br>"
+            f"R² = {r2:.3f}<br>"
+            "<extra></extra>"
+        ),
+        showlegend=True,
+        visible="legendonly",
     )
 
 
-def plot_tvu_statistics(iho_order_statistic: dict) -> go.Figure:
+def determine_optimal_bins(
+    data: np.ndarray, min_bins: int = 10, max_bins: int = 100
+) -> int:
     """
-    Génère un graphique des statistiques de TVU par ordre IHO.
+    Détermine le nombre optimal de bins pour un histogramme en utilisant la règle de Freedman-Diaconis.
 
-    :param iho_order_statistic: Dictionnaire contenant les statistiques des ordres IHO.
-    :type iho_order_statistic: Dict
-    :return: Figure Plotly contenant les statistiques de profondeur.
-    :rtype: go.Figure
+    :param data: Données pour lesquelles déterminer le nombre de bins
+    :type data: np.ndarray
+    :param min_bins: Nombre minimum de bins
+    :type min_bins: int
+    :param max_bins: Nombre maximum de bins
+    :type max_bins: int
+    :return: Nombre optimal de bins
+    :rtype: int
     """
-    return plot_statistics(
-        iho_order_statistic,
-        keys=["Min TVU (m)", "Max TVU (m)", "Mean TVU (m)"],
-        colors=[
-            "rgba(92,205,92, 0.35)",
-            "rgba(92,205,92, 0.95)",
-            "rgba(92,205,92, 0.65)",
-        ],
-        y_title="TVU (m)",
+    if len(data) < 2:
+        return min_bins
+
+    # Freedman-Diaconis rule
+    iqr = np.subtract(*np.percentile(data, [75, 25]))
+    if iqr == 0:
+        bin_width = 3.5 * np.std(data) / (len(data) ** (1 / 3))
+    else:
+        bin_width = 2 * iqr / (len(data) ** (1 / 3))
+
+    if bin_width == 0:  # Handle case of constant data
+        return min_bins
+
+    data_range = np.ptp(data)  # max - min
+    bin_count = int(np.ceil(data_range / bin_width))
+
+    # Apply limits
+    return max(min(bin_count, max_bins), min_bins)
+
+
+def plot_depth_uncertainty_with_thresholds(
+    fig: go.Figure,
+    dataframe: pd.DataFrame,
+    row: int,
+    col: int,
+    uncertainty_band: str,
+    x_ref_domain: str,
+    y_ref_domain: str,
+    threshold_function,
+    nbins_x: Optional[int] = None,
+    nbins_y: Optional[int] = None,
+) -> None:
+    """
+    Fonction générique pour créer une heatmap depth/uncertainty avec les lignes de seuil
+    et mettre à jour le layout du subplot.
+
+    :param fig: Figure Plotly à modifier
+    :type fig: go.Figure
+    :param dataframe: DataFrame contenant les données
+    :type dataframe: pd.DataFrame
+    :param row: Numéro de ligne du subplot
+    :type row: int
+    :param col: Numéro de colonne du subplot
+    :type col: int
+    :param uncertainty_band: Nom de la colonne d'incertitude (TVU ou THU)
+    :type uncertainty_band: str
+    :param x_ref_domain: Référence du domaine X pour les formes
+    :type x_ref_domain: str
+    :param y_ref_domain: Référence du domaine Y pour les formes
+    :type y_ref_domain: str
+    :param threshold_function: Fonction pour créer les lignes de seuil
+    :type threshold_function: Callable
+    :param nbins_x: Nombre de bins en X
+    :type nbins_x: int
+    :param nbins_y: Nombre de bins en Y
+    :type nbins_y: int
+    """
+    clean_data = dataframe[
+        [uncertainty_band, schema_ids.DEPTH_PROCESSED_METER]
+    ].dropna()
+
+    # Automatically determine bins if not provided
+    if nbins_x is None:
+        nbins_x = determine_optimal_bins(clean_data[uncertainty_band].values)
+    if nbins_y is None:
+        nbins_y = determine_optimal_bins(
+            clean_data[schema_ids.DEPTH_PROCESSED_METER].values
+        )
+
+    LOGGER.debug(
+        f"Utilisation de nbins_x={nbins_x}, nbins_y={nbins_y} pour {uncertainty_band}."
     )
 
-
-def plot_thu_statistics(iho_order_statistic: dict) -> go.Figure:
-    """
-    Génère un graphique des statistiques de THU par ordre IHO.
-
-    :param iho_order_statistic: Dictionnaire contenant les statistiques des ordres IHO.
-    :type iho_order_statistic: Dict
-    :return: Figure Plotly contenant les statistiques de profondeur.
-    :rtype: go.Figure
-    """
-    return plot_statistics(
-        iho_order_statistic,
-        keys=["Min THU (m)", "Max THU (m)", "Mean THU (m)"],
-        colors=[
-            "rgba(92,92,205, 0.35)",
-            "rgba(92,92,205, 0.95)",
-            "rgba(92,92,205, 0.65)",
-        ],
-        y_title="THU (m)",
+    # Créer la heatmap
+    heatmap_trace = plot_depth_uncertainty_statistics_trace(
+        dataframe,
+        nbins_x=nbins_x,
+        nbins_y=nbins_y,
+        uncertainty_band=uncertainty_band,
     )
+    fig.add_trace(heatmap_trace, row=row, col=col)
+
+    # Ajouter la ligne de régression
+    regression_trace = add_regression_line_trace(
+        dataframe,
+        uncertainty_band,
+    )
+    fig.add_trace(regression_trace, row=row, col=col)
+
+    # Ajouter les lignes de seuil
+    threshold_traces = threshold_function(dataframe, nbins_x, nbins_y)
+    for line_trace in threshold_traces:
+        fig.add_trace(line_trace, row=row, col=col)
+
+    # Mettre à jour les axes et ajouter le fond blanc
+    heatmap_x = np.asarray(heatmap_trace.x)
+    heatmap_y = np.asarray(heatmap_trace.y)
+    if heatmap_x.size > 0 and heatmap_y.size > 0:
+        x_min, x_max = float(np.nanmin(heatmap_x)), float(np.nanmax(heatmap_x))
+        y_min, y_max = float(np.nanmin(heatmap_y)), float(np.nanmax(heatmap_y))
+
+        # Add buffer to ranges
+        buffer_value = 0.25
+        x_range = x_max - x_min
+        y_range = y_max - y_min
+        x_buffer = x_range * buffer_value
+        y_buffer = y_range * buffer_value
+
+        fig.update_xaxes(range=[x_min - x_buffer, x_max + x_buffer], row=row, col=col)
+        fig.update_yaxes(range=[y_max + y_buffer, y_min - y_buffer], row=row, col=col)
+
+        fig.add_shape(
+            type="rect",
+            xref=f"{x_ref_domain} domain",
+            yref=f"{y_ref_domain} domain",
+            x0=0,
+            y0=0,
+            x1=1,
+            y1=1,
+            fillcolor="white",
+            layer="below",
+            line=dict(width=0),
+        )
 
 
 def create_legend(
@@ -318,24 +628,18 @@ def update_layout(
             text="Percentage (%)",
             font=dict(weight="bold"),
         ),
-        xaxis2_title=dict(text="Survey Order", font=dict(weight="bold")),
+        xaxis2_title=dict(text="TVU (m)", font=dict(weight="bold")),
         yaxis2_title=dict(
             text="Depth (m)",
             font=dict(weight="bold"),
         ),
         yaxis2=dict(autorange="reversed"),
-        xaxis3_title=dict(text="Survey Order", font=dict(weight="bold")),
+        xaxis3_title=dict(text="THU (m)", font=dict(weight="bold")),
         yaxis3_title=dict(
-            text="TVU (m)",
+            text="Depth (m)",
             font=dict(weight="bold"),
         ),
         yaxis3=dict(autorange="reversed"),
-        xaxis4_title=dict(text="Survey Order", font=dict(weight="bold")),
-        yaxis4_title=dict(
-            text="THU (m)",
-            font=dict(weight="bold"),
-        ),
-        yaxis4=dict(autorange="reversed"),
         template="plotly",
         annotations=annotations,
         legend=legend,
@@ -358,8 +662,8 @@ def create_metadata_figure() -> go.Figure:
             [None, {"type": "domain"}],
             [{"type": "xy", "rowspan": 2}, {"type": "domain"}],
             [None, {"type": "domain"}],
-            [{"type": "xy"}, {"type": "domain"}],
-            [{"type": "xy"}, None],
+            [{"type": "xy", "rowspan": 2}, {"type": "domain"}],
+            [None, None],
         ],
         subplot_titles=(
             "Metadata Table",
@@ -367,12 +671,12 @@ def create_metadata_figure() -> go.Figure:
             "Soundings in Survey Order",
             "",
             "",
-            "Depths by Order",
+            "Depth and TVU Distribution",
             "",
             "",
-            "TVU by Order",
+            "Depth and THU Distribution",
             "",
-            "THU by Order",
+            "",
         ),
         vertical_spacing=0.045,
         horizontal_spacing=0.05,
@@ -384,14 +688,19 @@ def create_metadata_figure() -> go.Figure:
 
 
 def plot_metadata(
+    dataframe: pd.DataFrame,
     metadata: dict,
     title: str,
     output_path: Optional[Path] = None,
     show_plot: bool = False,
+    nbins_x: Optional[int] = None,
+    nbins_y: Optional[int] = None,
 ) -> go.Figure:
     """
     Affiche et sauvegarde les métadonnées des levés hydrographiques.
 
+    :param dataframe: DataFrame contenant les données du levé hydrographique.
+    :type dataframe: pd.DataFrame
     :param metadata: Dictionnaire contenant les métadonnées du levé hydrographique.
     :type metadata: Dict
     :param title: Titre de la figure.
@@ -400,6 +709,10 @@ def plot_metadata(
     :type output_path: Optional[Path]
     :param show_plot: Indique si la figure doit être affichée.
     :type show_plot: bool
+    :param nbins_x: Nombre de bins en X pour les heatmaps (TVU et THU). Si None, calcul automatique.
+    :type nbins_x: Optional[int]
+    :param nbins_y: Nombre de bins en Y pour les heatmaps (TVUet THU). Si None, calcul automatique.
+    :type nbins_y: Optional[int]
     :return: Figure Plotly contenant les métadonnées.
     :rtype: go.Figure
     """
@@ -433,18 +746,33 @@ def plot_metadata(
     for i, trace in enumerate(iho_order_fig.data, start=1):
         fig.add_trace(trace, row=i, col=2)
 
-    def add_traces_to_figure(figure: go.Figure, row: int, col: int) -> None:
-        for trace_ in figure.data:
-            fig.add_trace(trace_, row=row, col=col)
+    # Plot TVU heatmap avec lignes de seuil
+    plot_depth_uncertainty_with_thresholds(
+        fig=fig,
+        dataframe=dataframe,
+        row=4,
+        col=1,
+        uncertainty_band=schema_ids.UNCERTAINTY,
+        x_ref_domain="x2",
+        y_ref_domain="y2",
+        threshold_function=create_threshold_line_uncertainty_traces,
+        nbins_x=nbins_x,
+        nbins_y=nbins_y,
+    )
 
-    thu_fig: go.Figure = plot_thu_statistics(statistic)
-    add_traces_to_figure(thu_fig, row=7, col=1)
-
-    tvu_fig: go.Figure = plot_tvu_statistics(statistic)
-    add_traces_to_figure(tvu_fig, row=6, col=1)
-
-    depth_fig: go.Figure = plot_depth_statistics(statistic)
-    add_traces_to_figure(depth_fig, row=4, col=1)
+    # Plot THU heatmap avec lignes de seuil
+    plot_depth_uncertainty_with_thresholds(
+        fig=fig,
+        dataframe=dataframe,
+        row=6,
+        col=1,
+        uncertainty_band=schema_ids.THU,
+        x_ref_domain="x3",
+        y_ref_domain="y3",
+        threshold_function=create_threshold_line_thu_traces,
+        nbins_x=nbins_x,
+        nbins_y=nbins_y,
+    )
 
     update_layout(
         fig=fig,
