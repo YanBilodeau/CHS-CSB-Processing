@@ -135,53 +135,6 @@ class IHOorderQualifiquation:
     order_not_met: Optional[OrderStatistics] = None
     """Statistiques pour l'ordre non respecté."""
 
-    # def round_percentages(self, decimal_precision: int) -> IHOorderQualifiquation:
-    #     """
-    #     Arrondit les pourcentages de chaque OrderStatistics selon la précision décimale,
-    #     en s'assurant que le total des pourcentages soit de 100.
-    #
-    #     :param decimal_precision: Précision des décimales.
-    #     :type decimal_precision: int
-    #     :return: Qualification des données selon les ordres IHO.
-    #     :rtype: IHOorderQualifiquation
-    #     """
-    #     LOGGER.debug("Arrondissement des pourcentages des statistiques des ordres IHO.")
-    #
-    #     stats = [
-    #         self.exclusive_order,
-    #         self.special_order,
-    #         self.order_1a,
-    #         self.order_1b,
-    #         self.order_2,
-    #         self.order_not_met,
-    #     ]
-    #
-    #     valid_stats = [stat for stat in stats if stat is not None]
-    #
-    #     total_percentage = sum(
-    #         stat.sounding_pourcentage_within_order for stat in valid_stats
-    #     )
-    #     rounded_total = round(total_percentage, decimal_precision)
-    #     difference = 100 - rounded_total
-    #
-    #     if valid_stats:
-    #         valid_stats[0].sounding_pourcentage_within_order += difference
-    #
-    #     for stat in valid_stats:
-    #         stat.sounding_pourcentage_within_order = round(
-    #             stat.sounding_pourcentage_within_order, decimal_precision
-    #         )
-    #
-    #     final_total = sum(
-    #         stat.sounding_pourcentage_within_order for stat in valid_stats
-    #     )
-    #     if final_total != 100:
-    #         valid_stats[0].sounding_pourcentage_within_order += round(
-    #             100 - final_total, decimal_precision
-    #         )
-    #
-    #     return self
-
     def __dict__(self) -> dict:
         """
         Convertit les données en un dictionnaire.
