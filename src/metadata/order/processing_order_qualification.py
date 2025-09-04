@@ -90,8 +90,9 @@ def classify_iho_order(
     """
     LOGGER.debug(f"Classification de l'ordre IHO des données.")
 
-    grouped = data_geodataframe.groupby(schema_ids.IHO_ORDER)
-    data_count: int = len(data_geodataframe)
+    filtered_data = data_geodataframe.dropna(subset=[schema_ids.IHO_ORDER])
+    grouped = filtered_data.groupby(schema_ids.IHO_ORDER)
+    data_count: int = len(filtered_data)
 
     def _calulate_order_statistics(order_type: OrderEnum) -> OrderStatistics:
         grouped_orders_list: list[gpd.GeoDataFrame] = [
