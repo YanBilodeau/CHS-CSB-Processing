@@ -34,159 +34,112 @@ thu_order_map: dict[OrderType, THUorder] = {
 }
 
 
-@lru_cache(maxsize=None)
-def calculate_tvu_max(
-    order_type: OrderType, depth: int, decimal_precision: int
-) -> float:
+def calculate_tvu_max_vectorized(
+    order_type: OrderType, depths: np.ndarray
+) -> np.ndarray:
     """
-    Fonction de calcul de la TVU max.
+    Fonction de calcul vectorisé de la TVU max.
 
     :param order_type: L'ordre de l'IHO.
     :type order_type: OrderType
-    :param depth: La profondeur de la sonde.
-    :type depth: int
-    :param decimal_precision: La précision des calculs.
-    :type decimal_precision: int
+    :param depths: Les profondeurs des sondes.
+    :type depths: np.ndarray
+
     :return: La TVU max selon la formule : sqrt(a^2 + (b * depth)^2).
-    :rtype: float
+    :rtype: np.ndarray
     """
-    order_type: TVUorder = tvu_order_map[order_type]
+    order_params = tvu_order_map[order_type]
 
-    return np.sqrt(
-        np.square(order_type.a)
-        + np.square(order_type.b * (depth / 10**decimal_precision))
-    )
+    return np.sqrt(np.square(order_params.a) + np.square(order_params.b * depths))
 
 
-@lru_cache(maxsize=None)
-def calculate_thu_max(
-    order_type: OrderType, depth: int, decimal_precision: int
-) -> float:
+def calculate_thu_max_vectorized(
+    order_type: OrderType,
+    depths: np.ndarray,
+) -> np.ndarray:
     """
-    Fonction de calcul de la THU max.
+    Fonction de calcul vectorisé de la THU max.
 
     :param order_type: L'ordre de l'IHO.
     :type order_type: OrderType
-    :param depth: La profondeur de la sonde.
-    :type depth: int
-    :param decimal_precision: La précision des calculs.
-    :type decimal_precision: int
+    :param depths: Les profondeurs des sondes.
+    :type depths: np.ndarray
     :return: La THU max selon la formule : constant + (coefficient_depth * depth).
-    :rtype: float
+    :rtype: np.ndarray
     """
-    order_type: THUorder = thu_order_map[order_type]
+    order_params = thu_order_map[order_type]
 
-    return order_type.constant + (
-        order_type.coefficient_depth * (depth / 10**decimal_precision)
-    )
+    return order_params.constant + (order_params.coefficient_depth * depths)
 
 
-def _calculate_order(
-    depth: float,
-    uncertainty: float,
-    func_tpu: Callable[[OrderType, int, int], float],
+def _calculate_order_vectorized(
+    depths: np.ndarray,
+    uncertainties: np.ndarray,
+    func_tpu: Callable[[OrderType, np.ndarray], np.ndarray],
     orders: dict[OrderType, THUorder | TVUorder],
-    decimal_precision: int,
-) -> OrderType:
+) -> np.ndarray:
     """
-    Fonction de calcul de la TPU.
+    Fonction de calcul vectorisé de la TPU.
 
-    :param depth: La profondeur de la sonde.
-    :type depth: float
-    :param uncertainty: L'incertitude de la sonde.
-    :type uncertainty: float
+    :param depths: Les profondeurs des sondes.
+    :type depths: np.ndarray
+    :param uncertainties: Les incertitudes des sondes.
+    :type uncertainties: np.ndarray
     :param func_tpu: La fonction de calcul de la TPU.
     :type func_tpu: Callable
     :param orders: Les ordres de l'IHO.
     :type orders: dict[OrderType, THUorder | TVUorder]
-    :param decimal_precision: La précision des calculs.
-    :type decimal_precision: int
-    :return: L'ordre de la TPU.
-    :rtype: OrderType
+    :return: Les ordres de la TPU.
+    :rtype: np.ndarray
     """
-    return next(
-        (
-            order_type
-            for order_type in orders.keys()
-            if func_tpu(
-                order_type, int(depth * 10**decimal_precision), decimal_precision
-            )
-            >= uncertainty
-        ),
-        OrderType.ORDER_NOT_MET,
-    )
+    result = np.full(len(depths), OrderType.ORDER_NOT_MET, dtype=object)
+
+    # Tester chaque ordre dans l'ordre de priorité
+    for order_type in orders.keys():
+        tpu_max = func_tpu(order_type, depths)
+        mask = (tpu_max >= uncertainties) & (result == OrderType.ORDER_NOT_MET)
+        result[mask] = order_type
+
+    return result
 
 
-def calculate_vertical_order(
-    depth: float, tvu: float, decimal_precision: int
-) -> OrderType:
+def calculate_vertical_order_vectorized(
+    depth: np.ndarray, tvu: np.ndarray
+) -> np.ndarray:
     """
     Fonction de calcul de l'ordre de la TVU.
 
-    :param depth: La profondeur de la sonde.
-    :type depth: float
-    :param tvu: La TVU de la sonde.
-    :type tvu: float
-    :param decimal_precision: La précision des calculs.
-    :type decimal_precision: int
-    :return: L'ordre de la TVU.
-    :rtype: OrderType
+    :param depth: Les profondeurs des sondes.
+    :type depth: np.ndarray
+    :param tvu: Les TVU des sondes.
+    :type tvu: np.ndarray
+    :return: Les ordres des TVU.
+    :rtype: np.ndarray
     """
-    return _calculate_order(
-        depth=depth,
-        uncertainty=tvu,
-        func_tpu=calculate_tvu_max,
+    return _calculate_order_vectorized(
+        depths=depth,
+        uncertainties=tvu,
+        func_tpu=calculate_tvu_max_vectorized,
         orders=tvu_order_map,
-        decimal_precision=decimal_precision,
     )
 
 
-def calculate_horizontal_order(
-    depth: float, thu: float, decimal_precision: int
-) -> OrderType:
+def calculate_horizontal_order_vectorized(
+    depth: np.ndarray, thu: np.ndarray
+) -> np.ndarray:
     """
     Fonction de calcul de l'ordre de la THU.
 
-    :param depth: La profondeur de la sonde.
-    :type depth: float
-    :param thu: La THU de la sonde.
-    :type thu: float
-    :param decimal_precision: La précision des calculs.
-    :type decimal_precision: int
-    :return: L'ordre de la THU.
-    :rtype: OrderType
+    :param depth: Les profondeurs des sondes.
+    :type depth: np.ndarray
+    :param thu: Les THU des sondes.
+    :type thu: np.ndarray
+    :return: Les ordres des THU.
+    :rtype: np.ndarray
     """
-    return _calculate_order(
-        depth=depth,
-        uncertainty=thu,
-        func_tpu=calculate_thu_max,
+    return _calculate_order_vectorized(
+        depths=depth,
+        uncertainties=thu,
+        func_tpu=calculate_thu_max_vectorized,
         orders=thu_order_map,
-        decimal_precision=decimal_precision,
-    )
-
-
-def calculate_order(
-    depth: float, tvu: float, thu: float, decimal_precision: int
-) -> OrderType:
-    """
-    Fonction de calcul de l'ordre de la TPU.
-
-    :param depth: La profondeur de la sonde.
-    :type depth: float
-    :param tvu: La TVU de la sonde.
-    :type tvu: float
-    :param thu: La THU de la sonde.
-    :type thu: float
-    :param decimal_precision: La précision des calculs.
-    :type decimal_precision: int
-    :return: L'ordre de la TPU.
-    :rtype: OrderType
-    """
-    return max(
-        calculate_vertical_order(
-            depth=depth, tvu=tvu, decimal_precision=decimal_precision
-        ),
-        calculate_horizontal_order(
-            depth=depth, thu=thu, decimal_precision=decimal_precision
-        ),
     )

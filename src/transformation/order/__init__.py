@@ -1,18 +1,23 @@
 from .processing_order import (
-    calculate_order,
-    calculate_horizontal_order,
-    calculate_vertical_order,
     OrderType,
     THUorder,
     TVUorder,
+    thu_order_map,
+    tvu_order_map,
+    calculate_vertical_order_vectorized,
+    calculate_horizontal_order_vectorized,
 )
+
+from .order_models import ORDER_NAME_MAP
 
 
 __all__ = [
-    "calculate_order",
-    "calculate_horizontal_order",
-    "calculate_vertical_order",
     "OrderType",
     "THUorder",
     "TVUorder",
+    "ORDER_NAME_MAP",
+    "thu_order_map",
+    "tvu_order_map",
+    "calculate_vertical_order_vectorized",
+    "calculate_horizontal_order_vectorized",
 ]

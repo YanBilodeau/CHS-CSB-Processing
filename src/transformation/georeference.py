@@ -391,15 +391,12 @@ def apply_georeference_bathymetry(
 
 def compute_order(
     data: gpd.GeoDataFrame,
-    decimal_precision: int,
 ) -> gpd.GeoDataFrame:
     """
     Calcule l'ordre de la TVU et de la THU des données de bathymétrie.
 
     :param data: Données brut de profondeur.
     :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
-    :param decimal_precision: Précision décimale pour les valeurs de TPU.
-    :type decimal_precision: int
     :return: Données de profondeur avec l'ordre de la TVU et de la THU.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
@@ -408,21 +405,26 @@ def compute_order(
     )
 
     def calculate_order(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
-        gdf.loc[:, schema_ids.IHO_ORDER] = gdf.apply(
-            lambda row: str(
-                order.calculate_order(
-                    depth=row[schema_ids.DEPTH_RAW_METER],
-                    tvu=row[schema_ids.UNCERTAINTY],
-                    thu=row[schema_ids.THU],
-                    decimal_precision=decimal_precision,
-                )
-            ),
-            axis=1,
+        # Extraction des arrays numpy pour calcul vectorisé
+        depths = gdf[schema_ids.DEPTH_RAW_METER].values
+        tvus = gdf[schema_ids.UNCERTAINTY].values
+        thus = gdf[schema_ids.THU].values
+
+        # Calcul vectorisé des ordres avec les fonctions optimisées
+        tvu_orders = order.calculate_vertical_order_vectorized(depths, tvus)
+        thu_orders = order.calculate_horizontal_order_vectorized(depths, thus)
+
+        # Maximum des deux ordres
+        final_orders = np.maximum(tvu_orders, thu_orders)
+        gdf.loc[:, schema_ids.IHO_ORDER] = pd.Series(final_orders, index=gdf.index).map(
+            order.ORDER_NAME_MAP
         )
 
         return gdf
 
-    return run_dask_function_in_parallel(data=data, func=calculate_order)
+    return calculate_order(data)
+
+    # return run_dask_function_in_parallel(data=data, func=calculate_order)
 
 
 @schema.validate_schemas(
@@ -513,7 +515,7 @@ def georeference_bathymetry(
 
     LOGGER.info("Calcul de l'ordre IHO selon la TVU et la THU.")
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
-        compute_order(data=data_to_process, decimal_precision=decimal_precision)
+        compute_order(data=data_to_process)
     )
 
     data.update(data_to_process)  # Mise à jour des données
