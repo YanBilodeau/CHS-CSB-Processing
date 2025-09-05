@@ -105,7 +105,7 @@ def compute_tvu(
 
         return gdf
 
-    return run_dask_function_in_parallel(data=data, func=calculate_vertical_uncertainty)
+    return calculate_vertical_uncertainty(data)
 
 
 def compute_thu(
@@ -140,6 +140,4 @@ def compute_thu(
         )
         return gdf
 
-    return run_dask_function_in_parallel(
-        data=data, func=calculate_horizontal_uncertainty
-    )
+    return calculate_horizontal_uncertainty(data)
