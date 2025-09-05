@@ -424,8 +424,6 @@ def compute_order(
 
     return calculate_order(data)
 
-    # return run_dask_function_in_parallel(data=data, func=calculate_order)
-
 
 @schema.validate_schemas(
     data=schema.DataLoggerWithTideZoneSchema,
