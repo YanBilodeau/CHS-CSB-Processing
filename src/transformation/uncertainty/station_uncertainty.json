@@ -1,0 +1,3978 @@
+{
+    "00001": {
+        "name": "Outer Wood Island",
+        "uncertainty_m": 0.27
+    },
+    "00010": {
+        "name": "North Head",
+        "uncertainty_m": 0.319
+    },
+    "01003": {
+        "name": "Jamestown",
+        "uncertainty_m": 0.119
+    },
+    "01008": {
+        "name": "Charlottetown, NL",
+        "uncertainty_m": 0.106
+    },
+    "01009": {
+        "name": "Saltons Brook",
+        "uncertainty_m": 0.183
+    },
+    "01010": {
+        "name": "Newman Sound",
+        "uncertainty_m": 0.11
+    },
+    "01015": {
+        "name": "Salvage",
+        "uncertainty_m": 0.101
+    },
+    "01018": {
+        "name": "Glovertown South",
+        "uncertainty_m": 0.131
+    },
+    "00102": {
+        "name": "Macdonald Point",
+        "uncertainty_m": 0.101
+    },
+    "01025": {
+        "name": "Dover - Wellington",
+        "uncertainty_m": 0.133
+    },
+    "00103": {
+        "name": "Cambridge Narrows",
+        "uncertainty_m": 0.102
+    },
+    "01030": {
+        "name": "Valleyfield",
+        "uncertainty_m": 0.121
+    },
+    "01035": {
+        "name": "Musgrave Harbour",
+        "uncertainty_m": 0.125
+    },
+    "01040": {
+        "name": "Carmanville",
+        "uncertainty_m": 0.134
+    },
+    "01047": {
+        "name": "Joe Batts Arm",
+        "uncertainty_m": 0.183
+    },
+    "01048": {
+        "name": "Seldom",
+        "uncertainty_m": 0.183
+    },
+    "01049": {
+        "name": "Tilting Harbour",
+        "uncertainty_m": 0.145
+    },
+    "01050": {
+        "name": "Fogo",
+        "uncertainty_m": 0.173
+    },
+    "01052": {
+        "name": "Change Islands",
+        "uncertainty_m": 0.138
+    },
+    "01053": {
+        "name": "Farewell",
+        "uncertainty_m": 0.131
+    },
+    "01054": {
+        "name": "Dark Cove",
+        "uncertainty_m": 0.127
+    },
+    "01056": {
+        "name": "Dildo Run (Causeway)",
+        "uncertainty_m": 0.132
+    },
+    "01058": {
+        "name": "Summerford",
+        "uncertainty_m": 0.14
+    },
+    "01060": {
+        "name": "Twillingate",
+        "uncertainty_m": 0.16
+    },
+    "01065": {
+        "name": "Bridgeport",
+        "uncertainty_m": 0.158
+    },
+    "01070": {
+        "name": "Lewisporte",
+        "uncertainty_m": 0.182
+    },
+    "00108": {
+        "name": "Upper Gagetown",
+        "uncertainty_m": 0.137
+    },
+    "01080": {
+        "name": "Botwood",
+        "uncertainty_m": 0.139
+    },
+    "01085": {
+        "name": "Exploits Island",
+        "uncertainty_m": 0.125
+    },
+    "01087": {
+        "name": "Leading Tickle",
+        "uncertainty_m": 0.137
+    },
+    "01095": {
+        "name": "Little Bay Arm",
+        "uncertainty_m": 0.126
+    },
+    "01097": {
+        "name": "Beachside",
+        "uncertainty_m": 0.148
+    },
+    "01098": {
+        "name": "Springdale",
+        "uncertainty_m": 0.15
+    },
+    "00011": {
+        "name": "West Quoddy Head",
+        "uncertainty_m": 0.315
+    },
+    "01101": {
+        "name": "Nippers Harbour",
+        "uncertainty_m": 0.127
+    },
+    "01102": {
+        "name": "Tilt Cove",
+        "uncertainty_m": 0.13
+    },
+    "01105": {
+        "name": "La Scie",
+        "uncertainty_m": 0.127
+    },
+    "01110": {
+        "name": "Baie Verte",
+        "uncertainty_m": 0.134
+    },
+    "01115": {
+        "name": "Seal Cove",
+        "uncertainty_m": 0.125
+    },
+    "01125": {
+        "name": "Hampden",
+        "uncertainty_m": 0.137
+    },
+    "01135": {
+        "name": "Sops Island",
+        "uncertainty_m": 0.115
+    },
+    "01150": {
+        "name": "Englee",
+        "uncertainty_m": 0.137
+    },
+    "01165": {
+        "name": "Locks Cove",
+        "uncertainty_m": 0.151
+    },
+    "01170": {
+        "name": "St Anthony",
+        "uncertainty_m": 0.233
+    },
+    "01180": {
+        "name": "Ship Cove",
+        "uncertainty_m": 0.101
+    },
+    "01181": {
+        "name": "Cooks Harbour",
+        "uncertainty_m": 0.085
+    },
+    "01182": {
+        "name": "Black Joke Cove",
+        "uncertainty_m": 0.125
+    },
+    "01185": {
+        "name": "Chateau Bay",
+        "uncertainty_m": 0.13
+    },
+    "01186": {
+        "name": "Henley Harbour",
+        "uncertainty_m": 0.125
+    },
+    "01190": {
+        "name": "Battle Harbour",
+        "uncertainty_m": 0.171
+    },
+    "01193": {
+        "name": "Mary's Harbour",
+        "uncertainty_m": 0.218
+    },
+    "01195": {
+        "name": "Port Marnham",
+        "uncertainty_m": 0.142
+    },
+    "01199": {
+        "name": "Williams Harbour, South Labrador",
+        "uncertainty_m": 0.266
+    },
+    "00120": {
+        "name": "Fredericton",
+        "uncertainty_m": 0.168
+    },
+    "01200": {
+        "name": "Denbigh Island, Labrador",
+        "uncertainty_m": 0.144
+    },
+    "01202": {
+        "name": "White Bear Arm",
+        "uncertainty_m": 0.15
+    },
+    "01205": {
+        "name": "Nevile Island",
+        "uncertainty_m": 0.141
+    },
+    "01210": {
+        "name": "Port Hope Simpson",
+        "uncertainty_m": 0.148
+    },
+    "01214": {
+        "name": "Norman Bay",
+        "uncertainty_m": 0.153
+    },
+    "01217": {
+        "name": "Punchbowl",
+        "uncertainty_m": 0.155
+    },
+    "00122": {
+        "name": "Newcastle Creek",
+        "uncertainty_m": 0.122
+    },
+    "01245": {
+        "name": "Cartwright",
+        "uncertainty_m": 0.155
+    },
+    "01247": {
+        "name": "Sandwich Bay (East Arm)",
+        "uncertainty_m": 0.189
+    },
+    "01248": {
+        "name": "Paradise River",
+        "uncertainty_m": 0.169
+    },
+    "01263": {
+        "name": "Snooks Rocks",
+        "uncertainty_m": 0.185
+    },
+    "01267": {
+        "name": "Jordans Point",
+        "uncertainty_m": 0.254
+    },
+    "01280": {
+        "name": "Rigolet",
+        "uncertainty_m": 0.197
+    },
+    "01285": {
+        "name": "Caravalla Cove",
+        "uncertainty_m": 0.125
+    },
+    "01287": {
+        "name": "Long Point Island",
+        "uncertainty_m": 0.069
+    },
+    "00129": {
+        "name": "St Martins",
+        "uncertainty_m": 0.442
+    },
+    "01320": {
+        "name": "Cabot Point",
+        "uncertainty_m": 0.105
+    },
+    "01331": {
+        "name": "Mulligan Bay",
+        "uncertainty_m": 0.079
+    },
+    "01335": {
+        "name": "North West River",
+        "uncertainty_m": 0.101
+    },
+    "01345": {
+        "name": "Rabbit Island",
+        "uncertainty_m": 0.088
+    },
+    "01350": {
+        "name": "Terrington Basin",
+        "uncertainty_m": 0.09
+    },
+    "01365": {
+        "name": "Broomfield",
+        "uncertainty_m": 0.259
+    },
+    "01370": {
+        "name": "Emily Harbour",
+        "uncertainty_m": 0.179
+    },
+    "01374": {
+        "name": "Byron Bay (Copper Island)",
+        "uncertainty_m": 0.228
+    },
+    "01376": {
+        "name": "Jeanette Bay, Lab",
+        "uncertainty_m": 0.282
+    },
+    "01377": {
+        "name": "Mostyn Cove",
+        "uncertainty_m": 0.183
+    },
+    "01390": {
+        "name": "Makkovik",
+        "uncertainty_m": 0.312
+    },
+    "01397": {
+        "name": "Postville",
+        "uncertainty_m": 0.204
+    },
+    "01398": {
+        "name": "Jackos Point",
+        "uncertainty_m": 0.216
+    },
+    "00014": {
+        "name": "Lubec (South)",
+        "uncertainty_m": 0.276
+    },
+    "00140": {
+        "name": "Herring Cove",
+        "uncertainty_m": 0.485
+    },
+    "01400": {
+        "name": "Turnavik Island",
+        "uncertainty_m": 0.169
+    },
+    "01405": {
+        "name": "Hopedale",
+        "uncertainty_m": 0.195
+    },
+    "01410": {
+        "name": "Shoal Tickle",
+        "uncertainty_m": 0.201
+    },
+    "01416": {
+        "name": "Davis Inlet",
+        "uncertainty_m": 0.236
+    },
+    "01420": {
+        "name": "House Harbour",
+        "uncertainty_m": 0.247
+    },
+    "01421": {
+        "name": "Nukasusutok Island",
+        "uncertainty_m": 0.204
+    },
+    "01422": {
+        "name": "John Hayes Harbour",
+        "uncertainty_m": 0.358
+    },
+    "01425": {
+        "name": "Ford Harbour",
+        "uncertainty_m": 0.223
+    },
+    "01430": {
+        "name": "Nain",
+        "uncertainty_m": 0.225
+    },
+    "01435": {
+        "name": "Young's Harbour",
+        "uncertainty_m": 0.217
+    },
+    "01450": {
+        "name": "Port Manvers",
+        "uncertainty_m": 0.242
+    },
+    "01452": {
+        "name": "Kiglapait Harbour",
+        "uncertainty_m": 0.231
+    },
+    "01458": {
+        "name": "Igloksoatalik Island",
+        "uncertainty_m": 0.227
+    },
+    "01465": {
+        "name": "Hebron",
+        "uncertainty_m": 0.202
+    },
+    "01470": {
+        "name": "Saglek Bay",
+        "uncertainty_m": 0.17
+    },
+    "01485": {
+        "name": "Brownell Point",
+        "uncertainty_m": 0.167
+    },
+    "01487": {
+        "name": "Eclipse Channel",
+        "uncertainty_m": 0.19
+    },
+    "01490": {
+        "name": "Williams Harbour, North Labrador",
+        "uncertainty_m": 0.316
+    },
+    "01495": {
+        "name": "Cape Chidley",
+        "uncertainty_m": 0.365
+    },
+    "00015": {
+        "name": "Welshpool",
+        "uncertainty_m": 0.347
+    },
+    "00150": {
+        "name": "Cape Enrage",
+        "uncertainty_m": 0.514
+    },
+    "01520": {
+        "name": "Bay St. Lawrence",
+        "uncertainty_m": 0.134
+    },
+    "01530": {
+        "name": "St Paul Island",
+        "uncertainty_m": 0.211
+    },
+    "01539": {
+        "name": "Cheticamp",
+        "uncertainty_m": 0.129
+    },
+    "01540": {
+        "name": "La Pointe",
+        "uncertainty_m": 0.13
+    },
+    "01545": {
+        "name": "Margaree Trailer",
+        "uncertainty_m": 0.114
+    },
+    "01546": {
+        "name": "Margaree Harbour",
+        "uncertainty_m": 0.11
+    },
+    "01547": {
+        "name": "Belle Cote Breakwater",
+        "uncertainty_m": 0.113
+    },
+    "01548": {
+        "name": "East Margaree Bridge",
+        "uncertainty_m": 0.139
+    },
+    "01550": {
+        "name": "Broad Cove Marsh",
+        "uncertainty_m": 0.141
+    },
+    "01560": {
+        "name": "Port Hood",
+        "uncertainty_m": 0.149
+    },
+    "01570": {
+        "name": "Aulds Cove",
+        "uncertainty_m": 0.212
+    },
+    "01580": {
+        "name": "Cape Jack",
+        "uncertainty_m": 0.145
+    },
+    "01590": {
+        "name": "Antigonish Harbour",
+        "uncertainty_m": 0.151
+    },
+    "01597": {
+        "name": "Cribbeans Point",
+        "uncertainty_m": 0.157
+    },
+    "00016": {
+        "name": "Lubec - North Entrance",
+        "uncertainty_m": 0.34
+    },
+    "00160": {
+        "name": "Grindstone Island",
+        "uncertainty_m": 0.545
+    },
+    "01600": {
+        "name": "Ballantynes Cove",
+        "uncertainty_m": 0.157
+    },
+    "01610": {
+        "name": "Arisaig",
+        "uncertainty_m": 0.2
+    },
+    "01620": {
+        "name": "Merigomish",
+        "uncertainty_m": 0.183
+    },
+    "01630": {
+        "name": "Pictou",
+        "uncertainty_m": 0.184
+    },
+    "01635": {
+        "name": "Pictou Island",
+        "uncertainty_m": 0.189
+    },
+    "01640": {
+        "name": "Ferry Terminal",
+        "uncertainty_m": 0.187
+    },
+    "01650": {
+        "name": "Souris",
+        "uncertainty_m": 0.169
+    },
+    "01660": {
+        "name": "Georgetown",
+        "uncertainty_m": 0.177
+    },
+    "01662": {
+        "name": "Montague",
+        "uncertainty_m": 0.181
+    },
+    "01665": {
+        "name": "Graham Pond",
+        "uncertainty_m": 0.181
+    },
+    "01670": {
+        "name": "Murray Harbour",
+        "uncertainty_m": 0.168
+    },
+    "01680": {
+        "name": "Wood Islands",
+        "uncertainty_m": 0.213
+    },
+    "01690": {
+        "name": "Prim Point",
+        "uncertainty_m": 0.259
+    },
+    "00170": {
+        "name": "Hopewell Cape",
+        "uncertainty_m": 0.575
+    },
+    "01700": {
+        "name": "Charlottetown",
+        "uncertainty_m": 0.264
+    },
+    "01710": {
+        "name": "Canoe Cove",
+        "uncertainty_m": 0.253
+    },
+    "01715": {
+        "name": "Victoria, PEI",
+        "uncertainty_m": 0.235
+    },
+    "00172": {
+        "name": "Belliveau Village",
+        "uncertainty_m": 0.571
+    },
+    "01725": {
+        "name": "Port Borden",
+        "uncertainty_m": 0.224
+    },
+    "00173": {
+        "name": "Dover",
+        "uncertainty_m": 0.55
+    },
+    "01735": {
+        "name": "Summerside",
+        "uncertainty_m": 0.217
+    },
+    "01745": {
+        "name": "Skinners Cove",
+        "uncertainty_m": 0.213
+    },
+    "01760": {
+        "name": "Malagash",
+        "uncertainty_m": 0.23
+    },
+    "01770": {
+        "name": "Cape Cliff",
+        "uncertainty_m": 0.209
+    },
+    "01775": {
+        "name": "Pugwash",
+        "uncertainty_m": 0.252
+    },
+    "01780": {
+        "name": "Tidnish",
+        "uncertainty_m": 0.222
+    },
+    "01785": {
+        "name": "Port Elgin",
+        "uncertainty_m": 0.253
+    },
+    "01790": {
+        "name": "Cape Tormentine",
+        "uncertainty_m": 0.253
+    },
+    "01800": {
+        "name": "Cap Pele",
+        "uncertainty_m": 0.165
+    },
+    "01804": {
+        "name": "Pointe-du-Chene",
+        "uncertainty_m": 0.194
+    },
+    "01805": {
+        "name": "Shediac Bay",
+        "uncertainty_m": 0.18
+    },
+    "01810": {
+        "name": "Cap de Caissie",
+        "uncertainty_m": 0.141
+    },
+    "01812": {
+        "name": "Cocagne",
+        "uncertainty_m": 0.132
+    },
+    "01815": {
+        "name": "Saint Thomas De Kent",
+        "uncertainty_m": 0.133
+    },
+    "01820": {
+        "name": "Richibucto Cape",
+        "uncertainty_m": 0.127
+    },
+    "01825": {
+        "name": "Richibucto Bar",
+        "uncertainty_m": 0.112
+    },
+    "01827": {
+        "name": "Richibucto",
+        "uncertainty_m": 0.14
+    },
+    "01830": {
+        "name": "Pointe Sapin",
+        "uncertainty_m": 0.12
+    },
+    "01835": {
+        "name": "Cape Egmont",
+        "uncertainty_m": 0.186
+    },
+    "01845": {
+        "name": "West Point",
+        "uncertainty_m": 0.14
+    },
+    "01855": {
+        "name": "Miminegash",
+        "uncertainty_m": 0.121
+    },
+    "01860": {
+        "name": "Skinners Pond",
+        "uncertainty_m": 0.113
+    },
+    "01865": {
+        "name": "North Point",
+        "uncertainty_m": 0.118
+    },
+    "01875": {
+        "name": "Tignish",
+        "uncertainty_m": 0.113
+    },
+    "01885": {
+        "name": "Alberton",
+        "uncertainty_m": 0.102
+    },
+    "01896": {
+        "name": "Goodwood River",
+        "uncertainty_m": 0.159
+    },
+    "00190": {
+        "name": "Pecks Point",
+        "uncertainty_m": 0.559
+    },
+    "01905": {
+        "name": "Malpeque",
+        "uncertainty_m": 0.176
+    },
+    "01915": {
+        "name": "Rustico",
+        "uncertainty_m": 0.104
+    },
+    "01918": {
+        "name": "Covehead",
+        "uncertainty_m": 0.108
+    },
+    "01925": {
+        "name": "Savage Harbour",
+        "uncertainty_m": 0.085
+    },
+    "01935": {
+        "name": "St Peters Bay",
+        "uncertainty_m": 0.103
+    },
+    "01945": {
+        "name": "Naufrage",
+        "uncertainty_m": 0.119
+    },
+    "01955": {
+        "name": "North Lake Harbour",
+        "uncertainty_m": 0.15
+    },
+    "01960": {
+        "name": "Anse a la Cabane",
+        "uncertainty_m": 0.119
+    },
+    "01964": {
+        "name": "Havre-Aubert",
+        "uncertainty_m": 0.139
+    },
+    "01966": {
+        "name": "Ile d'Entrée",
+        "uncertainty_m": 0.126
+    },
+    "01970": {
+        "name": "Cap-aux-Meules",
+        "uncertainty_m": 0.161
+    },
+    "01976": {
+        "name": "Havre-aux-Maisons",
+        "uncertainty_m": 0.166
+    },
+    "01981": {
+        "name": "Pointe-Basse",
+        "uncertainty_m": 0.15
+    },
+    "01985": {
+        "name": "Grande-Entrée",
+        "uncertainty_m": 0.138
+    },
+    "01986": {
+        "name": "Old-Harry",
+        "uncertainty_m": 0.132
+    },
+    "01987": {
+        "name": "Leslie",
+        "uncertainty_m": 0.111
+    },
+    "01988": {
+        "name": "Grosse Ile- Mine Seleine",
+        "uncertainty_m": 0.15
+    },
+    "01990": {
+        "name": "L'Etang-du-Nord",
+        "uncertainty_m": 0.122
+    },
+    "00020": {
+        "name": "Wilsons Beach",
+        "uncertainty_m": 0.332
+    },
+    "02000": {
+        "name": "Lower Escuminac",
+        "uncertainty_m": 0.14
+    },
+    "02010": {
+        "name": "Portage Island",
+        "uncertainty_m": 0.129
+    },
+    "02012": {
+        "name": "Fox Island Range Light",
+        "uncertainty_m": 0.122
+    },
+    "02014": {
+        "name": "Cormorant (underwater)",
+        "uncertainty_m": 0.141
+    },
+    "02020": {
+        "name": "Bas Neguac",
+        "uncertainty_m": 0.131
+    },
+    "02022": {
+        "name": "Neguac",
+        "uncertainty_m": 0.134
+    },
+    "02025": {
+        "name": "Burnt Church",
+        "uncertainty_m": 0.126
+    },
+    "02028": {
+        "name": "Baie du Vin Island",
+        "uncertainty_m": 0.136
+    },
+    "02029": {
+        "name": "Robichaud Spit",
+        "uncertainty_m": 0.139
+    },
+    "02030": {
+        "name": "Oak Point",
+        "uncertainty_m": 0.131
+    },
+    "02033": {
+        "name": "Loggieville",
+        "uncertainty_m": 0.138
+    },
+    "02034": {
+        "name": "Gordon Point",
+        "uncertainty_m": 0.144
+    },
+    "02035": {
+        "name": "Chatham",
+        "uncertainty_m": 0.122
+    },
+    "02040": {
+        "name": "Newcastle",
+        "uncertainty_m": 0.117
+    },
+    "02060": {
+        "name": "Tracadie",
+        "uncertainty_m": 0.125
+    },
+    "02070": {
+        "name": "Shippagan Gully",
+        "uncertainty_m": 0.133
+    },
+    "02071": {
+        "name": "Shippagan",
+        "uncertainty_m": 0.159
+    },
+    "02090": {
+        "name": "Miscou",
+        "uncertainty_m": 0.144
+    },
+    "00021": {
+        "name": "East Quoddy Head",
+        "uncertainty_m": 0.33
+    },
+    "02110": {
+        "name": "Caraquet",
+        "uncertainty_m": 0.132
+    },
+    "02120": {
+        "name": "Stonehaven",
+        "uncertainty_m": 0.166
+    },
+    "02130": {
+        "name": "Bathurst Harbour",
+        "uncertainty_m": 0.16
+    },
+    "02145": {
+        "name": "Belledune",
+        "uncertainty_m": 0.209
+    },
+    "00215": {
+        "name": "Joggins",
+        "uncertainty_m": 0.568
+    },
+    "02165": {
+        "name": "Dalhousie",
+        "uncertainty_m": 0.234
+    },
+    "02175": {
+        "name": "Campbellton",
+        "uncertainty_m": 0.277
+    },
+    "02196": {
+        "name": "Miguasha",
+        "uncertainty_m": 0.211
+    },
+    "02200": {
+        "name": "Carleton",
+        "uncertainty_m": 0.197
+    },
+    "02215": {
+        "name": "Pointe Howatson",
+        "uncertainty_m": 0.2
+    },
+    "02230": {
+        "name": "Bonaventure",
+        "uncertainty_m": 0.18
+    },
+    "02235": {
+        "name": "Paspebiac",
+        "uncertainty_m": 0.161
+    },
+    "02240": {
+        "name": "Saint-Godefroi",
+        "uncertainty_m": 0.17
+    },
+    "00225": {
+        "name": "Cape Capstan",
+        "uncertainty_m": 0.48
+    },
+    "02250": {
+        "name": "Port-Daniel-Gascons",
+        "uncertainty_m": 0.155
+    },
+    "02253": {
+        "name": "Gascons",
+        "uncertainty_m": 0.146
+    },
+    "02260": {
+        "name": "Newport",
+        "uncertainty_m": 0.151
+    },
+    "02269": {
+        "name": "Chandler",
+        "uncertainty_m": 0.16
+    },
+    "02279": {
+        "name": "Grande-Riviere",
+        "uncertainty_m": 0.14
+    },
+    "02285": {
+        "name": "Sainte-Therese-de-Gaspe",
+        "uncertainty_m": 0.158
+    },
+    "02290": {
+        "name": "Cap-d'Espoir",
+        "uncertainty_m": 0.136
+    },
+    "02295": {
+        "name": "L'Anse-a -Beaufils",
+        "uncertainty_m": 0.144
+    },
+    "02309": {
+        "name": "Mal-Bay",
+        "uncertainty_m": 0.149
+    },
+    "02310": {
+        "name": "Pointe Saint-Pierre",
+        "uncertainty_m": 0.156
+    },
+    "02314": {
+        "name": "L'Anse-a -Brillant",
+        "uncertainty_m": 0.133
+    },
+    "02319": {
+        "name": "Sandy Beach",
+        "uncertainty_m": 0.159
+    },
+    "02330": {
+        "name": "Riviere-au-Renard",
+        "uncertainty_m": 0.162
+    },
+    "02335": {
+        "name": "L'Anse-a -Valleau",
+        "uncertainty_m": 0.182
+    },
+    "02340": {
+        "name": "Cloridorme",
+        "uncertainty_m": 0.199
+    },
+    "00235": {
+        "name": "West Advocate",
+        "uncertainty_m": 0.481
+    },
+    "02350": {
+        "name": "Grande-Vallee",
+        "uncertainty_m": 0.2
+    },
+    "00236": {
+        "name": "Advocate",
+        "uncertainty_m": 0.486
+    },
+    "02360": {
+        "name": "Port-Menier",
+        "uncertainty_m": 0.168
+    },
+    "02375": {
+        "name": "Pointe du Sud-Ouest",
+        "uncertainty_m": 0.164
+    },
+    "00024": {
+        "name": "Eastport",
+        "uncertainty_m": 0.269
+    },
+    "00240": {
+        "name": "Cape d'Or",
+        "uncertainty_m": 0.509
+    },
+    "02415": {
+        "name": "Baie du Renard",
+        "uncertainty_m": 0.145
+    },
+    "00242": {
+        "name": "Spencers Island",
+        "uncertainty_m": 0.51
+    },
+    "00245": {
+        "name": "Port Greville",
+        "uncertainty_m": 0.528
+    },
+    "00247": {
+        "name": "Diligent River",
+        "uncertainty_m": 0.579
+    },
+    "02470": {
+        "name": "Mingan",
+        "uncertainty_m": 0.173
+    },
+    "02480": {
+        "name": "Havre-Saint-Pierre",
+        "uncertainty_m": 0.16
+    },
+    "02490": {
+        "name": "Baie-Johan-Beetz",
+        "uncertainty_m": 0.159
+    },
+    "00025": {
+        "name": "Fairhaven",
+        "uncertainty_m": 0.347
+    },
+    "00250": {
+        "name": "Cape Sharp",
+        "uncertainty_m": 0.619
+    },
+    "02510": {
+        "name": "Natashquan",
+        "uncertainty_m": 0.147
+    },
+    "02518": {
+        "name": "Kegaska",
+        "uncertainty_m": 0.163
+    },
+    "02530": {
+        "name": "Gethsemani",
+        "uncertainty_m": 0.163
+    },
+    "00255": {
+        "name": "Parrsboro",
+        "uncertainty_m": 0.556
+    },
+    "02550": {
+        "name": "Harrington Harbour",
+        "uncertainty_m": 0.169
+    },
+    "02554": {
+        "name": "Tete-a-la-Baleine",
+        "uncertainty_m": 0.185
+    },
+    "02556": {
+        "name": "Baie des Moutons",
+        "uncertainty_m": 0.193
+    },
+    "02558": {
+        "name": "La Tabatiere",
+        "uncertainty_m": 0.19
+    },
+    "02564": {
+        "name": "Saint-Augustin",
+        "uncertainty_m": 0.165
+    },
+    "02577": {
+        "name": "Vieux-Fort",
+        "uncertainty_m": 0.174
+    },
+    "02579": {
+        "name": "Riviere-Saint-Paul",
+        "uncertainty_m": 0.167
+    },
+    "02580": {
+        "name": "Ile des Esquimaux",
+        "uncertainty_m": 0.165
+    },
+    "02581": {
+        "name": "Baie Chevalier",
+        "uncertainty_m": 0.173
+    },
+    "02583": {
+        "name": "Middle Bay",
+        "uncertainty_m": 0.171
+    },
+    "02588": {
+        "name": "Blanc-Sablon",
+        "uncertainty_m": 0.163
+    },
+    "02590": {
+        "name": "Forteau Bay",
+        "uncertainty_m": 0.141
+    },
+    "02595": {
+        "name": "West St. Modeste",
+        "uncertainty_m": 0.123
+    },
+    "00260": {
+        "name": "Five Islands",
+        "uncertainty_m": 0.669
+    },
+    "02600": {
+        "name": "Red Bay",
+        "uncertainty_m": 0.19
+    },
+    "02633": {
+        "name": "Savage Cove",
+        "uncertainty_m": 0.138
+    },
+    "02635": {
+        "name": "Flowers Cove",
+        "uncertainty_m": 0.149
+    },
+    "02637": {
+        "name": "Anchor Point",
+        "uncertainty_m": 0.141
+    },
+    "02638": {
+        "name": "St. Barbe",
+        "uncertainty_m": 0.173
+    },
+    "02642": {
+        "name": "Shoal Cove West",
+        "uncertainty_m": 0.168
+    },
+    "02650": {
+        "name": "Port Saunders",
+        "uncertainty_m": 0.266
+    },
+    "02655": {
+        "name": "Port Aux Choix",
+        "uncertainty_m": 0.163
+    },
+    "02660": {
+        "name": "Cow Head",
+        "uncertainty_m": 0.189
+    },
+    "02670": {
+        "name": "Norris Cove",
+        "uncertainty_m": 0.183
+    },
+    "02680": {
+        "name": "Corner Brook",
+        "uncertainty_m": 0.201
+    },
+    "02685": {
+        "name": "Lark Harbour",
+        "uncertainty_m": 0.17
+    },
+    "02695": {
+        "name": "Fox Island",
+        "uncertainty_m": 0.188
+    },
+    "00270": {
+        "name": "Burntcoat Head",
+        "uncertainty_m": 0.643
+    },
+    "02710": {
+        "name": "Port Harmon",
+        "uncertainty_m": 0.15
+    },
+    "02720": {
+        "name": "St Georges",
+        "uncertainty_m": 0.142
+    },
+    "02725": {
+        "name": "Crabbes River",
+        "uncertainty_m": 0.18
+    },
+    "02750": {
+        "name": "Riviere-au-Tonnerre",
+        "uncertainty_m": 0.197
+    },
+    "02780": {
+        "name": "Sept-Iles",
+        "uncertainty_m": 0.227
+    },
+    "02790": {
+        "name": "Port-Cartier",
+        "uncertainty_m": 0.226
+    },
+    "00028": {
+        "name": "McMaster Island",
+        "uncertainty_m": 0.338
+    },
+    "02815": {
+        "name": "Baie-Trinite",
+        "uncertainty_m": 0.273
+    },
+    "00282": {
+        "name": "Hantsport",
+        "uncertainty_m": 0.639
+    },
+    "02826": {
+        "name": "Godbout",
+        "uncertainty_m": 0.269
+    },
+    "02840": {
+        "name": "Baie-Comeau",
+        "uncertainty_m": 0.265
+    },
+    "02880": {
+        "name": "Forestville",
+        "uncertainty_m": 0.314
+    },
+    "02883": {
+        "name": "Portneuf-sur-Mer",
+        "uncertainty_m": 0.326
+    },
+    "00029": {
+        "name": "Matthews Cove",
+        "uncertainty_m": 0.331
+    },
+    "00290": {
+        "name": "Cape Blomidon",
+        "uncertainty_m": 0.633
+    },
+    "02900": {
+        "name": "Les Escoumins",
+        "uncertainty_m": 0.316
+    },
+    "02920": {
+        "name": "Mont-Louis",
+        "uncertainty_m": 0.226
+    },
+    "02933": {
+        "name": "Petite-Tourelle",
+        "uncertainty_m": 0.276
+    },
+    "02935": {
+        "name": "Sainte-Anne-des-Monts",
+        "uncertainty_m": 0.243
+    },
+    "02940": {
+        "name": "Cap-Chat",
+        "uncertainty_m": 0.243
+    },
+    "02945": {
+        "name": "Le Gros Mechins",
+        "uncertainty_m": 0.271
+    },
+    "02955": {
+        "name": "Matane",
+        "uncertainty_m": 0.295
+    },
+    "02975": {
+        "name": "Pointe aux Cenelles",
+        "uncertainty_m": 0.308
+    },
+    "02980": {
+        "name": "Pointe-au-Pere",
+        "uncertainty_m": 0.325
+    },
+    "02985": {
+        "name": "Rimouski",
+        "uncertainty_m": 0.326
+    },
+    "02995": {
+        "name": "Le Bic",
+        "uncertainty_m": 0.353
+    },
+    "00030": {
+        "name": "Letite Harbour",
+        "uncertainty_m": 0.361
+    },
+    "00300": {
+        "name": "Scots Bay",
+        "uncertainty_m": 0.529
+    },
+    "03000": {
+        "name": "Ile Bicquette",
+        "uncertainty_m": 0.347
+    },
+    "03005": {
+        "name": "Trois-Pistoles",
+        "uncertainty_m": 0.349
+    },
+    "03030": {
+        "name": "Saint-Simeon",
+        "uncertainty_m": 0.426
+    },
+    "03045": {
+        "name": "Pointe-au-Pic",
+        "uncertainty_m": 0.443
+    },
+    "00305": {
+        "name": "Baxters Harbour",
+        "uncertainty_m": 0.578
+    },
+    "03052": {
+        "name": "Cap-aux-Oies",
+        "uncertainty_m": 0.481
+    },
+    "03057": {
+        "name": "Saint-Joseph-de-la-Rive",
+        "uncertainty_m": 0.481
+    },
+    "03058": {
+        "name": "Saint-Bernard-sur-Mer",
+        "uncertainty_m": 0.497
+    },
+    "03060": {
+        "name": "Cap-aux-Corbeaux",
+        "uncertainty_m": 0.505
+    },
+    "00312": {
+        "name": "Ile Haute",
+        "uncertainty_m": 0.551
+    },
+    "03120": {
+        "name": "Ile Verte",
+        "uncertainty_m": 0.352
+    },
+    "03122": {
+        "name": "L'Isle-Verte",
+        "uncertainty_m": 0.393
+    },
+    "03125": {
+        "name": "Gros-Cacouna",
+        "uncertainty_m": 0.373
+    },
+    "03130": {
+        "name": "Riviere-du-Loup",
+        "uncertainty_m": 0.387
+    },
+    "03140": {
+        "name": "Ile aux Lievres",
+        "uncertainty_m": 0.394
+    },
+    "03145": {
+        "name": "Le Petit Pelerin",
+        "uncertainty_m": 0.492
+    },
+    "00315": {
+        "name": "Margaretsville",
+        "uncertainty_m": 0.469
+    },
+    "03150": {
+        "name": "La Grande Ile",
+        "uncertainty_m": 0.495
+    },
+    "03160": {
+        "name": "Pointe-aux-Orignaux",
+        "uncertainty_m": 0.465
+    },
+    "03170": {
+        "name": "Saint-Jean-Port-Joli",
+        "uncertainty_m": 0.422
+    },
+    "00320": {
+        "name": "Parkers Cove",
+        "uncertainty_m": 0.409
+    },
+    "00324": {
+        "name": "Digby Ferry Wharf",
+        "uncertainty_m": 0.377
+    },
+    "00325": {
+        "name": "DIGBY",
+        "uncertainty_m": 0.373
+    },
+    "00033": {
+        "name": "Letang Harbour",
+        "uncertainty_m": 0.332
+    },
+    "00330": {
+        "name": "Culloden",
+        "uncertainty_m": 0.375
+    },
+    "00333": {
+        "name": "Grand Eddy",
+        "uncertainty_m": 0.314
+    },
+    "00334": {
+        "name": "Trout Cove",
+        "uncertainty_m": 0.358
+    },
+    "00335": {
+        "name": "Sandy Cove",
+        "uncertainty_m": 0.325
+    },
+    "00336": {
+        "name": "East Sandy Cove",
+        "uncertainty_m": 0.289
+    },
+    "00337": {
+        "name": "Tiverton",
+        "uncertainty_m": 0.267
+    },
+    "00338": {
+        "name": "Tiverton (Boars Head)",
+        "uncertainty_m": 0.308
+    },
+    "00339": {
+        "name": "West Narrows",
+        "uncertainty_m": 0.299
+    },
+    "00340": {
+        "name": "Westport",
+        "uncertainty_m": 0.276
+    },
+    "03424": {
+        "name": "Baie-Sainte-Catherine",
+        "uncertainty_m": 0.352
+    },
+    "03425": {
+        "name": "Tadoussac",
+        "uncertainty_m": 0.348
+    },
+    "03440": {
+        "name": "L'Anse-Saint-Jean",
+        "uncertainty_m": 0.465
+    },
+    "00345": {
+        "name": "Lighthouse Cove",
+        "uncertainty_m": 0.305
+    },
+    "03460": {
+        "name": "Port-Alfred",
+        "uncertainty_m": 0.388
+    },
+    "03466": {
+        "name": "Grande-Anse",
+        "uncertainty_m": 0.437
+    },
+    "03480": {
+        "name": "Chicoutimi",
+        "uncertainty_m": 0.336
+    },
+    "00035": {
+        "name": "St. Stephen",
+        "uncertainty_m": 0.332
+    },
+    "00353": {
+        "name": "Church Point",
+        "uncertainty_m": 0.276
+    },
+    "00355": {
+        "name": "Meteghan",
+        "uncertainty_m": 0.276
+    },
+    "00360": {
+        "name": "Port Maitland",
+        "uncertainty_m": 0.234
+    },
+    "00365": {
+        "name": "Yarmouth",
+        "uncertainty_m": 0.225
+    },
+    "00366": {
+        "name": "Bunker Island Wharf",
+        "uncertainty_m": 0.23
+    },
+    "00367": {
+        "name": "Bunker Island Light",
+        "uncertainty_m": 0.234
+    },
+    "00368": {
+        "name": "Kellys Cove",
+        "uncertainty_m": 0.227
+    },
+    "00370": {
+        "name": "Pinkney Point",
+        "uncertainty_m": 0.205
+    },
+    "00374": {
+        "name": "Wedgeport",
+        "uncertainty_m": 0.206
+    },
+    "00375": {
+        "name": "Lower Wedgeport",
+        "uncertainty_m": 0.191
+    },
+    "03765": {
+        "name": "Alert",
+        "uncertainty_m": 0.151
+    },
+    "00378": {
+        "name": "Tusket",
+        "uncertainty_m": 0.189
+    },
+    "03780": {
+        "name": "Cape Sheridan",
+        "uncertainty_m": 0.138
+    },
+    "03785": {
+        "name": "Wrangel Bay",
+        "uncertainty_m": 0.284
+    },
+    "03790": {
+        "name": "Discovery Harbour",
+        "uncertainty_m": 0.32
+    },
+    "00380": {
+        "name": "Abrams River",
+        "uncertainty_m": 0.189
+    },
+    "00382": {
+        "name": "Abbotts Harbour",
+        "uncertainty_m": 0.176
+    },
+    "03838": {
+        "name": "Alexandra Fiord",
+        "uncertainty_m": 0.88
+    },
+    "03840": {
+        "name": "Pim Island",
+        "uncertainty_m": 0.647
+    },
+    "00385": {
+        "name": "Lower East Pubnico",
+        "uncertainty_m": 0.179
+    },
+    "00390": {
+        "name": "Woods Harbour",
+        "uncertainty_m": 0.189
+    },
+    "03916": {
+        "name": "Nova Zembla Island",
+        "uncertainty_m": 0.29
+    },
+    "03940": {
+        "name": "Clyde River",
+        "uncertainty_m": 0.23
+    },
+    "00395": {
+        "name": "Flat Island",
+        "uncertainty_m": 0.205
+    },
+    "03960": {
+        "name": "Cape Hooper",
+        "uncertainty_m": 0.177
+    },
+    "03970": {
+        "name": "Kivitoo",
+        "uncertainty_m": 0.186
+    },
+    "03995": {
+        "name": "Cape Dyer",
+        "uncertainty_m": 0.425
+    },
+    "00004": {
+        "name": "Cutler",
+        "uncertainty_m": 0.204
+    },
+    "00040": {
+        "name": "St. Andrews",
+        "uncertainty_m": 0.363
+    },
+    "00400": {
+        "name": "Seal Island",
+        "uncertainty_m": 0.179
+    },
+    "04029": {
+        "name": "Pangnirtung",
+        "uncertainty_m": 1.145
+    },
+    "04040": {
+        "name": "Clearwater Fiord",
+        "uncertainty_m": 1.013
+    },
+    "04045": {
+        "name": "Imigen Island",
+        "uncertainty_m": 1.127
+    },
+    "00405": {
+        "name": "Clarks Harbour",
+        "uncertainty_m": 0.148
+    },
+    "04070": {
+        "name": "Brevoort Harbour",
+        "uncertainty_m": 0.952
+    },
+    "00408": {
+        "name": "West Head",
+        "uncertainty_m": 0.175
+    },
+    "00041": {
+        "name": "Long Island",
+        "uncertainty_m": 0.341
+    },
+    "00410": {
+        "name": "Swims Point",
+        "uncertainty_m": 0.164
+    },
+    "04100": {
+        "name": "Resor Island",
+        "uncertainty_m": 1.627
+    },
+    "04120": {
+        "name": "Frobisher's Farthest",
+        "uncertainty_m": 1.689
+    },
+    "04135": {
+        "name": "Lewis Bay",
+        "uncertainty_m": 1.522
+    },
+    "04140": {
+        "name": "Iqaluit",
+        "uncertainty_m": 1.744
+    },
+    "00415": {
+        "name": "Barrington Passage",
+        "uncertainty_m": 0.294
+    },
+    "04160": {
+        "name": "Sorry Harbour",
+        "uncertainty_m": 0.501
+    },
+    "04170": {
+        "name": "Acadia Cove",
+        "uncertainty_m": 0.625
+    },
+    "00042": {
+        "name": "Blacks Harbour",
+        "uncertainty_m": 0.331
+    },
+    "00420": {
+        "name": "Upper Port la Tour",
+        "uncertainty_m": 0.342
+    },
+    "04205": {
+        "name": "Kimmirut",
+        "uncertainty_m": 1.731
+    },
+    "04215": {
+        "name": "Ashe Inlet",
+        "uncertainty_m": 1.717
+    },
+    "00423": {
+        "name": "Ingomar",
+        "uncertainty_m": 0.296
+    },
+    "04245": {
+        "name": "Kinngait",
+        "uncertainty_m": 0.784
+    },
+    "00425": {
+        "name": "Shelburne",
+        "uncertainty_m": 0.387
+    },
+    "04255": {
+        "name": "Schooner Harbour",
+        "uncertainty_m": 0.592
+    },
+    "00426": {
+        "name": "Sandy Point",
+        "uncertainty_m": 0.323
+    },
+    "04265": {
+        "name": "Port Burwell",
+        "uncertainty_m": 0.478
+    },
+    "04275": {
+        "name": "Beacon Island",
+        "uncertainty_m": 0.96
+    },
+    "04279": {
+        "name": "Kangiqsualujjuaq",
+        "uncertainty_m": 1.004
+    },
+    "04294": {
+        "name": "Riviere Koksoak est",
+        "uncertainty_m": 1.017
+    },
+    "04295": {
+        "name": "Riviere Koksoak",
+        "uncertainty_m": 0.983
+    },
+    "04296": {
+        "name": "The Narrows",
+        "uncertainty_m": 0.796
+    },
+    "04297": {
+        "name": "Ile Mackays",
+        "uncertainty_m": 0.484
+    },
+    "04298": {
+        "name": "Kuujjuaq",
+        "uncertainty_m": 0.435
+    },
+    "00430": {
+        "name": "Lockeport",
+        "uncertainty_m": 0.38
+    },
+    "04315": {
+        "name": "Tasiujaq",
+        "uncertainty_m": 1.307
+    },
+    "04325": {
+        "name": "Hopes Advance Bay",
+        "uncertainty_m": 1.051
+    },
+    "04335": {
+        "name": "Agvik Island",
+        "uncertainty_m": 0.975
+    },
+    "04340": {
+        "name": "Ile Pikiyulik",
+        "uncertainty_m": 0.755
+    },
+    "04345": {
+        "name": "Ile Basking",
+        "uncertainty_m": 0.809
+    },
+    "00435": {
+        "name": "Port Mouton",
+        "uncertainty_m": 0.32
+    },
+    "04379": {
+        "name": "Quaqtaq",
+        "uncertainty_m": 1.555
+    },
+    "00044": {
+        "name": "Beaver Harbour",
+        "uncertainty_m": 0.357
+    },
+    "00440": {
+        "name": "Liverpool",
+        "uncertainty_m": 0.376
+    },
+    "04400": {
+        "name": "Stupart Bay",
+        "uncertainty_m": 1.419
+    },
+    "04415": {
+        "name": "Doctor Island",
+        "uncertainty_m": 1.372
+    },
+    "04425": {
+        "name": "Kangiqsujuaq",
+        "uncertainty_m": 1.236
+    },
+    "04435": {
+        "name": "Douglas Harbour",
+        "uncertainty_m": 1.272
+    },
+    "04460": {
+        "name": "Deception Bay",
+        "uncertainty_m": 0.519
+    },
+    "04470": {
+        "name": "Salluit",
+        "uncertainty_m": 0.511
+    },
+    "04480": {
+        "name": "Digges Harbour",
+        "uncertainty_m": 0.336
+    },
+    "04490": {
+        "name": "Port De Laperriere",
+        "uncertainty_m": 0.241
+    },
+    "00450": {
+        "name": "Bridgewater",
+        "uncertainty_m": 0.364
+    },
+    "04500": {
+        "name": "Port De Boucherville",
+        "uncertainty_m": 0.423
+    },
+    "00452": {
+        "name": "Riverport",
+        "uncertainty_m": 0.438
+    },
+    "04538": {
+        "name": "Akulivik",
+        "uncertainty_m": 0.094
+    },
+    "04548": {
+        "name": "North Kopak Island",
+        "uncertainty_m": 0.081
+    },
+    "00455": {
+        "name": "Lunenburg",
+        "uncertainty_m": 0.278
+    },
+    "04575": {
+        "name": "Inukjuak",
+        "uncertainty_m": 0.1
+    },
+    "04597": {
+        "name": "Gillies Island",
+        "uncertainty_m": 0.166
+    },
+    "00046": {
+        "name": "West Dipper Harbour",
+        "uncertainty_m": 0.327
+    },
+    "00460": {
+        "name": "Mahone Harbour",
+        "uncertainty_m": 0.328
+    },
+    "04600": {
+        "name": "Tukarak Island",
+        "uncertainty_m": 0.118
+    },
+    "04604": {
+        "name": "Belanger Island",
+        "uncertainty_m": 0.185
+    },
+    "04610": {
+        "name": "Innetalling Island",
+        "uncertainty_m": 0.17
+    },
+    "04628": {
+        "name": "Sanikiluaq",
+        "uncertainty_m": 0.154
+    },
+    "04645": {
+        "name": "Kuujjuarapik",
+        "uncertainty_m": 0.194
+    },
+    "04648": {
+        "name": "Bear Island",
+        "uncertainty_m": 0.209
+    },
+    "00465": {
+        "name": "Chester",
+        "uncertainty_m": 0.336
+    },
+    "04655": {
+        "name": "Long Island",
+        "uncertainty_m": 0.211
+    },
+    "04662": {
+        "name": "Roggan River",
+        "uncertainty_m": 0.189
+    },
+    "04680": {
+        "name": "La Grande Riviere",
+        "uncertainty_m": 0.208
+    },
+    "04681": {
+        "name": "Loon Island",
+        "uncertainty_m": 0.237
+    },
+    "04688": {
+        "name": "Hook Island",
+        "uncertainty_m": 0.144
+    },
+    "04710": {
+        "name": "Eastmain River",
+        "uncertainty_m": 0.138
+    },
+    "04720": {
+        "name": "Strutton Islands",
+        "uncertainty_m": 0.18
+    },
+    "00473": {
+        "name": "Owls Head",
+        "uncertainty_m": 0.267
+    },
+    "04730": {
+        "name": "Charlton Island",
+        "uncertainty_m": 0.337
+    },
+    "04740": {
+        "name": "Stag Island",
+        "uncertainty_m": 0.304
+    },
+    "00475": {
+        "name": "Mill Cove",
+        "uncertainty_m": 0.307
+    },
+    "04780": {
+        "name": "Sand Head",
+        "uncertainty_m": 0.373
+    },
+    "00479": {
+        "name": "Blandford",
+        "uncertainty_m": 0.288
+    },
+    "04790": {
+        "name": "Ship Sands Island",
+        "uncertainty_m": 0.324
+    },
+    "00480": {
+        "name": "Hubbards",
+        "uncertainty_m": 0.29
+    },
+    "04800": {
+        "name": "Nicholson Creek",
+        "uncertainty_m": 0.283
+    },
+    "04810": {
+        "name": "Moosonee",
+        "uncertainty_m": 0.287
+    },
+    "00482": {
+        "name": "Boutiliers Point",
+        "uncertainty_m": 0.29
+    },
+    "00484": {
+        "name": "Indian Harbour",
+        "uncertainty_m": 0.278
+    },
+    "04840": {
+        "name": "Fort Albany",
+        "uncertainty_m": 0.351
+    },
+    "00485": {
+        "name": "Cliff Cove",
+        "uncertainty_m": 0.23
+    },
+    "00486": {
+        "name": "Prospect",
+        "uncertainty_m": 0.29
+    },
+    "00488": {
+        "name": "Sambro Harbour",
+        "uncertainty_m": 0.266
+    },
+    "04880": {
+        "name": "Bear Island",
+        "uncertainty_m": 0.241
+    },
+    "00490": {
+        "name": "Halifax",
+        "uncertainty_m": 0.288
+    },
+    "00491": {
+        "name": "Bedford Institute",
+        "uncertainty_m": 0.306
+    },
+    "04920": {
+        "name": "Winisk",
+        "uncertainty_m": 0.276
+    },
+    "00493": {
+        "name": "Chezzetcook Inlet",
+        "uncertainty_m": 0.302
+    },
+    "00495": {
+        "name": "Salmon River Bridge",
+        "uncertainty_m": 0.339
+    },
+    "00497": {
+        "name": "Little Harbour",
+        "uncertainty_m": 0.314
+    },
+    "04980": {
+        "name": "Port Nelson",
+        "uncertainty_m": 0.35
+    },
+    "00005": {
+        "name": "Seal Cove",
+        "uncertainty_m": 0.277
+    },
+    "00500": {
+        "name": "Murphys Cove",
+        "uncertainty_m": 0.312
+    },
+    "05010": {
+        "name": "Churchill",
+        "uncertainty_m": 0.457
+    },
+    "05040": {
+        "name": "Arviat",
+        "uncertainty_m": 0.392
+    },
+    "00505": {
+        "name": "Tomlee Bay",
+        "uncertainty_m": 0.309
+    },
+    "05055": {
+        "name": "Whale Cove",
+        "uncertainty_m": 0.4
+    },
+    "05070": {
+        "name": "Marble Island",
+        "uncertainty_m": 0.351
+    },
+    "00509": {
+        "name": "Spry Harbour",
+        "uncertainty_m": 0.33
+    },
+    "05090": {
+        "name": "Panorama Island",
+        "uncertainty_m": 0.444
+    },
+    "00510": {
+        "name": "Sheet Harbour",
+        "uncertainty_m": 0.385
+    },
+    "05100": {
+        "name": "Rankin Inlet",
+        "uncertainty_m": 0.598
+    },
+    "00511": {
+        "name": "Port Dufferin",
+        "uncertainty_m": 0.326
+    },
+    "00512": {
+        "name": "West Newdy Quoddy",
+        "uncertainty_m": 0.315
+    },
+    "00514": {
+        "name": "Ecum Secum",
+        "uncertainty_m": 0.339
+    },
+    "05140": {
+        "name": "Chesterfield Inlet",
+        "uncertainty_m": 0.451
+    },
+    "05141": {
+        "name": "Akreavenek Island",
+        "uncertainty_m": 0.473
+    },
+    "00515": {
+        "name": "Liscomb Harbour",
+        "uncertainty_m": 0.322
+    },
+    "05159": {
+        "name": "Norton Island",
+        "uncertainty_m": 0.285
+    },
+    "00516": {
+        "name": "Marie Joseph",
+        "uncertainty_m": 0.343
+    },
+    "05161": {
+        "name": "Schooner Cove",
+        "uncertainty_m": 0.225
+    },
+    "05180": {
+        "name": "Coral Harbour",
+        "uncertainty_m": 0.347
+    },
+    "05190": {
+        "name": "Cape Dobbs",
+        "uncertainty_m": 0.598
+    },
+    "05193": {
+        "name": "Paliak Islands",
+        "uncertainty_m": 0.472
+    },
+    "05195": {
+        "name": "Bennett Bay",
+        "uncertainty_m": 0.489
+    },
+    "00052": {
+        "name": "Five Fathom Hole",
+        "uncertainty_m": 0.376
+    },
+    "00520": {
+        "name": "Sonora",
+        "uncertainty_m": 0.312
+    },
+    "05200": {
+        "name": "Naujaat",
+        "uncertainty_m": 0.553
+    },
+    "00525": {
+        "name": "Sherbrooke",
+        "uncertainty_m": 0.387
+    },
+    "05275": {
+        "name": "Sanirajak",
+        "uncertainty_m": 0.139
+    },
+    "05295": {
+        "name": "Igloolik",
+        "uncertainty_m": 0.251
+    },
+    "00053": {
+        "name": "Musquash Harbour",
+        "uncertainty_m": 0.381
+    },
+    "00530": {
+        "name": "Port Bickerton",
+        "uncertainty_m": 0.324
+    },
+    "05310": {
+        "name": "Sevigny Point",
+        "uncertainty_m": 0.252
+    },
+    "05330": {
+        "name": "Purfur Cove",
+        "uncertainty_m": 0.378
+    },
+    "00535": {
+        "name": "Isaacs Harbour",
+        "uncertainty_m": 0.336
+    },
+    "05358": {
+        "name": "Needle Cove",
+        "uncertainty_m": 0.277
+    },
+    "00540": {
+        "name": "Larrys River",
+        "uncertainty_m": 0.261
+    },
+    "05430": {
+        "name": "Dundas Harbour",
+        "uncertainty_m": 0.445
+    },
+    "00545": {
+        "name": "Whitehead",
+        "uncertainty_m": 0.315
+    },
+    "05490": {
+        "name": "Rigby Bay",
+        "uncertainty_m": 0.413
+    },
+    "00055": {
+        "name": "Lorneville",
+        "uncertainty_m": 0.368
+    },
+    "00550": {
+        "name": "Sable Island/Sable, ÃƒÅ½le de",
+        "uncertainty_m": 0.22
+    },
+    "05500": {
+        "name": "Radstock Bay",
+        "uncertainty_m": 0.383
+    },
+    "05510": {
+        "name": "Beechey Island",
+        "uncertainty_m": 0.364
+    },
+    "00555": {
+        "name": "Canso Harbour",
+        "uncertainty_m": 0.249
+    },
+    "05560": {
+        "name": "Resolute",
+        "uncertainty_m": 0.3
+    },
+    "05600": {
+        "name": "Cape Capel",
+        "uncertainty_m": 0.358
+    },
+    "05615": {
+        "name": "Hamilton Island",
+        "uncertainty_m": 0.24
+    },
+    "00563": {
+        "name": "Sand Point",
+        "uncertainty_m": 0.259
+    },
+    "05643": {
+        "name": "Natkusiak Peninsula",
+        "uncertainty_m": 0.409
+    },
+    "05645": {
+        "name": "Winter Harbour",
+        "uncertainty_m": 0.344
+    },
+    "05650": {
+        "name": "Peel Point",
+        "uncertainty_m": 0.387
+    },
+    "00570": {
+        "name": "Port Hastings",
+        "uncertainty_m": 0.261
+    },
+    "00575": {
+        "name": "Port Hawkesbury",
+        "uncertainty_m": 0.312
+    },
+    "00576": {
+        "name": "Point Tupper",
+        "uncertainty_m": 0.251
+    },
+    "05790": {
+        "name": "Koluktoo Bay",
+        "uncertainty_m": 0.339
+    },
+    "05791": {
+        "name": "Milne Inlet (head)",
+        "uncertainty_m": 0.337
+    },
+    "05795": {
+        "name": "Pisiktarfik Island",
+        "uncertainty_m": 0.35
+    },
+    "00580": {
+        "name": "Arichat",
+        "uncertainty_m": 0.3
+    },
+    "05800": {
+        "name": "Pond Inlet",
+        "uncertainty_m": 0.328
+    },
+    "00582": {
+        "name": "Petit De Grat",
+        "uncertainty_m": 0.303
+    },
+    "00585": {
+        "name": "Cannes",
+        "uncertainty_m": 0.228
+    },
+    "05860": {
+        "name": "Strathcona Sound",
+        "uncertainty_m": 0.527
+    },
+    "05865": {
+        "name": "Arctic Bay",
+        "uncertainty_m": 0.35
+    },
+    "00587": {
+        "name": "St Peters Bay",
+        "uncertainty_m": 0.313
+    },
+    "05906": {
+        "name": "Whaler Point",
+        "uncertainty_m": 0.389
+    },
+    "05912": {
+        "name": "Port Bowen",
+        "uncertainty_m": 0.361
+    },
+    "05917": {
+        "name": "Bellot Strait East",
+        "uncertainty_m": 0.385
+    },
+    "05918": {
+        "name": "Fury Point",
+        "uncertainty_m": 0.414
+    },
+    "05930": {
+        "name": "Fort Ross",
+        "uncertainty_m": 0.384
+    },
+    "05935": {
+        "name": "Cape Kater",
+        "uncertainty_m": 0.372
+    },
+    "05940": {
+        "name": "Cape Augherston",
+        "uncertainty_m": 0.453
+    },
+    "05948": {
+        "name": "Lavoie Islands",
+        "uncertainty_m": 0.388
+    },
+    "00595": {
+        "name": "Fourchu",
+        "uncertainty_m": 0.215
+    },
+    "05960": {
+        "name": "Martin Islands",
+        "uncertainty_m": 0.441
+    },
+    "05970": {
+        "name": "Crown Prince Frederik Island",
+        "uncertainty_m": 0.288
+    },
+    "05975": {
+        "name": "Cape Chapman",
+        "uncertainty_m": 0.421
+    },
+    "05976": {
+        "name": "Cape Berens",
+        "uncertainty_m": 0.432
+    },
+    "05978": {
+        "name": "Cape Miles",
+        "uncertainty_m": 0.333
+    },
+    "05985": {
+        "name": "Kugaaruk",
+        "uncertainty_m": 0.428
+    },
+    "05990": {
+        "name": "Cape Sibbald",
+        "uncertainty_m": 0.357
+    },
+    "05992": {
+        "name": "Cape Barclay",
+        "uncertainty_m": 0.433
+    },
+    "05998": {
+        "name": "Dease Peninsula",
+        "uncertainty_m": 0.481
+    },
+    "00060": {
+        "name": "Partridge Island",
+        "uncertainty_m": 0.362
+    },
+    "00600": {
+        "name": "Louisbourg",
+        "uncertainty_m": 0.285
+    },
+    "00610": {
+        "name": "Sydney",
+        "uncertainty_m": 0.28
+    },
+    "06100": {
+        "name": "False Strait",
+        "uncertainty_m": 0.43
+    },
+    "00612": {
+        "name": "North Sydney",
+        "uncertainty_m": 0.243
+    },
+    "06140": {
+        "name": "Cape Felix",
+        "uncertainty_m": 0.393
+    },
+    "06144": {
+        "name": "Oscar Bay",
+        "uncertainty_m": 0.339
+    },
+    "06150": {
+        "name": "Taloyoak",
+        "uncertainty_m": 0.142
+    },
+    "06160": {
+        "name": "Shepherd Bay",
+        "uncertainty_m": 0.24
+    },
+    "06170": {
+        "name": "Gjoa Haven",
+        "uncertainty_m": 0.155
+    },
+    "00620": {
+        "name": "Big Bras D'Or",
+        "uncertainty_m": 0.155
+    },
+    "00621": {
+        "name": "Table Head",
+        "uncertainty_m": 0.208
+    },
+    "06210": {
+        "name": "Gladman Point",
+        "uncertainty_m": 0.207
+    },
+    "06213": {
+        "name": "Island NE of M'Clintock Point",
+        "uncertainty_m": 0.378
+    },
+    "00622": {
+        "name": "Duffus Point",
+        "uncertainty_m": 0.176
+    },
+    "06225": {
+        "name": "Jenny Lind Island",
+        "uncertainty_m": 0.194
+    },
+    "00623": {
+        "name": "Black Rock Point",
+        "uncertainty_m": 0.208
+    },
+    "00624": {
+        "name": "Penny Lane",
+        "uncertainty_m": 0.285
+    },
+    "06240": {
+        "name": "Cambridge Bay",
+        "uncertainty_m": 0.233
+    },
+    "06284": {
+        "name": "Austin Bay",
+        "uncertainty_m": 0.123
+    },
+    "06290": {
+        "name": "Kugluktuk",
+        "uncertainty_m": 0.154
+    },
+    "00630": {
+        "name": "Ingonish Beach",
+        "uncertainty_m": 0.235
+    },
+    "06310": {
+        "name": "Bernard Harbour",
+        "uncertainty_m": 0.212
+    },
+    "06338": {
+        "name": "Tysoe Point",
+        "uncertainty_m": 0.255
+    },
+    "06340": {
+        "name": "Pearce Point",
+        "uncertainty_m": 0.198
+    },
+    "00635": {
+        "name": "Neils Harbour",
+        "uncertainty_m": 0.197
+    },
+    "06350": {
+        "name": "Paulatuk",
+        "uncertainty_m": 0.247
+    },
+    "06360": {
+        "name": "Cape Parry",
+        "uncertainty_m": 0.199
+    },
+    "06367": {
+        "name": "Franklin Bay",
+        "uncertainty_m": 0.234
+    },
+    "00638": {
+        "name": "Dingwall",
+        "uncertainty_m": 0.225
+    },
+    "06380": {
+        "name": "Ulukhaktok",
+        "uncertainty_m": 0.222
+    },
+    "00640": {
+        "name": "Baddeck",
+        "uncertainty_m": 0.145
+    },
+    "06424": {
+        "name": "Sachs Harbour",
+        "uncertainty_m": 0.151
+    },
+    "06443": {
+        "name": "Baillie Is. (South Spit)",
+        "uncertainty_m": 0.22
+    },
+    "06457": {
+        "name": "Krubluyak Point",
+        "uncertainty_m": 0.529
+    },
+    "06472": {
+        "name": "Cape Dalhousie",
+        "uncertainty_m": 0.424
+    },
+    "06476": {
+        "name": "Atkinson Point",
+        "uncertainty_m": 0.356
+    },
+    "06485": {
+        "name": "Tuktoyaktuk",
+        "uncertainty_m": 0.38
+    },
+    "06495": {
+        "name": "Hooper Island",
+        "uncertainty_m": 0.237
+    },
+    "06497": {
+        "name": "Pelly Island",
+        "uncertainty_m": 0.149
+    },
+    "00065": {
+        "name": "Saint John",
+        "uncertainty_m": 0.367
+    },
+    "06505": {
+        "name": "Shingle Point",
+        "uncertainty_m": 0.406
+    },
+    "06515": {
+        "name": "Kay Point",
+        "uncertainty_m": 0.393
+    },
+    "06525": {
+        "name": "Herschel Island",
+        "uncertainty_m": 0.397
+    },
+    "00653": {
+        "name": "Johnstown",
+        "uncertainty_m": 0.107
+    },
+    "00654": {
+        "name": "Eskasoni",
+        "uncertainty_m": 0.137
+    },
+    "00655": {
+        "name": "Iona",
+        "uncertainty_m": 0.118
+    },
+    "00656": {
+        "name": "Dundee",
+        "uncertainty_m": 0.146
+    },
+    "06560": {
+        "name": "Cape Skogn",
+        "uncertainty_m": 0.501
+    },
+    "06570": {
+        "name": "Grise Fiord",
+        "uncertainty_m": 0.504
+    },
+    "06580": {
+        "name": "Bay of Woe",
+        "uncertainty_m": 0.442
+    },
+    "00663": {
+        "name": "Grand Bay",
+        "uncertainty_m": 0.192
+    },
+    "06640": {
+        "name": "Eureka",
+        "uncertainty_m": 0.1
+    },
+    "00665": {
+        "name": "Port aux Basques",
+        "uncertainty_m": 0.339
+    },
+    "00666": {
+        "name": "Isle Aux Morts",
+        "uncertainty_m": 0.309
+    },
+    "06660": {
+        "name": "Iceberg Point",
+        "uncertainty_m": 0.196
+    },
+    "06670": {
+        "name": "Greely Fiord",
+        "uncertainty_m": 0.142
+    },
+    "00668": {
+        "name": "Rose Blanche",
+        "uncertainty_m": 0.32
+    },
+    "00670": {
+        "name": "La Poile (Little Bay)",
+        "uncertainty_m": 0.429
+    },
+    "00671": {
+        "name": "Grand Bruit",
+        "uncertainty_m": 0.324
+    },
+    "00672": {
+        "name": "Couteau Bay",
+        "uncertainty_m": 0.313
+    },
+    "06730": {
+        "name": "Disreali Fiord",
+        "uncertainty_m": 0.269
+    },
+    "06735": {
+        "name": "Cape Aldrich",
+        "uncertainty_m": 0.086
+    },
+    "06765": {
+        "name": "Airstrip Point",
+        "uncertainty_m": 0.274
+    },
+    "00677": {
+        "name": "Short Reach",
+        "uncertainty_m": 0.337
+    },
+    "06780": {
+        "name": "Northumberland Sound",
+        "uncertainty_m": 0.145
+    },
+    "06787": {
+        "name": "Cameron Island",
+        "uncertainty_m": 0.193
+    },
+    "00679": {
+        "name": "Ramea Island",
+        "uncertainty_m": 0.297
+    },
+    "00683": {
+        "name": "Francois",
+        "uncertainty_m": 0.277
+    },
+    "00688": {
+        "name": "Mccallum",
+        "uncertainty_m": 0.291
+    },
+    "00690": {
+        "name": "Pushthrough",
+        "uncertainty_m": 0.332
+    },
+    "06910": {
+        "name": "Isachsen",
+        "uncertainty_m": 0.157
+    },
+    "06955": {
+        "name": "Mould Bay",
+        "uncertainty_m": 0.19
+    },
+    "00007": {
+        "name": "Gannet Rock",
+        "uncertainty_m": 0.292
+    },
+    "07024": {
+        "name": "Sooke Basin",
+        "uncertainty_m": 0.175
+    },
+    "07030": {
+        "name": "Becher Bay",
+        "uncertainty_m": 0.185
+    },
+    "00705": {
+        "name": "St Albans",
+        "uncertainty_m": 0.372
+    },
+    "00708": {
+        "name": "Gaultois",
+        "uncertainty_m": 0.302
+    },
+    "07080": {
+        "name": "Pedder Bay",
+        "uncertainty_m": 0.173
+    },
+    "07082": {
+        "name": "William Head",
+        "uncertainty_m": 0.177
+    },
+    "00710": {
+        "name": "Hermitage",
+        "uncertainty_m": 0.355
+    },
+    "07109": {
+        "name": "Esquimalt Harbour",
+        "uncertainty_m": 0.175
+    },
+    "07110": {
+        "name": "Esquimalt Government  Hbr.",
+        "uncertainty_m": 0.178
+    },
+    "07115": {
+        "name": "Clover Point",
+        "uncertainty_m": 0.178
+    },
+    "07120": {
+        "name": "Victoria Harbour",
+        "uncertainty_m": 0.178
+    },
+    "07121": {
+        "name": "Selkirk Water",
+        "uncertainty_m": 0.2
+    },
+    "07122": {
+        "name": "Gorge at Aaron Point",
+        "uncertainty_m": 0.199
+    },
+    "07123": {
+        "name": "Gorge at Tillicum",
+        "uncertainty_m": 0.098
+    },
+    "07124": {
+        "name": "Gorge at Craigflower",
+        "uncertainty_m": 0.097
+    },
+    "07125": {
+        "name": "Portage Inlet",
+        "uncertainty_m": 0.094
+    },
+    "07130": {
+        "name": "Oak Bay",
+        "uncertainty_m": 0.187
+    },
+    "07140": {
+        "name": "Finnerty Cove",
+        "uncertainty_m": 0.186
+    },
+    "00720": {
+        "name": "Harbour Breton",
+        "uncertainty_m": 0.362
+    },
+    "00724": {
+        "name": "Belleoram",
+        "uncertainty_m": 0.37
+    },
+    "07255": {
+        "name": "Saanichton Bay",
+        "uncertainty_m": 0.202
+    },
+    "07260": {
+        "name": "Sidney",
+        "uncertainty_m": 0.194
+    },
+    "07270": {
+        "name": "Swartz Bay",
+        "uncertainty_m": 0.214
+    },
+    "07277": {
+        "name": "Patricia Bay",
+        "uncertainty_m": 0.207
+    },
+    "07280": {
+        "name": "Brentwood Bay",
+        "uncertainty_m": 0.216
+    },
+    "07284": {
+        "name": "Finlayson Arm",
+        "uncertainty_m": 0.23
+    },
+    "07310": {
+        "name": "Cowichan Bay",
+        "uncertainty_m": 0.235
+    },
+    "07315": {
+        "name": "Maple Bay",
+        "uncertainty_m": 0.233
+    },
+    "07330": {
+        "name": "Fulford Harbour",
+        "uncertainty_m": 0.207
+    },
+    "07345": {
+        "name": "Narvaez Bay",
+        "uncertainty_m": 0.242
+    },
+    "07350": {
+        "name": "Bedwell Harbour",
+        "uncertainty_m": 0.208
+    },
+    "07360": {
+        "name": "Hope Bay",
+        "uncertainty_m": 0.215
+    },
+    "07370": {
+        "name": "Samuel Island",
+        "uncertainty_m": 0.226
+    },
+    "07407": {
+        "name": "Ganges",
+        "uncertainty_m": 0.21
+    },
+    "07414": {
+        "name": "Village Bay",
+        "uncertainty_m": 0.221
+    },
+    "07420": {
+        "name": "Montague Harbour",
+        "uncertainty_m": 0.237
+    },
+    "07437": {
+        "name": "Porlier Pass",
+        "uncertainty_m": 0.243
+    },
+    "07439": {
+        "name": "Cardale Point",
+        "uncertainty_m": 0.23
+    },
+    "07445": {
+        "name": "Degnen Bay",
+        "uncertainty_m": 0.23
+    },
+    "00745": {
+        "name": "Saint-Pierre Et Miquelon",
+        "uncertainty_m": 0.353
+    },
+    "07450": {
+        "name": "Crofton",
+        "uncertainty_m": 0.224
+    },
+    "07455": {
+        "name": "Chemainus",
+        "uncertainty_m": 0.249
+    },
+    "07460": {
+        "name": "Ladysmith",
+        "uncertainty_m": 0.229
+    },
+    "07471": {
+        "name": "Preedy Harbour",
+        "uncertainty_m": 0.249
+    },
+    "07480": {
+        "name": "Boat Harbour",
+        "uncertainty_m": 0.241
+    },
+    "07510": {
+        "name": "Tumbo Channel",
+        "uncertainty_m": 0.232
+    },
+    "07515": {
+        "name": "Samuel Is.",
+        "uncertainty_m": 0.247
+    },
+    "07525": {
+        "name": "Georgina Point",
+        "uncertainty_m": 0.262
+    },
+    "07528": {
+        "name": "Miners Bay",
+        "uncertainty_m": 0.241
+    },
+    "07532": {
+        "name": "Whaler Bay",
+        "uncertainty_m": 0.244
+    },
+    "07535": {
+        "name": "Dionisio Point",
+        "uncertainty_m": 0.288
+    },
+    "07542": {
+        "name": "Valdes Island",
+        "uncertainty_m": 0.271
+    },
+    "00755": {
+        "name": "St. Lawrence",
+        "uncertainty_m": 0.381
+    },
+    "07550": {
+        "name": "Silva Bay",
+        "uncertainty_m": 0.281
+    },
+    "07577": {
+        "name": "White Rock",
+        "uncertainty_m": 0.282
+    },
+    "07579": {
+        "name": "Crescent Beach",
+        "uncertainty_m": 0.26
+    },
+    "07590": {
+        "name": "Tsawwassen",
+        "uncertainty_m": 0.264
+    },
+    "07592": {
+        "name": "Roberts Bank",
+        "uncertainty_m": 0.264
+    },
+    "07594": {
+        "name": "Sand Heads",
+        "uncertainty_m": 0.269
+    },
+    "00760": {
+        "name": "Burin",
+        "uncertainty_m": 0.343
+    },
+    "07607": {
+        "name": "Steveston",
+        "uncertainty_m": 0.221
+    },
+    "07610": {
+        "name": "Woodward's Landing",
+        "uncertainty_m": 0.21
+    },
+    "00765": {
+        "name": "Marystown",
+        "uncertainty_m": 0.388
+    },
+    "07654": {
+        "name": "New Westminster",
+        "uncertainty_m": 0.178
+    },
+    "07707": {
+        "name": "Kitsilano",
+        "uncertainty_m": 0.277
+    },
+    "07710": {
+        "name": "False Creek",
+        "uncertainty_m": 0.276
+    },
+    "07724": {
+        "name": "Calamity Point",
+        "uncertainty_m": 0.27
+    },
+    "07735": {
+        "name": "Vancouver",
+        "uncertainty_m": 0.273
+    },
+    "07745": {
+        "name": "Second Narrows",
+        "uncertainty_m": 0.278
+    },
+    "07755": {
+        "name": "Port Moody",
+        "uncertainty_m": 0.274
+    },
+    "00776": {
+        "name": "Petite Forte",
+        "uncertainty_m": 0.32
+    },
+    "07765": {
+        "name": "Deep Cove",
+        "uncertainty_m": 0.276
+    },
+    "07774": {
+        "name": "Indian Arm Head",
+        "uncertainty_m": 0.281
+    },
+    "07780": {
+        "name": "Ambleside",
+        "uncertainty_m": 0.273
+    },
+    "07786": {
+        "name": "Sandy Cove",
+        "uncertainty_m": 0.275
+    },
+    "07795": {
+        "name": "Point Atkinson",
+        "uncertainty_m": 0.275
+    },
+    "07808": {
+        "name": "Darrell Bay",
+        "uncertainty_m": 0.278
+    },
+    "07811": {
+        "name": "Squamish Inner",
+        "uncertainty_m": 0.279
+    },
+    "07820": {
+        "name": "Gibsons",
+        "uncertainty_m": 0.282
+    },
+    "07824": {
+        "name": "Roberts Creek",
+        "uncertainty_m": 0.308
+    },
+    "07830": {
+        "name": "Halfmoon Bay",
+        "uncertainty_m": 0.279
+    },
+    "07836": {
+        "name": "Irvines Landing",
+        "uncertainty_m": 0.286
+    },
+    "07837": {
+        "name": "kÃŒÂ±alpilin",
+        "uncertainty_m": 0.292
+    },
+    "07842": {
+        "name": "Egmont",
+        "uncertainty_m": 0.318
+    },
+    "07843": {
+        "name": "Boom Islet",
+        "uncertainty_m": 0.276
+    },
+    "07847": {
+        "name": "Storm Bay",
+        "uncertainty_m": 0.174
+    },
+    "07852": {
+        "name": "Porpoise Bay",
+        "uncertainty_m": 0.166
+    },
+    "07865": {
+        "name": "Blind Bay",
+        "uncertainty_m": 0.298
+    },
+    "07868": {
+        "name": "Saltery Bay",
+        "uncertainty_m": 0.29
+    },
+    "07875": {
+        "name": "Blubber Bay",
+        "uncertainty_m": 0.315
+    },
+    "07880": {
+        "name": "Powell River",
+        "uncertainty_m": 0.291
+    },
+    "07885": {
+        "name": "Lund",
+        "uncertainty_m": 0.297
+    },
+    "07892": {
+        "name": "Twin Islands",
+        "uncertainty_m": 0.285
+    },
+    "07895": {
+        "name": "Mitlenatch",
+        "uncertainty_m": 0.305
+    },
+    "07913": {
+        "name": "Harmac",
+        "uncertainty_m": 0.268
+    },
+    "07917": {
+        "name": "Nanaimo Harbour",
+        "uncertainty_m": 0.274
+    },
+    "07930": {
+        "name": "Nanoose Bay",
+        "uncertainty_m": 0.285
+    },
+    "07935": {
+        "name": "Winchelsea Is.",
+        "uncertainty_m": 0.282
+    },
+    "07938": {
+        "name": "Northwest Bay",
+        "uncertainty_m": 0.286
+    },
+    "07940": {
+        "name": "French Creek",
+        "uncertainty_m": 0.277
+    },
+    "00795": {
+        "name": "Tacks Beach",
+        "uncertainty_m": 0.314
+    },
+    "07953": {
+        "name": "Hornby Island",
+        "uncertainty_m": 0.285
+    },
+    "07955": {
+        "name": "Denman Island",
+        "uncertainty_m": 0.313
+    },
+    "00796": {
+        "name": "Davis Cove",
+        "uncertainty_m": 0.393
+    },
+    "07965": {
+        "name": "Comox",
+        "uncertainty_m": 0.294
+    },
+    "07982": {
+        "name": "False Bay",
+        "uncertainty_m": 0.285
+    },
+    "07985": {
+        "name": "Skerry Bay",
+        "uncertainty_m": 0.296
+    },
+    "07990": {
+        "name": "Welcome Bay",
+        "uncertainty_m": 0.281
+    },
+    "07993": {
+        "name": "Little River",
+        "uncertainty_m": 0.286
+    },
+    "00008": {
+        "name": "Coffins Point",
+        "uncertainty_m": 0.248
+    },
+    "08006": {
+        "name": "Okeover Inlet",
+        "uncertainty_m": 0.304
+    },
+    "08008": {
+        "name": "Prideaux Haven",
+        "uncertainty_m": 0.322
+    },
+    "08015": {
+        "name": "Channel Island",
+        "uncertainty_m": 0.296
+    },
+    "08025": {
+        "name": "Redonda Bay",
+        "uncertainty_m": 0.289
+    },
+    "08035": {
+        "name": "Heriot Bay",
+        "uncertainty_m": 0.313
+    },
+    "08037": {
+        "name": "Gorge Harbour",
+        "uncertainty_m": 0.348
+    },
+    "08038": {
+        "name": "Whaletown",
+        "uncertainty_m": 0.291
+    },
+    "08045": {
+        "name": "Surge Narrows",
+        "uncertainty_m": 0.306
+    },
+    "00805": {
+        "name": "Woody Island",
+        "uncertainty_m": 0.341
+    },
+    "08050": {
+        "name": "Octopus Is.",
+        "uncertainty_m": 0.25
+    },
+    "08055": {
+        "name": "Florence Cove",
+        "uncertainty_m": 0.291
+    },
+    "08060": {
+        "name": "Big Bay, Stuart Island",
+        "uncertainty_m": 0.272
+    },
+    "08065": {
+        "name": "Orford Bay",
+        "uncertainty_m": 0.295
+    },
+    "08069": {
+        "name": "Waddington Hbr.",
+        "uncertainty_m": 0.307
+    },
+    "08074": {
+        "name": "Campbell River",
+        "uncertainty_m": 0.25
+    },
+    "08079": {
+        "name": "Quathiaski Cove",
+        "uncertainty_m": 0.273
+    },
+    "08082": {
+        "name": "Gowlland Hbr.",
+        "uncertainty_m": 0.22
+    },
+    "08087": {
+        "name": "Duncan Bay",
+        "uncertainty_m": 0.229
+    },
+    "08095": {
+        "name": "Bloedel - Menzies Bay",
+        "uncertainty_m": 0.233
+    },
+    "00810": {
+        "name": "North Harbour",
+        "uncertainty_m": 0.392
+    },
+    "08105": {
+        "name": "Seymour Narrows",
+        "uncertainty_m": 0.258
+    },
+    "08110": {
+        "name": "Brown Bay",
+        "uncertainty_m": 0.254
+    },
+    "08120": {
+        "name": "Owen Bay",
+        "uncertainty_m": 0.237
+    },
+    "08135": {
+        "name": "Mermaid Bay",
+        "uncertainty_m": 0.25
+    },
+    "08142": {
+        "name": "Thurlow Point",
+        "uncertainty_m": 0.237
+    },
+    "08145": {
+        "name": "Shoal Bay",
+        "uncertainty_m": 0.232
+    },
+    "00815": {
+        "name": "Come By Chance",
+        "uncertainty_m": 0.386
+    },
+    "08150": {
+        "name": "Cordero Islands",
+        "uncertainty_m": 0.239
+    },
+    "08155": {
+        "name": "Blind Channel",
+        "uncertainty_m": 0.241
+    },
+    "08162": {
+        "name": "Sidney Bay",
+        "uncertainty_m": 0.218
+    },
+    "00818": {
+        "name": "Arnolds Cove",
+        "uncertainty_m": 0.417
+    },
+    "08180": {
+        "name": "Chatham Pt.",
+        "uncertainty_m": 0.234
+    },
+    "08195": {
+        "name": "Knox Bay",
+        "uncertainty_m": 0.251
+    },
+    "08210": {
+        "name": "Billy Goat Bay",
+        "uncertainty_m": 0.22
+    },
+    "08215": {
+        "name": "Kelsey Bay",
+        "uncertainty_m": 0.259
+    },
+    "08233": {
+        "name": "Yorke Island",
+        "uncertainty_m": 0.26
+    },
+    "08245": {
+        "name": "Port Neville",
+        "uncertainty_m": 0.274
+    },
+    "08250": {
+        "name": "Port Harvey",
+        "uncertainty_m": 0.26
+    },
+    "08258": {
+        "name": "Lagoon Cove",
+        "uncertainty_m": 0.299
+    },
+    "08270": {
+        "name": "Growler Cove",
+        "uncertainty_m": 0.245
+    },
+    "08280": {
+        "name": "Alert Bay",
+        "uncertainty_m": 0.256
+    },
+    "08290": {
+        "name": "Port McNeill",
+        "uncertainty_m": 0.275
+    },
+    "00830": {
+        "name": "Long Harbour",
+        "uncertainty_m": 0.431
+    },
+    "08310": {
+        "name": "Glendale Cove",
+        "uncertainty_m": 0.303
+    },
+    "08311": {
+        "name": "Siwash Bay",
+        "uncertainty_m": 0.292
+    },
+    "08313": {
+        "name": "Montagu Point",
+        "uncertainty_m": 0.295
+    },
+    "08318": {
+        "name": "Shewell Island",
+        "uncertainty_m": 0.285
+    },
+    "08325": {
+        "name": "Cedar Island",
+        "uncertainty_m": 0.264
+    },
+    "08340": {
+        "name": "Sunday Harbour",
+        "uncertainty_m": 0.261
+    },
+    "08347": {
+        "name": "Kwatsi Bay",
+        "uncertainty_m": 0.281
+    },
+    "08348": {
+        "name": "Kingcome Inlet",
+        "uncertainty_m": 0.276
+    },
+    "00835": {
+        "name": "Argentia",
+        "uncertainty_m": 0.384
+    },
+    "08364": {
+        "name": "Sullivan Bay",
+        "uncertainty_m": 0.289
+    },
+    "08371": {
+        "name": "Jessie Point",
+        "uncertainty_m": 0.274
+    },
+    "08379": {
+        "name": "Stuart Narrows",
+        "uncertainty_m": 0.293
+    },
+    "08384": {
+        "name": "Jennis Bay",
+        "uncertainty_m": 0.296
+    },
+    "08394": {
+        "name": "Raynor Group",
+        "uncertainty_m": 0.259
+    },
+    "08408": {
+        "name": "Port Hardy",
+        "uncertainty_m": 0.259
+    },
+    "08416": {
+        "name": "Shushartie Bay",
+        "uncertainty_m": 0.249
+    },
+    "08426": {
+        "name": "Walker Group",
+        "uncertainty_m": 0.282
+    },
+    "08438": {
+        "name": "Fox Islands",
+        "uncertainty_m": 0.243
+    },
+    "08440": {
+        "name": "Treadwell Bay",
+        "uncertainty_m": 0.205
+    },
+    "00845": {
+        "name": "St Brides",
+        "uncertainty_m": 0.379
+    },
+    "08458": {
+        "name": "Frederick Sd",
+        "uncertainty_m": 0.12
+    },
+    "08464": {
+        "name": "Nugent Sound",
+        "uncertainty_m": 0.121
+    },
+    "08470": {
+        "name": "Johnson Point",
+        "uncertainty_m": 0.123
+    },
+    "08476": {
+        "name": "Mereworth Sound.",
+        "uncertainty_m": 0.125
+    },
+    "08482": {
+        "name": "Belize Inlet",
+        "uncertainty_m": 0.114
+    },
+    "08488": {
+        "name": "Alison Sound",
+        "uncertainty_m": 0.118
+    },
+    "00085": {
+        "name": "Kennebecasis Bay",
+        "uncertainty_m": 0.127
+    },
+    "08545": {
+        "name": "Bamfield",
+        "uncertainty_m": 0.17
+    },
+    "08556": {
+        "name": "Mutine Point",
+        "uncertainty_m": 0.194
+    },
+    "08558": {
+        "name": "Brooksby Point",
+        "uncertainty_m": 0.2
+    },
+    "08559": {
+        "name": "Head of Uchucklesit",
+        "uncertainty_m": 0.198
+    },
+    "08565": {
+        "name": "Franklin River",
+        "uncertainty_m": 0.194
+    },
+    "08575": {
+        "name": "Port Alberni",
+        "uncertainty_m": 0.179
+    },
+    "08585": {
+        "name": "Effingham Bay",
+        "uncertainty_m": 0.194
+    },
+    "08588": {
+        "name": "Stopper Islands",
+        "uncertainty_m": 0.197
+    },
+    "08595": {
+        "name": "Ucluelet",
+        "uncertainty_m": 0.172
+    },
+    "00860": {
+        "name": "St Marys",
+        "uncertainty_m": 0.305
+    },
+    "08615": {
+        "name": "Tofino",
+        "uncertainty_m": 0.178
+    },
+    "08623": {
+        "name": "Kennedy Cove",
+        "uncertainty_m": 0.188
+    },
+    "08626": {
+        "name": "Warn Bay",
+        "uncertainty_m": 0.206
+    },
+    "08630": {
+        "name": "Cypress Bay",
+        "uncertainty_m": 0.205
+    },
+    "08632": {
+        "name": "Herbert Inlet",
+        "uncertainty_m": 0.207
+    },
+    "08634": {
+        "name": "Sulphur Passage",
+        "uncertainty_m": 0.211
+    },
+    "08637": {
+        "name": "Riley Cove",
+        "uncertainty_m": 0.179
+    },
+    "08645": {
+        "name": "Saavedra Islands",
+        "uncertainty_m": 0.195
+    },
+    "08650": {
+        "name": "Gold River",
+        "uncertainty_m": 0.189
+    },
+    "08664": {
+        "name": "Ceepeecee",
+        "uncertainty_m": 0.191
+    },
+    "08665": {
+        "name": "Esperanza",
+        "uncertainty_m": 0.221
+    },
+    "08670": {
+        "name": "Zeballos",
+        "uncertainty_m": 0.196
+    },
+    "08710": {
+        "name": "Kyuquot",
+        "uncertainty_m": 0.199
+    },
+    "08714": {
+        "name": "Copp Island",
+        "uncertainty_m": 0.214
+    },
+    "08715": {
+        "name": "Fair Harbour",
+        "uncertainty_m": 0.208
+    },
+    "08720": {
+        "name": "Bunsby Islands",
+        "uncertainty_m": 0.205
+    },
+    "08735": {
+        "name": "Winter Harbour",
+        "uncertainty_m": 0.185
+    },
+    "08736": {
+        "name": "Hunt Islet",
+        "uncertainty_m": 0.192
+    },
+    "08750": {
+        "name": "Port Alice",
+        "uncertainty_m": 0.205
+    },
+    "08754": {
+        "name": "Bergh Cove",
+        "uncertainty_m": 0.224
+    },
+    "08755": {
+        "name": "Kwokwesta Creek",
+        "uncertainty_m": 0.224
+    },
+    "08756": {
+        "name": "Makwazniht Island",
+        "uncertainty_m": 0.215
+    },
+    "08765": {
+        "name": "Coal Harbour",
+        "uncertainty_m": 0.209
+    },
+    "08790": {
+        "name": "Cape Scott",
+        "uncertainty_m": 0.21
+    },
+    "00880": {
+        "name": "Trepassey",
+        "uncertainty_m": 0.244
+    },
+    "08805": {
+        "name": "Egg Island",
+        "uncertainty_m": 0.232
+    },
+    "08810": {
+        "name": "Leroy Bay",
+        "uncertainty_m": 0.255
+    },
+    "08812": {
+        "name": "Boswell Inlet",
+        "uncertainty_m": 0.238
+    },
+    "08814": {
+        "name": "Smith Inlet",
+        "uncertainty_m": 0.235
+    },
+    "08830": {
+        "name": "Draney Inlet",
+        "uncertainty_m": 0.228
+    },
+    "08840": {
+        "name": "Wadhams",
+        "uncertainty_m": 0.248
+    },
+    "08860": {
+        "name": "Addenbroke Isl.",
+        "uncertainty_m": 0.264
+    },
+    "08863": {
+        "name": "Pruth Bay",
+        "uncertainty_m": 0.224
+    },
+    "08865": {
+        "name": "Adams Harbour",
+        "uncertainty_m": 0.218
+    },
+    "08870": {
+        "name": "Namu",
+        "uncertainty_m": 0.245
+    },
+    "00890": {
+        "name": "Fermeuse",
+        "uncertainty_m": 0.205
+    },
+    "08906": {
+        "name": "Gosling Island",
+        "uncertainty_m": 0.215
+    },
+    "08909": {
+        "name": "Goose Island",
+        "uncertainty_m": 0.23
+    },
+    "08912": {
+        "name": "Spider Island",
+        "uncertainty_m": 0.252
+    },
+    "08917": {
+        "name": "Stryker Island",
+        "uncertainty_m": 0.254
+    },
+    "08922": {
+        "name": "Joassa Channel",
+        "uncertainty_m": 0.251
+    },
+    "00893": {
+        "name": "Lance Cove",
+        "uncertainty_m": 0.205
+    },
+    "08937": {
+        "name": "Bella Coola",
+        "uncertainty_m": 0.271
+    },
+    "08952": {
+        "name": "Luke Passage",
+        "uncertainty_m": 0.29
+    },
+    "08958": {
+        "name": "Forit Bay",
+        "uncertainty_m": 0.266
+    },
+    "08962": {
+        "name": "Ocean Falls",
+        "uncertainty_m": 0.271
+    },
+    "08976": {
+        "name": "Bella Bella",
+        "uncertainty_m": 0.228
+    },
+    "08978": {
+        "name": "Kynumpt Harbour",
+        "uncertainty_m": 0.249
+    },
+    "00898": {
+        "name": "Gull Island",
+        "uncertainty_m": 0.137
+    },
+    "08981": {
+        "name": "Troup Passage",
+        "uncertainty_m": 0.25
+    },
+    "08996": {
+        "name": "Gerald Point",
+        "uncertainty_m": 0.248
+    },
+    "08998": {
+        "name": "Thompson Bay",
+        "uncertainty_m": 0.242
+    },
+    "00009": {
+        "name": "Garnet Point",
+        "uncertainty_m": 0.292
+    },
+    "00900": {
+        "name": "Bay Bulls",
+        "uncertainty_m": 0.138
+    },
+    "09005": {
+        "name": "Port Blackney",
+        "uncertainty_m": 0.261
+    },
+    "09010": {
+        "name": "Tom Bay",
+        "uncertainty_m": 0.239
+    },
+    "09020": {
+        "name": "Griffin Passage",
+        "uncertainty_m": 0.236
+    },
+    "09035": {
+        "name": "Klemtu",
+        "uncertainty_m": 0.233
+    },
+    "00905": {
+        "name": "St. Johns",
+        "uncertainty_m": 0.152
+    },
+    "09053": {
+        "name": "Butedale",
+        "uncertainty_m": 0.284
+    },
+    "09056": {
+        "name": "Higgins Passage",
+        "uncertainty_m": 0.264
+    },
+    "09058": {
+        "name": "Price Island",
+        "uncertainty_m": 0.261
+    },
+    "09060": {
+        "name": "Meyers Narrows",
+        "uncertainty_m": 0.231
+    },
+    "09063": {
+        "name": "Milne Island",
+        "uncertainty_m": 0.268
+    },
+    "09067": {
+        "name": "Smithers Island",
+        "uncertainty_m": 0.278
+    },
+    "00907": {
+        "name": "Middle Cove",
+        "uncertainty_m": 0.135
+    },
+    "09077": {
+        "name": "McKenney Isl.",
+        "uncertainty_m": 0.262
+    },
+    "09080": {
+        "name": "Borrowman Bay",
+        "uncertainty_m": 0.236
+    },
+    "09082": {
+        "name": "Beauchemin Channel",
+        "uncertainty_m": 0.28
+    },
+    "09090": {
+        "name": "Surf Inlet",
+        "uncertainty_m": 0.246
+    },
+    "09105": {
+        "name": "Gillen Harbour",
+        "uncertainty_m": 0.276
+    },
+    "09115": {
+        "name": "Barnard Harbour",
+        "uncertainty_m": 0.279
+    },
+    "00912": {
+        "name": "Portugal Cove",
+        "uncertainty_m": 0.158
+    },
+    "09130": {
+        "name": "Hartley Bay",
+        "uncertainty_m": 0.252
+    },
+    "09140": {
+        "name": "Kitimat",
+        "uncertainty_m": 0.261
+    },
+    "00915": {
+        "name": "Bell Island",
+        "uncertainty_m": 0.132
+    },
+    "09150": {
+        "name": "Kemano Bay",
+        "uncertainty_m": 0.272
+    },
+    "09165": {
+        "name": "Block Islands",
+        "uncertainty_m": 0.278
+    },
+    "09195": {
+        "name": "Lowe Inlet",
+        "uncertainty_m": 0.313
+    },
+    "00920": {
+        "name": "Long Pond",
+        "uncertainty_m": 0.143
+    },
+    "09227": {
+        "name": "Bonilla Island",
+        "uncertainty_m": 0.274
+    },
+    "09230": {
+        "name": "Griffith Harbour",
+        "uncertainty_m": 0.291
+    },
+    "09232": {
+        "name": "Larsen Island",
+        "uncertainty_m": 0.281
+    },
+    "09242": {
+        "name": "Kitkatla",
+        "uncertainty_m": 0.288
+    },
+    "00925": {
+        "name": "Holyrood Bay",
+        "uncertainty_m": 0.205
+    },
+    "09250": {
+        "name": "Seabreeze Point",
+        "uncertainty_m": 0.318
+    },
+    "09260": {
+        "name": "Claxton",
+        "uncertainty_m": 0.322
+    },
+    "09266": {
+        "name": "Haysport",
+        "uncertainty_m": 0.312
+    },
+    "09275": {
+        "name": "Khyex River",
+        "uncertainty_m": 0.221
+    },
+    "09285": {
+        "name": "Kwinitsa River",
+        "uncertainty_m": 0.141
+    },
+    "00093": {
+        "name": "Public Landing",
+        "uncertainty_m": 0.162
+    },
+    "09305": {
+        "name": "Welcome Harbour",
+        "uncertainty_m": 0.295
+    },
+    "09306": {
+        "name": "Refuge Bay",
+        "uncertainty_m": 0.339
+    },
+    "09309": {
+        "name": "Humpback Bay",
+        "uncertainty_m": 0.287
+    },
+    "09310": {
+        "name": "Hunt Inlet",
+        "uncertainty_m": 0.308
+    },
+    "09312": {
+        "name": "Lawyer Islands",
+        "uncertainty_m": 0.288
+    },
+    "09315": {
+        "name": "Qlawdzeet Anchorage",
+        "uncertainty_m": 0.29
+    },
+    "00932": {
+        "name": "Bay Roberts",
+        "uncertainty_m": 0.253
+    },
+    "09325": {
+        "name": "Moffatt Islands",
+        "uncertainty_m": 0.326
+    },
+    "09329": {
+        "name": "Hudson Bay Passage",
+        "uncertainty_m": 0.314
+    },
+    "09333": {
+        "name": "Brundige Inlet",
+        "uncertainty_m": 0.311
+    },
+    "09338": {
+        "name": "Aero Trading",
+        "uncertainty_m": 0.298
+    },
+    "09339": {
+        "name": "Pembina Terminal",
+        "uncertainty_m": 0.297
+    },
+    "09340": {
+        "name": "Inverness",
+        "uncertainty_m": 0.345
+    },
+    "09341": {
+        "name": "Porpoise Channel East",
+        "uncertainty_m": 0.298
+    },
+    "09342": {
+        "name": "Port Edward",
+        "uncertainty_m": 0.316
+    },
+    "09343": {
+        "name": "Wainwright Basin",
+        "uncertainty_m": 0.224
+    },
+    "09344": {
+        "name": "Morse Basin",
+        "uncertainty_m": 0.195
+    },
+    "09346": {
+        "name": "Prince Rupert RoRo",
+        "uncertainty_m": 0.298
+    },
+    "09348": {
+        "name": "Fairview Terminal",
+        "uncertainty_m": 0.302
+    },
+    "00935": {
+        "name": "Harbour Grace",
+        "uncertainty_m": 0.127
+    },
+    "09350": {
+        "name": "Casey Cove",
+        "uncertainty_m": 0.343
+    },
+    "09354": {
+        "name": "Prince Rupert",
+        "uncertainty_m": 0.302
+    },
+    "09360": {
+        "name": "Seal Cove",
+        "uncertainty_m": 0.296
+    },
+    "09390": {
+        "name": "Lax Kw'alaams",
+        "uncertainty_m": 0.302
+    },
+    "09406": {
+        "name": "Trail Bay",
+        "uncertainty_m": 0.297
+    },
+    "09414": {
+        "name": "Kumeon Bay",
+        "uncertainty_m": 0.294
+    },
+    "09418": {
+        "name": "Ranger Islet",
+        "uncertainty_m": 0.318
+    },
+    "09422": {
+        "name": "Gingolx",
+        "uncertainty_m": 0.31
+    },
+    "09425": {
+        "name": "Mill Bay",
+        "uncertainty_m": 0.277
+    },
+    "09435": {
+        "name": "Salmon Cove",
+        "uncertainty_m": 0.299
+    },
+    "09443": {
+        "name": "Granby Bay",
+        "uncertainty_m": 0.311
+    },
+    "09448": {
+        "name": "Alice Arm",
+        "uncertainty_m": 0.335
+    },
+    "09475": {
+        "name": "Stewart",
+        "uncertainty_m": 0.309
+    },
+    "09502": {
+        "name": "Cape St. James",
+        "uncertainty_m": 0.22
+    },
+    "09512": {
+        "name": "Gordon Islands",
+        "uncertainty_m": 0.207
+    },
+    "00955": {
+        "name": "Hearts Content",
+        "uncertainty_m": 0.138
+    },
+    "09570": {
+        "name": "Hunger Harbour",
+        "uncertainty_m": 0.213
+    },
+    "09605": {
+        "name": "Armentiere Channel",
+        "uncertainty_m": 0.223
+    },
+    "00962": {
+        "name": "Long Cove",
+        "uncertainty_m": 0.242
+    },
+    "09625": {
+        "name": "Trounce Inlet",
+        "uncertainty_m": 0.186
+    },
+    "09627": {
+        "name": "Trounce Inlet North",
+        "uncertainty_m": 0.185
+    },
+    "09635": {
+        "name": "Dawson Harbour",
+        "uncertainty_m": 0.2
+    },
+    "09650": {
+        "name": "Shields Bay",
+        "uncertainty_m": 0.23
+    },
+    "09667": {
+        "name": "Nesto Inlet",
+        "uncertainty_m": 0.206
+    },
+    "09671": {
+        "name": "Port Louis",
+        "uncertainty_m": 0.228
+    },
+    "00097": {
+        "name": "Hatfield Point",
+        "uncertainty_m": 0.134
+    },
+    "00970": {
+        "name": "Long Beach",
+        "uncertainty_m": 0.123
+    },
+    "09708": {
+        "name": "Heater Harbour",
+        "uncertainty_m": 0.216
+    },
+    "09710": {
+        "name": "High Island",
+        "uncertainty_m": 0.24
+    },
+    "09713": {
+        "name": "Rose Harbour",
+        "uncertainty_m": 0.21
+    },
+    "09717": {
+        "name": "Carpenter Bay",
+        "uncertainty_m": 0.223
+    },
+    "09724": {
+        "name": "Copper Islands",
+        "uncertainty_m": 0.226
+    },
+    "00973": {
+        "name": "Hickmans Harbour",
+        "uncertainty_m": 0.126
+    },
+    "00975": {
+        "name": "Clarenville",
+        "uncertainty_m": 0.139
+    },
+    "09753": {
+        "name": "Sedgwick Bay",
+        "uncertainty_m": 0.249
+    },
+    "09765": {
+        "name": "Atli Inlet",
+        "uncertainty_m": 0.253
+    },
+    "00977": {
+        "name": "Clifton",
+        "uncertainty_m": 0.187
+    },
+    "09775": {
+        "name": "Pacofi Bay",
+        "uncertainty_m": 0.273
+    },
+    "09790": {
+        "name": "McCoy Cove",
+        "uncertainty_m": 0.289
+    },
+    "09795": {
+        "name": "Sandspit Marina",
+        "uncertainty_m": 0.335
+    },
+    "00098": {
+        "name": "Evandale",
+        "uncertainty_m": 0.131
+    },
+    "09808": {
+        "name": "Shingle Bay",
+        "uncertainty_m": 0.326
+    },
+    "00981": {
+        "name": "Trinity",
+        "uncertainty_m": 0.123
+    },
+    "00985": {
+        "name": "Port Union",
+        "uncertainty_m": 0.126
+    },
+    "09850": {
+        "name": "Daajing Giids",
+        "uncertainty_m": 0.312
+    },
+    "09860": {
+        "name": "Tlell",
+        "uncertainty_m": 0.325
+    },
+    "00990": {
+        "name": "Bonavista",
+        "uncertainty_m": 0.119
+    },
+    "09910": {
+        "name": "Masset",
+        "uncertainty_m": 0.172
+    },
+    "09920": {
+        "name": "Port Clements",
+        "uncertainty_m": 0.124
+    },
+    "09927": {
+        "name": "Juskatla Inlet",
+        "uncertainty_m": 0.093
+    },
+    "09940": {
+        "name": "Wiah Point",
+        "uncertainty_m": 0.254
+    },
+    "09958": {
+        "name": "Henslung Cove",
+        "uncertainty_m": 0.217
+    },
+    "09961": {
+        "name": "Egeria Bay",
+        "uncertainty_m": 0.25
+    },
+    "09963": {
+        "name": "McPherson Pt.",
+        "uncertainty_m": 0.22
+    },
+    "09964": {
+        "name": "Langara Point",
+        "uncertainty_m": 0.223
+    }
+}

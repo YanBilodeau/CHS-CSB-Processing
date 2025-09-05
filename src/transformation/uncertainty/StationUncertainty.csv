@@ -1,0 +1,995 @@
+﻿Station ID,Station Name,Station Uncertainty (m)
+00001,Outer Wood Island,0.270
+00010,North Head,0.319
+01003,Jamestown,0.119
+01008,"Charlottetown, NL",0.106
+01009,Saltons Brook,0.183
+01010,Newman Sound,0.110
+01015,Salvage,0.101
+01018,Glovertown South,0.131
+00102,Macdonald Point,0.101
+01025,Dover - Wellington,0.133
+00103,Cambridge Narrows,0.102
+01030,Valleyfield,0.121
+01035,Musgrave Harbour,0.125
+01040,Carmanville,0.134
+01047,Joe Batts Arm,0.183
+01048,Seldom,0.183
+01049,Tilting Harbour,0.145
+01050,Fogo,0.173
+01052,Change Islands,0.138
+01053,Farewell,0.131
+01054,Dark Cove,0.127
+01056,Dildo Run (Causeway),0.132
+01058,Summerford,0.140
+01060,Twillingate,0.160
+01065,Bridgeport,0.158
+01070,Lewisporte,0.182
+00108,Upper Gagetown,0.137
+01080,Botwood,0.139
+01085,Exploits Island,0.125
+01087,Leading Tickle,0.137
+01095,Little Bay Arm,0.126
+01097,Beachside,0.148
+01098,Springdale,0.150
+00011,West Quoddy Head,0.315
+01101,Nippers Harbour,0.127
+01102,Tilt Cove,0.130
+01105,La Scie,0.127
+01110,Baie Verte,0.134
+01115,Seal Cove,0.125
+01125,Hampden,0.137
+01135,Sops Island,0.115
+01150,Englee,0.137
+01165,Locks Cove,0.151
+01170,St Anthony,0.233
+01180,Ship Cove,0.101
+01181,Cooks Harbour,0.085
+01182,Black Joke Cove,0.125
+01185,Chateau Bay,0.130
+01186,Henley Harbour,0.125
+01190,Battle Harbour,0.171
+01193,Mary's Harbour,0.218
+01195,Port Marnham,0.142
+01199,"Williams Harbour, South Labrador",0.266
+00120,Fredericton,0.168
+01200,"Denbigh Island, Labrador",0.144
+01202,White Bear Arm,0.150
+01205,Nevile Island,0.141
+01210,Port Hope Simpson,0.148
+01214,Norman Bay,0.153
+01217,Punchbowl,0.155
+00122,Newcastle Creek,0.122
+01245,Cartwright,0.155
+01247,Sandwich Bay (East Arm),0.189
+01248,Paradise River,0.169
+01263,Snooks Rocks,0.185
+01267,Jordans Point,0.254
+01280,Rigolet,0.197
+01285,Caravalla Cove,0.125
+01287,Long Point Island,0.069
+00129,St Martins,0.442
+01320,Cabot Point,0.105
+01331,Mulligan Bay,0.079
+01335,North West River,0.101
+01345,Rabbit Island,0.088
+01350,Terrington Basin,0.090
+01365,Broomfield,0.259
+01370,Emily Harbour,0.179
+01374,Byron Bay (Copper Island),0.228
+01376,"Jeanette Bay, Lab",0.282
+01377,Mostyn Cove,0.183
+01390,Makkovik,0.312
+01397,Postville,0.204
+01398,Jackos Point,0.216
+00014,Lubec (South),0.276
+00140,Herring Cove,0.485
+01400,Turnavik Island,0.169
+01405,Hopedale,0.195
+01410,Shoal Tickle,0.201
+01416,Davis Inlet,0.236
+01420,House Harbour,0.247
+01421,Nukasusutok Island,0.204
+01422,John Hayes Harbour,0.358
+01425,Ford Harbour,0.223
+01430,Nain,0.225
+01435,Young's Harbour,0.217
+01450,Port Manvers,0.242
+01452,Kiglapait Harbour,0.231
+01458,Igloksoatalik Island,0.227
+01465,Hebron,0.202
+01470,Saglek Bay,0.170
+01485,Brownell Point,0.167
+01487,Eclipse Channel,0.190
+01490,"Williams Harbour, North Labrador",0.316
+01495,Cape Chidley,0.365
+00015,Welshpool,0.347
+00150,Cape Enrage,0.514
+01520,Bay St. Lawrence,0.134
+01530,St Paul Island,0.211
+01539,Cheticamp,0.129
+01540,La Pointe,0.130
+01545,Margaree Trailer,0.114
+01546,Margaree Harbour,0.110
+01547,Belle Cote Breakwater,0.113
+01548,East Margaree Bridge,0.139
+01550,Broad Cove Marsh,0.141
+01560,Port Hood,0.149
+01570,Aulds Cove,0.212
+01580,Cape Jack,0.145
+01590,Antigonish Harbour,0.151
+01597,Cribbeans Point,0.157
+00016,Lubec - North Entrance,0.340
+00160,Grindstone Island,0.545
+01600,Ballantynes Cove,0.157
+01610,Arisaig,0.200
+01620,Merigomish,0.183
+01630,Pictou,0.184
+01635,Pictou Island,0.189
+01640,Ferry Terminal,0.187
+01650,Souris,0.169
+01660,Georgetown,0.177
+01662,Montague,0.181
+01665,Graham Pond,0.181
+01670,Murray Harbour,0.168
+01680,Wood Islands,0.213
+01690,Prim Point,0.259
+00170,Hopewell Cape,0.575
+01700,Charlottetown,0.264
+01710,Canoe Cove,0.253
+01715,"Victoria, PEI",0.235
+00172,Belliveau Village,0.571
+01725,Port Borden,0.224
+00173,Dover,0.550
+01735,Summerside,0.217
+01745,Skinners Cove,0.213
+01760,Malagash,0.230
+01770,Cape Cliff,0.209
+01775,Pugwash,0.252
+01780,Tidnish,0.222
+01785,Port Elgin,0.253
+01790,Cape Tormentine,0.253
+01800,Cap Pele,0.165
+01804,Pointe-du-Chene,0.194
+01805,Shediac Bay,0.180
+01810,Cap de Caissie,0.141
+01812,Cocagne,0.132
+01815,Saint Thomas De Kent,0.133
+01820,Richibucto Cape,0.127
+01825,Richibucto Bar,0.112
+01827,Richibucto,0.140
+01830,Pointe Sapin,0.120
+01835,Cape Egmont,0.186
+01845,West Point,0.140
+01855,Miminegash,0.121
+01860,Skinners Pond,0.113
+01865,North Point,0.118
+01875,Tignish,0.113
+01885,Alberton,0.102
+01896,Goodwood River,0.159
+00190,Pecks Point,0.559
+01905,Malpeque,0.176
+01915,Rustico,0.104
+01918,Covehead,0.108
+01925,Savage Harbour,0.085
+01935,St Peters Bay,0.103
+01945,Naufrage,0.119
+01955,North Lake Harbour,0.150
+01960,Anse a la Cabane,0.119
+01964,Havre-Aubert,0.139
+01966,Ile d'Entrée,0.126
+01970,Cap-aux-Meules,0.161
+01976,Havre-aux-Maisons,0.166
+01981,Pointe-Basse,0.150
+01985,Grande-Entrée,0.138
+01986,Old-Harry,0.132
+01987,Leslie,0.111
+01988,Grosse Ile- Mine Seleine,0.150
+01990,L'Etang-du-Nord,0.122
+00020,Wilsons Beach,0.332
+02000,Lower Escuminac,0.140
+02010,Portage Island,0.129
+02012,Fox Island Range Light,0.122
+02014,Cormorant (underwater),0.141
+02020,Bas Neguac,0.131
+02022,Neguac,0.134
+02025,Burnt Church,0.126
+02028,Baie du Vin Island,0.136
+02029,Robichaud Spit,0.139
+02030,Oak Point,0.131
+02033,Loggieville,0.138
+02034,Gordon Point,0.144
+02035,Chatham,0.122
+02040,Newcastle,0.117
+02060,Tracadie,0.125
+02070,Shippagan Gully,0.133
+02071,Shippagan,0.159
+02090,Miscou,0.144
+00021,East Quoddy Head,0.330
+02110,Caraquet,0.132
+02120,Stonehaven,0.166
+02130,Bathurst Harbour,0.160
+02145,Belledune,0.209
+00215,Joggins,0.568
+02165,Dalhousie,0.234
+02175,Campbellton,0.277
+02196,Miguasha,0.211
+02200,Carleton,0.197
+02215,Pointe Howatson,0.200
+02230,Bonaventure,0.180
+02235,Paspebiac,0.161
+02240,Saint-Godefroi,0.170
+00225,Cape Capstan,0.480
+02250,Port-Daniel-Gascons,0.155
+02253,Gascons,0.146
+02260,Newport,0.151
+02269,Chandler,0.160
+02279,Grande-Riviere,0.140
+02285,Sainte-Therese-de-Gaspe,0.158
+02290,Cap-d'Espoir,0.136
+02295,L'Anse-a -Beaufils,0.144
+02309,Mal-Bay,0.149
+02310,Pointe Saint-Pierre,0.156
+02314,L'Anse-a -Brillant,0.133
+02319,Sandy Beach,0.159
+02330,Riviere-au-Renard,0.162
+02335,L'Anse-a -Valleau,0.182
+02340,Cloridorme,0.199
+00235,West Advocate,0.481
+02350,Grande-Vallee,0.200
+00236,Advocate,0.486
+02360,Port-Menier,0.168
+02375,Pointe du Sud-Ouest,0.164
+00024,Eastport,0.269
+00240,Cape d'Or,0.509
+02415,Baie du Renard,0.145
+00242,Spencers Island,0.510
+00245,Port Greville,0.528
+00247,Diligent River,0.579
+02470,Mingan,0.173
+02480,Havre-Saint-Pierre,0.160
+02490,Baie-Johan-Beetz,0.159
+00025,Fairhaven,0.347
+00250,Cape Sharp,0.619
+02510,Natashquan,0.147
+02518,Kegaska,0.163
+02530,Gethsemani,0.163
+00255,Parrsboro,0.556
+02550,Harrington Harbour,0.169
+02554,Tete-a-la-Baleine,0.185
+02556,Baie des Moutons,0.193
+02558,La Tabatiere,0.190
+02564,Saint-Augustin,0.165
+02577,Vieux-Fort,0.174
+02579,Riviere-Saint-Paul,0.167
+02580,Ile des Esquimaux,0.165
+02581,Baie Chevalier,0.173
+02583,Middle Bay,0.171
+02588,Blanc-Sablon,0.163
+02590,Forteau Bay,0.141
+02595,West St. Modeste,0.123
+00260,Five Islands,0.669
+02600,Red Bay,0.190
+02633,Savage Cove,0.138
+02635,Flowers Cove,0.149
+02637,Anchor Point,0.141
+02638,St. Barbe,0.173
+02642,Shoal Cove West,0.168
+02650,Port Saunders,0.266
+02655,Port Aux Choix,0.163
+02660,Cow Head,0.189
+02670,Norris Cove,0.183
+02680,Corner Brook,0.201
+02685,Lark Harbour,0.170
+02695,Fox Island,0.188
+00270,Burntcoat Head,0.643
+02710,Port Harmon,0.150
+02720,St Georges,0.142
+02725,Crabbes River,0.180
+02750,Riviere-au-Tonnerre,0.197
+02780,Sept-Iles,0.227
+02790,Port-Cartier,0.226
+00028,McMaster Island,0.338
+02815,Baie-Trinite,0.273
+00282,Hantsport,0.639
+02826,Godbout,0.269
+02840,Baie-Comeau,0.265
+02880,Forestville,0.314
+02883,Portneuf-sur-Mer,0.326
+00029,Matthews Cove,0.331
+00290,Cape Blomidon,0.633
+02900,Les Escoumins,0.316
+02920,Mont-Louis,0.226
+02933,Petite-Tourelle,0.276
+02935,Sainte-Anne-des-Monts,0.243
+02940,Cap-Chat,0.243
+02945,Le Gros Mechins,0.271
+02955,Matane,0.295
+02975,Pointe aux Cenelles,0.308
+02980,Pointe-au-Pere,0.325
+02985,Rimouski,0.326
+02995,Le Bic,0.353
+00030,Letite Harbour,0.361
+00300,Scots Bay,0.529
+03000,Ile Bicquette,0.347
+03005,Trois-Pistoles,0.349
+03030,Saint-Simeon,0.426
+03045,Pointe-au-Pic,0.443
+00305,Baxters Harbour,0.578
+03052,Cap-aux-Oies,0.481
+03057,Saint-Joseph-de-la-Rive,0.481
+03058,Saint-Bernard-sur-Mer,0.497
+03060,Cap-aux-Corbeaux,0.505
+00312,Ile Haute,0.551
+03120,Ile Verte,0.352
+03122,L'Isle-Verte,0.393
+03125,Gros-Cacouna,0.373
+03130,Riviere-du-Loup,0.387
+03140,Ile aux Lievres,0.394
+03145,Le Petit Pelerin,0.492
+00315,Margaretsville,0.469
+03150,La Grande Ile,0.495
+03160,Pointe-aux-Orignaux,0.465
+03170,Saint-Jean-Port-Joli,0.422
+00320,Parkers Cove,0.409
+00324,Digby Ferry Wharf,0.377
+00325,DIGBY,0.373
+00033,Letang Harbour,0.332
+00330,Culloden,0.375
+00333,Grand Eddy,0.314
+00334,Trout Cove,0.358
+00335,Sandy Cove,0.325
+00336,East Sandy Cove,0.289
+00337,Tiverton,0.267
+00338,Tiverton (Boars Head),0.308
+00339,West Narrows,0.299
+00340,Westport,0.276
+03424,Baie-Sainte-Catherine,0.352
+03425,Tadoussac,0.348
+03440,L'Anse-Saint-Jean,0.465
+00345,Lighthouse Cove,0.305
+03460,Port-Alfred,0.388
+03466,Grande-Anse,0.437
+03480,Chicoutimi,0.336
+00035,St. Stephen,0.332
+00353,Church Point,0.276
+00355,Meteghan,0.276
+00360,Port Maitland,0.234
+00365,Yarmouth,0.225
+00366,Bunker Island Wharf,0.230
+00367,Bunker Island Light,0.234
+00368,Kellys Cove,0.227
+00370,Pinkney Point,0.205
+00374,Wedgeport,0.206
+00375,Lower Wedgeport,0.191
+03765,Alert,0.151
+00378,Tusket,0.189
+03780,Cape Sheridan,0.138
+03785,Wrangel Bay,0.284
+03790,Discovery Harbour,0.320
+00380,Abrams River,0.189
+00382,Abbotts Harbour,0.176
+03838,Alexandra Fiord,0.880
+03840,Pim Island,0.647
+00385,Lower East Pubnico,0.179
+00390,Woods Harbour,0.189
+03916,Nova Zembla Island,0.290
+03940,Clyde River,0.230
+00395,Flat Island,0.205
+03960,Cape Hooper,0.177
+03970,Kivitoo,0.186
+03995,Cape Dyer,0.425
+00004,Cutler,0.204
+00040,St. Andrews,0.363
+00400,Seal Island,0.179
+04029,Pangnirtung,1.145
+04040,Clearwater Fiord,1.013
+04045,Imigen Island,1.127
+00405,Clarks Harbour,0.148
+04070,Brevoort Harbour,0.952
+00408,West Head,0.175
+00041,Long Island,0.341
+00410,Swims Point,0.164
+04100,Resor Island,1.627
+04120,Frobisher's Farthest,1.689
+04135,Lewis Bay,1.522
+04140,Iqaluit,1.744
+00415,Barrington Passage,0.294
+04160,Sorry Harbour,0.501
+04170,Acadia Cove,0.625
+00042,Blacks Harbour,0.331
+00420,Upper Port la Tour,0.342
+04205,Kimmirut,1.731
+04215,Ashe Inlet,1.717
+00423,Ingomar,0.296
+04245,Kinngait,0.784
+00425,Shelburne,0.387
+04255,Schooner Harbour,0.592
+00426,Sandy Point,0.323
+04265,Port Burwell,0.478
+04275,Beacon Island,0.960
+04279,Kangiqsualujjuaq,1.004
+04294,Riviere Koksoak est,1.017
+04295,Riviere Koksoak,0.983
+04296,The Narrows,0.796
+04297,Ile Mackays,0.484
+04298,Kuujjuaq,0.435
+00430,Lockeport,0.380
+04315,Tasiujaq,1.307
+04325,Hopes Advance Bay,1.051
+04335,Agvik Island,0.975
+04340,Ile Pikiyulik,0.755
+04345,Ile Basking,0.809
+00435,Port Mouton,0.320
+04379,Quaqtaq,1.555
+00044,Beaver Harbour,0.357
+00440,Liverpool,0.376
+04400,Stupart Bay,1.419
+04415,Doctor Island,1.372
+04425,Kangiqsujuaq,1.236
+04435,Douglas Harbour,1.272
+04460,Deception Bay,0.519
+04470,Salluit,0.511
+04480,Digges Harbour,0.336
+04490,Port De Laperriere,0.241
+00450,Bridgewater,0.364
+04500,Port De Boucherville,0.423
+00452,Riverport,0.438
+04538,Akulivik,0.094
+04548,North Kopak Island,0.081
+00455,Lunenburg,0.278
+04575,Inukjuak,0.100
+04597,Gillies Island,0.166
+00046,West Dipper Harbour,0.327
+00460,Mahone Harbour,0.328
+04600,Tukarak Island,0.118
+04604,Belanger Island,0.185
+04610,Innetalling Island,0.170
+04628,Sanikiluaq,0.154
+04645,Kuujjuarapik,0.194
+04648,Bear Island,0.209
+00465,Chester,0.336
+04655,Long Island,0.211
+04662,Roggan River,0.189
+04680,La Grande Riviere,0.208
+04681,Loon Island,0.237
+04688,Hook Island,0.144
+04710,Eastmain River,0.138
+04720,Strutton Islands,0.180
+00473,Owls Head,0.267
+04730,Charlton Island,0.337
+04740,Stag Island,0.304
+00475,Mill Cove,0.307
+04780,Sand Head,0.373
+00479,Blandford,0.288
+04790,Ship Sands Island,0.324
+00480,Hubbards,0.290
+04800,Nicholson Creek,0.283
+04810,Moosonee,0.287
+00482,Boutiliers Point,0.290
+00484,Indian Harbour,0.278
+04840,Fort Albany,0.351
+00485,Cliff Cove,0.230
+00486,Prospect,0.290
+00488,Sambro Harbour,0.266
+04880,Bear Island,0.241
+00490,Halifax,0.288
+00491,Bedford Institute,0.306
+04920,Winisk,0.276
+00493,Chezzetcook Inlet,0.302
+00495,Salmon River Bridge,0.339
+00497,Little Harbour,0.314
+04980,Port Nelson,0.350
+00005,Seal Cove,0.277
+00500,Murphys Cove,0.312
+05010,Churchill,0.457
+05040,Arviat,0.392
+00505,Tomlee Bay,0.309
+05055,Whale Cove,0.400
+05070,Marble Island,0.351
+00509,Spry Harbour,0.330
+05090,Panorama Island,0.444
+00510,Sheet Harbour,0.385
+05100,Rankin Inlet,0.598
+00511,Port Dufferin,0.326
+00512,West Newdy Quoddy,0.315
+00514,Ecum Secum,0.339
+05140,Chesterfield Inlet,0.451
+05141,Akreavenek Island,0.473
+00515,Liscomb Harbour,0.322
+05159,Norton Island,0.285
+00516,Marie Joseph,0.343
+05161,Schooner Cove,0.225
+05180,Coral Harbour,0.347
+05190,Cape Dobbs,0.598
+05193,Paliak Islands,0.472
+05195,Bennett Bay,0.489
+00052,Five Fathom Hole,0.376
+00520,Sonora,0.312
+05200,Naujaat,0.553
+00525,Sherbrooke,0.387
+05275,Sanirajak,0.139
+05295,Igloolik,0.251
+00053,Musquash Harbour,0.381
+00530,Port Bickerton,0.324
+05310,Sevigny Point,0.252
+05330,Purfur Cove,0.378
+00535,Isaacs Harbour,0.336
+05358,Needle Cove,0.277
+00540,Larrys River,0.261
+05430,Dundas Harbour,0.445
+00545,Whitehead,0.315
+05490,Rigby Bay,0.413
+00055,Lorneville,0.368
+00550,"Sable Island/Sable, ÃƒÅ½le de",0.220
+05500,Radstock Bay,0.383
+05510,Beechey Island,0.364
+00555,Canso Harbour,0.249
+05560,Resolute,0.300
+05600,Cape Capel,0.358
+05615,Hamilton Island,0.240
+00563,Sand Point,0.259
+05643,Natkusiak Peninsula,0.409
+05645,Winter Harbour,0.344
+05650,Peel Point,0.387
+00570,Port Hastings,0.261
+00575,Port Hawkesbury,0.312
+00576,Point Tupper,0.251
+05790,Koluktoo Bay,0.339
+05791,Milne Inlet (head),0.337
+05795,Pisiktarfik Island,0.350
+00580,Arichat,0.300
+05800,Pond Inlet,0.328
+00582,Petit De Grat,0.303
+00585,Cannes,0.228
+05860,Strathcona Sound,0.527
+05865,Arctic Bay,0.350
+00587,St Peters Bay,0.313
+05906,Whaler Point,0.389
+05912,Port Bowen,0.361
+05917,Bellot Strait East,0.385
+05918,Fury Point,0.414
+05930,Fort Ross,0.384
+05935,Cape Kater,0.372
+05940,Cape Augherston,0.453
+05948,Lavoie Islands,0.388
+00595,Fourchu,0.215
+05960,Martin Islands,0.441
+05970,Crown Prince Frederik Island,0.288
+05975,Cape Chapman,0.421
+05976,Cape Berens,0.432
+05978,Cape Miles,0.333
+05985,Kugaaruk,0.428
+05990,Cape Sibbald,0.357
+05992,Cape Barclay,0.433
+05998,Dease Peninsula,0.481
+00060,Partridge Island,0.362
+00600,Louisbourg,0.285
+00610,Sydney,0.280
+06100,False Strait,0.430
+00612,North Sydney,0.243
+06140,Cape Felix,0.393
+06144,Oscar Bay,0.339
+06150,Taloyoak,0.142
+06160,Shepherd Bay,0.240
+06170,Gjoa Haven,0.155
+00620,Big Bras D'Or,0.155
+00621,Table Head,0.208
+06210,Gladman Point,0.207
+06213,Island NE of M'Clintock Point,0.378
+00622,Duffus Point,0.176
+06225,Jenny Lind Island,0.194
+00623,Black Rock Point,0.208
+00624,Penny Lane,0.285
+06240,Cambridge Bay,0.233
+06284,Austin Bay,0.123
+06290,Kugluktuk,0.154
+00630,Ingonish Beach,0.235
+06310,Bernard Harbour,0.212
+06338,Tysoe Point,0.255
+06340,Pearce Point,0.198
+00635,Neils Harbour,0.197
+06350,Paulatuk,0.247
+06360,Cape Parry,0.199
+06367,Franklin Bay,0.234
+00638,Dingwall,0.225
+06380,Ulukhaktok,0.222
+00640,Baddeck,0.145
+06424,Sachs Harbour,0.151
+06443,Baillie Is. (South Spit),0.220
+06457,Krubluyak Point,0.529
+06472,Cape Dalhousie,0.424
+06476,Atkinson Point,0.356
+06485,Tuktoyaktuk,0.380
+06495,Hooper Island,0.237
+06497,Pelly Island,0.149
+00065,Saint John,0.367
+06505,Shingle Point,0.406
+06515,Kay Point,0.393
+06525,Herschel Island,0.397
+00653,Johnstown,0.107
+00654,Eskasoni,0.137
+00655,Iona,0.118
+00656,Dundee,0.146
+06560,Cape Skogn,0.501
+06570,Grise Fiord,0.504
+06580,Bay of Woe,0.442
+00663,Grand Bay,0.192
+06640,Eureka,0.100
+00665,Port aux Basques,0.339
+00666,Isle Aux Morts,0.309
+06660,Iceberg Point,0.196
+06670,Greely Fiord,0.142
+00668,Rose Blanche,0.320
+00670,La Poile (Little Bay),0.429
+00671,Grand Bruit,0.324
+00672,Couteau Bay,0.313
+06730,Disreali Fiord,0.269
+06735,Cape Aldrich,0.086
+06765,Airstrip Point,0.274
+00677,Short Reach,0.337
+06780,Northumberland Sound,0.145
+06787,Cameron Island,0.193
+00679,Ramea Island,0.297
+00683,Francois,0.277
+00688,Mccallum,0.291
+00690,Pushthrough,0.332
+06910,Isachsen,0.157
+06955,Mould Bay,0.190
+00007,Gannet Rock,0.292
+07024,Sooke Basin,0.175
+07030,Becher Bay,0.185
+00705,St Albans,0.372
+00708,Gaultois,0.302
+07080,Pedder Bay,0.173
+07082,William Head,0.177
+00710,Hermitage,0.355
+07109,Esquimalt Harbour,0.175
+07110,Esquimalt Government  Hbr.,0.178
+07115,Clover Point,0.178
+07120,Victoria Harbour,0.178
+07121,Selkirk Water,0.200
+07122,Gorge at Aaron Point,0.199
+07123,Gorge at Tillicum,0.098
+07124,Gorge at Craigflower,0.097
+07125,Portage Inlet,0.094
+07130,Oak Bay,0.187
+07140,Finnerty Cove,0.186
+00720,Harbour Breton,0.362
+00724,Belleoram,0.370
+07255,Saanichton Bay,0.202
+07260,Sidney,0.194
+07270,Swartz Bay,0.214
+07277,Patricia Bay,0.207
+07280,Brentwood Bay,0.216
+07284,Finlayson Arm,0.230
+07310,Cowichan Bay,0.235
+07315,Maple Bay,0.233
+07330,Fulford Harbour,0.207
+07345,Narvaez Bay,0.242
+07350,Bedwell Harbour,0.208
+07360,Hope Bay,0.215
+07370,Samuel Island,0.226
+07407,Ganges,0.210
+07414,Village Bay,0.221
+07420,Montague Harbour,0.237
+07437,Porlier Pass,0.243
+07439,Cardale Point,0.230
+07445,Degnen Bay,0.230
+00745,Saint-Pierre Et Miquelon,0.353
+07450,Crofton,0.224
+07455,Chemainus,0.249
+07460,Ladysmith,0.229
+07471,Preedy Harbour,0.249
+07480,Boat Harbour,0.241
+07510,Tumbo Channel,0.232
+07515,Samuel Is.,0.247
+07525,Georgina Point,0.262
+07528,Miners Bay,0.241
+07532,Whaler Bay,0.244
+07535,Dionisio Point,0.288
+07542,Valdes Island,0.271
+00755,St. Lawrence,0.381
+07550,Silva Bay,0.281
+07577,White Rock,0.282
+07579,Crescent Beach,0.260
+07590,Tsawwassen,0.264
+07592,Roberts Bank,0.264
+07594,Sand Heads,0.269
+00760,Burin,0.343
+07607,Steveston,0.221
+07610,Woodward's Landing,0.210
+00765,Marystown,0.388
+07654,New Westminster,0.178
+07707,Kitsilano,0.277
+07710,False Creek,0.276
+07724,Calamity Point,0.270
+07735,Vancouver,0.273
+07745,Second Narrows,0.278
+07755,Port Moody,0.274
+00776,Petite Forte,0.320
+07765,Deep Cove,0.276
+07774,Indian Arm Head,0.281
+07780,Ambleside,0.273
+07786,Sandy Cove,0.275
+07795,Point Atkinson,0.275
+07808,Darrell Bay,0.278
+07811,Squamish Inner,0.279
+07820,Gibsons,0.282
+07824,Roberts Creek,0.308
+07830,Halfmoon Bay,0.279
+07836,Irvines Landing,0.286
+07837,kÃŒÂ±alpilin,0.292
+07842,Egmont,0.318
+07843,Boom Islet,0.276
+07847,Storm Bay,0.174
+07852,Porpoise Bay,0.166
+07865,Blind Bay,0.298
+07868,Saltery Bay,0.290
+07875,Blubber Bay,0.315
+07880,Powell River,0.291
+07885,Lund,0.297
+07892,Twin Islands,0.285
+07895,Mitlenatch,0.305
+07913,Harmac,0.268
+07917,Nanaimo Harbour,0.274
+07930,Nanoose Bay,0.285
+07935,Winchelsea Is.,0.282
+07938,Northwest Bay,0.286
+07940,French Creek,0.277
+00795,Tacks Beach,0.314
+07953,Hornby Island,0.285
+07955,Denman Island,0.313
+00796,Davis Cove,0.393
+07965,Comox,0.294
+07982,False Bay,0.285
+07985,Skerry Bay,0.296
+07990,Welcome Bay,0.281
+07993,Little River,0.286
+00008,Coffins Point,0.248
+08006,Okeover Inlet,0.304
+08008,Prideaux Haven,0.322
+08015,Channel Island,0.296
+08025,Redonda Bay,0.289
+08035,Heriot Bay,0.313
+08037,Gorge Harbour,0.348
+08038,Whaletown,0.291
+08045,Surge Narrows,0.306
+00805,Woody Island,0.341
+08050,Octopus Is.,0.250
+08055,Florence Cove,0.291
+08060,"Big Bay, Stuart Island",0.272
+08065,Orford Bay,0.295
+08069,Waddington Hbr.,0.307
+08074,Campbell River,0.250
+08079,Quathiaski Cove,0.273
+08082,Gowlland Hbr.,0.220
+08087,Duncan Bay,0.229
+08095,Bloedel - Menzies Bay,0.233
+00810,North Harbour,0.392
+08105,Seymour Narrows,0.258
+08110,Brown Bay,0.254
+08120,Owen Bay,0.237
+08135,Mermaid Bay,0.250
+08142,Thurlow Point,0.237
+08145,Shoal Bay,0.232
+00815,Come By Chance,0.386
+08150,Cordero Islands,0.239
+08155,Blind Channel,0.241
+08162,Sidney Bay,0.218
+00818,Arnolds Cove,0.417
+08180,Chatham Pt.,0.234
+08195,Knox Bay,0.251
+08210,Billy Goat Bay,0.220
+08215,Kelsey Bay,0.259
+08233,Yorke Island,0.260
+08245,Port Neville,0.274
+08250,Port Harvey,0.260
+08258,Lagoon Cove,0.299
+08270,Growler Cove,0.245
+08280,Alert Bay,0.256
+08290,Port McNeill,0.275
+00830,Long Harbour,0.431
+08310,Glendale Cove,0.303
+08311,Siwash Bay,0.292
+08313,Montagu Point,0.295
+08318,Shewell Island,0.285
+08325,Cedar Island,0.264
+08340,Sunday Harbour,0.261
+08347,Kwatsi Bay,0.281
+08348,Kingcome Inlet,0.276
+00835,Argentia,0.384
+08364,Sullivan Bay,0.289
+08371,Jessie Point,0.274
+08379,Stuart Narrows,0.293
+08384,Jennis Bay,0.296
+08394,Raynor Group,0.259
+08408,Port Hardy,0.259
+08416,Shushartie Bay,0.249
+08426,Walker Group,0.282
+08438,Fox Islands,0.243
+08440,Treadwell Bay,0.205
+00845,St Brides,0.379
+08458,Frederick Sd,0.120
+08464,Nugent Sound,0.121
+08470,Johnson Point,0.123
+08476,Mereworth Sound.,0.125
+08482,Belize Inlet,0.114
+08488,Alison Sound,0.118
+00085,Kennebecasis Bay,0.127
+08545,Bamfield,0.170
+08556,Mutine Point,0.194
+08558,Brooksby Point,0.200
+08559,Head of Uchucklesit,0.198
+08565,Franklin River,0.194
+08575,Port Alberni,0.179
+08585,Effingham Bay,0.194
+08588,Stopper Islands,0.197
+08595,Ucluelet,0.172
+00860,St Marys,0.305
+08615,Tofino,0.178
+08623,Kennedy Cove,0.188
+08626,Warn Bay,0.206
+08630,Cypress Bay,0.205
+08632,Herbert Inlet,0.207
+08634,Sulphur Passage,0.211
+08637,Riley Cove,0.179
+08645,Saavedra Islands,0.195
+08650,Gold River,0.189
+08664,Ceepeecee,0.191
+08665,Esperanza,0.221
+08670,Zeballos,0.196
+08710,Kyuquot,0.199
+08714,Copp Island,0.214
+08715,Fair Harbour,0.208
+08720,Bunsby Islands,0.205
+08735,Winter Harbour,0.185
+08736,Hunt Islet,0.192
+08750,Port Alice,0.205
+08754,Bergh Cove,0.224
+08755,Kwokwesta Creek,0.224
+08756,Makwazniht Island,0.215
+08765,Coal Harbour,0.209
+08790,Cape Scott,0.210
+00880,Trepassey,0.244
+08805,Egg Island,0.232
+08810,Leroy Bay,0.255
+08812,Boswell Inlet,0.238
+08814,Smith Inlet,0.235
+08830,Draney Inlet,0.228
+08840,Wadhams,0.248
+08860,Addenbroke Isl.,0.264
+08863,Pruth Bay,0.224
+08865,Adams Harbour,0.218
+08870,Namu,0.245
+00890,Fermeuse,0.205
+08906,Gosling Island,0.215
+08909,Goose Island,0.230
+08912,Spider Island,0.252
+08917,Stryker Island,0.254
+08922,Joassa Channel,0.251
+00893,Lance Cove,0.205
+08937,Bella Coola,0.271
+08952,Luke Passage,0.290
+08958,Forit Bay,0.266
+08962,Ocean Falls,0.271
+08976,Bella Bella,0.228
+08978,Kynumpt Harbour,0.249
+00898,Gull Island,0.137
+08981,Troup Passage,0.250
+08996,Gerald Point,0.248
+08998,Thompson Bay,0.242
+00009,Garnet Point,0.292
+00900,Bay Bulls,0.138
+09005,Port Blackney,0.261
+09010,Tom Bay,0.239
+09020,Griffin Passage,0.236
+09035,Klemtu,0.233
+00905,St. Johns,0.152
+09053,Butedale,0.284
+09056,Higgins Passage,0.264
+09058,Price Island,0.261
+09060,Meyers Narrows,0.231
+09063,Milne Island,0.268
+09067,Smithers Island,0.278
+00907,Middle Cove,0.135
+09077,McKenney Isl.,0.262
+09080,Borrowman Bay,0.236
+09082,Beauchemin Channel,0.280
+09090,Surf Inlet,0.246
+09105,Gillen Harbour,0.276
+09115,Barnard Harbour,0.279
+00912,Portugal Cove,0.158
+09130,Hartley Bay,0.252
+09140,Kitimat,0.261
+00915,Bell Island,0.132
+09150,Kemano Bay,0.272
+09165,Block Islands,0.278
+09195,Lowe Inlet,0.313
+00920,Long Pond,0.143
+09227,Bonilla Island,0.274
+09230,Griffith Harbour,0.291
+09232,Larsen Island,0.281
+09242,Kitkatla,0.288
+00925,Holyrood Bay,0.205
+09250,Seabreeze Point,0.318
+09260,Claxton,0.322
+09266,Haysport,0.312
+09275,Khyex River,0.221
+09285,Kwinitsa River,0.141
+00093,Public Landing,0.162
+09305,Welcome Harbour,0.295
+09306,Refuge Bay,0.339
+09309,Humpback Bay,0.287
+09310,Hunt Inlet,0.308
+09312,Lawyer Islands,0.288
+09315,Qlawdzeet Anchorage,0.290
+00932,Bay Roberts,0.253
+09325,Moffatt Islands,0.326
+09329,Hudson Bay Passage,0.314
+09333,Brundige Inlet,0.311
+09338,Aero Trading,0.298
+09339,Pembina Terminal,0.297
+09340,Inverness,0.345
+09341,Porpoise Channel East,0.298
+09342,Port Edward,0.316
+09343,Wainwright Basin,0.224
+09344,Morse Basin,0.195
+09346,Prince Rupert RoRo,0.298
+09348,Fairview Terminal,0.302
+00935,Harbour Grace,0.127
+09350,Casey Cove,0.343
+09354,Prince Rupert,0.302
+09360,Seal Cove,0.296
+09390,Lax Kw'alaams,0.302
+09406,Trail Bay,0.297
+09414,Kumeon Bay,0.294
+09418,Ranger Islet,0.318
+09422,Gingolx,0.310
+09425,Mill Bay,0.277
+09435,Salmon Cove,0.299
+09443,Granby Bay,0.311
+09448,Alice Arm,0.335
+09475,Stewart,0.309
+09502,Cape St. James,0.220
+09512,Gordon Islands,0.207
+00955,Hearts Content,0.138
+09570,Hunger Harbour,0.213
+09605,Armentiere Channel,0.223
+00962,Long Cove,0.242
+09625,Trounce Inlet,0.186
+09627,Trounce Inlet North,0.185
+09635,Dawson Harbour,0.200
+09650,Shields Bay,0.230
+09667,Nesto Inlet,0.206
+09671,Port Louis,0.228
+00097,Hatfield Point,0.134
+00970,Long Beach,0.123
+09708,Heater Harbour,0.216
+09710,High Island,0.240
+09713,Rose Harbour,0.210
+09717,Carpenter Bay,0.223
+09724,Copper Islands,0.226
+00973,Hickmans Harbour,0.126
+00975,Clarenville,0.139
+09753,Sedgwick Bay,0.249
+09765,Atli Inlet,0.253
+00977,Clifton,0.187
+09775,Pacofi Bay,0.273
+09790,McCoy Cove,0.289
+09795,Sandspit Marina,0.335
+00098,Evandale,0.131
+09808,Shingle Bay,0.326
+00981,Trinity,0.123
+00985,Port Union,0.126
+09850,Daajing Giids,0.312
+09860,Tlell,0.325
+00990,Bonavista,0.119
+09910,Masset,0.172
+09920,Port Clements,0.124
+09927,Juskatla Inlet,0.093
+09940,Wiah Point,0.254
+09958,Henslung Cove,0.217
+09961,Egeria Bay,0.250
+09963,McPherson Pt.,0.220
+09964,Langara Point,0.223
