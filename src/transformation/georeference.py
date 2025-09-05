@@ -12,11 +12,13 @@ import geopandas as gpd
 import numpy as np
 from loguru import logger
 import pandas as pd
-from typing import Optional, Callable
+from typing import Optional
 
 from .exception_tranformation import WaterLevelDataRequiredError
 from . import order
 from .transformation_models import SensorProtocol, WaterlineProtocol
+from .parallel_computing import run_dask_function_in_parallel
+from . import uncertainty
 import schema
 from schema import model_ids as schema_ids
 
@@ -345,7 +347,7 @@ def get_zero_water_levels(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         gdf.loc[:, schema_ids.WATER_LEVEL_METER] = 0.0
         return gdf
 
-    return _run_dask_function_in_parallel(data=data, func=apply_zero_water_level)
+    return run_dask_function_in_parallel(data=data, func=apply_zero_water_level)
 
 
 def apply_georeference_bathymetry(
@@ -384,80 +386,7 @@ def apply_georeference_bathymetry(
         )
         return gdf
 
-    return _run_dask_function_in_parallel(data=data, func=calculate_depth)
-
-
-def compute_tvu(
-    data: gpd.GeoDataFrame,
-    decimal_precision: int,
-    depth_coeficient_tvu: float = 0.04,
-    constant_tvu: float = 0.35,
-) -> gpd.GeoDataFrame:
-    """
-    Calcule le TVU des données de bathymétrie.
-
-    :param data: Données brut de profondeur.
-    :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
-    :param decimal_precision: Précision décimale pour les valeurs de TVU.
-    :type decimal_precision: int
-    :param depth_coeficient_tvu: Coefficient de profondeur.
-    :type depth_coeficient_tvu: float
-    :param constant_tvu: Constante du TPU.
-    :type constant_tvu: float
-    :return: Données de profondeur avec le TVU.
-    :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
-    """
-    LOGGER.debug(
-        f"Calcul du l'incertitude verticale des données de profondeur avec {CPU_COUNT} processus en parallèle."
-    )
-
-    def calculate_vertical_uncertainty(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
-        gdf.loc[:, schema_ids.UNCERTAINTY] = round(
-            (gdf[schema_ids.DEPTH_RAW_METER] * depth_coeficient_tvu) + constant_tvu,
-            decimal_precision,
-        )
-        return gdf
-
-    return _run_dask_function_in_parallel(
-        data=data, func=calculate_vertical_uncertainty
-    )
-
-
-def compute_thu(
-    data: gpd.GeoDataFrame,
-    decimal_precision: int,
-    angular_opening: float = 20.0,
-    constant_thu: float = 3.0,
-) -> gpd.GeoDataFrame:
-    """
-    Calcule le THU des données de bathymétrie.
-
-    :param data: Données brut de profondeur.
-    :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
-    :param decimal_precision: Précision décimale pour les valeurs de THU.
-    :type decimal_precision: int
-    :param angular_opening: Ouverture angulaire du sondeur.
-    :type angular_opening: float
-    :param constant_thu: Constante du TPU.
-    :type constant_thu: float
-    :return: Données de profondeur avec le THU.
-    :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
-    """
-    LOGGER.debug(
-        f"Calcul de l'incertitude horizontale des données de profondeur avec {CPU_COUNT} processus en parallèle."
-    )
-    thu_depth_coeficient: float = np.tan(np.radians(angular_opening) / 2)
-
-    def calculate_horizontal_uncertainty(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
-        gdf.loc[:, schema_ids.THU] = round(
-            (gdf[schema_ids.DEPTH_RAW_METER] * thu_depth_coeficient) + constant_thu,
-            decimal_precision,
-        )
-        return gdf
-
-    return _run_dask_function_in_parallel(
-        data=data, func=calculate_horizontal_uncertainty
-    )
+    return run_dask_function_in_parallel(data=data, func=calculate_depth)
 
 
 def compute_order(
@@ -478,8 +407,6 @@ def compute_order(
         f"Calcul de l'ordre IHO selon la TVU et la THU des données de profondeur avec {CPU_COUNT} processus en parallèle."
     )
 
-    # dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=CPU_COUNT)
-
     def calculate_order(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         gdf.loc[:, schema_ids.IHO_ORDER] = gdf.apply(
             lambda row: str(
@@ -495,30 +422,7 @@ def compute_order(
 
         return gdf
 
-    return _run_dask_function_in_parallel(data=data, func=calculate_order)
-
-
-def _run_dask_function_in_parallel(
-    data: gpd.GeoDataFrame,
-    func: Callable[[gpd.GeoDataFrame], gpd.GeoDataFrame],
-    npartitions: int = CPU_COUNT,
-) -> gpd.GeoDataFrame:
-    """
-    Exécute une fonction Dask en parallèle sur les partitions d'un GeoDataFrame.
-
-    :param data: Données de profondeur.
-    :type data: gpd.GeoDataFrame
-    :param func: Fonction à exécuter sur chaque partition.
-    :type func: Callable[[gpd.GeoDataFrame], gpd.GeoDataFrame]
-    :param npartitions: Nombre de partitions pour Dask.
-    :type npartitions: int
-    :return: Données traitées.
-    :rtype: gpd.GeoDataFrame
-    """
-    dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=npartitions)
-    dask_data = dask_data.map_partitions(func)  # type: ignore
-
-    return dask_data.compute().pipe(gpd.GeoDataFrame)
+    return run_dask_function_in_parallel(data=data, func=calculate_order)
 
 
 @schema.validate_schemas(
@@ -593,12 +497,18 @@ def georeference_bathymetry(
 
     LOGGER.info("Calcul de l'incertitude verticale des données de profondeur.")
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
-        compute_tvu(data=data_to_process, decimal_precision=decimal_precision)
+        uncertainty.compute_tvu(
+            data=data_to_process,
+            decimal_precision=decimal_precision,
+            constant_tvu=0 if not apply_water_level else None,
+        )
     )
 
     LOGGER.info("Calcul de l'incertitude horizontale des données de profondeur.")
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
-        compute_thu(data=data_to_process, decimal_precision=decimal_precision)
+        uncertainty.compute_thu(
+            data=data_to_process, decimal_precision=decimal_precision
+        )
     )
 
     LOGGER.info("Calcul de l'ordre IHO selon la TVU et la THU.")
