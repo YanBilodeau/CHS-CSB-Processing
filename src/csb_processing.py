@@ -676,12 +676,15 @@ def export_metadata(
         sounder_draft=sounder.z - waterline.z,
         sotfware_version=__version__,
         tide_stations=tide_stations,
-        tvu=min(
-            data_geodataframe[schema_ids.UNCERTAINTY].max(),
-            round(
-                (50 * 0.04) + 0.35, decimal_precision
-            ),  # Min entre max TVU et TVU à 50m
-        ),  # todo mettre en paramètre
+        tvu=(
+            data_geodataframe[data_geodataframe[schema_ids.DEPTH_PROCESSED_METER] < 50][
+                schema_ids.UNCERTAINTY
+            ].max()
+            if not data_geodataframe[
+                data_geodataframe[schema_ids.DEPTH_PROCESSED_METER] < 50
+            ].empty
+            else data_geodataframe[schema_ids.UNCERTAINTY].max()
+        ),
         thu=min(
             data_geodataframe[schema_ids.THU].max(),
             round(
