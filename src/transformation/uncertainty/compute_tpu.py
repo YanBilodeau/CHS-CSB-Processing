@@ -6,7 +6,6 @@ Ce module utilise des fonctions parallèles pour traiter les données efficaceme
 en tirant parti de tous les cœurs CPU disponibles.
 """
 
-from multiprocessing import cpu_count
 from pathlib import Path
 from functools import lru_cache
 from typing import Optional
@@ -16,7 +15,6 @@ import geopandas as gpd
 import numpy as np
 from loguru import logger
 
-from ..parallel_computing import run_dask_function_in_parallel
 from .ids_uncertainty import (
     STATION_UNCERTAINTY_JSON,
     DEFAULT_CONSTANT_TVU,
@@ -26,8 +24,6 @@ import schema
 from schema import model_ids as schema_ids
 
 LOGGER = logger.bind(name="CSB-Processing.Transformation.Uncertainty")
-
-CPU_COUNT: int = cpu_count()
 
 
 @lru_cache(maxsize=128)
@@ -82,9 +78,7 @@ def compute_tvu(
     :return: Données de profondeur avec le TVU.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
-    LOGGER.debug(
-        f"Calcul du l'incertitude verticale des données de profondeur avec {CPU_COUNT} processus en parallèle."
-    )
+    LOGGER.debug(f"Calcul du l'incertitude verticale des données de profondeur.")
 
     station_mapping = create_uncertainty_mapping()
 
@@ -128,9 +122,7 @@ def compute_thu(
     :return: Données de profondeur avec le THU.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
-    LOGGER.debug(
-        f"Calcul de l'incertitude horizontale des données de profondeur avec {CPU_COUNT} processus en parallèle."
-    )
+    LOGGER.debug(f"Calcul de l'incertitude horizontale des données de profondeur.")
     thu_depth_coeficient: float = np.tan(np.radians(angular_opening) / 2)
 
     def calculate_horizontal_uncertainty(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
