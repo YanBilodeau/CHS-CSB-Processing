@@ -7,7 +7,6 @@ Ce module contient les fonctions de géoréférencement des données de bathymé
 from multiprocessing import cpu_count
 
 from cachetools import LRUCache
-import dask_geopandas as dgpd
 import geopandas as gpd
 import numpy as np
 from loguru import logger
@@ -65,221 +64,26 @@ def _get_event_dates(station_id: str, water_level_df: pd.DataFrame) -> pd.Dateti
         f"{station_id}-{water_level_df.attrs[schema_ids.START_TIME]}"
         f"-{water_level_df.attrs[schema_ids.END_TIME]}-{len(water_level_df)}"
     )
+
     # Mise en cache des dates des événements
     if cache_key not in event_dates_cache:
-        event_dates_cache[cache_key] = (
-            pd.to_datetime(water_level_df[schema_ids.EVENT_DATE].values)
-            .tz_localize("UTC")
-            .tz_convert("UTC")
-        )
+        event_dates = pd.to_datetime(water_level_df[schema_ids.EVENT_DATE].values)
+
+        if event_dates.tz is None:
+            event_dates = event_dates.tz_localize("UTC")
+
+        event_dates_cache[cache_key] = event_dates
 
     return event_dates_cache[cache_key]
 
 
-def _interpolate_water_level(
-    before_event: pd.Series,
-    after_event: pd.Series,
-    time_utc: pd.Timestamp,
-    water_level_tolerance: pd.Timedelta,
-) -> tuple[float, str | None]:
-    """
-    Interpole le niveau d'eau entre deux événements.
-
-    :param before_event: Événement avant le temps pour lequel interpoler le niveau d'eau.
-    :type before_event: pd.Series[schema.WaterLevelSerieDataSchema]
-    :param after_event: Événement après le temps pour lequel interpoler le niveau d'eau.
-    :type after_event: pd.Series[schema.WaterLevelSerieDataSchema]
-    :param time_utc: Temps pour lequel interpoler le niveau d'eau.
-    :type time_utc: pd.Timestamp
-    :param water_level_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
-    :type water_level_tolerance: pd.Timedelta
-    :return: Valeur interpolée du niveau d'eau et de la time serie.
-    :rtype: tuple[float, str | None]
-    """
-    # Interpolation linéaire
-    time_diff_event: np.float64 = (
-        after_event[schema_ids.EVENT_DATE] - before_event[schema_ids.EVENT_DATE]
-    ).total_seconds()
-    if time_diff_event > (2 * water_level_tolerance.total_seconds()):
-        return np.nan, None
-
-    value_diff_event: float = (
-        after_event[schema_ids.VALUE] - before_event[schema_ids.VALUE]
-    )
-    time_elapsed: float = (
-        time_utc - before_event[schema_ids.EVENT_DATE]
-    ).total_seconds()
-
-    interpolated_value: np.float64 = before_event[schema_ids.VALUE] + (
-        value_diff_event * (time_elapsed / time_diff_event)
-    )
-
-    return (
-        round(interpolated_value, 3),
-        f"LinearInterpolation[{after_event[schema_ids.TIME_SERIE_CODE]} - {before_event[schema_ids.TIME_SERIE_CODE]}]",
-    )
-
-
-def _handle_missing_data(idx_sounding: int, tide_zone_id: str) -> float:
-    """
-    Gère les données manquantes de niveau d'eau.
-
-    :param idx_sounding: Index de la sonde.
-    :type idx_sounding: int
-    :param tide_zone_id: Identifiant de la zone de marée.
-    :type tide_zone_id: str
-    :return: np.nan
-    :rtype: float
-    """
-    LOGGER.debug(
-        f"Aucune donnée disponible pour la zone de marée {tide_zone_id} (index {idx_sounding})."
-    )
-
-    return np.nan
-
-
-def _add_value_within_limit_if_applicable(
-    event_position_wl: np.int64,
-    time_utc_sounding: pd.Timestamp,
-    event_dates_wl: pd.DatetimeIndex,
-    water_level_df: pd.DataFrame,
-    idx_sounding: int,
-    tide_zone_id: str,
-    water_level_tolerance: pd.Timedelta,
-) -> tuple[np.float64 | float, str | None]:
-    """
-    Ajoute la valeur du niveau d'eau si elle est dans les limites.
-
-    :param event_position_wl: Position de l'événement du niveau d'eau.
-    :type event_position_wl: np.int64
-    :param time_utc_sounding: Temps UTC de la sonde.
-    :type time_utc_sounding: pd.Timestamp
-    :param event_dates_wl: Dates des événements des niveaux d'eau.
-    :type event_dates_wl: pd.DatetimeIndex[pd.Timestamp]
-    :param water_level_df: DataFrame contenant les niveaux d'eau.
-    :type water_level_df: pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]
-    :param idx_sounding: Index de la sonde.
-    :type idx_sounding: int
-    :param tide_zone_id: Identifiant de la zone de marée.
-    :type tide_zone_id: str
-    :param water_level_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
-    :type water_level_tolerance: pd.Timedelta
-    :return: Valeur du niveau d'eau et de la time serie.
-    :rtype: tuple[np.float64 | float, str | None]
-    """
-    time_diff: float = abs(
-        event_dates_wl[event_position_wl] - time_utc_sounding
-    ).total_seconds()
-
-    if time_diff <= water_level_tolerance.total_seconds():
-        return (
-            round(water_level_df.iloc[event_position_wl][schema_ids.VALUE], 3),
-            water_level_df.iloc[event_position_wl][schema_ids.TIME_SERIE_CODE],
-        )
-
-    LOGGER.debug(
-        f"Pas de données de niveau d'eau suffisantes pour récupérer l'index {idx_sounding} avec une "
-        f"tolérance de {water_level_tolerance} : (tide_zone_id={tide_zone_id})."
-    )
-
-    return np.nan, None
-
-
-def _get_water_level_for_sounding(
-    sounding: pd.Series,
-    water_level_data: dict[str, pd.DataFrame],
-    water_level_tolerance: pd.Timedelta,
-) -> tuple[np.float64 | float, str | None]:
-    """
-    Récupère la valeur du niveau d'eau pour une sonde.
-
-    :param sounding: Série temporelle de la sonde.
-    :type sounding: pd.Series[schema.DataLoggerWithTideZoneSchema]
-    :param water_level_data: Les séries temporelles des niveaux d'eau.
-    :type water_level_data: dict[str, pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]
-    :param water_level_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
-    :type water_level_tolerance: pd.Timedelta
-    :return: Valeur du niveau d'eau et de la time serie.
-    :rtype: tuple[np.float64 | float, str | None]
-    """
-    tide_zone_id: str = sounding.get(schema_ids.TIDE_ZONE_ID)
-    time_utc_sounding: pd.Timestamp = sounding.get(schema_ids.TIME_UTC)
-    idx_sounding: int = sounding.name  # type: ignore[union-attr]
-
-    if (
-        tide_zone_id not in water_level_data
-        or water_level_data[tide_zone_id].empty
-        or water_level_data[tide_zone_id] is None
-    ):
-        return _handle_missing_data(idx_sounding, tide_zone_id), None
-
-    water_level_df: pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema] = (
-        water_level_data[tide_zone_id]
-    )
-    event_dates_wl: pd.DatetimeIndex[pd.Timestamp] = _get_event_dates(
-        station_id=tide_zone_id,
-        water_level_df=water_level_df,
-    )
-
-    # Trouver les indices des événements avant et après
-    position_after: np.int64 = event_dates_wl.searchsorted(
-        time_utc_sounding, side="right"
-    )
-
-    # Vérifier si [position_after - 1] est un match exact
-    if event_dates_wl[position_after - 1] == time_utc_sounding:
-        return (
-            round(
-                water_level_df.iloc[position_after - 1][schema_ids.VALUE],
-                3,
-            ),
-            water_level_df.iloc[position_after - 1][schema_ids.TIME_SERIE_CODE],
-        )
-
-    # Vérifier si position_after est hors des limites
-    if position_after >= len(event_dates_wl):
-        return _add_value_within_limit_if_applicable(
-            event_position_wl=np.int64(
-                position_after - 1  # -1 pour récupérer le dernier élément
-            ),
-            time_utc_sounding=time_utc_sounding,
-            event_dates_wl=event_dates_wl,
-            water_level_df=water_level_df,
-            idx_sounding=idx_sounding,
-            tide_zone_id=tide_zone_id,
-            water_level_tolerance=water_level_tolerance,
-        )
-
-    position_before: np.int64 = np.int64(
-        position_after - 1  # -1 pour récupérer l'élément avant la position_after
-    )
-    # Vérifier si position_before est hors des limites
-    if position_before < 0:
-        return _add_value_within_limit_if_applicable(
-            event_position_wl=position_after,
-            time_utc_sounding=time_utc_sounding,
-            event_dates_wl=event_dates_wl,
-            water_level_df=water_level_df,
-            idx_sounding=idx_sounding,
-            tide_zone_id=tide_zone_id,
-            water_level_tolerance=water_level_tolerance,
-        )
-
-    return _interpolate_water_level(
-        before_event=water_level_df.iloc[position_before],
-        after_event=water_level_df.iloc[position_after],
-        time_utc=time_utc_sounding,
-        water_level_tolerance=water_level_tolerance,
-    )
-
-
-def get_water_levels(
+def get_water_levels_vectorized(
     data: gpd.GeoDataFrame,
     water_level_data: dict[str, pd.DataFrame],
     water_level_tolerance: pd.Timedelta,
 ) -> gpd.GeoDataFrame:
     """
-    Ajoute le niveau d'eau aux données de profondeur.
+    Ajoute le niveau d'eau aux données de profondeur de manière vectorisée.
 
     :param data: Données brutes de profondeur.
     :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
@@ -292,42 +96,260 @@ def get_water_levels(
     """
     _validate_and_sort_data(water_level_data)
 
+    LOGGER.debug(f"Récupération des niveaux d'eau pour les {len(data)} sondes.")
+
+    # Initialiser les colonnes de résultat directement dans le DataFrame original
+    data.loc[:, schema_ids.WATER_LEVEL_METER] = np.nan
+    data.loc[:, schema_ids.TIME_SERIE] = None
+
+    # Grouper par tide_zone_id pour traitement vectorisé
+    for tide_zone_id, zone_group in data.groupby(schema_ids.TIDE_ZONE_ID):
+        if tide_zone_id not in water_level_data or water_level_data[tide_zone_id].empty:
+            continue
+
+        water_level_df = water_level_data[tide_zone_id]
+        event_dates_wl = _get_event_dates(tide_zone_id, water_level_df)
+
+        # Vectoriser la recherche de positions
+        time_utc_values = zone_group[schema_ids.TIME_UTC]
+        positions_after = event_dates_wl.searchsorted(time_utc_values, side="right")
+
+        # Calculer les masques pour différents cas
+        exact_match_mask = np.zeros(len(positions_after), dtype=bool)
+        valid_positions = (positions_after > 0) & (
+            positions_after <= len(event_dates_wl)
+        )
+
+        for i, pos in enumerate(positions_after):
+            if 0 < pos <= len(event_dates_wl):
+                if event_dates_wl[pos - 1] == time_utc_values.iloc[i]:
+                    exact_match_mask[i] = True
+
+        # Traiter les correspondances exactes
+        exact_indices = zone_group.index[exact_match_mask]
+        exact_positions = positions_after[exact_match_mask] - 1
+
+        if len(exact_indices) > 0:
+            data.loc[exact_indices, schema_ids.WATER_LEVEL_METER] = (
+                water_level_df.iloc[exact_positions][schema_ids.VALUE].round(3).values
+            )
+            data.loc[exact_indices, schema_ids.TIME_SERIE] = water_level_df.iloc[
+                exact_positions
+            ][schema_ids.TIME_SERIE_CODE].values
+
+        # Traiter les cas nécessitants interpolation/tolérance
+        non_exact_mask = ~exact_match_mask & valid_positions
+        if non_exact_mask.any():
+            _process_non_exact_matches(
+                data,
+                zone_group,
+                non_exact_mask,
+                positions_after,
+                water_level_df,
+                event_dates_wl,
+                time_utc_values,
+                water_level_tolerance,
+            )
+
     LOGGER.debug(
-        f"Récupération des niveaux d'eau pour les {len(data)} sondes avec {CPU_COUNT} processus en parallèle."
-    )
-
-    dask_data: dgpd.GeoDataFrame = dgpd.from_geopandas(data, npartitions=CPU_COUNT)
-    interpolated_df: pd.DataFrame = dask_data.map_partitions(
-        lambda gdf: gdf.apply(
-            lambda row: (
-                pd.Series(
-                    {
-                        "interpolated_value": result[0],
-                        "time_serie": result[1],
-                    }
-                )
-                if (
-                    result := _get_water_level_for_sounding(
-                        sounding=row,
-                        water_level_data=water_level_data,
-                        water_level_tolerance=water_level_tolerance,
-                    )
-                )
-                else pd.Series({"interpolated_value": np.nan, "time_serie": None})
-            ),
-            axis=1,
-        ),
-        meta=pd.DataFrame({"interpolated_value": [], "time_serie": []}),
-    ).compute()  # todo optimiser le calcul de manière vectorisée
-
-    data[schema_ids.WATER_LEVEL_METER] = interpolated_df["interpolated_value"]
-    data[schema_ids.TIME_SERIE] = interpolated_df["time_serie"]
-
-    LOGGER.debug(
-        f"Récupération des niveaux d'eau terminée. Il reste {data['Water_level_meter'].isna().sum()} sondes sans niveau d'eau."
+        f"Récupération des niveaux d'eau terminée. Il reste {data[schema_ids.WATER_LEVEL_METER].isna().sum()} sondes sans niveau d'eau."
     )
 
     return data
+
+
+def _handle_out_of_bounds_after(
+    gdf: gpd.GeoDataFrame,
+    indices_to_process: pd.Index,
+    times_to_process: pd.Series,
+    positions_to_process: np.ndarray,
+    event_dates_wl: pd.DatetimeIndex,
+    water_level_df: pd.DataFrame,
+    tolerance_seconds: float,
+) -> None:
+    """
+    Cas où la position après est hors limites: on peut utiliser le dernier point si dans la tolérance.
+    """
+    out_of_bounds_after = positions_to_process >= len(event_dates_wl)
+    if not out_of_bounds_after.any():
+        return
+
+    max_event_idx = len(event_dates_wl) - 1
+    last_event_time = event_dates_wl[max_event_idx]
+    time_diffs_last = np.abs(
+        (times_to_process[out_of_bounds_after] - last_event_time).total_seconds()
+    )
+    within_tolerance = time_diffs_last <= tolerance_seconds
+    if not within_tolerance.any():
+        return
+
+    valid_indices = indices_to_process[out_of_bounds_after][within_tolerance]
+    gdf.loc[valid_indices, schema_ids.WATER_LEVEL_METER] = round(
+        water_level_df.iloc[max_event_idx][schema_ids.VALUE], 3
+    )
+    gdf.loc[valid_indices, schema_ids.TIME_SERIE] = water_level_df.iloc[max_event_idx][
+        schema_ids.TIME_SERIE_CODE
+    ]
+
+
+def _handle_out_of_bounds_before(
+    gdf: gpd.GeoDataFrame,
+    indices_to_process: pd.Index,
+    times_to_process: pd.Series,
+    positions_before: np.ndarray,
+    event_dates_wl: pd.DatetimeIndex,
+    water_level_df: pd.DataFrame,
+    tolerance_seconds: float,
+) -> None:
+    """
+    Cas où la position avant est hors limites: on peut utiliser le premier point si dans la tolérance.
+    """
+    out_of_bounds_before = positions_before < 0
+    if not out_of_bounds_before.any():
+        return
+
+    first_event_time = event_dates_wl[0]
+    time_diffs_first = np.abs(
+        (times_to_process[out_of_bounds_before] - first_event_time).total_seconds()
+    )
+    within_tolerance = time_diffs_first <= tolerance_seconds
+    if not within_tolerance.any():
+        return
+
+    valid_indices = indices_to_process[out_of_bounds_before][within_tolerance]
+    gdf.loc[valid_indices, schema_ids.WATER_LEVEL_METER] = round(
+        water_level_df.iloc[0][schema_ids.VALUE], 3
+    )
+    gdf.loc[valid_indices, schema_ids.TIME_SERIE] = water_level_df.iloc[0][
+        schema_ids.TIME_SERIE_CODE
+    ]
+
+
+def _handle_interpolation(
+    gdf: gpd.GeoDataFrame,
+    indices_to_process: pd.Index,
+    positions_before: np.ndarray,
+    positions_to_process: np.ndarray,
+    times_to_process: pd.Series,
+    event_dates_wl: pd.DatetimeIndex,
+    water_level_df: pd.DataFrame,
+    tolerance_seconds: float,
+) -> None:
+    """
+    Cas d'interpolation linéaire entre deux points consécutifs si dans la tolérance.
+    """
+    max_len = len(event_dates_wl)
+    out_of_bounds_after = positions_to_process >= max_len
+    out_of_bounds_before = positions_before < 0
+    valid_interpolation = ~out_of_bounds_after & ~out_of_bounds_before
+    if not valid_interpolation.any():
+        return
+
+    interp_indices = indices_to_process[valid_interpolation]
+    interp_pos_before = positions_before[valid_interpolation]
+    interp_pos_after = positions_to_process[valid_interpolation]
+    interp_times = times_to_process[valid_interpolation]
+
+    before_events = water_level_df.iloc[interp_pos_before]
+    after_events = water_level_df.iloc[interp_pos_after]
+
+    time_diffs_event = (
+        (
+            after_events[schema_ids.EVENT_DATE].values
+            - before_events[schema_ids.EVENT_DATE].values
+        )
+        .astype("timedelta64[s]")
+        .astype(float)
+    )
+
+    # Exiger que l'intervalle total soit <= 2 * tolérance
+    tolerance_mask = time_diffs_event <= (2 * tolerance_seconds)
+    if not tolerance_mask.any():
+        return
+
+    final_indices = interp_indices[tolerance_mask]
+    final_before = before_events[tolerance_mask]
+    final_after = after_events[tolerance_mask]
+    final_times = interp_times[tolerance_mask]
+    final_time_diffs = time_diffs_event[tolerance_mask]
+
+    value_diffs = (
+        final_after[schema_ids.VALUE].values - final_before[schema_ids.VALUE].values
+    )
+    time_elapsed = (
+        (final_times.values - final_before[schema_ids.EVENT_DATE].values)
+        .astype("timedelta64[s]")
+        .astype(float)
+    )
+
+    interpolated_values = final_before[schema_ids.VALUE].values + (
+        value_diffs * (time_elapsed / final_time_diffs)
+    )
+
+    gdf.loc[final_indices, schema_ids.WATER_LEVEL_METER] = np.round(
+        interpolated_values, 3
+    )
+    gdf.loc[final_indices, schema_ids.TIME_SERIE] = [
+        f"LinearInterpolation[{after} - {before}]"
+        for after, before in zip(
+            final_after[schema_ids.TIME_SERIE_CODE].values,
+            final_before[schema_ids.TIME_SERIE_CODE].values,
+        )
+    ]
+
+
+def _process_non_exact_matches(
+    gdf: gpd.GeoDataFrame,
+    zone_group: pd.DataFrame,
+    mask: np.ndarray,
+    positions_after: np.ndarray,
+    water_level_df: pd.DataFrame,
+    event_dates_wl: pd.DatetimeIndex,
+    time_utc_values: pd.Series,
+    water_level_tolerance: pd.Timedelta,
+) -> None:
+    """
+    Orchestration des traitements des cas non-exacts (hors limites & interpolation).
+    """
+    if not mask.any():
+        return
+
+    indices_to_process = zone_group.index[mask]
+    positions_to_process = positions_after[mask]
+    times_to_process = time_utc_values[mask]
+    positions_before = positions_to_process - 1
+    tolerance_seconds = water_level_tolerance.total_seconds()
+
+    _handle_out_of_bounds_after(
+        gdf=gdf,
+        indices_to_process=indices_to_process,
+        times_to_process=times_to_process,
+        positions_to_process=positions_to_process,
+        event_dates_wl=event_dates_wl,
+        water_level_df=water_level_df,
+        tolerance_seconds=tolerance_seconds,
+    )
+
+    _handle_out_of_bounds_before(
+        gdf=gdf,
+        indices_to_process=indices_to_process,
+        times_to_process=times_to_process,
+        positions_before=positions_before,
+        event_dates_wl=event_dates_wl,
+        water_level_df=water_level_df,
+        tolerance_seconds=tolerance_seconds,
+    )
+
+    _handle_interpolation(
+        gdf=gdf,
+        indices_to_process=indices_to_process,
+        positions_before=positions_before,
+        positions_to_process=positions_to_process,
+        times_to_process=times_to_process,
+        event_dates_wl=event_dates_wl,
+        water_level_df=water_level_df,
+        tolerance_seconds=tolerance_seconds,
+    )
 
 
 def get_zero_water_levels(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
@@ -340,14 +362,12 @@ def get_zero_water_levels(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
     LOGGER.debug(
-        f"Utilisation d'un niveau d'eau de 0 mètre pour les {len(data)} sondes avec {CPU_COUNT} processus en parallèle."
+        f"Utilisation d'un niveau d'eau de 0 mètre pour les {len(data)} sondes."
     )
 
-    def apply_zero_water_level(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
-        gdf.loc[:, schema_ids.WATER_LEVEL_METER] = 0.0
-        return gdf
+    data.loc[:, schema_ids.WATER_LEVEL_METER] = 0.0
 
-    return run_dask_function_in_parallel(data=data, func=apply_zero_water_level)
+    return data
 
 
 def apply_georeference_bathymetry(
@@ -401,7 +421,7 @@ def compute_order(
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
     LOGGER.debug(
-        f"Calcul de l'ordre IHO selon la TVU et la THU des données de profondeur avec {CPU_COUNT} processus en parallèle."
+        f"Calcul de l'ordre IHO selon la TVU et la THU des données de profondeur."
     )
 
     def calculate_order(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
@@ -475,7 +495,7 @@ def georeference_bathymetry(
     LOGGER.info("Récupération des niveaux d'eau pour les sondes.")
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
         (
-            get_water_levels(
+            get_water_levels_vectorized(
                 data=data_to_process,
                 water_level_data=water_level,
                 water_level_tolerance=water_level_tolerance,
