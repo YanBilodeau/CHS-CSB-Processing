@@ -6,7 +6,7 @@ Ce module contient les fonctions pour gérer les données de séries temporelles
 
 import concurrent.futures
 from collections.abc import Callable
-from datetime import timedelta, datetime
+from datetime import datetime
 import operator
 from typing import Optional, Any, Collection, Literal
 
