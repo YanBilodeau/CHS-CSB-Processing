@@ -16,7 +16,6 @@ from typing import Optional
 from .exception_tranformation import WaterLevelDataRequiredError
 from . import order
 from .transformation_models import SensorProtocol, WaterlineProtocol
-from .parallel_computing import run_dask_function_in_parallel
 from . import uncertainty
 import schema
 from schema import model_ids as schema_ids
@@ -123,7 +122,7 @@ def get_water_levels_vectorized(
         for i, pos in enumerate(positions_after):
             if 0 < pos <= len(event_dates_wl):
                 if event_dates_wl[pos - 1] == time_utc_values.iloc[i]:
-                    exact_match_mask[i] = True
+                    exact_match_mask[i] = True  # todo: vectoriser ?
 
         # Traiter les correspondances exactes
         exact_indices = zone_group.index[exact_match_mask]
@@ -169,6 +168,21 @@ def _handle_out_of_bounds_after(
 ) -> None:
     """
     Cas où la position après est hors limites: on peut utiliser le dernier point si dans la tolérance.
+
+    :param gdf: GeoDataFrame des données de profondeur.
+    :type gdf: gpd.GeoDataFrame[schema.DataLoggerWithTideZone
+    :param indices_to_process: Indices des lignes à traiter.
+    :type indices_to_process: pd.Index
+    :param times_to_process: Séries temporelles des lignes à traiter.
+    :type times_to_process: pd.Series[pd.Timestamp]
+    :param positions_to_process: Positions après dans les données de niveau d'eau.
+    :type positions_to_process: np.ndarray
+    :param event_dates_wl: Dates des événements de niveau d'eau.
+    :type event_dates_wl: pd.DatetimeIndex[pd.Timestamp]
+    :param water_level_df: DataFrame des niveaux d'eau.
+    :type water_level_df: pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]
+    :param tolerance_seconds: Tolérance en secondes pour la récupération du niveau d'eau.
+    :type tolerance_seconds: float
     """
     out_of_bounds_after = positions_to_process >= len(event_dates_wl)
     if not out_of_bounds_after.any():
@@ -177,7 +191,7 @@ def _handle_out_of_bounds_after(
     max_event_idx = len(event_dates_wl) - 1
     last_event_time = event_dates_wl[max_event_idx]
     time_diffs_last = np.abs(
-        (times_to_process[out_of_bounds_after] - last_event_time).total_seconds()
+        (times_to_process[out_of_bounds_after] - last_event_time).dt.total_seconds()
     )
     within_tolerance = time_diffs_last <= tolerance_seconds
     if not within_tolerance.any():
@@ -203,6 +217,21 @@ def _handle_out_of_bounds_before(
 ) -> None:
     """
     Cas où la position avant est hors limites: on peut utiliser le premier point si dans la tolérance.
+
+    :param gdf: GeoDataFrame des données de profondeur.
+    :type gdf: gpd.GeoDataFrame[schema.DataLoggerWithTideZone
+    :param indices_to_process: Indices des lignes à traiter.
+    :type indices_to_process: pd.Index
+    :param times_to_process: Séries temporelles des lignes à traiter.
+    :type times_to_process: pd.Series[pd.Timestamp]
+    :param positions_before: Positions avant dans les données de niveau d'eau.
+    :type positions_before: np.ndarray
+    :param event_dates_wl: Dates des événements de niveau d'eau.
+    :type event_dates_wl: pd.DatetimeIndex[pd.Timestamp]
+    :param water_level_df: DataFrame des niveaux d'eau.
+    :type water_level_df: pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]
+    :param tolerance_seconds: Tolérance en secondes pour la récupération du niveau d'eau.
+    :type tolerance_seconds: float
     """
     out_of_bounds_before = positions_before < 0
     if not out_of_bounds_before.any():
@@ -210,7 +239,7 @@ def _handle_out_of_bounds_before(
 
     first_event_time = event_dates_wl[0]
     time_diffs_first = np.abs(
-        (times_to_process[out_of_bounds_before] - first_event_time).total_seconds()
+        (times_to_process[out_of_bounds_before] - first_event_time).dt.total_seconds()
     )
     within_tolerance = time_diffs_first <= tolerance_seconds
     if not within_tolerance.any():
@@ -237,6 +266,23 @@ def _handle_interpolation(
 ) -> None:
     """
     Cas d'interpolation linéaire entre deux points consécutifs si dans la tolérance.
+
+    :param gdf: GeoDataFrame des données de profondeur.
+    :type gdf: gpd.GeoDataFrame[schema.DataLoggerWithTideZone
+    :param indices_to_process: Indices des lignes à traiter.
+    :type indices_to_process: pd.Index
+    :param positions_before: Positions avant dans les données de niveau d'eau.
+    :type positions_before: np.ndarray
+    :param positions_to_process: Positions après dans les données de niveau d'eau.
+    :type positions_to_process: np.ndarray
+    :param times_to_process: Séries temporelles des lignes à traiter.
+    :type times_to_process: pd.Series[pd.Timestamp]
+    :param event_dates_wl: Dates des événements de niveau d'eau.
+    :type event_dates_wl: pd.DatetimeIndex[pd.Timestamp]
+    :param water_level_df: DataFrame des niveaux d'eau.
+    :type water_level_df: pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]
+    :param tolerance_seconds: Tolérance en secondes pour la récupération du niveau d'eau.
+    :type tolerance_seconds: float
     """
     max_len = len(event_dates_wl)
     out_of_bounds_after = positions_to_process >= max_len
@@ -310,6 +356,23 @@ def _process_non_exact_matches(
 ) -> None:
     """
     Orchestration des traitements des cas non-exacts (hors limites & interpolation).
+
+    :param gdf: GeoDataFrame des données de profondeur.
+    :type gdf: gpd.GeoDataFrame[schema.DataLoggerWithTideZone
+    :param zone_group: Groupe de données pour une zone de marée spécifique.
+    :type zone_group: pd.DataFrame[schema.DataLoggerWithTideZoneSchema]
+    :param mask: Masque des lignes à traiter.
+    :type mask: np.ndarray
+    :param positions_after: Positions après dans les données de niveau d'eau.
+    :type positions_after: np.ndarray
+    :param water_level_df: DataFrame des niveaux d'eau.
+    :type water_level_df: pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]
+    :param event_dates_wl: Dates des événements de niveau d'eau.
+    :type event_dates_wl: pd.DatetimeIndex[pd.Timestamp]
+    :param time_utc_values: Séries temporelles des lignes à traiter.
+    :type time_utc_values: pd.Series[pd.Timestamp]
+    :param water_level_tolerance: Tolérance en temps pour la récupération de la valeur du niveau d'eau.
+    :type water_level_tolerance: pd.Timedelta
     """
     if not mask.any():
         return
@@ -390,23 +453,19 @@ def apply_georeference_bathymetry(
     :return: Données de profondeur géoréférencées.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
-    LOGGER.debug(
-        f"Application des niveaux d'eau et des bras de levier aux sondes avec {CPU_COUNT} processus en parallèle."
+    LOGGER.debug(f"Application des niveaux d'eau et des bras de levier aux sondes.")
+
+    data.loc[:, schema_ids.DEPTH_PROCESSED_METER] = round(
+        (
+            data[schema_ids.DEPTH_RAW_METER]
+            - data[schema_ids.WATER_LEVEL_METER]
+            - waterline.z
+            + sounder.z
+        ),
+        decimal_precision,
     )
 
-    def calculate_depth(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
-        gdf.loc[:, schema_ids.DEPTH_PROCESSED_METER] = round(
-            (
-                gdf[schema_ids.DEPTH_RAW_METER]
-                - gdf[schema_ids.WATER_LEVEL_METER]
-                - waterline.z
-                + sounder.z
-            ),
-            decimal_precision,
-        )
-        return gdf
-
-    return run_dask_function_in_parallel(data=data, func=calculate_depth)
+    return data
 
 
 def compute_order(
@@ -424,25 +483,21 @@ def compute_order(
         f"Calcul de l'ordre IHO selon la TVU et la THU des données de profondeur."
     )
 
-    def calculate_order(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
-        # Extraction des arrays numpy pour calcul vectorisé
-        depths = gdf[schema_ids.DEPTH_RAW_METER].values
-        tvus = gdf[schema_ids.UNCERTAINTY].values
-        thus = gdf[schema_ids.THU].values
+    depths = data[schema_ids.DEPTH_RAW_METER].values
+    tvus = data[schema_ids.UNCERTAINTY].values
+    thus = data[schema_ids.THU].values
 
-        # Calcul vectorisé des ordres avec les fonctions optimisées
-        tvu_orders = order.calculate_vertical_order_vectorized(depths, tvus)
-        thu_orders = order.calculate_horizontal_order_vectorized(depths, thus)
+    # Calcul vectorisé des ordres avec les fonctions optimisées
+    tvu_orders = order.calculate_vertical_order_vectorized(depths, tvus)
+    thu_orders = order.calculate_horizontal_order_vectorized(depths, thus)
 
-        # Maximum des deux ordres
-        final_orders = np.maximum(tvu_orders, thu_orders)
-        gdf.loc[:, schema_ids.IHO_ORDER] = pd.Series(final_orders, index=gdf.index).map(
-            order.ORDER_NAME_MAP
-        )
+    # Maximum des deux ordres
+    final_orders = np.maximum(tvu_orders, thu_orders)
+    data.loc[:, schema_ids.IHO_ORDER] = pd.Series(final_orders, index=data.index).map(
+        order.ORDER_NAME_MAP
+    )
 
-        return gdf
-
-    return calculate_order(data)
+    return data
 
 
 @schema.validate_schemas(
