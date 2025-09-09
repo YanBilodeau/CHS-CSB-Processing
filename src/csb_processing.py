@@ -26,16 +26,13 @@ import iwls_api_request as iwls
 from logger.loguru_config import configure_logger
 import schema
 import schema.model_ids as schema_ids
-from tide.plot import plot_time_series_dataframe
-import tide.stations as stations
-import tide.voronoi as voronoi
-import tide.time_serie as time_serie
+from tide import stations, voronoi, time_serie, plot
 import filter.data_cleaning as cleaner
 import transformation.georeference as georeference
 import vessel as vessel_manager
 
 
-__version__ = "0.7.0"
+__version__ = "0.7.2"
 
 
 LOGGER = logger.bind(name="CSB-Processing.WorkFlow")
@@ -334,7 +331,7 @@ def export_plot_water_level_data(
         f"Enregistrement des graphiques des données de niveaux d'eau {station_titles}: {export_path}."
     )
 
-    plot_time_series_dataframe(
+    plot.plot_time_series_dataframe(
         dataframes=wl_combineds,
         titles=station_titles,
         show_plot=False,  # Afficher le graphique dans un navigateur web
@@ -414,135 +411,12 @@ def get_sensors_by_datetime(
     return sounder, waterline
 
 
-def finalize_geodataframe(data_geodataframe: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
-    """
-    Finalise le GeoDataFrame des données.
-
-    :param data_geodataframe: GeoDataFrame des données.
-    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
-    :return: GeoDataFrame des données finalisé.
-    :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
-    """
-    LOGGER.debug(f"Finalisation du GeoDataFrame des données.")
-
-    data_geodataframe[schema_ids.WATER_LEVEL_INFO] = data_geodataframe.apply(
-        lambda row: schema.WaterLevelInfo(
-            water_level_meter=row[schema_ids.WATER_LEVEL_METER],
-            time_series=row[schema_ids.TIME_SERIE],
-            id=row[schema_ids.TIDE_ZONE_ID],
-            code=row[schema_ids.TIDE_ZONE_CODE],
-            name=row[schema_ids.TIDE_ZONE_NAME],
-        ),
-        axis=1,
-    )
-
-    return data_geodataframe[schema.DataLoggerSchema.__annotations__.keys()]
-
-
-def get_export_file_name(
-    data_geodataframe: gpd.GeoDataFrame,
-    vessel_config: vessel_manager.VesselConfig,
-    datalogger_type: DataLoggerType,
-) -> str:
-    """
-    Récupère le nom du fichier d'exportation.
-
-    :param data_geodataframe: Données traitées à exporter.
-    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
-    :param vessel_config: Configuration du navire.
-    :type vessel_config: vessel_manager.VesselConfig
-    :param datalogger_type: Type de capteur.
-    :type datalogger_type: DataLoggerType
-    :return: Nom du fichier d'exportation.
-    :rtype: str
-    """
-    return (
-        f"CH-"
-        f"{datalogger_type}-"
-        f"{vessel_config.name if vessel_config.name else 'Unknown'}-"
-        f"{data_geodataframe[schema_ids.TIME_UTC].min().strftime('%Y%m%d')}-"
-        f"{data_geodataframe[schema_ids.TIME_UTC].max().strftime('%Y%m%d')}"
-    )
-
-
-def export_processed_data(
-    data_geodataframe: gpd.GeoDataFrame,
-    output_data_path: Path,
-    file_type: export.FileTypes,
-    resolution: float,
-    **kwargs,
-) -> None:
-    """
-    Exporte les données traitées dans un fichier GeoPackage.
-
-    :param data_geodataframe: Données traitées à exporter.
-    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
-    :param output_data_path: Chemin du répertoire d'exportation.
-    :type output_data_path: Path
-    :param file_type: Type de fichier de sortie.
-    :type file_type: FileTypes
-    :param resolution: Résolution pour les formats raster.
-    :type resolution: float
-    """
-    if file_type == export.FileTypes.CSAR and "config_caris" not in kwargs:
-        LOGGER.warning(
-            "La configuration de l'API Caris est requise pour exporter les données au format CSAR."
-        )
-
-    logger.info(
-        f"Exportation des données traitées ({len(data_geodataframe):,} sondes) au format {file_type} : {output_data_path}."
-    )
-
-    try:
-        export.export_geodataframe(
-            geodataframe=data_geodataframe,
-            file_type=file_type,
-            output_path=output_data_path,
-            resolution=resolution,
-            **kwargs,
-        )
-        LOGGER.success(
-            f"Exportation des données traitées au format {file_type} complété : {output_data_path}."
-        )
-
-    except Exception as error:
-        LOGGER.error(
-            f"Erreur lors de l'exportation des données au format {file_type} : {error}."
-        )
-
-
-def split_data_by_iho_order(
-    data_geodataframe: gpd.GeoDataFrame,
-) -> dict[str, gpd.GeoDataFrame]:
-    """
-    Regroupe et sépare le GeoDataFrame par ordre IHO.
-
-    :param data_geodataframe: Le GeoDataFrame à séparer.
-    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
-    :return: Un dictionnaire contenant les GeoDataFrames séparés par ordre IHO.
-    :rtype: dict[str, gpd.GeoDataFrame]
-    """
-    LOGGER.debug(f"Séparation du GeoDataFrame par ordre de levé OHI.")
-
-    grouped_data = {}
-    for iho_order, group in data_geodataframe.groupby(
-        schema_ids.IHO_ORDER
-    ):  # todo : dropna=False ?
-        key = "NAN" if pd.isna(iho_order) else str(iho_order)
-        grouped_data[key] = group
-        LOGGER.debug(f"Ordre IHO {iho_order}: {len(group):,} sondes")
-
-    LOGGER.debug(f"Ordre IHO : {grouped_data.keys()}")
-
-    return grouped_data  # type: ignore
-
-
 def export_processed_data_to_file_types(
     data_geodataframe: gpd.GeoDataFrame,
     export_data_path: Path,
     file_types: Collection[export.FileTypes],
-    vessel_config: vessel_manager.VesselConfig,
     datalogger_type: DataLoggerType,
+    vessel_name: Optional[str] = None,
     resolution: Optional[float] = 0.00005,
     groub_by_iho_order: Optional[bool] = True,
     **kwargs,
@@ -556,8 +430,8 @@ def export_processed_data_to_file_types(
     :type export_data_path: Path
     :param file_types: Liste des types de fichiers de sortie.
     :type file_types: Collection[FileTypes]
-    :param vessel_config: Configuration du navire.
-    :type vessel_config: vessel_manager.VesselConfig
+    :param vessel_name: Nom du navire.
+    :type vessel_name: Optional[str]
     :param datalogger_type: Type de capteur.
     :type datalogger_type: DataLoggerType
     :param resolution: Résolution pour les formats raster.
@@ -566,20 +440,20 @@ def export_processed_data_to_file_types(
     :type groub_by_iho_order: bool
     """
     data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = (
-        finalize_geodataframe(data_geodataframe=data_geodataframe)
+        export.finalize_geodataframe(data_geodataframe=data_geodataframe)
     )
 
-    output_base_path: Path = export_data_path / get_export_file_name(
+    output_base_path: Path = export_data_path / export.get_export_file_name(
         data_geodataframe=data_geodataframe,
-        vessel_config=vessel_config,
+        vessel_name=vessel_name,
         datalogger_type=datalogger_type,
     )
 
     grouped_data: dict[str | None, gpd.GeoDataFrame] = {"ALL": data_geodataframe}
 
     if groub_by_iho_order:
-        iho_order_data: dict[str | None, gpd.GeoDataFrame] = split_data_by_iho_order(
-            data_geodataframe=data_geodataframe
+        iho_order_data: dict[str | None, gpd.GeoDataFrame] = (
+            export.split_data_by_iho_order(data_geodataframe=data_geodataframe)
         )
         grouped_data.update(iho_order_data)
 
@@ -593,7 +467,7 @@ def export_processed_data_to_file_types(
 
             for file_type in file_types:
                 executor.submit(
-                    export_processed_data,
+                    export.export_processed_data,
                     data_geodataframe=group_df,
                     output_data_path=output_path,
                     file_type=file_type,
@@ -646,9 +520,9 @@ def export_metadata(
     :param decimal_precision: Précision des décimales.
     :type decimal_precision: int
     """
-    name: str = get_export_file_name(
+    name: str = export.get_export_file_name(
         data_geodataframe=data_geodataframe,
-        vessel_config=vessel_config,
+        vessel_name=vessel_config.name,
         datalogger_type=datalogger_type,
     )
     output_path: Path = output_path / f"{name}_metadata.json"
@@ -858,7 +732,7 @@ def processing_workflow(
             data_geodataframe=data,
             export_data_path=export_data_path,
             file_types=processing_config.export.export_format,
-            vessel_config=vessel_config,
+            vessel_name=vessel_config.name,
             datalogger_type=datalogger_type,
             config_caris=caris_api_config if caris_api_config else None,
             resolution=processing_config.export.resolution,
@@ -1061,7 +935,7 @@ def processing_workflow(
         data_geodataframe=data,
         export_data_path=export_data_path,
         file_types=processing_config.export.export_format,
-        vessel_config=vessel_config,
+        vessel_name=vessel_config.name,
         datalogger_type=datalogger_type,
         config_caris=caris_api_config if caris_api_config else None,
         resolution=processing_config.export.resolution,
@@ -1095,14 +969,13 @@ def processing_workflow(
     # todo à ajouter au BaseModel ?
     #  [DATA.Georeference.tpu]
     #  base_tpu_wlo = 1
-    #  base_tpu_wlp = 2
-    # todo mettre en paramètre (wlo 1 ? et wlp 2 ?), mettre le coefficient et la constante en paramètre
+    # todo mettre en paramètre (wlo 1 ? ), mettre le coefficient et la constante en paramètre
 
-    # todo tpu si apply_water_level=False ?
+    # todo gérer le tvu lorsque wlo vs wlp
 
     # todo utilise cache pour les TimeSeries, peut-être utile si plusieurs itérations
 
-    # todo dans ce fichier, dans tide.time_serie.time_serie_dataframe et transformation.georeference
+    # todo dans ce fichier, dans tide.time_serie.time_serie_dataframe
 
     # todo Identification des périodes en enlevant les trous de x temps dans add_tide_zone_id_to_geodataframe
 
