@@ -90,7 +90,9 @@ def compute_tvu(
             if constant_tvu is not None
             else gdf[schema_ids.TIDE_ZONE_CODE]
             .map(station_mapping)
-            .fillna(DEFAULT_CONSTANT_TVU)
+            .fillna(
+                DEFAULT_CONSTANT_TVU
+            )  # todo pour wlp, mais quoi faire dans le cas de wlp
         )
 
         gdf.loc[:, schema_ids.UNCERTAINTY] = (
