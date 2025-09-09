@@ -119,10 +119,19 @@ def get_water_levels_vectorized(
             positions_after <= len(event_dates_wl)
         )
 
-        for i, pos in enumerate(positions_after):
-            if 0 < pos <= len(event_dates_wl):
-                if event_dates_wl[pos - 1] == time_utc_values.iloc[i]:
-                    exact_match_mask[i] = True  # todo: vectoriser ?
+        valid_positions_mask = (positions_after > 0) & (
+            positions_after <= len(event_dates_wl)
+        )
+        valid_indices = np.where(valid_positions_mask)[0]
+
+        if len(valid_indices) > 0:
+            # Get the corresponding event dates for valid positions
+            event_times_to_check = event_dates_wl[positions_after[valid_indices] - 1]
+            time_values_to_check = time_utc_values.iloc[valid_indices]
+
+            # Vectorized comparison
+            matches = event_times_to_check == time_values_to_check.values
+            exact_match_mask[valid_indices] = matches
 
         # Traiter les correspondances exactes
         exact_indices = zone_group.index[exact_match_mask]
