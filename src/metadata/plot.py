@@ -110,6 +110,7 @@ def plot_iho_order_statistic_bar(iho_order_statistic: dict) -> go.Bar:
         textposition="auto",
         marker=dict(color=colors),
         showlegend=False,
+        hovertemplate="<b>%{x}</b><br>Percentage: %{y:.2f}%<extra></extra>",
     )
 
 
