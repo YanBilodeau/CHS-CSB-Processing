@@ -530,6 +530,7 @@ def georeference_bathymetry(
     waterline: WaterlineProtocol,
     sounder: SensorProtocol,
     water_level: Optional[dict[str, pd.DataFrame]] = None,
+    # geoereference_config=None,
     water_level_tolerance: Optional[pd.Timedelta] = pd.Timedelta("15 min"),
     decimal_precision: Optional[int] = 2,
     overwrite: Optional[bool] = False,
