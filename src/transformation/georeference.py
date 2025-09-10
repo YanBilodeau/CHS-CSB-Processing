@@ -197,6 +197,10 @@ def _handle_out_of_bounds_after(
     if not out_of_bounds_after.any():
         return
 
+    LOGGER.debug(
+        f"Récupération des niveaux d'eau pour les sondes qui sont hors limites après."
+    )
+
     max_event_idx = len(event_dates_wl) - 1
     last_event_time = event_dates_wl[max_event_idx]
     time_diffs_last = np.abs(
@@ -245,6 +249,10 @@ def _handle_out_of_bounds_before(
     out_of_bounds_before = positions_before < 0
     if not out_of_bounds_before.any():
         return
+
+    LOGGER.debug(
+        f"Récupération des niveaux d'eau pour les sondes qui sont hors limites avant."
+    )
 
     first_event_time = event_dates_wl[0]
     time_diffs_first = np.abs(
@@ -299,6 +307,10 @@ def _handle_interpolation(
     valid_interpolation = ~out_of_bounds_after & ~out_of_bounds_before
     if not valid_interpolation.any():
         return
+
+    LOGGER.debug(
+        f"Récupération des niveaux d'eau pour les sondes qui nécessitent une interpolation."
+    )
 
     interp_indices = indices_to_process[valid_interpolation]
     interp_pos_before = positions_before[valid_interpolation]
