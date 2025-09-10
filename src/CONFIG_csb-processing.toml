@@ -103,6 +103,35 @@ filter_to_apply = [
 # {format str "<number> <min|h>"}.
 water_level_tolerance = "15 min"
 
+[DATA.Georeference.uncertainty.tvu]
+# TVU = (Profondeur × Coefficient[depth_coefficient_tvu]) + Composante Station [constant_tvu_wlo, constant_tvu_wlp ou valeur dans ./transformation/uncertainty/station_uncertainty.json]
+# TVU = (Depth × Coefficient[depth_coefficient_tvu]) + Station Component [constant_tvu_wlo, constant_tvu_wlp or value in ./transformation/uncertainty/station_uncertainty.json]
+
+# Constantes pour le calcul de l'incertitude verticale pour les niveaux d'eau de WLO (in meters) {float}.
+# Constants for calculating vertical uncertainty for WLO water levels (in meters) {float}.
+constant_tvu_wlo = 0.04
+# Constantes pour le calcul de l'incertitude verticale pour les niveaux d'eau de WLP (in meters) {float}.
+# Seulement utilisé si une valeur d'incertitude n'est pas disponible à une station donnée dans le fichier
+# ./transformation/uncertainty/station_uncertainty.json
+# Constants for calculating vertical uncertainty for WLP water levels (in meters) {float}.
+# Only used if an uncertainty value is not available at a given station in the file
+# ./transformation/uncertainty/station_uncertainty.json
+constant_tvu_wlp = 0.35
+# Coefficient pour le calcul de l'incertitude verticale en fonction de la profondeur (pourcentatge) {float}.
+# Coefficient for calculating vertical uncertainty based on depth (percentage) {float}.
+depth_coefficient_tvu = 4
+
+[DATA.Georeference.uncertainty.thu]
+# THU = (Profondeur × Coefficient THU[angular_opening_sonar]) + Constante THU [constant_thu]
+# THU = (Depth × THU Coefficient[angular_opening_sonar]) + THU Constant [constant_thu]
+
+# Ouverture angulaire du faisceau du sonar (degré) {float}. Utilisé pour déterminer le coefficient THU.
+# Sonar beam angular opening (degrees) {float}. Used to determine the THU coefficient.
+cone_angle_sonar = 20
+# Constantes pour le calcul de l'incertitude horizontale. Principalement l'incertitude de positionnement GPS (en mètres) {float}.
+# Constants for calculating horizontal uncertainty. Mainly GPS positioning uncertainty (in meters) {float}.
+constant_thu = 3
+
 [CSB.Processing.vessel]
 # Nom du gestionnaire de configuration des navires {"VesselConfigJsonManager"}
 # Name of the vessel configuration manager {"VesselConfigJsonManager"}
@@ -132,7 +161,7 @@ log_level = "INFO"
 max_iterations = 5
 # Nombre de décimales significatives à conserver pour les données traitées {int}.
 # Number of significant decimals to keep for processed data {int}.
-decimal_precision = 1
+decimal_precision = 2
 
 [CARIS.Environment]
 # Cette section est utilisée pour configurer l'environnement de CARIS si vous voulez exporter les données au format *.csar.
