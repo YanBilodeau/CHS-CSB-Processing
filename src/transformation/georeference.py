@@ -549,7 +549,7 @@ def georeference_bathymetry(
     data: gpd.GeoDataFrame,
     waterline: WaterlineProtocol,
     sounder: SensorProtocol,
-    geoereference_config: GeoreferenceConfigProtocol,
+    georeference_config: GeoreferenceConfigProtocol,
     water_level: Optional[dict[str, pd.DataFrame]] = None,
     decimal_precision: Optional[int] = 2,
     overwrite: Optional[bool] = False,
@@ -566,8 +566,8 @@ def georeference_bathymetry(
     :type sounder: SensorProtocol
     :param water_level: Niveau d'eau.
     :type water_level: Optional[dict[str, pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]]
-    :param geoereference_config: Configuration de géoréférencement.
-    :type geoereference_config: GeoreferenceConfigProtocol
+    :param georeference_config: Configuration de géoréférencement.
+    :type georeference_config: GeoreferenceConfigProtocol
     :param decimal_precision: Précision décimale pour les valeurs de profondeur.
     :type decimal_precision: Optional[int]
     :param overwrite: Géoréférencer les données de profondeur même si elles ont déjà été géoréférencées.

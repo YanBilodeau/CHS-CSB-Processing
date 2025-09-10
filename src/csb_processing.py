@@ -719,7 +719,7 @@ def processing_workflow(
                 water_level=None,
                 waterline=waterline,
                 sounder=sounder,
-                geoereference_config=processing_config.georeference,
+                georeference_config=processing_config.georeference,
                 apply_water_level=apply_water_level,
                 decimal_precision=processing_config.options.decimal_precision,
             )
@@ -876,7 +876,7 @@ def processing_workflow(
                     water_level=wl_combineds,
                     waterline=waterline,
                     sounder=sounder,
-                    geoereference_config=processing_config.georeference,
+                    georeference_config=processing_config.georeference,
                     apply_water_level=apply_water_level,
                     decimal_precision=processing_config.options.decimal_precision,
                 )
