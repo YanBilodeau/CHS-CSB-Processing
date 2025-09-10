@@ -564,7 +564,7 @@ def export_metadata(
             round(
                 (50 * np.tan(np.radians(20) / 2)) + 3, decimal_precision
             ),  # Min entre max THU et THU à 50m
-        ),  # todo mettre en paramètre
+        ),  # todo utiliser le fichier de config
         iho_order_statistic=classify_iho_order(
             data_geodataframe=data_geodataframe, decimal_precision=decimal_precision
         ),
@@ -719,9 +719,7 @@ def processing_workflow(
                 water_level=None,
                 waterline=waterline,
                 sounder=sounder,
-                water_level_tolerance=pd.Timedelta(
-                    processing_config.georeference.tide.water_level_tolerance
-                ),
+                water_level_tolerance=processing_config.georeference.tide.water_level_tolerance,
                 apply_water_level=apply_water_level,
                 decimal_precision=processing_config.options.decimal_precision,
             )
@@ -878,9 +876,7 @@ def processing_workflow(
                     water_level=wl_combineds,
                     waterline=waterline,
                     sounder=sounder,
-                    water_level_tolerance=pd.Timedelta(
-                        processing_config.georeference.tide.water_level_tolerance
-                    ),
+                    water_level_tolerance=processing_config.georeference.tide.water_level_tolerance,
                     apply_water_level=apply_water_level,
                     decimal_precision=processing_config.options.decimal_precision,
                 )
