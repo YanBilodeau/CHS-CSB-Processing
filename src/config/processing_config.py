@@ -10,6 +10,7 @@ from pathlib import Path
 
 from pydantic import BaseModel, field_validator
 import re
+import pandas as pd
 from typing import Optional, Any
 from loguru import logger
 
@@ -36,7 +37,7 @@ MAX_ITERATIONS: int = 10
 DECIMAL_PRECISION: int = 1
 RESOLUTION: int | float = 0.00005
 
-WATER_LEVEL_TOLERANCE: str = "15 min"
+WATER_LEVEL_TOLERANCE: pd.Timedelta = pd.Timedelta("15 min")
 
 CONSTANT_TVU_WLO: float = 0.04
 CONSTANT_TVU_WLP: float = 0.35
@@ -183,13 +184,17 @@ class GeoreferenceTideConfig(BaseModel):
     :type water_level_tolerance: str
     """
 
-    water_level_tolerance: Optional[str] = WATER_LEVEL_TOLERANCE
+    model_config = {"arbitrary_types_allowed": True}
+
+    water_level_tolerance: Optional[pd.Timedelta | str] = WATER_LEVEL_TOLERANCE
     """La tolérance en minutes pour les données de marée à récupérer pour le géoréférencement."""
 
     @field_validator("water_level_tolerance")
-    def validate_water_level_tolerance(cls, value: str | None) -> str:
+    def validate_water_level_tolerance(
+        cls, value: str | pd.Timedelta | None
+    ) -> pd.Timedelta:
         """
-        Valide le time gap.
+        Valide la tolérance pour water level.
 
         :param value: La tolérance pour water level.
         :type value: str | None
@@ -200,6 +205,9 @@ class GeoreferenceTideConfig(BaseModel):
         if value == "" or value is None:
             return WATER_LEVEL_TOLERANCE
 
+        if isinstance(value, pd.Timedelta):
+            return value
+
         if value is not None:
             pattern = re.compile(r"^\d+\s*(min|h)$")
             if not pattern.match(value):
@@ -207,7 +215,7 @@ class GeoreferenceTideConfig(BaseModel):
                     'La tolerance pour water level doit être au format "<number> <min|h>".'
                 )
 
-        return value
+        return pd.Timedelta(value)
 
 
 class TVUConfig(BaseModel):
