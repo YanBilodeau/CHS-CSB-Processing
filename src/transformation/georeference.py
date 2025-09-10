@@ -11,7 +11,7 @@ import geopandas as gpd
 import numpy as np
 from loguru import logger
 import pandas as pd
-from typing import Optional
+from typing import Optional, Protocol
 
 from .exception_tranformation import WaterLevelDataRequiredError
 from . import order
@@ -25,6 +25,26 @@ LOGGER = logger.bind(name="CSB-Processing.Transformation.Georeferencing")
 event_dates_cache = LRUCache(maxsize=128)
 
 CPU_COUNT: int = cpu_count()
+
+
+class GeoreferenceTideConfigProtocol(Protocol):
+    """Configuration de géoréférencement des marées."""
+
+    water_level_tolerance: pd.Timedelta
+
+
+class UncertaintyConfigProtocol(Protocol):
+    """Configuration de géoréférencement des incertitudes."""
+
+    tvu: uncertainty.TVUConfigProtocol
+    thu: uncertainty.THUConfigProtocol
+
+
+class GeoreferenceConfigProtocol(Protocol):
+    """Configuration de géoréférencement."""
+
+    tide: GeoreferenceTideConfigProtocol
+    uncertainty: UncertaintyConfigProtocol
 
 
 def _validate_and_sort_data(water_level_data: dict[str, pd.DataFrame]) -> None:
@@ -529,9 +549,8 @@ def georeference_bathymetry(
     data: gpd.GeoDataFrame,
     waterline: WaterlineProtocol,
     sounder: SensorProtocol,
+    geoereference_config: GeoreferenceConfigProtocol,
     water_level: Optional[dict[str, pd.DataFrame]] = None,
-    # geoereference_config=None,
-    water_level_tolerance: Optional[pd.Timedelta] = pd.Timedelta("15 min"),
     decimal_precision: Optional[int] = 2,
     overwrite: Optional[bool] = False,
     apply_water_level: Optional[bool] = True,
@@ -547,8 +566,8 @@ def georeference_bathymetry(
     :type sounder: SensorProtocol
     :param water_level: Niveau d'eau.
     :type water_level: Optional[dict[str, pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]]
-    :param water_level_tolerance: Tolérance de temps pour la récupération de la valeur du niveau d'eau.
-    :type water_level_tolerance: Optional[pd.Timedelta]
+    :param geoereference_config: Configuration de géoréférencement.
+    :type geoereference_config: GeoreferenceConfigProtocol
     :param decimal_precision: Précision décimale pour les valeurs de profondeur.
     :type decimal_precision: Optional[int]
     :param overwrite: Géoréférencer les données de profondeur même si elles ont déjà été géoréférencées.
@@ -575,7 +594,7 @@ def georeference_bathymetry(
             get_water_levels_vectorized(
                 data=data_to_process,
                 water_level_data=water_level,
-                water_level_tolerance=water_level_tolerance,
+                water_level_tolerance=geoereference_config.tide.water_level_tolerance,
             )
         )
         if apply_water_level
@@ -597,6 +616,7 @@ def georeference_bathymetry(
         uncertainty.compute_tvu(
             data=data_to_process,
             decimal_precision=decimal_precision,
+            tvu_config=geoereference_config.uncertainty.tvu,
             constant_tvu=0 if not apply_water_level else None,
         )
     )
@@ -604,7 +624,9 @@ def georeference_bathymetry(
     LOGGER.info("Calcul de l'incertitude horizontale des données de profondeur.")
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
         uncertainty.compute_thu(
-            data=data_to_process, decimal_precision=decimal_precision
+            data=data_to_process,
+            decimal_precision=decimal_precision,
+            thu_config=geoereference_config.uncertainty.thu,
         )
     )
 

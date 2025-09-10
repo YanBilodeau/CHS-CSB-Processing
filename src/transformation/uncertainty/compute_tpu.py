@@ -8,7 +8,7 @@ en tirant parti de tous les cœurs CPU disponibles.
 
 from pathlib import Path
 from functools import lru_cache
-from typing import Optional
+from typing import Optional, Protocol
 import json
 
 import geopandas as gpd
@@ -17,13 +17,27 @@ from loguru import logger
 
 from .ids_uncertainty import (
     STATION_UNCERTAINTY_JSON,
-    DEFAULT_CONSTANT_TVU,
     UNCERTAINTY_M,
 )
 import schema
 from schema import model_ids as schema_ids
 
 LOGGER = logger.bind(name="CSB-Processing.Transformation.Uncertainty")
+
+
+class TVUConfigProtocol(Protocol):
+    """Configuration de géoréférencement des TVU."""
+
+    constant_tvu_wlo: float
+    constant_tvu_wlp: float
+    depth_coefficient_tvu: float
+
+
+class THUConfigProtocol(Protocol):
+    """Configuration de géoréférencement des THU."""
+
+    cone_angle_sonar: float
+    constant_thu: float
 
 
 @lru_cache(maxsize=128)
@@ -61,7 +75,7 @@ def create_uncertainty_mapping() -> dict[str, float]:
 def compute_tvu(
     data: gpd.GeoDataFrame,
     decimal_precision: int,
-    depth_coeficient_tvu: float = 0.04,
+    tvu_config: TVUConfigProtocol,
     constant_tvu: Optional[float] = None,
 ) -> gpd.GeoDataFrame:
     """
@@ -71,8 +85,8 @@ def compute_tvu(
     :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     :param decimal_precision: Précision décimale pour les valeurs de TVU.
     :type decimal_precision: int
-    :param depth_coeficient_tvu: Coefficient de profondeur.
-    :type depth_coeficient_tvu: float
+    :param tvu_config: Configuration des paramètres du TVU.
+    :type tvu_config: TVUConfigProtocol
     :param constant_tvu: Constante du TVU. Si None, utilise la valeur par station.
     :type constant_tvu: Optional[float]
     :return: Données de profondeur avec le TVU.
@@ -82,33 +96,34 @@ def compute_tvu(
 
     station_mapping = create_uncertainty_mapping()
 
-    def calculate_vertical_uncertainty(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
-        depth_component = gdf[schema_ids.DEPTH_RAW_METER] * depth_coeficient_tvu
+    depth_component = data[schema_ids.DEPTH_RAW_METER] * (
+        tvu_config.depth_coefficient_tvu / 100
+    )
 
-        station_component = (
-            constant_tvu
-            if constant_tvu is not None
-            else gdf[schema_ids.TIDE_ZONE_CODE]
+    station_component = (
+        constant_tvu
+        if constant_tvu is not None
+        else np.where(
+            data[schema_ids.TIME_SERIE].str.contains("wlo", case=False, na=False)
+            & ~data[schema_ids.TIME_SERIE].str.contains("wlp", case=False, na=False),
+            tvu_config.constant_tvu_wlo,
+            data[schema_ids.TIDE_ZONE_CODE]
             .map(station_mapping)
-            .fillna(
-                DEFAULT_CONSTANT_TVU
-            )  # todo pour wlp, mais quoi faire dans le cas de wlp
+            .fillna(tvu_config.constant_tvu_wlp),
         )
+    )
 
-        gdf.loc[:, schema_ids.UNCERTAINTY] = (
-            depth_component + station_component
-        ).round(decimal_precision)
+    data.loc[:, schema_ids.UNCERTAINTY] = (depth_component + station_component).round(
+        decimal_precision
+    )
 
-        return gdf
-
-    return calculate_vertical_uncertainty(data)
+    return data
 
 
 def compute_thu(
     data: gpd.GeoDataFrame,
     decimal_precision: int,
-    angular_opening: float = 20.0,
-    constant_thu: float = 3.0,
+    thu_config: THUConfigProtocol,
 ) -> gpd.GeoDataFrame:
     """
     Calcule le THU des données de bathymétrie.
@@ -117,21 +132,18 @@ def compute_thu(
     :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     :param decimal_precision: Précision décimale pour les valeurs de THU.
     :type decimal_precision: int
-    :param angular_opening: Ouverture angulaire du sondeur.
-    :type angular_opening: float
-    :param constant_thu: Constante du TPU.
-    :type constant_thu: float
+    :param thu_config: Configuration des paramètres du THU.
+    :type thu_config: THUConfigProtocol
     :return: Données de profondeur avec le THU.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
     LOGGER.debug(f"Calcul de l'incertitude horizontale des données de profondeur.")
-    thu_depth_coeficient: float = np.tan(np.radians(angular_opening) / 2)
+    thu_depth_coeficient: float = np.tan(np.radians(thu_config.cone_angle_sonar) / 2)
 
-    def calculate_horizontal_uncertainty(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
-        gdf.loc[:, schema_ids.THU] = round(
-            (gdf[schema_ids.DEPTH_RAW_METER] * thu_depth_coeficient) + constant_thu,
-            decimal_precision,
-        )
-        return gdf
+    data.loc[:, schema_ids.THU] = round(
+        (data[schema_ids.DEPTH_RAW_METER] * thu_depth_coeficient)
+        + thu_config.constant_thu,
+        decimal_precision,
+    )
 
-    return calculate_horizontal_uncertainty(data)
+    return data
