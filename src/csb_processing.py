@@ -720,7 +720,7 @@ def processing_workflow(
                 waterline=waterline,
                 sounder=sounder,
                 water_level_tolerance=pd.Timedelta(
-                    processing_config.georeference.water_level_tolerance
+                    processing_config.georeference.tide.water_level_tolerance
                 ),
                 apply_water_level=apply_water_level,
                 decimal_precision=processing_config.options.decimal_precision,
@@ -879,7 +879,7 @@ def processing_workflow(
                     waterline=waterline,
                     sounder=sounder,
                     water_level_tolerance=pd.Timedelta(
-                        processing_config.georeference.water_level_tolerance
+                        processing_config.georeference.tide.water_level_tolerance
                     ),
                     apply_water_level=apply_water_level,
                     decimal_precision=processing_config.options.decimal_precision,
