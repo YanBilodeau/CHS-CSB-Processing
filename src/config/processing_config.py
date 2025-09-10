@@ -19,7 +19,7 @@ from .helper import load_config
 LOGGER = logger.bind(name="CSB-Processing.Config.ProcessingConfig")
 
 ConfigDict = dict[str, int | float | str]
-CSBconfigDict = dict[str, dict[str, dict[str, ConfigDict]]]
+CSBconfigDict = dict[str, dict[str, dict[str, ConfigDict | dict[str, ConfigDict]]]]
 
 
 MIN_LATITUDE: int | float = -90
@@ -31,12 +31,18 @@ MAX_DEPTH: int | float | None = None
 MIN_SPEED: int | float | None = None
 MAX_SPEED: int | float | None = None
 
-WATER_LEVEL_TOLERANCE: str = "15 min"
-
 INFO: str = "INFO"
 MAX_ITERATIONS: int = 10
 DECIMAL_PRECISION: int = 1
 RESOLUTION: int | float = 0.00005
+
+WATER_LEVEL_TOLERANCE: str = "15 min"
+
+CONSTANT_TVU_WLO: float = 0.04
+CONSTANT_TVU_WLP: float = 0.35
+DEPTH_COEFFICIENT: float = 4
+CONE_ANGLE_SONAR: float = 20
+CONSTANT_THU: float = 3
 
 
 class FileTypes(StrEnum):
@@ -94,15 +100,15 @@ class DataFilterConfig(BaseModel):
     :type max_depth: int | float | None
     """
 
-    min_latitude: int | float = MIN_LATITUDE
+    min_latitude: Optional[int | float] = MIN_LATITUDE
     """La latitude minimale."""
-    max_latitude: int | float = MAX_LATITUDE
+    max_latitude: Optional[int | float] = MAX_LATITUDE
     """La latitude maximale."""
-    min_longitude: int | float = MIN_LONGITUDE
+    min_longitude: Optional[int | float] = MIN_LONGITUDE
     """La longitude minimale."""
-    max_longitude: int | float = MAX_LONGITUDE
+    max_longitude: Optional[int | float] = MAX_LONGITUDE
     """La longitude maximale."""
-    min_depth: int | float = MIN_DEPTH
+    min_depth: Optional[int | float] = MIN_DEPTH
     """La profondeur minimale."""
     max_depth: Optional[int | float] = MAX_DEPTH
     """La profondeur maximale."""
@@ -168,7 +174,7 @@ class DataFilterConfig(BaseModel):
         return value
 
 
-class DataGeoreferenceConfig(BaseModel):
+class GeoreferenceTideConfig(BaseModel):
     """
     Classe de configuration pour le géoréférencement des données.
 
@@ -177,7 +183,7 @@ class DataGeoreferenceConfig(BaseModel):
     :type water_level_tolerance: str
     """
 
-    water_level_tolerance: str = WATER_LEVEL_TOLERANCE
+    water_level_tolerance: Optional[str] = WATER_LEVEL_TOLERANCE
     """La tolérance en minutes pour les données de marée à récupérer pour le géoréférencement."""
 
     @field_validator("water_level_tolerance")
@@ -204,6 +210,88 @@ class DataGeoreferenceConfig(BaseModel):
         return value
 
 
+class TVUConfig(BaseModel):
+    """
+    Classe de configuration pour le calcul du TVU.
+
+    :param constant_tvu_wlo: La constante du TVU pour les niveaux d'eau WLO.
+    :type constant_tvu_wlo: Optional[float]
+    :param constant_tvu_wlp: La constante du TVU pour les niveaux d'eau WLP.
+    :type constant_tvu_wlp: Optional[float]
+    :param depth_coefficient_tvu: Le coefficient de profondeur pour le calcul du TVU.
+    :type depth_coefficient_tvu: Optional[float]
+    """
+
+    constant_tvu_wlo: Optional[float | int] = CONSTANT_TVU_WLO
+    """La constante du TVU pour les niveaux d'eau WLO."""
+    constant_tvu_wlp: Optional[float | int] = CONSTANT_TVU_WLP
+    """La constante du TVU pour les niveaux d'eau WLP."""
+    depth_coefficient_tvu: Optional[float | int] = DEPTH_COEFFICIENT
+    """Le coefficient de profondeur pour le calcul du TVU."""
+
+    @field_validator("depth_coefficient_tvu", "constant_tvu_wlo", "constant_tvu_wlp")
+    def validate_positive(cls, value: Optional[float]) -> Optional[float]:
+        if value is not None and value < 0:
+            raise ValueError("La valeur doit être positive.")
+
+        return value
+
+
+class THUConfig(BaseModel):
+    """
+    Classe de configuration pour le calcul du THU.
+
+    :param cone_angle_sonar: L'angle de cône du sonar pour le calcul du THU.
+    :type cone_angle_sonar: Optional[float]
+    :param constant_thu: La constante du THU.
+    :type constant_thu: Optional[float]
+    """
+
+    cone_angle_sonar: Optional[float | int] = CONE_ANGLE_SONAR
+    """L'angle de cône du sonar pour le calcul du THU."""
+    constant_thu: Optional[float | int] = CONSTANT_THU
+    """La constante du THU."""
+
+    @field_validator("cone_angle_sonar", "constant_thu")
+    def validate_positive(cls, value: Optional[float]) -> Optional[float]:
+        if value is not None and value < 0:
+            raise ValueError("La valeur doit être positive.")
+
+        return value
+
+
+class UncertaintyConfig(BaseModel):
+    """
+    Classe de configuration pour le calcul de l'incertitude.
+
+    :param tvu: Configuration pour le calcul du TVU.
+    :type tvu: Optional[TVUConfig]
+    :param thu: Configuration pour le calcul du THU.
+    :type thu: Optional[THUConfig]
+    """
+
+    tvu: Optional[TVUConfig] = TVUConfig()
+    """Configuration pour le calcul du TVU."""
+    thu: Optional[THUConfig] = THUConfig()
+    """Configuration pour le calcul du THU."""
+
+
+class DataGeoreferenceConfig(BaseModel):
+    """
+    Classe de configuration pour le géoréférencement des données.
+
+    :param tide: Configuration pour le géoréférencement des données avec les niveaux d'eau.
+    :type tide: GeoreferenceTideConfig
+    :param uncertainty: Configuration pour le calcul de l'incertitude.
+    :type uncertainty: Optional[UncertaintyConfig]
+    """
+
+    tide: GeoreferenceTideConfig = GeoreferenceTideConfig()
+    """Configuration pour le géoréférencement des données avec les niveaux d'eau."""
+    uncertainty: Optional[UncertaintyConfig] = UncertaintyConfig()
+    """Configuration pour le calcul de l'incertitude."""
+
+
 class VesselConfigManagerType(StrEnum):
     """
     Enumération des types de gestionnaire de configuration de navires.
@@ -226,7 +314,9 @@ class VesselManagerConfig(BaseModel):
     """
 
     manager_type: Optional[VesselConfigManagerType]
+    """Le type de gestionnaire de configuration de navires."""
     kwargs: Optional[dict[str, Any]] = None
+    """Les arguments pour le gestionnaire de configuration de navires."""
 
 
 class ExportConfig(BaseModel):
@@ -300,11 +390,31 @@ class OptionsConfig(BaseModel):
 
 
 class CSBprocessingConfig(BaseModel):
+    """
+    Classe de configuration pour la transformation des données et le géoréférencement.
+
+    :param filter: Configuration pour le filtrage des données.
+    :type filter: DataFilterConfig
+    :param georeference: Configuration pour le géoréférencement des données.
+    :type georeference: DataGeoreferenceConfig
+    :param vessel_manager: Configuration pour le gestionnaire de navires.
+    :type vessel_manager: Optional[VesselManagerConfig]
+    :param export: Configuration pour l'exportation des données.
+    :type export: ExportConfig
+    :param options: Configuration pour les options de traitement.
+    :type options: OptionsConfig
+    """
+
     filter: DataFilterConfig
+    """Configuration pour le filtrage des données."""
     georeference: DataGeoreferenceConfig
+    """Configuration pour le géoréférencement des données."""
     vessel_manager: Optional[VesselManagerConfig]
+    """Configuration pour le gestionnaire de navires."""
     export: ExportConfig = ExportConfig()
+    """Configuration pour l'exportation des données."""
     options: OptionsConfig = OptionsConfig()
+    """Configuration pour les options de traitement."""
 
 
 def get_data_config(
@@ -327,8 +437,20 @@ def get_data_config(
     data_filter: ConfigDict = (
         config_data.get("DATA", {}).get("Transformation", {}).get("filter")
     )
-    data_georef: ConfigDict = (
+    data_georef_tide: ConfigDict = (
         config_data.get("DATA", {}).get("Georeference", {}).get("water_level")
+    )
+    data_georef_tvu: ConfigDict = (
+        config_data.get("DATA", {})
+        .get("Georeference", {})
+        .get("uncertainty", {})
+        .get("tvu")
+    )
+    data_georef_thu: ConfigDict = (
+        config_data.get("DATA", {})
+        .get("Georeference", {})
+        .get("uncertainty", {})
+        .get("thu")
     )
     vessel_config: ConfigDict = (
         config_data.get("CSB", {}).get("Processing", {}).get("vessel")
@@ -365,9 +487,19 @@ def get_data_config(
             else DataFilterConfig()
         ),
         georeference=(
-            DataGeoreferenceConfig(**data_georef)
-            if data_georef
-            else DataGeoreferenceConfig()
+            DataGeoreferenceConfig(
+                tide=GeoreferenceTideConfig(
+                    **data_georef_tide if data_georef_tide else GeoreferenceTideConfig()
+                ),
+                uncertainty=UncertaintyConfig(
+                    tvu=(
+                        TVUConfig(**data_georef_tvu) if data_georef_tvu else TVUConfig()
+                    ),
+                    thu=(
+                        THUConfig(**data_georef_thu) if data_georef_thu else THUConfig()
+                    ),
+                ),
+            )
         ),
         vessel_manager=(
             VesselManagerConfig(
