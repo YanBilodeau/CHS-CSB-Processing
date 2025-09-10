@@ -594,7 +594,7 @@ def georeference_bathymetry(
             get_water_levels_vectorized(
                 data=data_to_process,
                 water_level_data=water_level,
-                water_level_tolerance=geoereference_config.tide.water_level_tolerance,
+                water_level_tolerance=georeference_config.tide.water_level_tolerance,
             )
         )
         if apply_water_level
@@ -616,7 +616,7 @@ def georeference_bathymetry(
         uncertainty.compute_tvu(
             data=data_to_process,
             decimal_precision=decimal_precision,
-            tvu_config=geoereference_config.uncertainty.tvu,
+            tvu_config=georeference_config.uncertainty.tvu,
             constant_tvu=0 if not apply_water_level else None,
         )
     )
@@ -626,7 +626,7 @@ def georeference_bathymetry(
         uncertainty.compute_thu(
             data=data_to_process,
             decimal_precision=decimal_precision,
-            thu_config=geoereference_config.uncertainty.thu,
+            thu_config=georeference_config.uncertainty.thu,
         )
     )
 
