@@ -18,6 +18,8 @@ from loguru import logger
 from .ids_uncertainty import (
     STATION_UNCERTAINTY_JSON,
     UNCERTAINTY_M,
+    SSP_ERRORS_PATH,
+    SSP_ERROR_COEFFICIENT,
 )
 import schema
 from schema import model_ids as schema_ids
@@ -29,8 +31,10 @@ class TVUConfigProtocol(Protocol):
     """Configuration de géoréférencement des TVU."""
 
     constant_tvu_wlo: float
-    constant_tvu_wlp: float
+    default_constant_tvu_wlp: float
     depth_coefficient_tvu: float
+    default_depth_ssp_error_coefficient: float
+    max_distance_ssp: float
 
 
 class THUConfigProtocol(Protocol):
@@ -52,6 +56,8 @@ def get_station_uncertainty(
     :return: Dictionnaire des valeurs d'incertitude par station.
     :rtype: dict[str, dict[str, str | float]]
     """
+    LOGGER.debug(f"Chargement des incertitudes de WLP par station depuis {json_file}.")
+
     with open(json_file, "r", encoding="utf-8") as file:
         data = json.load(file)
 
@@ -70,6 +76,183 @@ def create_uncertainty_mapping() -> dict[str, float]:
     return {
         code: info[UNCERTAINTY_M] for code, info in station_uncertainty_data.items()
     }
+
+
+def get_ssp_errors(file_path: Path = SSP_ERRORS_PATH) -> gpd.GeoDataFrame:
+    """
+    Charge les erreurs SSP à partir d'un fichier GeoJSON.
+
+    :param file_path: Chemin vers le fichier contenant les erreurs SSP.
+    :type file_path: Path
+    :return: GeoDataFrame des erreurs SSP.
+    :rtype: gpd.GeoDataFrame
+    """
+    LOGGER.debug(f"Chargement des erreurs SSP depuis {file_path}.")
+
+    return gpd.read_file(file_path)
+
+
+def get_equidistant_azimuthal_crs(
+    data: gpd.GeoDataFrame,
+) -> str:
+    """
+    Génère une chaîne de définition de projection pour une projection équidistante azimutale
+
+    :param data: GeoDataFrame contenant les données géométriques.
+    :type data: gpd.GeoDataFrame
+    :return: Chaîne de définition de projection (PROJ string).
+    :rtype: str
+    """
+    # Calcul du centroïde réel des données
+    centroid = data.geometry.union_all().centroid
+    central_lon, central_lat = centroid.x, centroid.y
+
+    # Création de la chaîne de définition de projection personnalisée (PROJ string)
+    proj_str = f"+proj=aeqd +lat_0={central_lat} +lon_0={central_lon} +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
+
+    LOGGER.debug(
+        f"Projection équidistante azimutale centrée sur ({central_lat}, {central_lon})."
+    )
+
+    return proj_str
+
+
+def reproject_to_crs(
+    crs: str,
+    *data: gpd.GeoDataFrame,
+) -> list[gpd.GeoDataFrame]:
+    """
+    Reprojette plusieurs GeoDataFrames vers une projection donnée.
+
+    :param crs: Chaîne de définition de projection (PROJ string).
+    :type crs: str
+    :param data: Liste de GeoDataFrames à reprojeter.
+    :type data: gpd.GeoDataFrame
+    :return: Liste de GeoDataFrames reprojetées.
+    :rtype: list[gpd.GeoDataFrame]
+    """
+    LOGGER.debug(f"Reprojection des données vers le CRS: {crs}.")
+
+    reprojected_gdfs = [gdf.to_crs(crs) for gdf in data]
+
+    return reprojected_gdfs
+
+
+def filter_data_by_bbox(
+    data: gpd.GeoDataFrame,
+    bbox: np.ndarray,
+    buffer: Optional[float] = 0,
+) -> gpd.GeoDataFrame:
+    """
+    Filtre les erreurs SSP par bounding box avec un buffer optionnel.
+
+    :param data: GeoDataFrame des erreurs SSP à filtrer.
+    :type data: gpd.GeoDataFrame
+    :param bbox: Bounding box au format [xmin, ymin, xmax, ymax].
+    :type bbox: np.ndarray
+    :param buffer: Distance de buffer en mètres (défaut: 0).
+    :type buffer: float
+    :return: GeoDataFrame filtré des erreurs SSP.
+    :rtype: gpd.GeoDataFrame
+    """
+    LOGGER.debug(
+        f"Filtrage données par bounding box ({bbox}) avec un buffer de {buffer} mètres."
+    )
+
+    return data.cx[
+        bbox[0] - buffer : bbox[2] + buffer,
+        bbox[1] - buffer : bbox[3] + buffer,
+    ]
+
+
+def perform_spatial_join_with_data(
+    data: gpd.GeoDataFrame,
+    data_to_join: gpd.GeoDataFrame,
+    column_to_join: str,
+    max_distance: float,
+    fill_nan_value: float,
+) -> gpd.GeoDataFrame:
+    """
+    Effectue la jointure spatiale avec entre 2 GeoDataFrame.
+
+    :param data: Données de base.
+    :type data: gpd.GeoDataFrame
+    :param data_to_join: Données à joindre.
+    :type data_to_join: gpd.GeoDataFrame
+    :param column_to_join: Nom de la colonne à joindre.
+    :type column_to_join: str
+    :param max_distance: Distance maximale pour la jointure spatiale (en mètres).
+    :type max_distance: float
+    :param fill_nan_value: Valeur pour remplir les NaN après la jointure.
+    :type fill_nan_value: float
+    :return: Données avec la colonne jointe.
+    :rtype: gpd.GeoDataFrame
+    """
+    LOGGER.debug(
+        f"Jointure spatiale de la colonne '{column_to_join}' avec une distance maximale de {max_distance} mètres."
+    )
+
+    # Jointure spatiale optimisée
+    data_with_join = data.sjoin_nearest(
+        data_to_join[[schema_ids.GEOMETRY, column_to_join]],
+        how="left",
+        max_distance=max_distance,
+    )
+
+    # Gestion des valeurs manquantes
+    data_with_join[column_to_join] = data_with_join[column_to_join].fillna(
+        fill_nan_value
+    )
+
+    return data_with_join
+
+
+def join_with_ssp_errors(
+    data: gpd.GeoDataFrame,
+    max_distance: float,
+    default_ssp_error_coeff: float,
+) -> gpd.GeoDataFrame:
+    """
+    Effectue une jointure spatiale entre les données de bathymétrie et les erreurs SSP.
+
+    :param data: Données brut de profondeur.
+    :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
+    :param max_distance: Distance maximale pour la jointure spatiale (en mètres).
+    :type max_distance: float
+    :param default_ssp_error_coeff: Valeur par défaut du coefficient d'erreur SSP si aucune donnée n'est trouvée à proximité.
+    :type default_ssp_error_coeff: float
+    :return: Données de profondeur avec les erreurs SSP jointes.
+    :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
+    """
+    ssp_errors = get_ssp_errors()
+    original_crs = data.crs
+
+    # Déterminer si une reprojection est nécessaire
+    needs_reprojection = original_crs and original_crs.is_geographic
+    data_to_join, ssp_errors_to_join = (
+        reproject_to_crs(get_equidistant_azimuthal_crs(data), data, ssp_errors)
+        if needs_reprojection
+        else (data, ssp_errors)
+    )
+
+    ssp_errors_to_join = filter_data_by_bbox(
+        data=ssp_errors_to_join, bbox=data_to_join.total_bounds, buffer=max_distance
+    )
+
+    LOGGER.debug("Jointure spatiale des données de profondeur avec les erreurs SSP.")
+    data_with_ssp = perform_spatial_join_with_data(
+        data=data_to_join,
+        data_to_join=ssp_errors_to_join,
+        column_to_join=SSP_ERROR_COEFFICIENT,
+        max_distance=max_distance,
+        fill_nan_value=default_ssp_error_coeff,
+    )
+
+    # Reprojeter vers le CRS original si nécessaire
+    if needs_reprojection:
+        data_with_ssp = data_with_ssp.to_crs(original_crs)
+
+    return data_with_ssp
 
 
 def compute_tvu(
@@ -92,13 +275,19 @@ def compute_tvu(
     :return: Données de profondeur avec le TVU.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
-    LOGGER.debug(f"Calcul du l'incertitude verticale des données de profondeur.")
-
     station_mapping = create_uncertainty_mapping()
 
-    depth_component = data[schema_ids.DEPTH_RAW_METER] * (
-        tvu_config.depth_coefficient_tvu / 100
+    data = join_with_ssp_errors(
+        data,
+        tvu_config.max_distance_ssp,
+        tvu_config.default_depth_ssp_error_coefficient,
     )
+
+    LOGGER.debug(f"Calcul du l'incertitude verticale des données de profondeur.")
+
+    depth_component = data[schema_ids.DEPTH_RAW_METER] * (
+        (tvu_config.depth_coefficient_tvu + data[SSP_ERROR_COEFFICIENT]) / 100
+    )  # todo valider et tester
 
     station_component = (
         constant_tvu
@@ -109,7 +298,7 @@ def compute_tvu(
             tvu_config.constant_tvu_wlo,
             data[schema_ids.TIDE_ZONE_CODE]
             .map(station_mapping)
-            .fillna(tvu_config.constant_tvu_wlp),
+            .fillna(tvu_config.default_constant_tvu_wlp),
         )
     )
 
