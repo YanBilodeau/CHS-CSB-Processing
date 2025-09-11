@@ -104,22 +104,40 @@ filter_to_apply = [
 water_level_tolerance = "15 min"
 
 [DATA.Georeference.uncertainty.tvu]
-# TVU = (Profondeur × Coefficient[depth_coefficient_tvu]) + Composante Station [constant_tvu_wlo, constant_tvu_wlp ou valeur dans ./transformation/uncertainty/station_uncertainty.json]
-# TVU = (Depth × Coefficient[depth_coefficient_tvu]) + Station Component [constant_tvu_wlo, constant_tvu_wlp or value in ./transformation/uncertainty/station_uncertainty.json]
+# TVU = (Profondeur × (Coefficient[depth_coefficient_tvu] + Coefficient SSP[default_depth_ssp_error_coefficient ou valeur dans le ./static/uncertainty/canadian_water_ssp_errors.gpkg]))
+# + Composante Station [constant_tvu_wlo, default_constant_tvu_wlp ou valeur dans ./static/uncertainty/station_uncertainty.json]
+# TVU = (Depth × (Coefficient[depth_coefficient_tvu] + SSP Coefficient[default_depth_ssp_error_coefficient or value in ./static/uncertainty/canadian_water_ssp_errors.gpkg]))
+# + Station Component [constant_tvu_wlo, default_constant_tvu_wlp or value in ./static/uncertainty/station_uncertainty.json]
 
 # Constantes pour le calcul de l'incertitude verticale pour les niveaux d'eau de WLO (in meters) {float}.
 # Constants for calculating vertical uncertainty for WLO water levels (in meters) {float}.
 constant_tvu_wlo = 0.04
-# Constantes pour le calcul de l'incertitude verticale pour les niveaux d'eau de WLP (in meters) {float}.
+# Constantes par défaut pour le calcul de l'incertitude verticale pour les niveaux d'eau de WLP (in meters) {float}.
 # Seulement utilisé si une valeur d'incertitude n'est pas disponible à une station donnée dans le fichier
-# ./transformation/uncertainty/station_uncertainty.json
-# Constants for calculating vertical uncertainty for WLP water levels (in meters) {float}.
+# ./static/uncertainty/station_uncertainty.json
+# Default constants for calculating vertical uncertainty for WLP water levels (in meters) {float}.
 # Only used if an uncertainty value is not available at a given station in the file
-# ./transformation/uncertainty/station_uncertainty.json
-constant_tvu_wlp = 0.35
-# Coefficient pour le calcul de l'incertitude verticale en fonction de la profondeur (pourcentatge) {float}.
-# Coefficient for calculating vertical uncertainty based on depth (percentage) {float}.
-depth_coefficient_tvu = 4
+# ./static/uncertainty/station_uncertainty.json
+default_constant_tvu_wlp = 0.35
+# Coefficient par défaut pour le calcul de l'incertitude verticale en fonction de la profondeur pour les erreurs liées
+# à la vitesse du son (pourcentage) {float}.
+# Seulement utilisé si une valeur d'incertitude n'est pas disponible dans les limites de max_distance dans le fichier
+# ./static/uncertainty/canadian_water_ssp_errors.gpkg
+# Default coefficient for calculating vertical uncertainty based on depth for errors related
+# to sound speed (percentage) {float}.
+# Only used if an uncertainty value is not available within the max_distance limits in the file
+# ./static/uncertainty/canadian_water_ssp_errors.gpkg
+default_depth_ssp_error_coefficient = 4.1584
+# Distance maximale en mètres pour utiliser les erreurs liées à la vitesse du son dans le fichier
+# ./static/uncertainty/canadian_water_ssp_errors.gpkg {float}.
+# Maximum distance in meters to use sound speed related errors in the file
+# ./static/uncertainty/canadian_water_ssp_errors.gpkg {float}.
+max_distance_ssp = 30000  # 30 km
+# Coefficient pour le calcul de l'incertitude verticale en fonction de la profondeur pour les erreur non liées
+# à la vitesse du son (pourcentatge) {float}.
+# Coefficient for calculating vertical uncertainty based on depth for errors not related
+# to sound speed (percentage) {float}.
+depth_coefficient_tvu = 0
 
 [DATA.Georeference.uncertainty.thu]
 # THU = (Profondeur × Coefficient THU[angular_opening_sonar]) + Constante THU [constant_thu]

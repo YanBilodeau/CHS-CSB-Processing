@@ -41,7 +41,9 @@ WATER_LEVEL_TOLERANCE: pd.Timedelta = pd.Timedelta("15 min")
 
 CONSTANT_TVU_WLO: float = 0.04
 CONSTANT_TVU_WLP: float = 0.35
-DEPTH_COEFFICIENT: float = 4
+DEPTH_COEFFICIENT: float = 0.5
+DEPTH_COEFFICIENT_SSP: float = 4.1584
+MAX_DISTANCE_SSP: float = 30000
 CONE_ANGLE_SONAR: float = 20
 CONSTANT_THU: float = 3
 
@@ -224,20 +226,30 @@ class TVUConfig(BaseModel):
 
     :param constant_tvu_wlo: La constante du TVU pour les niveaux d'eau WLO.
     :type constant_tvu_wlo: Optional[float]
-    :param constant_tvu_wlp: La constante du TVU pour les niveaux d'eau WLP.
-    :type constant_tvu_wlp: Optional[float]
+    :param default_constant_tvu_wlp: La constante du TVU pour les niveaux d'eau WLP.
+    :type default_constant_tvu_wlp: Optional[float]
     :param depth_coefficient_tvu: Le coefficient de profondeur pour le calcul du TVU.
     :type depth_coefficient_tvu: Optional[float]
     """
 
     constant_tvu_wlo: Optional[float | int] = CONSTANT_TVU_WLO
     """La constante du TVU pour les niveaux d'eau WLO."""
-    constant_tvu_wlp: Optional[float | int] = CONSTANT_TVU_WLP
+    default_constant_tvu_wlp: Optional[float | int] = CONSTANT_TVU_WLP
     """La constante du TVU pour les niveaux d'eau WLP."""
     depth_coefficient_tvu: Optional[float | int] = DEPTH_COEFFICIENT
     """Le coefficient de profondeur pour le calcul du TVU."""
+    default_depth_ssp_error_coefficient: Optional[float | int] = DEPTH_COEFFICIENT_SSP
+    """Le coefficient d'erreur SSP par défaut."""
+    max_distance_ssp: Optional[float | int] = MAX_DISTANCE_SSP
+    """La distance maximale pour liée une valeur de SSP."""
 
-    @field_validator("depth_coefficient_tvu", "constant_tvu_wlo", "constant_tvu_wlp")
+    @field_validator(
+        "depth_coefficient_tvu",
+        "constant_tvu_wlo",
+        "default_constant_tvu_wlp",
+        "default_depth_ssp_error_coefficient",
+        "max_distance_ssp",
+    )
     def validate_positive(cls, value: Optional[float]) -> Optional[float]:
         if value is not None and value < 0:
             raise ValueError("La valeur doit être positive.")
