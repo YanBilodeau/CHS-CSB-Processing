@@ -287,7 +287,7 @@ def compute_tvu(
 
     depth_component = data[schema_ids.DEPTH_RAW_METER] * (
         (tvu_config.depth_coefficient_tvu + data[SSP_ERROR_COEFFICIENT]) / 100
-    )  # todo valider et tester
+    )
 
     station_component = (
         constant_tvu
