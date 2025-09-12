@@ -14,7 +14,6 @@ from typing import Optional, Collection, Sequence, Iterable
 
 import geopandas as gpd
 from loguru import logger
-import numpy as np
 import pandas as pd
 
 import config
@@ -195,7 +194,62 @@ def add_tide_zone_id_to_geodataframe(
 
     return gdf_data_time_zone
 
-    # todo Identification des périodes en enlevant les trous de x temps
+
+def create_tide_zone_time_groups(
+    data_geodataframe: gpd.GeoDataFrame, gap_threshold: pd.Timedelta
+) -> pd.DataFrame:
+    """
+    Crée des groupes temporels par zone de marée en séparant les périodes avec des trous supérieurs au seuil.
+
+    :param data_geodataframe: DataFrame avec les zones de marée et les temps UTC.
+    :type data_geodataframe: gpd.GeoDataFrame
+    :param gap_threshold: Seuil de temps pour définir un nouveau groupe.
+    :type gap_threshold: pd.Timedelta
+    :return: DataFrame avec les temps min/max par zone de marée et groupe temporel.
+    :rtype: pd.DataFrame
+    """
+    data_sorted = data_geodataframe.sort_values(
+        [schema_ids.TIDE_ZONE_ID, schema_ids.TIME_UTC]
+    )
+    time_diff = data_sorted.groupby(schema_ids.TIDE_ZONE_ID)[schema_ids.TIME_UTC].diff()
+    new_group = (time_diff > gap_threshold) | time_diff.isna()
+
+    data_sorted["time_group"] = new_group.groupby(
+        data_sorted[schema_ids.TIDE_ZONE_ID]
+    ).cumsum()
+
+    return (
+        data_sorted.groupby([schema_ids.TIDE_ZONE_ID, "time_group"])[
+            schema_ids.TIME_UTC
+        ]
+        .agg(min_time="min", max_time="max")
+        .reset_index()
+        .drop(columns=["time_group"])
+    )
+
+
+def build_time_series_map(
+    station_ids: Collection[str], tide_zone: gpd.GeoDataFrame
+) -> dict[str, list[iwls.TimeSeries]]:
+    """
+    Construit un dictionnaire des séries temporelles pour chaque station.
+
+    :param station_ids: Identifiants des stations.
+    :type station_ids: Collection[str]
+    :param tide_zone: Zones de marées contenant les informations des stations.
+    :type tide_zone: gpd.GeoDataFrame
+    :return: Dictionnaire des séries temporelles par station.
+    :rtype: dict[str, list[iwls.TimeSeries]]
+    """
+    return {
+        station_id: [
+            iwls.TimeSeries.from_str(ts)
+            for ts in voronoi.get_time_series_by_station_id(
+                gdf_voronoi=tide_zone, station_id=station_id
+            )
+        ]
+        for station_id in station_ids
+    }
 
 
 @schema.validate_schemas(
@@ -205,6 +259,7 @@ def add_tide_zone_id_to_geodataframe(
 def get_intersected_tide_zone_info(
     data_geodataframe: gpd.GeoDataFrame,
     tide_zone: gpd.GeoDataFrame,
+    max_gap_minutes: Optional[int] = 600,  # todo
 ) -> pd.DataFrame:
     """
     Récupère les zones de marées et le temps de début et de fin pour les données.
@@ -213,32 +268,28 @@ def get_intersected_tide_zone_info(
     :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     :param tide_zone: Les zones de marées.
     :type tide_zone: gpd.GeoDataFrame[schema.TideZoneProtocolSchema]
+    :param max_gap_minutes: Durée maximale d'un trou pour ne pas créer un nouveau groupe.
+    :type max_gap_minutes: int
     :return: Les zones de marées et le temps de début et de fin pour les données.
     :rtype: pd.DataFrame[schema.TideZoneInfoSchema]
     """
-
-    def get_station_time_series(station_id: str) -> list[iwls.TimeSeries]:
-        return [
-            iwls.TimeSeries.from_str(ts)
-            for ts in voronoi.get_time_series_by_station_id(
-                gdf_voronoi=tide_zone, station_id=station_id
-            )
-        ]
-
     LOGGER.debug(
         f"Récupération du temps de début et de fin pour les données selon les zones de marées."
     )
 
-    tide_zone_info: pd.DataFrame = (
-        data_geodataframe[data_geodataframe[schema_ids.DEPTH_PROCESSED_METER].isna()]
-        .groupby(schema_ids.TIDE_ZONE_ID)[schema_ids.TIME_UTC]
-        .agg(min_time="min", max_time="max")
-        .reset_index()
+    gap_threshold = pd.Timedelta(minutes=max_gap_minutes)
+
+    tide_zone_info = create_tide_zone_time_groups(
+        data_geodataframe=data_geodataframe, gap_threshold=gap_threshold
     )
 
+    time_series_map = build_time_series_map(
+        station_ids=tide_zone_info[schema_ids.TIDE_ZONE_ID].unique(),
+        tide_zone=tide_zone,
+    )
     tide_zone_info[schema_ids.TIME_SERIES] = tide_zone_info[
         schema_ids.TIDE_ZONE_ID
-    ].apply(get_station_time_series)
+    ].map(time_series_map)
 
     return tide_zone_info
 
@@ -503,6 +554,8 @@ def export_metadata(
     datalogger_type: DataLoggerType,
     tide_stations: Optional[Collection[str]],
     decimal_precision: int,
+    nbins_x: Optional[int] = 35,
+    nbins_y: Optional[int] = 35,  # todo : mettre dans config
 ) -> None:
     """
     Exporte les métadonnées des données traitées.
@@ -519,6 +572,10 @@ def export_metadata(
     :type tide_stations: Optional[Collection[str]]
     :param decimal_precision: Précision des décimales.
     :type decimal_precision: int
+    :param nbins_x: Nombre de cellules pour l'axe des X dans les graphiques.
+    :type nbins_x: Optional[int]
+    :param nbins_y: Nombre de cellules pour l'axe des Y dans les graphiques.
+    :type nbins_y: Optional[int]
     """
     name: str = export.get_export_file_name(
         data_geodataframe=data_geodataframe,
@@ -559,12 +616,15 @@ def export_metadata(
             ].empty
             else data_geodataframe[schema_ids.UNCERTAINTY].max()
         ),
-        thu=min(
-            data_geodataframe[schema_ids.THU].max(),
-            round(
-                (50 * np.tan(np.radians(20) / 2)) + 3, decimal_precision
-            ),  # Min entre max THU et THU à 50m
-        ),  # todo utiliser le fichier de config
+        thu=(
+            data_geodataframe[data_geodataframe[schema_ids.DEPTH_PROCESSED_METER] < 50][
+                schema_ids.THU
+            ].max()
+            if not data_geodataframe[
+                data_geodataframe[schema_ids.DEPTH_PROCESSED_METER] < 50
+            ].empty
+            else data_geodataframe[schema_ids.THU].max()
+        ),
         iho_order_statistic=classify_iho_order(
             data_geodataframe=data_geodataframe, decimal_precision=decimal_precision
         ),
@@ -577,8 +637,8 @@ def export_metadata(
         title=name,
         output_path=output_path,
         dataframe=data_geodataframe,
-        nbins_x=35,
-        nbins_y=35,  # todo : mettre en paramètre
+        nbins_x=nbins_x,
+        nbins_y=nbins_y,
     )
 
 
@@ -829,7 +889,7 @@ def processing_workflow(
             # Stations handler to retrieve the water level data.
             stations_handler=stations_handler,
             # Tide zone information for the water level data. Tide zone id, start time, end time and time series.
-            tide_zonde_info=tide_zonde_info,
+            tide_zone_info=tide_zonde_info,
             # Quality control flag filter for the wlo time series.
             wlo_qc_flag_filter=iwls_api_config.time_series.wlo_qc_flag_filter,
             # Buffer time to add before and after the requested time range for the interpolation.
@@ -962,17 +1022,8 @@ def processing_workflow(
 
     # todo gérer la valeur np.nan dans les configurations des capteurs
 
-    # todo à ajouter au BaseModel ?
-    #  [DATA.Georeference.tpu]
-    #  base_tpu_wlo = 1
-    # todo mettre en paramètre (wlo 1 ? ), mettre le coefficient et la constante en paramètre
-
-    # todo gérer le tvu lorsque wlo vs wlp
-
     # todo utilise cache pour les TimeSeries, peut-être utile si plusieurs itérations
 
     # todo dans ce fichier, dans tide.time_serie.time_serie_dataframe
-
-    # todo Identification des périodes en enlevant les trous de x temps dans add_tide_zone_id_to_geodataframe
 
     # todo -> mettre template pour le nom dans le fichier de config
