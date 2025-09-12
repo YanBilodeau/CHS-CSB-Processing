@@ -262,7 +262,7 @@ def main():
         # Stations handler to retrieve the water level data.
         stations_handler=stations_handler,
         # Tide zone information for the water level data. Tide zone id, start time, end time and time series.
-        tide_zonde_info=tide_zonde_info,
+        tide_zone_info=tide_zonde_info,
         # Quality control flag filter for the wlo time series.
         wlo_qc_flag_filter=iwls_api_config.time_series.wlo_qc_flag_filter,
         # Buffer time to add before and after the requested time range for the interpolation.
