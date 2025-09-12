@@ -5,6 +5,7 @@ Ce module contient les fonctions pour gérer les données de séries temporelles
 """
 
 import concurrent.futures
+from collections import defaultdict
 from collections.abc import Callable
 from datetime import datetime
 import operator
@@ -483,10 +484,8 @@ def fill_data_gaps(
         f"à partir de {wl_dataframe[schema_ids.TIME_SERIE_CODE].unique().tolist()}."
     )
 
-    gaps_dataframe_list: list[pd.DataFrame[schema.WaterLevelSerieDataSchema]] = (
-        get_gaps_dataframe_list(
-            gaps_dataframe=gaps_dataframe, wl_dataframe=wl_dataframe
-        )
+    gaps_dataframe_list: list[pd.DataFrame] = get_gaps_dataframe_list(
+        gaps_dataframe=gaps_dataframe, wl_dataframe=wl_dataframe
     )
 
     wl_combined_dataframe: pd.DataFrame[schema.WaterLevelSerieDataSchema] = pd.concat(
@@ -1020,22 +1019,19 @@ def get_water_level_data(
 
 def get_water_level_data_for_stations(
     stations_handler: StationsHandlerProtocol,
-    tide_zonde_info: pd.DataFrame,
+    tide_zone_info: pd.DataFrame,
     wlo_qc_flag_filter: Optional[Collection[str] | None] = None,
     buffer_time: Optional[pd.Timedelta | None] = None,
     max_time_gap: Optional[str | None] = None,
     threshold_interpolation_filling: Optional[str | None] = None,
-) -> tuple[
-    dict[str, pd.DataFrame],
-    dict[str, Exception],
-]:
+) -> tuple[dict[str, pd.DataFrame], defaultdict[str, list[Exception]]]:
     """
     Récupère les données de niveau d'eau pour plusieurs stations.
 
     :param stations_handler: Gestionnaire des stations.
     :type stations_handler: StationsHandlerProtocol
-    :param tide_zonde_info: Informations sur les stations et les périodes de données à récupérer et leur priorité de séries temporelles.
-    :type tide_zonde_info: pd.DataFrame[shema.TideZondeInfoSchema]
+    :param tide_zone_info: Informations sur les stations et les périodes de données à récupérer et leur priorité de séries temporelles.
+    :type tide_zone_info: pd.DataFrame[shema.TideZondeInfoSchema]
     :param wlo_qc_flag_filter: Filtre de qualité des données wlo.
     :type wlo_qc_flag_filter: Optional[Collection[str] | None]
     :param buffer_time: Temps tampon à ajouter au début et à la fin de la période de données.
@@ -1046,7 +1042,7 @@ def get_water_level_data_for_stations(
                                             Si None, les données manquantes sont seulement remplies par la time série suivante.
     :type threshold_interpolation_filling: Optional[str | None]
     :return: Données de niveau d'eau combinées et exceptions.
-    :rtype: tuple[dict[str, pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]], dict[str, Exception]]
+    :rtype: tuple[dict[str, pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]], defaultdict[str, list[Exception]]]
     """
 
     def fetch_water_level_data(
@@ -1079,7 +1075,7 @@ def get_water_level_data_for_stations(
         )
 
         try:
-            wl_data: pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema] = (
+            data: pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema] = (
                 get_water_level_data(
                     stations_handler=stations_handler,
                     station_id=station_id,
@@ -1093,7 +1089,7 @@ def get_water_level_data_for_stations(
                 )
             )
 
-            if wl_data.empty:
+            if data.empty:
                 LOGGER.warning(
                     f"Aucune donnée de niveau d'eau n'a été récupérée pour la station {station_id}."
                 )
@@ -1102,17 +1098,16 @@ def get_water_level_data_for_stations(
                     station_id=station_id, from_time=from_time, to_time=to_time
                 )
 
-            return wl_data, station_id, None
+            return data, station_id, None
 
         except Exception as error:
             LOGGER.warning(f"Erreur pour la station {station_id} : {error}")
 
             return None, station_id, error
 
-    wl_combineds: dict[
-        str, pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]
-    ] = {}
-    exceptions: dict[str, Exception] = {}
+    wl_combineds: dict[str, pd.DataFrame] = {}
+    station_data_list: defaultdict[str, list[pd.DataFrame]] = defaultdict(list)
+    exceptions: defaultdict[str, list[Exception]] = defaultdict(list)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         futures = [
@@ -1123,7 +1118,7 @@ def get_water_level_data_for_stations(
                 to_time=to_time,
                 time_series_priority=time_series_priority,
             )
-            for station_id, from_time, to_time, time_series_priority in tide_zonde_info.itertuples(
+            for station_id, from_time, to_time, time_series_priority in tide_zone_info.itertuples(
                 index=False
             )
         ]
@@ -1132,16 +1127,33 @@ def get_water_level_data_for_stations(
             try:
                 wl_data, station_id, exception = future.result()
 
-                if wl_data is not None:
-                    wl_combineds[station_id] = wl_data
-                else:
-                    exceptions[station_id] = exception
+                if wl_data is None:
+                    exceptions[station_id].append(exception)
+                    continue
+
+                station_data_list[station_id].append(wl_data)
 
             except Exception as error_future:
                 LOGGER.error(
                     f"Erreur lors de la récupération des données de niveau d'eau : {error_future}"
                 )
-                exceptions["Unknown"] = error_future
+                exceptions["Unknown"].append(error_future)
+
+    # Merger les DataFrames pour chaque station
+    for station_id, data_list in station_data_list.items():
+        if len(data_list) == 1:
+            wl_combineds[station_id] = data_list[0]
+
+        else:
+            concat_df: pd.DataFrame = pd.concat(
+                data_list, ignore_index=True
+            ).drop_duplicates()
+
+            wl_combineds[station_id] = finalize_time_serie_dataframe(
+                wl_dataframe=concat_df,
+                station_id=station_id,
+                stations_handler=stations_handler,
+            )
 
     return wl_combineds, exceptions
 
