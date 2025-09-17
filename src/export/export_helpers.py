@@ -5,7 +5,6 @@ Ce module contient des fonctions utilitaires pour finaliser, séparer et exporte
 """
 
 import concurrent.futures
-from enum import StrEnum
 from pathlib import Path
 from typing import Optional, Collection
 
@@ -23,7 +22,7 @@ LOGGER = logger.bind(name="CSB-Processing.Export.Helpers")
 
 def get_export_file_name(
     data_geodataframe: gpd.GeoDataFrame,
-    datalogger_type: StrEnum,
+    datalogger_type: str,
     vessel_name: Optional[str],
 ) -> str:
     """
@@ -32,7 +31,7 @@ def get_export_file_name(
     :param data_geodataframe: Données traitées à exporter.
     :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
     :param datalogger_type: Type de capteur.
-    :type datalogger_type: DataLoggerType
+    :type datalogger_type: str
     :param vessel_name: Nom du navire.
     :type vessel_name: Optional[str]
     :return: Nom du fichier d'exportation.
@@ -157,7 +156,7 @@ def export_processed_data_to_file_types(
     data_geodataframe: gpd.GeoDataFrame,
     export_data_path: Path,
     file_types: Collection[FileTypes],
-    datalogger_type: StrEnum,
+    datalogger_type: str,
     vessel_name: Optional[str] = None,
     resolution: Optional[float] = 0.00005,
     groub_by_iho_order: Optional[bool] = True,
@@ -175,7 +174,7 @@ def export_processed_data_to_file_types(
     :param vessel_name: Nom du navire.
     :type vessel_name: Optional[str]
     :param datalogger_type: Type de capteur.
-    :type datalogger_type: DataLoggerType
+    :type datalogger_type: str
     :param resolution: Résolution pour les formats raster.
     :type resolution: float
     :param groub_by_iho_order: Regrouper les données par ordre IHO.
