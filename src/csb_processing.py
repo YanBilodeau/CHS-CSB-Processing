@@ -31,7 +31,7 @@ import transformation.georeference as georeference
 import vessel as vessel_manager
 
 
-__version__ = "0.7.2"
+__version__ = "0.7.3"
 
 
 LOGGER = logger.bind(name="CSB-Processing.WorkFlow")
@@ -259,7 +259,7 @@ def build_time_series_map(
 def get_intersected_tide_zone_info(
     data_geodataframe: gpd.GeoDataFrame,
     tide_zone: gpd.GeoDataFrame,
-    max_gap_minutes: Optional[int] = 600,  # todo
+    max_gap_minutes: Optional[int] = 600,
 ) -> pd.DataFrame:
     """
     Récupère les zones de marées et le temps de début et de fin pour les données.
@@ -555,7 +555,7 @@ def export_metadata(
     tide_stations: Optional[Collection[str]],
     decimal_precision: int,
     nbins_x: Optional[int] = 35,
-    nbins_y: Optional[int] = 35,  # todo : mettre dans config
+    nbins_y: Optional[int] = 35,
 ) -> None:
     """
     Exporte les métadonnées des données traitées.
@@ -805,6 +805,8 @@ def processing_workflow(
             datalogger_type=datalogger_type,
             tide_stations=None,
             decimal_precision=processing_config.options.decimal_precision,
+            nbins_x=processing_config.plot.nbins_x,
+            nbins_y=processing_config.plot.nbins_y,
         )
 
         return None
@@ -1016,6 +1018,8 @@ def processing_workflow(
             for station_id in wl_combineds_dict.keys()
         ],
         decimal_precision=processing_config.options.decimal_precision,
+        nbins_x=processing_config.plot.nbins_x,
+        nbins_y=processing_config.plot.nbins_y,
     )
 
     return None
@@ -1027,3 +1031,5 @@ def processing_workflow(
     # todo dans ce fichier, dans tide.time_serie.time_serie_dataframe
 
     # todo -> mettre template pour le nom dans le fichier de config
+
+    # todo endpoint pour lire un gpkg et l'exporter dans un autre format

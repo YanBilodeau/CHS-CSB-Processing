@@ -47,6 +47,9 @@ MAX_DISTANCE_SSP: float = 30000
 CONE_ANGLE_SONAR: float = 20
 CONSTANT_THU: float = 3
 
+NBIN_X: int = 35
+NBIN_Y: int = 35
+
 
 class FileTypes(StrEnum):
     """
@@ -409,6 +412,38 @@ class OptionsConfig(BaseModel):
         return value
 
 
+class PlotConfig(BaseModel):
+    """
+    Classe de configuration pour les options de visualisation.
+
+    :param nbin_x: Le nombre de bins en X pour les heatmanps.
+    :type nbin_x: int
+    :param nbin_y: Le nombre de bins en Y pour les heatmanps.
+    :type nbin_y: int
+    """
+
+    nbin_x: int = NBIN_X
+    """Le nombre de bins en X pour les heatmanps."""
+    nbin_y: int = NBIN_Y
+    """Le nombre de bins en Y pour les heatmanps."""
+
+    @field_validator("nbin_x", "nbin_y")
+    def validate_nbin(cls, value: int) -> int:
+        """
+        Valide que nbin_x et nbin_y sont plus grand que 0.
+
+        :param value: La valeur de nbin_x ou nbin_y.
+        :type value: int
+        :return: La valeur de nbin_x ou nbin_y.
+        :rtype: int
+        :raises ValueError: Si nbin_x ou nbin_y est inférieur ou égal à 0.
+        """
+        if value <= 0:
+            raise ValueError("Le paramètre nbin_x et nbin_y doit être supérieur à 0.")
+
+        return value
+
+
 class CSBprocessingConfig(BaseModel):
     """
     Classe de configuration pour la transformation des données et le géoréférencement.
@@ -433,6 +468,8 @@ class CSBprocessingConfig(BaseModel):
     """Configuration pour le gestionnaire de navires."""
     export: ExportConfig = ExportConfig()
     """Configuration pour l'exportation des données."""
+    plot: PlotConfig = PlotConfig()
+    """Configuration pour les options de visualisation."""
     options: OptionsConfig = OptionsConfig()
     """Configuration pour les options de traitement."""
 
@@ -464,19 +501,22 @@ def get_data_config(
         config_data.get("DATA", {})
         .get("Georeference", {})
         .get("uncertainty", {})
-        .get("tvu")
+        .get("tvu", {})
     )
     data_georef_thu: ConfigDict = (
         config_data.get("DATA", {})
         .get("Georeference", {})
         .get("uncertainty", {})
-        .get("thu")
+        .get("thu", {})
     )
     vessel_config: ConfigDict = (
         config_data.get("CSB", {}).get("Processing", {}).get("vessel")
     )
     export_config: ConfigDict = (
         config_data.get("CSB", {}).get("Processing", {}).get("export")
+    )
+    plot_config: ConfigDict = (
+        config_data.get("CSB", {}).get("Processing", {}).get("plot")
     )
     options_config: ConfigDict = (
         config_data.get("CSB", {}).get("Processing", {}).get("options")
@@ -538,6 +578,7 @@ def get_data_config(
             else None
         ),
         export=(ExportConfig(**export_config) if export_config else ExportConfig()),
+        plot=(PlotConfig(**plot_config) if plot_config else PlotConfig()),
         options=(
             OptionsConfig(**options_config) if options_config else OptionsConfig()
         ),

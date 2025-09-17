@@ -1,7 +1,7 @@
 [Config]
 # Version du fichier de configuration {str}.
 # Version of the configuration file {str}.
-version = "0.7.0"
+version = "0.7.3"
 
 [IWLS.API.TimeSeries]
 # Liste des séries temporelles à récupérer selon leur priorité d'utilisation. {"wlo", "wlp"}
@@ -137,7 +137,7 @@ max_distance_ssp = 30000  # 30 km
 # à la vitesse du son (pourcentatge) {float}.
 # Coefficient for calculating vertical uncertainty based on depth for errors not related
 # to sound speed (percentage) {float}.
-depth_coefficient_tvu = 0
+depth_coefficient_tvu = 0.5
 
 [DATA.Georeference.uncertainty.thu]
 # THU = (Profondeur × Coefficient THU[angular_opening_sonar]) + Constante THU [constant_thu]
@@ -162,7 +162,9 @@ json_config_path = "./CONFIG_vessels.json"
 
 [CSB.Processing.export]
 # Liste des formats d'export des données traitées {"geojson", "gpkg", "csar", "parquet", "feather", "csv"}
+# Pour le format csar, la section [CARIS.Environment] doit être configurée.
 # List of export formats for processed data {"geojson", "gpkg", "csar", "parquet", "feather", "csv", "geotiff"}
+# For the csar format, the [CARIS.Environment] section must be configured.
 export_format = ["gpkg"]
 # Résolution spatiale en degrés pour les exports au format raster GeoTIFF {float}.
 # Spatial resolution in degrees for exports in GeoTIFF raster format {float}.
@@ -170,6 +172,12 @@ resolution = 0.00005
 # Permet de séparer les fichiers exportés par ordre de levé OHI. {bool}
 # Allows to separate the exported files by OHI survey order. {bool}
 group_by_iho_order = false
+
+[CSB.Processing.plot]
+# Nombre de cellules en x et y pour les graphiques de type heatmap {int}.
+# Number of cells in x and y for heatmap plots {int}.
+nbin_x = 35
+nbin_y = 35
 
 [CSB.Processing.options]
 # Niveau de log {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
