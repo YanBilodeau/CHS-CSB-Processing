@@ -5,7 +5,6 @@ Ce module contient le workflow de traitement des données des capteurs à bord d
 récupérées à partir de fichiers bruts, nettoyées, filtrées, georéférencées et exportées dans un format standardisé.
 """
 
-import concurrent.futures
 from dataclasses import dataclass
 from collections import defaultdict
 from datetime import datetime
@@ -462,71 +461,6 @@ def get_sensors_by_datetime(
     return sounder, waterline
 
 
-def export_processed_data_to_file_types(
-    data_geodataframe: gpd.GeoDataFrame,
-    export_data_path: Path,
-    file_types: Collection[export.FileTypes],
-    datalogger_type: DataLoggerType,
-    vessel_name: Optional[str] = None,
-    resolution: Optional[float] = 0.00005,
-    groub_by_iho_order: Optional[bool] = True,
-    **kwargs,
-) -> None:
-    """
-    Exporte les données traitées dans plusieurs formats de fichier.
-
-    :param data_geodataframe: Données traitées à exporter.
-    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
-    :param export_data_path: Chemin du répertoire d'exportation.
-    :type export_data_path: Path
-    :param file_types: Liste des types de fichiers de sortie.
-    :type file_types: Collection[FileTypes]
-    :param vessel_name: Nom du navire.
-    :type vessel_name: Optional[str]
-    :param datalogger_type: Type de capteur.
-    :type datalogger_type: DataLoggerType
-    :param resolution: Résolution pour les formats raster.
-    :type resolution: float
-    :param groub_by_iho_order: Regrouper les données par ordre IHO.
-    :type groub_by_iho_order: bool
-    """
-    data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = (
-        export.finalize_geodataframe(data_geodataframe=data_geodataframe)
-    )
-
-    output_base_path: Path = export_data_path / export.get_export_file_name(
-        data_geodataframe=data_geodataframe,
-        vessel_name=vessel_name,
-        datalogger_type=datalogger_type,
-    )
-
-    grouped_data: dict[str | None, gpd.GeoDataFrame] = {"ALL": data_geodataframe}
-
-    if groub_by_iho_order:
-        iho_order_data: dict[str | None, gpd.GeoDataFrame] = (
-            export.split_data_by_iho_order(data_geodataframe=data_geodataframe)
-        )
-        grouped_data.update(iho_order_data)
-
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        for group_key, group_df in grouped_data.items():
-            if group_df.empty:
-                continue
-
-            suffix = "" if group_key == "ALL" else f"_{group_key}"
-            output_path = output_base_path.with_name(f"{output_base_path.name}{suffix}")
-
-            for file_type in file_types:
-                executor.submit(
-                    export.export_processed_data,
-                    data_geodataframe=group_df,
-                    output_data_path=output_path,
-                    file_type=file_type,
-                    resolution=resolution,
-                    **kwargs,
-                )
-
-
 def classify_iho_order(
     data_geodataframe: gpd.GeoDataFrame, decimal_precision: int
 ) -> metadata.IHOorderQualifiquation:
@@ -786,7 +720,7 @@ def processing_workflow(
         )
 
         # Export the processed data
-        export_processed_data_to_file_types(
+        export.export_processed_data_to_file_types(
             data_geodataframe=data,
             export_data_path=export_data_path,
             file_types=processing_config.export.export_format,
@@ -989,7 +923,7 @@ def processing_workflow(
         )
 
     # Export the processed data
-    export_processed_data_to_file_types(
+    export.export_processed_data_to_file_types(
         data_geodataframe=data,
         export_data_path=export_data_path,
         file_types=processing_config.export.export_format,

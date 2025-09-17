@@ -16,6 +16,7 @@ from .export_helpers import (
     get_export_file_name,
     split_data_by_iho_order,
     export_processed_data,
+    export_processed_data_to_file_types,
 )
 
 
@@ -32,4 +33,5 @@ __all__ = [
     "get_export_file_name",
     "split_data_by_iho_order",
     "export_processed_data",
+    "export_processed_data_to_file_types",
 ]
