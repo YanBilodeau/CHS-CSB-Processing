@@ -805,8 +805,8 @@ def processing_workflow(
             datalogger_type=datalogger_type,
             tide_stations=None,
             decimal_precision=processing_config.options.decimal_precision,
-            nbins_x=processing_config.plot.nbins_x,
-            nbins_y=processing_config.plot.nbins_y,
+            nbins_x=processing_config.plot.nbin_x,
+            nbins_y=processing_config.plot.nbin_y,
         )
 
         return None
@@ -1018,8 +1018,8 @@ def processing_workflow(
             for station_id in wl_combineds_dict.keys()
         ],
         decimal_precision=processing_config.options.decimal_precision,
-        nbins_x=processing_config.plot.nbins_x,
-        nbins_y=processing_config.plot.nbins_y,
+        nbins_x=processing_config.plot.nbin_x,
+        nbins_y=processing_config.plot.nbin_y,
     )
 
     return None
