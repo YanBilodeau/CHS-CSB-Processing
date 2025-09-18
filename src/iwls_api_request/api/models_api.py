@@ -13,40 +13,40 @@ class Regions(StrEnum):
 
 
 class TimeResolution(StrEnum):
-    ONE_MINUTE: str = "ONE_MINUTE"
-    THREE_MINUTES: str = "THREE_MINUTES"
-    FIVE_MINUTES: str = "FIVE_MINUTES"
-    FIFTEEN_MINUTES: str = "FIFTEEN_MINUTES"
-    SIXTY_MINUTES: str = "SIXTY_MINUTES"
+    ONE_MINUTE = "ONE_MINUTE"
+    THREE_MINUTES = "THREE_MINUTES"
+    FIVE_MINUTES = "FIVE_MINUTES"
+    FIFTEEN_MINUTES = "FIFTEEN_MINUTES"
+    SIXTY_MINUTES = "SIXTY_MINUTES"
 
 
 class TimeSeries(StrEnum):
-    WLO: str = "wlo"
-    WL1: str = "wl1"
-    WL2: str = "wl2"
-    WL3: str = "wl3"
-    WS1: str = "ws1"
-    WS2: str = "ws2"
-    WT1: str = "wt1"
-    WT2: str = "wt2"
-    WT3: str = "wt3"
-    AP1: str = "ap1"
-    AP2: str = "ap2"
-    V1: str = "v1"
-    V2: str = "v2"
-    WLF: str = "wlf"
-    WLF_SPINE: str = "wlf-spine"
-    WLF_VTG: str = "wlf-vtg"
-    WLP: str = "wlp"
-    WLP_HILO: str = "wlp-hilo"
-    WLP_BORES: str = "wlp-bores"
-    WCP_SLACK: str = "wcp-slack"
-    WCSP: str = "wcsp"
-    WCSP_EXTREMA: str = "wcsp-extrema"
-    WCDP: str = "wcdp"
-    WCDP_EXTREMA: str = "wcdp-extrema"
-    DVCF: str = "dvcf"
-    DVCF_SPINE1: str = "dvcf-spine1"
+    WLO = "wlo"
+    WL1 = "wl1"
+    WL2 = "wl2"
+    WL3 = "wl3"
+    WS1 = "ws1"
+    WS2 = "ws2"
+    WT1 = "wt1"
+    WT2 = "wt2"
+    WT3 = "wt3"
+    AP1 = "ap1"
+    AP2 = "ap2"
+    V1 = "v1"
+    V2 = "v2"
+    WLF = "wlf"
+    WLF_SPINE = "wlf-spine"
+    WLF_VTG = "wlf-vtg"
+    WLP = "wlp"
+    WLP_HILO = "wlp-hilo"
+    WLP_BORES = "wlp-bores"
+    WCP_SLACK = "wcp-slack"
+    WCSP = "wcsp"
+    WCSP_EXTREMA = "wcsp-extrema"
+    WCDP = "wcdp"
+    WCDP_EXTREMA = "wcdp-extrema"
+    DVCF = "dvcf"
+    DVCF_SPINE1 = "dvcf-spine1"
 
     @staticmethod
     def get_values() -> list[str]:
@@ -64,23 +64,23 @@ class TimeSeries(StrEnum):
 
 
 class TimeZone(StrEnum):
-    UTC: str = "UTC"
-    LOCAL: str = "LOCAL"
+    UTC = "UTC"
+    LOCAL = "LOCAL"
 
 
 class TypeTideTable(StrEnum):
-    VOLUME: str = "VOLUME"
-    AREA: str = "AREA"
-    SUB_AREA: str = "SUB_AREA"
+    VOLUME = "VOLUME"
+    AREA = "AREA"
+    SUB_AREA = "SUB_AREA"
 
 
 from enum import StrEnum
 
 
 class EndpointType(StrEnum):
-    PRIVATE_PROD: str = "EndpointPrivateProd"
-    PRIVATE_DEV: str = "EndpointPrivateDev"
-    PUBLIC: str = "EndpointPublic"
+    PRIVATE_PROD = "EndpointPrivateProd"
+    PRIVATE_DEV = "EndpointPrivateDev"
+    PUBLIC = "EndpointPublic"
 
     @classmethod
     def from_str(cls, value: str):
