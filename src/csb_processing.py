@@ -576,6 +576,102 @@ def export_metadata(
     )
 
 
+def export_processed_data_and_metadata(
+    data_geodataframe: gpd.GeoDataFrame,
+    export_data_path: Path,
+    vessel_config: vessel_manager.VesselConfig,
+    datalogger_type: DataLoggerType,
+    processing_config: config.CSBprocessingConfig,
+    caris_api_config: Optional[config.CarisAPIConfig] = None,
+    tide_stations: Optional[Collection[str]] = None,
+) -> None:
+    """
+    Exporte les données traitées et les métadonnées.
+
+    :param data_geodataframe: Données géoréférencées traitées.
+    :type data_geodataframe: gpd.GeoDataFrame
+    :param export_data_path: Chemin du répertoire d'exportation des données.
+    :type export_data_path: Path
+    :param vessel_config: Configuration du navire.
+    :type vessel_config: vessel_manager.VesselConfig
+    :param datalogger_type: Type de capteur.
+    :type datalogger_type: DataLoggerType
+    :param processing_config: Configuration du traitement.
+    :type processing_config: config.CSBprocessingConfig
+    :param caris_api_config: Configuration de l'API Caris.
+    :type caris_api_config: Optional[config.CarisAPIConfig]
+    :param tide_stations: Liste des stations de marées.
+    :type tide_stations: Optional[Collection[str]]
+    """
+    data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = (
+        export.finalize_geodataframe(data_geodataframe=data_geodataframe)
+    )
+
+    output_base_path: Path = export_data_path / export.get_export_file_name(
+        data_geodataframe=data_geodataframe,
+        vessel_name=vessel_config.name,
+        datalogger_type=datalogger_type,
+    )
+
+    # Export the processed data
+    export.export_processed_data_to_file_types(
+        data_geodataframe=data_geodataframe,
+        output_base_path=output_base_path,
+        file_types=processing_config.export.export_format,
+        config_caris=caris_api_config,
+        resolution=processing_config.export.resolution,
+        groub_by_iho_order=processing_config.export.group_by_iho_order,
+    )
+
+    # Export the metadata
+    export_metadata(
+        data_geodataframe=data_geodataframe,
+        output_path=export_data_path,
+        vessel_config=vessel_config,
+        datalogger_type=datalogger_type,
+        tide_stations=tide_stations,
+        decimal_precision=processing_config.options.decimal_precision,
+        nbins_x=processing_config.plot.nbin_x,
+        nbins_y=processing_config.plot.nbin_y,
+    )
+
+
+def log_sounding_results(data: gpd.GeoDataFrame, iterations: int) -> bool:
+    """
+    Vérifie et affiche les résultats du traitement des sondes.
+
+    :param data: Données géoréférencées.
+    :type data: gpd.GeoDataFrame
+    :param iterations: Nombre d'itérations effectuées.
+    :type iterations: int
+    :return: True si des sondes ont été traitées avec succès, False sinon.
+    :rtype: bool
+    """
+    nan_sounding_count: int = data[schema_ids.DEPTH_PROCESSED_METER].isna().sum()
+    sounding_count: int = data[schema_ids.DEPTH_PROCESSED_METER].notna().sum()
+
+    if not sounding_count:
+        LOGGER.warning(
+            f"Aucune sonde n'a été réduite au zéro des cartes. Aucune information de niveau d'eau est disponible pour "
+            f"ces dates et ces stations dans IWLS avec {iterations} itérations. Vous pouvez traiter les données "
+            f"avec un nombre d'itération plus élevé ou sans appliquer le niveau d'eau (--apply-water-level False)."
+        )
+        return False
+
+    (
+        LOGGER.success(
+            f"{sounding_count:,} sondes ont été réduites au zéro des cartes."
+        )
+        if not nan_sounding_count
+        else LOGGER.info(
+            f"{sounding_count:,} sondes ont été réduites au zéro des cartes. "
+            f"{nan_sounding_count:,} sondes sont sans niveau d'eau pour la réduction."
+        )
+    )
+
+    return True
+
+
 def processing_workflow(
     files: Collection[Path],
     vessel: str | vessel_manager.VesselConfig,
@@ -719,28 +815,14 @@ def processing_workflow(
             )
         )
 
-        # Export the processed data
-        export.export_processed_data_to_file_types(
+        export_processed_data_and_metadata(
             data_geodataframe=data,
             export_data_path=export_data_path,
-            file_types=processing_config.export.export_format,
-            vessel_name=vessel_config.name,
-            datalogger_type=datalogger_type,
-            config_caris=caris_api_config if caris_api_config else None,
-            resolution=processing_config.export.resolution,
-            groub_by_iho_order=processing_config.export.group_by_iho_order,
-        )
-
-        # Export the metadata
-        export_metadata(
-            data_geodataframe=data,
-            output_path=export_data_path,
             vessel_config=vessel_config,
             datalogger_type=datalogger_type,
+            processing_config=processing_config,
+            caris_api_config=caris_api_config,
             tide_stations=None,
-            decimal_precision=processing_config.options.decimal_precision,
-            nbins_x=processing_config.plot.nbin_x,
-            nbins_y=processing_config.plot.nbin_y,
         )
 
         return None
@@ -769,11 +851,11 @@ def processing_workflow(
     ] = defaultdict(list)
 
     last_run_stations: list[str] = []
-    run: int = 1
+    iteration: int = 0
 
-    while run <= processing_config.options.max_iterations:
+    for iteration in range(1, processing_config.options.max_iterations + 1):
         LOGGER.info(
-            f"Transformation des données : {run}. Stations exclues : {excluded_stations}."
+            f"Transformation des données : {iteration}. Stations exclues : {excluded_stations}."
         )
         # Get the Voronoi diagram of the stations. The stations are selected based on the priority of the time series.
         # The time series priority is defined in the configuration file.
@@ -856,7 +938,9 @@ def processing_workflow(
 
         if wl_combineds:
             # Export the Voronoi diagram to a GeoJSON file
-            voronoi_output_path: Path = export_tide_path / f"StationVoronoi-{run}.gpkg"
+            voronoi_output_path: Path = (
+                export_tide_path / f"StationVoronoi-{iteration}.gpkg"
+            )
             LOGGER.info(
                 f"Exportation du diagramme de Voronoi des stations marégraphiques : {voronoi_output_path}."
             )
@@ -885,33 +969,14 @@ def processing_workflow(
         # Add the stations with missing values to the excluded stations
         excluded_stations.extend(wl_exceptions.keys())
 
-        # Check if the stations are the same as the last run and if there are no exceptions
+        # Check if the stations are the same as the last iteration and if there are no exceptions
         if not wl_exceptions and (last_run_stations == list(wl_combineds.keys())):
             excluded_stations.extend(list(wl_combineds.keys()))
 
-        run += 1
         last_run_stations = list(wl_combineds.keys())
 
-    nan_sonding: int = data[schema_ids.DEPTH_PROCESSED_METER].isna().sum()
-    not_nan_sonding: int = data[schema_ids.DEPTH_PROCESSED_METER].notna().sum()
-    if not not_nan_sonding:
-        LOGGER.warning(
-            f"Aucune sonde n'a été réduite au zéro des cartes. Aucune information de niveau d'eau est disponible pour "
-            f"ces dates et ces stations dans IWLS avec {run - 1} itérations. Vous pouvez traiter les données "
-            f"avec un nombre d'itération plus élevé ou sans appliquer le niveau d'eau (--apply-water-level False)."
-        )
+    if not log_sounding_results(data=data, iterations=iteration):
         return None
-
-    elif not nan_sonding:
-        LOGGER.success(
-            f"{not_nan_sonding:,} sondes ont été réduites au zéro des cartes."
-        )
-
-    else:
-        LOGGER.info(
-            f"{not_nan_sonding:,} sondes ont été réduites au zéro des cartes. "
-            f"{nan_sonding:,} sondes sont sans niveau d'eau pour la réduction."
-        )
 
     # Plot the water level data for each station
     if wl_combineds_dict:
@@ -922,18 +987,6 @@ def processing_workflow(
             export_tide_path=export_tide_path,
         )
 
-    # Export the processed data
-    export.export_processed_data_to_file_types(
-        data_geodataframe=data,
-        export_data_path=export_data_path,
-        file_types=processing_config.export.export_format,
-        vessel_name=vessel_config.name,
-        datalogger_type=datalogger_type,
-        config_caris=caris_api_config if caris_api_config else None,
-        resolution=processing_config.export.resolution,
-        groub_by_iho_order=processing_config.export.group_by_iho_order,
-    )
-
     gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema] = (
         voronoi.get_voronoi_geodataframe(
             stations_handler=stations_handler,
@@ -941,19 +994,17 @@ def processing_workflow(
         )
     )
 
-    # Export the metadata
-    export_metadata(
+    export_processed_data_and_metadata(
         data_geodataframe=data,
-        output_path=export_data_path,
+        export_data_path=export_data_path,
         vessel_config=vessel_config,
         datalogger_type=datalogger_type,
+        processing_config=processing_config,
+        caris_api_config=caris_api_config,
         tide_stations=[
             get_station_title(gdf_voronoi=gdf_voronoi, station_id=station_id)
             for station_id in wl_combineds_dict.keys()
         ],
-        decimal_precision=processing_config.options.decimal_precision,
-        nbins_x=processing_config.plot.nbin_x,
-        nbins_y=processing_config.plot.nbin_y,
     )
 
     return None
