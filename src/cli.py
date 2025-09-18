@@ -11,6 +11,8 @@ from typing import Collection, Optional
 
 from loguru import logger
 
+from config import FileTypes
+import converter
 from csb_processing import processing_workflow, CONFIG_FILE
 from logger.loguru_config import configure_logger
 from vessel import UNKNOWN_VESSEL_CONFIG, UNKNOWN_DATE, Waterline
@@ -63,12 +65,15 @@ def get_files(paths: Collection[Path]) -> list[Path]:
     return files
 
 
-@click.command(
-    help="""
-    Ce script permet de traiter des fichiers de données bathymétriques et de les géoréférencer.\n
-    This script allows to process bathymetric data files and georeference them.
+@click.group()
+def cli_group():
     """
-)
+    Groupe de commandes pour le traitement des données bathymétriques.
+    """
+    pass
+
+
+@cli_group.command(name="process")
 @click.argument(
     "files",
     type=click.Path(exists=True),
@@ -138,7 +143,7 @@ def cli(
     apply_water_level: Optional[bool] = True,
 ) -> None:
     """
-    Fonction principale de la ligne de commande.
+    Traite les fichiers de données bathymétriques et les géoréférence. Processes bathymetric data files and georeferences them.
 
     :param files: Chemins des fichiers ou répertoires à traiter.
     :type files: Collection[Path]
@@ -209,5 +214,114 @@ def cli(
     )
 
 
+@cli_group.command(name="convert")
+@click.argument(
+    "input_files",
+    type=click.Path(exists=True, path_type=Path),
+    required=True,
+    nargs=-1,
+)
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path),
+    required=True,
+    help="""
+    Chemin du répertoire de sortie.\n
+    Path of the output directory.
+    """,
+)
+@click.option(
+    "--format",
+    "file_formats",
+    type=click.Choice([ft.value for ft in FileTypes], case_sensitive=False),
+    multiple=True,
+    required=True,
+    help="""
+    Format(s) de sortie désirés. Peut être spécifié plusieurs fois pour exporter vers plusieurs formats.\n
+    Desired output format(s). Can be specified multiple times to export to multiple formats.
+    """,
+)
+@click.option(
+    "--config",
+    type=click.Path(exists=True, path_type=Path),
+    required=False,
+    help="""
+    Chemin du fichier de configuration. Si aucun fichier de configuration n'est fourni, le fichier de configuration
+    par défaut sera utilisé.\n
+    Path of the configuration file. If no configuration file is provided, the default configuration file will be used.
+    """,
+)
+@click.option(
+    "--group-by-iho-order",
+    type=bool,
+    default=False,
+    help="""
+    Regrouper les données par ordre IHO lors de l'exportation.\n
+    Group data by IHO order during export.
+    """,
+)
+def convert_gpkg(
+    input_files: Collection[Path],
+    output: Path,
+    file_formats: Collection[str],
+    config: Optional[Path],
+    group_by_iho_order: Optional[bool],
+) -> None:
+    """
+    Convertit des fichiers GPKG/GeoJSON vers différents formats. Convert GPKG/GeoJSON files to different formats.
+
+    :param input_files: Chemins des fichiers GPKG/GeoJSON d'entrée.
+    :type input_files: Collection[Path]
+    :param output: Chemin du répertoire de sortie.
+    :type output: Path
+    :param file_formats: Formats de sortie désirés.
+    :type file_formats: Collection[str]
+    :param config: Chemin du fichier de configuration.
+    :type config: Optional[Path]
+    :param group_by_iho_order: Regrouper par ordre IHO.
+    :type group_by_iho_order: bool
+    :raise click.UsageError: Si aucun fichier valide n'est fourni.
+    """
+    configure_logger()
+    LOGGER.info(f"Ligne de commande exécutée : python {' '.join(sys.argv)}")
+
+    # Filtrer les fichiers valides
+    valid_files = [
+        file for file in input_files if file.suffix.lower() in {".gpkg", ".geojson"}
+    ]
+
+    if not valid_files:
+        LOGGER.error("Aucun fichier GPKG ou GeoJSON valide trouvé.")
+        raise click.UsageError(
+            "Aucun fichier GPKG ou GeoJSON valide trouvé.\n"
+            "No valid GPKG or GeoJSON file found."
+        )
+
+    # Convertir les formats string en enum
+    file_types = [FileTypes(fmt) for fmt in file_formats]
+
+    # Utiliser le fichier de configuration par défaut si non spécifié
+    if not config:
+        LOGGER.warning(
+            "Aucun fichier de configuration n'a été fourni. Le fichier de configuration par défaut sera utilisé."
+        )
+        config = CONFIG_FILE
+
+    LOGGER.info(
+        f"Conversion de {len(valid_files)} fichier{'s' if len(valid_files) > 1 else ''} : "
+        f"{', '.join(str(path) for path in [valid_files])}"
+    )
+    LOGGER.info(f"Vers les formats : {file_formats}")
+    LOGGER.info(f"Répertoire de sortie : {output}")
+
+    converter.convert_files_to_formats(
+        input_files=valid_files,
+        output_path=output,
+        file_types=file_types,
+        config_path=config,
+        group_by_iho_order=group_by_iho_order,
+    )
+
+
 if __name__ == "__main__":
-    cli()
+    cli_group()
