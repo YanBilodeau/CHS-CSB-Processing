@@ -15,7 +15,6 @@ from loguru import logger
 import geopandas as gpd
 import pandas as pd
 
-from config.processing_config import FileTypes
 from ingestion import factory_parser, DataLoggerType
 from logger.loguru_config import configure_logger
 from tide import voronoi, time_serie, tide_zone, water_level_export
@@ -397,11 +396,11 @@ def processing_workflow(
     try:
         caris_api_config: config.CarisAPIConfig | None = (
             config.get_caris_api_config(config_file=config_path)
-            if FileTypes.CSAR in processing_config.export.export_format
+            if config.FileTypes.CSAR in processing_config.export.export_format
             else None
         )
     except config.CarisConfigError as error:
-        if FileTypes.CSAR in processing_config.export.export_format:
+        if config.FileTypes.CSAR in processing_config.export.export_format:
             LOGGER.error(
                 f"La configuration de Caris est obligatoire pour l'exportation en format *csar : {error}."
             )
@@ -666,9 +665,7 @@ def processing_workflow(
 
     # todo gérer la valeur np.nan dans les configurations des capteurs
 
-    # todo utilise cache pour les TimeSeries, peut-être utile si plusieurs itérations
-
-    # todo dans ce fichier, dans tide.time_serie.time_serie_dataframe
+    # todo dans ce fichier, dans tide.time_serie.time_serie_dataframe, optimiser les opérations
 
     # todo -> mettre template pour le nom dans le fichier de config
 
