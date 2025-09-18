@@ -229,7 +229,11 @@ def convert_files_to_formats(
         LOGGER.error("Aucun fichier d'entrée fourni.")
         return
 
-    LOGGER.info(f"Conversion de {len(input_files)} fichier(s) géospatial(aux).")
+    files_count = len(input_files)
+    LOGGER.info(
+        f"Conversion de {files_count} fichier{'s' if files_count > 1 else ''} "
+        f"géospatia{'l' if files_count == 1 else 'ux'}."
+    )
 
     # Charger les configurations une seule fois
     processing_config, caris_api_config = load_configurations(config_path, file_types)
@@ -275,6 +279,11 @@ def convert_files_to_formats(
                 LOGGER.error(f"Erreur lors du traitement de {input_file}: {error}")
                 failed_conversions += 1
 
-    LOGGER.info(
-        f"Conversion terminée : {successful_conversions} succès, {failed_conversions} échecs."
-    )
+    if failed_conversions == 0:
+        LOGGER.success(
+            f"Conversion terminée avec succès : {successful_conversions} fichier{'s' if successful_conversions > 1 else ''} traité{'s' if successful_conversions > 1 else ''}."
+        )
+    else:
+        LOGGER.warning(
+            f"Conversion terminée avec des erreurs : {successful_conversions} succès, {failed_conversions} échec{'s' if failed_conversions > 1 else ''}."
+        )
