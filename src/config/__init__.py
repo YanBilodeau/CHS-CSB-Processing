@@ -9,6 +9,7 @@ from .processing_config import (
     VesselManagerConfig,
     CSBprocessingConfig,
     get_data_config,
+    FileTypes,
 )
 from .iwls_api_config import IWLSAPIConfig, get_api_config
 
@@ -23,4 +24,5 @@ __all__ = [
     "get_api_config",
     "CarisAPIConfig",
     "get_caris_api_config",
+    "FileTypes",
 ]
