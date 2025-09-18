@@ -16,7 +16,7 @@ import iwls_api_request as iwls
 from . import voronoi
 
 
-LOGGER = logger.bind(name="CSB-Processing.TideZone")
+LOGGER = logger.bind(name="CSB-Processing.Tide.TideZone")
 
 
 @schema.validate_schemas(
