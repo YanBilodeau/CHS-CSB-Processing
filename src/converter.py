@@ -217,7 +217,5 @@ if __name__ == "__main__":
     convert_gpkg_to_formats(
         input_gpkg_path=gpkg_path,
         output_path=output_dir,
-        file_types=[
-            config.FileTypes.CSAR
-        ],
+        file_types=[config.FileTypes.CSAR],
     )
