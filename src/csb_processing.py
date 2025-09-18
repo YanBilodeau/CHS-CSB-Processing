@@ -15,16 +15,17 @@ import geopandas as gpd
 from loguru import logger
 import pandas as pd
 
-import config
-import export
-import metadata
 from config.processing_config import FileTypes
 from ingestion import factory_parser, DataLoggerType
-import iwls_api_request as iwls
 from logger.loguru_config import configure_logger
+from tide import stations, voronoi, time_serie, plot
+import config
+import export
+import iwls_api
+import metadata
+import iwls_api_request as iwls
 import schema
 import schema.model_ids as schema_ids
-from tide import stations, voronoi, time_serie, plot
 import filter.data_cleaning as cleaner
 import transformation.georeference as georeference
 import vessel as vessel_manager
@@ -83,69 +84,6 @@ def get_data_structure(output_path: Path) -> tuple[Path, Path, Path]:
         log_path.mkdir()
 
     return data_path, tide_path, log_path
-
-
-def get_iwls_environment(iwls_config: config.IWLSAPIConfig) -> iwls.APIEnvironment:
-    """
-    Réccupère l'environnement de l'API IWLS à partir du fichier de configuration.
-
-    :param iwls_config: Configuration de l'API IWLS.
-    :type iwls_config: IWLSAPIConfig
-    :return: Environnement de l'API IWLS.
-    :rtype: APIEnvironment
-    """
-    activated_profile: iwls.EnvironmentType = iwls_config.profile.active
-    activated_environment: iwls.APIEnvironment = iwls_config.__dict__.get(
-        activated_profile
-    )
-
-    LOGGER.debug(
-        f"Chargement du profil '{iwls_config.profile.active}' pour l'API IWLS. [{activated_environment}]."
-    )
-
-    return activated_environment
-
-
-def get_api(environment: iwls.APIEnvironment) -> stations.IWLSapiProtocol:
-    """
-    Récupère l'API IWLS à partir de l'environnement spécifié.
-
-    :param environment: Environnement de l'API IWLS.
-    :type environment: APIEnvironment
-    :return: API IWLS.
-    :rtype: IWLSapiProtocol
-    """
-    return iwls.get_iwls_api(  # type: ignore
-        endpoint=environment.endpoint,
-        handler_type=iwls.HandlerType.RATE_LIMITER,
-        calls=environment.calls,
-        period=environment.period,
-    )
-
-
-def get_stations_handler(
-    endpoint_type: stations.EndpointTypeProtocol,
-    api: stations.IWLSapiProtocol,
-    ttl: int,
-    cache_path: Path,
-) -> stations.StationsHandlerABC:
-    """
-    Récupère le gestionnaire des stations.
-
-    :param endpoint_type: Type de l'endpoint.
-    :type endpoint_type: EndpointTypeProtocol
-    :param api: API IWLS.
-    :type api: IWLSapiProtocol
-    :param ttl: Durée de vie du cache.
-    :type ttl: int
-    :param cache_path: Chemin du répertoire du cache.
-    :type cache_path: Path
-    :return: Gestionnaire des stations.
-    :rtype: StationsHandlerABC
-    """
-    return stations.get_stations_factory(enpoint_type=endpoint_type)(
-        api=api, ttl=ttl, cache_path=cache_path
-    )
 
 
 @schema.validate_schemas(
@@ -603,10 +541,12 @@ def export_processed_data_and_metadata(
     :param tide_stations: Liste des stations de marées.
     :type tide_stations: Optional[Collection[str]]
     """
+    # Finalize the geodataframe by ensuring correct data types, sorting and columns
     data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = (
         export.finalize_geodataframe(data_geodataframe=data_geodataframe)
     )
 
+    # Define the base path for output files
     output_base_path: Path = export_data_path / export.get_export_file_name(
         data_geodataframe=data_geodataframe,
         vessel_name=vessel_config.name,
@@ -827,22 +767,9 @@ def processing_workflow(
 
         return None
 
-    # Read the configuration file
-    iwls_api_config: config.IWLSAPIConfig = config.get_api_config(
-        config_file=config_path
-    )
-    # Get the environment of the API IWLS from the configuration file and the active profile
-    api_environment: iwls.APIEnvironment = get_iwls_environment(
-        iwls_config=iwls_api_config
-    )
-    # Get the API IWLS from the environment
-    api: stations.IWLSapiProtocol = get_api(environment=api_environment)
-    # Get the handler of the stations
-    stations_handler: stations.StationsHandlerABC = get_stations_handler(
-        api=api,
-        endpoint_type=api_environment.endpoint.TYPE,
-        ttl=iwls_api_config.cache.ttl,
-        cache_path=iwls_api_config.cache.cache_path,
+    # Initialize the IWLS API and the stations handler
+    iwls_api_config, stations_handler = iwls_api.initialize_iwls_api(
+        config_path=config_path
     )
 
     excluded_stations: list[str] = []
