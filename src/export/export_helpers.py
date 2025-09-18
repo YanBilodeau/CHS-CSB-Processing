@@ -154,10 +154,8 @@ def export_processed_data(
 
 def export_processed_data_to_file_types(
     data_geodataframe: gpd.GeoDataFrame,
-    export_data_path: Path,
+    output_base_path: Path,
     file_types: Collection[FileTypes],
-    datalogger_type: str,
-    vessel_name: Optional[str] = None,
     resolution: Optional[float] = 0.00005,
     groub_by_iho_order: Optional[bool] = True,
     **kwargs,
@@ -167,29 +165,15 @@ def export_processed_data_to_file_types(
 
     :param data_geodataframe: Données traitées à exporter.
     :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
-    :param export_data_path: Chemin du répertoire d'exportation.
-    :type export_data_path: Path
+    :param output_base_path: Chemin de base pour les fichiers d'exportation.
+    :type output_base_path: Path
     :param file_types: Liste des types de fichiers de sortie.
     :type file_types: Collection[FileTypes]
-    :param vessel_name: Nom du navire.
-    :type vessel_name: Optional[str]
-    :param datalogger_type: Type de capteur.
-    :type datalogger_type: str
     :param resolution: Résolution pour les formats raster.
     :type resolution: float
     :param groub_by_iho_order: Regrouper les données par ordre IHO.
     :type groub_by_iho_order: bool
     """
-    data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = (
-        finalize_geodataframe(data_geodataframe=data_geodataframe)
-    )
-
-    output_base_path: Path = export_data_path / get_export_file_name(
-        data_geodataframe=data_geodataframe,
-        vessel_name=vessel_name,
-        datalogger_type=datalogger_type,
-    )
-
     grouped_data: dict[str | None, gpd.GeoDataFrame] = {"ALL": data_geodataframe}
 
     if groub_by_iho_order:
