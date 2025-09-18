@@ -13,6 +13,7 @@ from .voronoi_geodataframe import (
     get_polygon_by_geometry,
     get_concave_hull,
 )
+from .voronoi_models import TimeSeriesProtocol, StationsHandlerProtocol
 
 __all__ = [
     "get_voronoi_geodataframe",
@@ -24,4 +25,6 @@ __all__ = [
     "get_polygon_by_geometry",
     "from_shapely_object_to_geodataframe",
     "get_concave_hull",
+    "TimeSeriesProtocol",
+    "StationsHandlerProtocol",
 ]
