@@ -32,14 +32,14 @@
       <cif:Multiplier>1</cif:Multiplier>
       <cif:Unit>m</cif:Unit>
       <cif:DataType>DOUBLE</cif:DataType>
-      <cif:Index>8</cif:Index>
+      <cif:Index>10</cif:Index>
     </cif:Column>
     <cif:Column>
       <cif:AttributeName>THU</cif:AttributeName>
       <cif:Multiplier>1</cif:Multiplier>
       <cif:Unit>m</cif:Unit>
       <cif:DataType>DOUBLE</cif:DataType>
-      <cif:Index>9</cif:Index>
+      <cif:Index>11</cif:Index>
     </cif:Column>
     <cif:Column>
       <cif:AttributeName>WaterLevelInfo</cif:AttributeName>
@@ -59,7 +59,7 @@
       <cif:AttributeName>IHO Order</cif:AttributeName>
       <cif:Multiplier>1</cif:Multiplier>
       <cif:DataType>STRING</cif:DataType>
-      <cif:Index>10</cif:Index>
+      <cif:Index>12</cif:Index>
     </cif:Column>
     <cif:Column>
       <cif:AttributeName>Speed</cif:AttributeName>
@@ -74,7 +74,7 @@
       <cif:Multiplier>1</cif:Multiplier>
       <cif:Ignore>&lt;NA&gt;</cif:Ignore>
       <cif:DataType>STRING</cif:DataType>
-      <cif:Index>11</cif:Index>
+      <cif:Index>13</cif:Index>
     </cif:Column>
     <cif:Column>
       <cif:AttributeName>WaterLevel</cif:AttributeName>
