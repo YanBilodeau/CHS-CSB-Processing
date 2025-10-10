@@ -90,6 +90,8 @@ class DataLoggerSchema(pa.DataFrameModel):
     Speed_kn: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
     Water_level_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
     Water_level_info: Series[object] = pa.Field(nullable=True)
+    Uncertainty_station_meter: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
+    SSP_uncertainty_percent: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
     Uncertainty: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
     THU: Series[pd.Float64Dtype()] = pa.Field(nullable=True)
     IHO_order: Series[str] = pa.Field(nullable=True)

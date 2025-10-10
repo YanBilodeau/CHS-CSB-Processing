@@ -239,6 +239,8 @@ class DataParserABC(ABC):
             schema_ids.IHO_ORDER: pd.Series(dtype="string"),
             schema_ids.OUTLIER: pd.Series(dtype="object"),
             schema_ids.WATER_LEVEL_METER: pd.Series(dtype="float64"),
+            schema_ids.UNCERTAINTY_STATION_METER: pd.Series(dtype="float64"),
+            schema_ids.SSP_UNCERTAINTY_PERCENT: pd.Series(dtype="float64"),
             schema_ids.TIME_SERIE: pd.Series(dtype="string"),
             schema_ids.TIDE_ZONE_ID: pd.Series(dtype="string"),
             schema_ids.TIDE_ZONE_CODE: pd.Series(dtype="string"),
