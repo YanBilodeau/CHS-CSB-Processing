@@ -66,12 +66,17 @@ def calculate_order_statistics(
         mean_depth=round(
             group[schema_ids.DEPTH_PROCESSED_METER].mean(), decimal_precision
         ),
+        median_depth=round(
+            group[schema_ids.DEPTH_PROCESSED_METER].median(), decimal_precision
+        ),
         min_tvu=group[schema_ids.UNCERTAINTY].min(),
         max_tvu=group[schema_ids.UNCERTAINTY].max(),
         mean_tvu=round(group[schema_ids.UNCERTAINTY].mean(), decimal_precision),
+        median_tvu=round(group[schema_ids.UNCERTAINTY].median(), decimal_precision),
         min_thu=group[schema_ids.THU].min(),
         max_thu=group[schema_ids.THU].max(),
         mean_thu=round(group[schema_ids.THU].mean(), decimal_precision),
+        median_thu=round(group[schema_ids.THU].median(), decimal_precision),
     )
 
 

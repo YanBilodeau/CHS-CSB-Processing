@@ -80,18 +80,24 @@ class OrderStatistics:
     """Profondeur maximale."""
     mean_depth: Optional[float] = None
     """Profondeur moyenne."""
+    median_depth: Optional[float] = None
+    """Profondeur médiane."""
     min_tvu: Optional[float] = None
     """TVU minimale."""
     max_tvu: Optional[float] = None
     """TVU maximale."""
     mean_tvu: Optional[float] = None
     """TVU moyenne."""
+    median_tvu: Optional[float] = None
+    """TVU médiane."""
     min_thu: Optional[float] = None
     """THU minimale."""
     max_thu: Optional[float] = None
     """THU maximale."""
     mean_thu: Optional[float] = None
     """THU moyenne."""
+    median_thu: Optional[float] = None
+    """THU médiane."""
 
     def __dict__(self) -> dict:
         """
@@ -105,12 +111,15 @@ class OrderStatistics:
                 "Min Depth (m)": self.min_depth,
                 "Max Depth (m)": self.max_depth,
                 "Mean Depth (m)": self.mean_depth,
+                "Median Depth (m)": self.median_depth,
                 "Min TVU (m)": self.min_tvu,
                 "Max TVU (m)": self.max_tvu,
                 "Mean TVU (m)": self.mean_tvu,
+                "Median TVU (m)": self.median_tvu,
                 "Min THU (m)": self.min_thu,
                 "Max THU (m)": self.max_thu,
                 "Mean THU (m)": self.mean_thu,
+                "Median THU (m)": self.median_thu,
             }.items()
             if value is not None
         }
