@@ -4,20 +4,22 @@
   - [Description](#description)
 - [Graphical User Interface (GUI)](#graphical-user-interface-gui)
 - [Command-Line Interface Tutorial for Bathymetric File Processing](#command-line-interface-tutorial-for-bathymetric-file-processing)
-  - [Main Command](#main-command)
-    - [Available Options](#available-options)
-      - [`files`](#files)
-      - [`--output`](#--output)
-      - [`--vessel`](#--vessel)
-      - [`--waterline`](#--waterline)
-      - [`--config`](#--config)
-      - [`--apply-water-level`](#--apply-water-level)
+  - [Available Commands](#available-commands)
+    - [1. `process` Command](#1-process-command)
+      - [Syntax](#syntax)
+      - [Arguments](#arguments)
+      - [Available Options](#available-options)
+      - [Usage Examples](#usage-examples)
+    - [2. `convert` Command](#2-convert-command)
+      - [Syntax](#syntax-1)
+      - [Arguments](#arguments-1)
+      - [Available Options](#available-options-1)
+      - [Supported Output Formats](#supported-output-formats)
+      - [Usage Examples](#usage-examples-1)
   - [Error Handling](#error-handling)
     - [Invalid Files](#invalid-files)
     - [Missing Parameters](#missing-parameters)
-  - [Complete Usage Example](#complete-usage-example)
-    - [Command](#command)
-    - [Detailed Steps](#detailed-steps)
+    - [Restrictions and Validations](#restrictions-and-validations)
 - [Processing Flow Diagram](#processing-flow-diagram)
 - [Configuration File (TOML)](#configuration-file-toml)
   - [Main Sections](#main-sections)
@@ -40,6 +42,7 @@ This module is designed to automate the processing of bathymetric data files. It
 - Identify and load appropriate files (CSV, TXT, XYZ, GeoJSON).
 - Perform georeferencing based on specific configurations.
 - Manage vessel identifiers and associated configurations.
+- Convert processed files to different output formats.
 
 The supported file formats are as follows:
 - OFM: `.xyz` extension with at least the columns `LON`, `LAT`, `DEPTH`, `TIME` in the header.
@@ -68,73 +71,129 @@ python web_ui.py
 This tutorial provides a detailed explanation of how to use the command-line module to process and georeference 
 bathymetric data files. It covers every parameter and provides practical examples.
 
+The CLI now offers two main commands:
+- `process`: for processing and georeferencing bathymetric data
+- `convert`: for converting GPKG/GeoJSON files to different formats
+
 ---
 
-## Main Command
+## Available Commands
 
+### 1. `process` Command
+
+Processes bathymetric data files and georeferences them.
+
+#### Syntax
 ```bash
-python cli.py <files> [options]
+python cli.py process [FILES...] [OPTIONS]
 ```
 
-### Available Options
+#### Arguments
+- `FILES`: One or more paths to files or directories to process. Supported formats:
+  - `.csv`, `.txt`, `.xyz`, `.geojson`
+  - Numeric extensions (`.1`, `.2`, `.3`, etc.)
 
-#### `files`
-- **Description**: Specifies the paths of the files or directories to be processed.
-- **Type**: `Collection[Path]`
-- **Required**: Yes
-- **Details**: You can provide one or multiple paths. If a directory is specified, all valid files it contains will be included.
-- **Example**:
-  ```bash
-  python cli.py /data/file1.csv /data/folder
-  ```
+#### Available Options
 
-#### `--output`
-- **Description**: Specifies the output directory for the processed files.
-- **Type**: `Path`
-- **Required**: Yes
-- **Details**: If this parameter is not set, the script will not save the processed files.
-- **Example**:
-  ```bash
-  python cli.py /data/file1.csv --output /data/output
-  ```
+| Option | Type | Required | Description                                                                                                                                                    |
+|--------|------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `--output` | Path | **Yes** | Output directory path                                                                                                                                          |
+| `--vessel` | Text | No | Vessel identifier. If not specified, a default vessel with lever arms at 0 will be used. **Incompatible with `--waterline`**                                   |
+| `--waterline` | Decimal | No | Vessel waterline in meter (vertical distance between sounder and water surface). If not specified, a value of 0 will be used. **Incompatible with `--vessel`** |
+| `--config` | Path | No | Configuration file path. If not specified, the default configuration file will be used                                                                         |
+| `--apply-water-level` | Boolean | No | Apply water level reduction when georeferencing soundings (default: `true`)                                                                                    |
 
-#### `--vessel`
-- **Description**: Provides the vessel identifier for processing.
-- **Type**: `str`
-- **Required**: No
-- **Details**: If no identifier is provided, a default vessel with lever arms set to 0 will be used.
-- **Example**:
-  ```bash
-  python cli.py /data/file1.csv --vessel VESSEL123
-  ```
+#### Usage Examples
 
-#### `--waterline`
-- **Description**: Specifies the distance between the sounder and the waterline.
-- **Type**: `float`
-- **Required**: No
-- **Details**: If this parameter is omitted, a waterline of 0 will be used.
-- **Example**:
-  ```bash
-  python cli.py /data/file1.csv --waterline 1.4
+**Basic processing with default vessel:**
+```bash
+python cli.py process data.csv --output ./results
+```
 
-#### `--config`
-- **Description**: Specifies the path to the configuration file (TOML format).
-- **Type**: `Path`
-- **Required**: No
-- **Details**: If this parameter is omitted, a default configuration file will be used.
-- **Example**:
-  ```bash
-  python cli.py /data/file1.csv --config /config/config.toml
-  ```
+**Processing with specific vessel:**
+```bash
+python cli.py process data.csv --vessel "CCGS_CARTIER" --output ./results
+```
 
-#### `--apply-water-level`
-- **Description**: Enables or disables the reduction of water levels to chart datum during georeferencing.
-- **Type**: `bool`
-- **Required**: No
-- **Details**: If this parameter is omitted, georeferencing based on water levels will be applied.
-- **Example**:
-  ```bash
-  python cli.py /data/file1.csv --apply-water-level True
+**Processing with custom waterline:**
+```bash
+python cli.py process data.csv --waterline 2.5 --output ./results
+```
+
+**Processing with custom configuration:**
+```bash
+python cli.py process data.csv --config ./custom_config.toml --output ./results
+```
+
+**Processing without water level reduction:**
+```bash
+python cli.py process data.csv --apply-water-level false --output ./results
+```
+
+**Processing multiple files:**
+```bash
+python cli.py process file1.csv file2.xyz directory/ --output ./results
+```
+
+### 2. `convert` Command
+
+Converts GPKG/GeoJSON files to different output formats.
+
+#### Syntax
+```bash
+python cli.py convert [INPUT_FILES...] [OPTIONS]
+```
+
+#### Arguments
+- `INPUT_FILES`: One or more GPKG (`.gpkg`) or GeoJSON (`.geojson`) files to convert
+
+#### Available Options
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `--output` | Path | **Yes** | Output directory path |
+| `--format` | Multiple choice | **Yes** | Desired output format(s). Can be specified multiple times to export to multiple formats |
+| `--config` | Path | No | Configuration file path. If not specified, the default configuration file will be used |
+| `--group-by-iho-order` | Boolean | No | Group data by IHO order during export (default: `false`) |
+
+#### Supported Output Formats
+
+The following formats are available via the `--format` option:
+
+- `geojson` - GeoJSON format
+- `gpkg` - GeoPackage format
+- `csar` - CSAR format
+- `parquet` - Apache Parquet format
+- `feather` - Apache Feather format
+- `csv` - CSV format
+- `geotiff` - GeoTIFF format
+
+#### Usage Examples
+
+**Convert to single format:**
+```bash
+python cli.py convert input.gpkg --output ./output --format geojson
+```
+
+**Convert to multiple formats:**
+```bash
+python cli.py convert input.gpkg --output ./output --format geojson --format csv --format parquet
+```
+
+**Convert with IHO order grouping:**
+```bash
+python cli.py convert input.gpkg --output ./output --format gpkg --group-by-iho-order true
+```
+
+**Convert multiple files:**
+```bash
+python cli.py convert file1.gpkg file2.geojson --output ./output --format geotiff
+```
+
+**Convert with custom configuration:**
+```bash
+python cli.py convert input.gpkg --output ./output --format csv --config ./custom_config.toml
+```
 
 ---
 
@@ -150,25 +209,33 @@ The module includes robust error handling to avoid unexpected interruptions. Bel
   ```
 
 ### Missing Parameters
-- **Issue**: If a required parameter such as `--output` is missing.
+- **Issue**: If a required parameter such as `--output` is missing or there are no files to process.
 - **Solution**: The script displays an error message explaining the missing parameter.
   ```bash
   [ERROR] The --output parameter is required.
   ```
----
 
-## Complete Usage Example
+### Restrictions and Validations
 
-### Command
-```bash
-python cli.py /data/file1.csv /data/folder --output /data/output --vessel VESSEL123 --config /config/config.toml --apply-water-level True
-```
+1. **Mutually exclusive options**: The `--vessel` and `--waterline` options cannot be used simultaneously in the `process` command.
 
-### Detailed Steps
-1. **Prepare Files**: Ensure the files are in a supported format (`.csv`, `.txt`, `.xyz`).
-2. **Create Configuration**: Modify a TOML file to define your specific parameters.
-3. **Run Command**: Provide the file paths, output directory, and other options such as the vessel identifier.
-4. **Verify Results**: Check the output directory for processed files and logs for any errors or warnings.
+2. **Waterline validation**: The `--waterline` value must be positive.
+
+3. **Supported files for `process`**:
+   - Extensions: `.csv`, `.txt`, `.xyz`, `.geojson`
+   - Numeric extensions: `.1`, `.2`, `.3`, etc.
+
+4. **Supported files for `convert`**:
+   - Only: `.gpkg` and `.geojson`
+
+### Default Behavior
+
+- If neither vessel nor waterline is specified, a default vessel with lever arms at 0 will be used
+- If no configuration file is provided, the default configuration will be used
+- Water level reduction is applied by default during georeferencing
+- Processing can be performed on individual files or entire directories (recursive processing)
+
+The CLI displays explicit error messages in French and English to facilitate debugging and ensure correct system usage.
 
 ---
 
@@ -223,10 +290,6 @@ flowchart TD
     RunIter --> IterCheck{run <= max_iterations ?}
     IterCheck -->|No| EndMaxRun[Incomplete processing: max iterations reached]
     EndMaxRun --> PlotWL
-    %% EndMaxRun --> PlotWLMax[Creating available water level charts]
-    %% PlotWLMax --> ExportDataMax[Exporting partially processed data]
-    %% ExportDataMax --> ExportMetadataMax[Exporting metadata]
-    %% ExportMetadataMax --> EndMaxComplete[End: export of available data]
 
     IterCheck -->|Yes| GetVoronoi["Retrieving tidal zones (Voronoi)
     without excluded stations"]
@@ -259,10 +322,10 @@ flowchart TD
     class Start start
     class Config,LoadCarisAPI,VesselConfig,GetSensors,LoadIWLS process
     class CarisConfig,ApplyWL,IterCheck,DataComplete,CheckData decision
-    class EndNoData,EndNoWL,EndMaxRun,EndMaxComplete,End endNode
+    class EndNoData,EndNoWL,EndMaxRun,End endNode
     class ParseFiles,CleanData,GeoreferenceNoWL,Georeference highlighted
     class RunIter,GetVoronoi,GetTideInfo,GetWaterLevel,AddExcluded,Increment iteration
-    class ExportNoWL,ExportWL,PlotWL,PlotWLMax,ExportData,ExportDataMax,ExportMetadata,ExportMetadataMax export
+    class ExportNoWL,ExportWL,PlotWL,ExportData,ExportMetadata export
     class Outliers process
 ```
 
@@ -331,7 +394,7 @@ json_config_path = "./TCSB_VESSELSLIST.json"  # Path to vessel configuration fil
 
 [CSB.Processing.export]
 export_format = ["gpkg", "csv"]  # Formats of files for exporting processed data.
-resolution = 0.0005  # Grid resolution for exporting data in raster format (in degrees).
+resolution = 0.00005  # Grid resolution for exporting data in raster format (in degrees).
 group_by_iho_order = false  # Group data by IHO order.
 
 [CSB.Processing.options]
@@ -342,15 +405,15 @@ decimal_precision = 1  # Decimal precision for processed data.
 [CARIS.Environment]
 base_path = "C:/Program Files/CARIS"  # Path to the CARIS installation directory.
 software = "BASE Editor"  # CARIS software to use.
-version = "5.5"  # CARIS software version.   
-python_version = "3.11"  # Python version to use.  
+version = "6.1"  # CARIS software version.
+python_version = "3.11"  # Python version to use.
 args = []  # Additional arguments for exporting data in CSAR format.
 ```
 
 ## Main Sections
 
 - `[IWLS.API.TimeSeries]` (Optional): Parameters for time series. If no parameter is defined, default values will be used and no interpolation will be performed.
-  - `priority`: List of time series to use by priority (e.g., `"wlo"`, `"wlp"`).
+  - `priority`: List of time series to use by priority (e.g., [`"wlo"`, `"wlp"`]).
   - `max_time_gap`: Maximum time without data before interpolation (format: `"<number> <unit>"`, e.g., `"1 min"`).
   - `threshold_interpolation_filling`: Threshold for interpolation and filling missing data (e.g., `"4 h"`).
   - `wlo_qc_flag_filter`: Quality filters for WLO data.
@@ -370,11 +433,11 @@ args = []  # Additional arguments for exporting data in CSAR format.
 
 - `[DATA.Transformation.filter]` (Optional): Defines geographic, depth and speed limits for tagging inconsistent data.
   - `filter_to_apply`: List of filters to apply. Data is directly rejected if the filter is applied, otherwise data is simply tagged. Available filters are:
-    - `"DEPTH_FILTER"` : Depth filter (based on `min_depth` and `max_depth`).
-    - `"LATITUDE_FILTER"` : Latitude filter (based on `min_latitude` and `max_latitude`).
-    - `"LONGITUDE_FILTER"` : Longitude filter (based on `min_longitude` and `max_longitude`).
-    - `"TIME_FILTER"` : Time filter (based on valid timestamps).
-    - `"SPEED_FILTER"` : Speed filter (based on `min_speed` and `max_speed`).
+    - `DEPTH_FILTER`: Depth filter (limit defined by `min_depth` and `max_depth`).
+    - `LATITUDE_FILTER`: Latitude filter (limit defined by `min_latitude` and `max_latitude`).
+    - `LONGITUDE_FILTER`: Longitude filter (limit defined by `min_longitude` and `max_longitude`).
+    - `TIME_FILTER`: Time filter (checks valid timestamps).
+    - `SPEED_FILTER`: Speed filter (limit defined by `min_speed` and `max_speed`).
 
 - `[DATA.Georeference.water_level]` (Optional): Defines tolerance for georeferencing based on water levels (format: `"<number> <unit>"`, e.g., `"15 min"`).
 
@@ -382,29 +445,29 @@ args = []  # Additional arguments for exporting data in CSAR format.
   - `manager_type`: Type of vessel manager (e.g., `"VesselConfigJsonManager"`).
   - `json_config_path` (Used with `"VesselConfigJsonManager"`): Path to the vessel configuration file.
 
-- `[CSB.Processing.export]` (Optional): Export parameters.
+- `[CSB.Processing.export]` (Optional): Export parameters for processed data.
+  - `export_format`: List of file formats for exporting processed data: {`"geojson"`, `"gpkg"`, `"csar"`, `"parquet"`, `"feather"`, `"csv"`, `"geotiff"`} (e.g., [`"gpkg"`, `"csv"`]).
   - `resolution`: Grid resolution for exporting data in raster format (in degrees).
-  - `export_format`: List of file formats for exporting processed data {`"geojson"`, `"gpkg"`, `"csar"`, `"parquet"`, `"feather"`, `"csv"`, `"geotiff"`} (e.g. : [`"gpkg"`, `"csv"`]).
-  - `group_by_iho_order` : Group data by IHO order.
+  - `group_by_iho_order`: Group data by IHO order: {`true`, `false`}.
 
 - `[CSB.Processing.options]` (Optional): Processing options.
-  - `log_level` : Log level: {`"DEBUG"`, `"INFO"`, `"WARNING"`, `"ERROR"`, `"CRITICAL"`}.
-  - `max_iterations` : Maximum number of iterations.
-  - `decimal_precision` : Number of significant decimal places for processed data.
+  - `log_level`: Log level: {`"DEBUG"`, `"INFO"`, `"WARNING"`, `"ERROR"`, `"CRITICAL"`}.
+  - `max_iterations`: Maximum number of iterations.
+  - `decimal_precision`: Number of significant decimal places for processed data.
 
 - `[CARIS.Environment]` (Optional): CARIS environment-specific parameters. Used to export data in CSAR format.
   - `base_path`: Path to CARIS software installation (default: `"C:/Program Files/CARIS"`).
   - `software`: CARIS software used (e.g., `"BASE Editor"`, `"HIPS and SIPS"`).
-  - `version`: Specific version of CARIS software (e.g., `"5.5"`).
+  - `version`: Specific version of CARIS software (e.g., `"6.1"`).
   - `python_version`: Python version used by the CARIS API (e.g., `"3.11"`).
-  - `args` : Additional arguments to pass for exporting data in CSAR format.
+  - `args`: Additional arguments for exporting data in CSAR format.
 
 ---
 
 # Vessel File (Vessels)
 
-The vessel configuration file is a JSON file containing the necessary information for each vessel, such as the 
-identifier, axis conventions, and associated data. The path to the JSON file is defined in the TOML configuration file. 
+The vessel configuration file is a JSON file containing the necessary information for each vessel, such as the
+identifier, axis conventions, and associated data. The path to the JSON file is defined in the TOML configuration file.
 Here is an example file:
 
 ```json
@@ -475,7 +538,7 @@ Here is an example file:
 - **`waterline`**: Waterline information, including elevation (`z`) and a timestamp.
 - **`ssp_applied`**: Indicates whether the sound speed profile model has been applied (`ssp`).
 
-For all `time_stamp` attributes, the format must be ISO 8601 (e.g., `"2021-09-25T00:00:00Z"`). Additionally, the 
+For all `time_stamp` attributes, the format must be ISO 8601 (e.g., `"2021-09-25T00:00:00Z"`). Additionally, the
 `time_stamp` indicates the date from which the configuration is valid.
 
 ---

@@ -4,20 +4,22 @@
   - [Description](#description)
 - [Interface graphique utilisateur (GUI)](#interface-graphique-utilisateur-gui)
 - [Tutoriel d'utilisation de l'interface en ligne de commande pour le traitement des fichiers bathymétriques](#tutoriel-dutilisation-de-linterface-en-ligne-de-commande-pour-le-traitement-des-fichiers-bathymétriques)
-  - [Commande principale](#commande-principale)
-    - [Options disponibles](#options-disponibles)
-      - [`files`](#files)
-      - [`--output`](#--output)
-      - [`--vessel`](#--vessel)
-      - [`--waterline`](#--waterline)
-      - [`--config`](#--config)
-      - [`--apply-water-level`](#--apply-water-level)
+  - [Commandes disponibles](#commandes-disponibles)
+    - [1. Commande `process`](#1-commande-process)
+      - [Syntaxe](#syntaxe)
+      - [Arguments](#arguments)
+      - [Options disponibles](#options-disponibles)
+      - [Exemples d'utilisation](#exemples-dutilisation)
+    - [2. Commande `convert`](#2-commande-convert)
+      - [Syntaxe](#syntaxe-1)
+      - [Arguments](#arguments-1)
+      - [Options disponibles](#options-disponibles-1)
+      - [Formats de sortie supportés](#formats-de-sortie-supportés)
+      - [Exemples d'utilisation](#exemples-dutilisation-1)
   - [Gestion des erreurs](#gestion-des-erreurs)
     - [Fichiers invalides](#fichiers-invalides)
     - [Paramètres manquants](#paramètres-manquants)
-  - [Exemple d'utilisation complet](#exemple-dutilisation-complet)
-    - [Commande](#commande)
-    - [Étapes détaillées](#étapes-détaillées)
+    - [Restrictions et validations](#restrictions-et-validations)
 - [Diagramme du flux de traitement](#diagramme-du-flux-de-traitement)
 - [Fichier de configuration (TOML)](#fichier-de-configuration-toml)
   - [Sections principales](#sections-principales)
@@ -40,6 +42,7 @@ Ce module est conçu pour automatiser le traitement des fichiers de données bat
 - Identifier et charger les fichiers appropriés (CSV, TXT, XYZ, GeoJSON).
 - Effectuer un géoréférencement basé sur des configurations spécifiques.
 - Gérer les identifiants de navires et les configurations associées.
+- Convertir des fichiers traités vers différents formats de sortie.
 
 Les formats de fichiers pris en charge sont les suivants : 
 - OFM : extension `.xyz` avec minimalement les colonnes `LON`, `LAT`, `DEPTH`, `TIME` dans l'entête.
@@ -69,76 +72,129 @@ python web_ui.py
 Ce tutoriel explique en détail comment utiliser le module de ligne de commande pour traiter et géoréférencer des fichiers 
 de données bathymétriques. Il couvre chaque paramètre et fournit des exemples pratiques.
 
+Le CLI propose maintenant deux commandes principales :
+- `process` : pour le traitement et le géoréférencement des données bathymétriques
+- `convert` : pour la conversion de fichiers GPKG/GeoJSON vers différents formats
+
 ---
 
-## Commande principale
+## Commandes disponibles
 
+### 1. Commande `process`
+
+Traite les fichiers de données bathymétriques et les géoréférence.
+
+#### Syntaxe
 ```bash
-python cli.py <files> [options] 
+python cli.py process [FICHIERS...] [OPTIONS]
 ```
 
-### Options disponibles
+#### Arguments
+- `FICHIERS` : Un ou plusieurs chemins vers des fichiers ou répertoires à traiter. Formats supportés :
+  - `.csv`, `.txt`, `.xyz`, `.geojson`
+  - Extensions numériques (`.1`, `.2`, `.3`, etc.)
 
-#### `files`
-- **Description** : Spécifie les chemins des fichiers ou des répertoires à traiter.
-- **Type** : `Collection[Path]`
-- **Obligatoire** : Oui
-- **Détails** : Vous pouvez fournir un ou plusieurs chemins. Si un répertoire est spécifié, tous les fichiers valides qu'il contient seront inclus.
-- **Exemple** :
-  ```bash
-  python cli.py /data/fichier1.csv /data/dossier
-  ```
+#### Options disponibles
 
-#### `--output`
-- **Description** : Spécifie le répertoire de sortie pour les fichiers traités.
-- **Type** : `Path`
-- **Obligatoire** : Oui
-- **Détails** : Si ce paramètre n'est pas défini, le script ne pourra pas enregistrer les fichiers traités.
-- **Exemple** :
-  ```bash
-  python cli.py /data/fichier1.csv --output /data/output
-  ```
+| Option | Type | Requis | Description                                                                                                                                                                            |
+|--------|------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `--output` | Chemin | **Oui**     | Chemin du répertoire de sortie                                                                                                                                                         |
+| `--vessel` | Texte | Non    | Identifiant du navire. Si non spécifié, un navire par défaut avec des bras de levier à 0 sera utilisé. **Incompatible avec `--waterline`**                                             |
+| `--waterline` | Nombre décimal | Non    | Ligne de flottaison du navire en mètre (distance verticale entre le sondeur et la surface de l'eau). Si non spécifiée, une valeur de 0 sera utilisée. **Incompatible avec `--vessel`** |
+| `--config` | Chemin | Non    | Chemin du fichier de configuration. Si non spécifié, le fichier de configuration par défaut sera utilisé                                                                               |
+| `--apply-water-level` | Booléen | Non    | Appliquer la réduction des niveaux d'eau lors du géoréférencement des sondes (défaut: `true`)                                                                                          |
 
-#### `--vessel`
-- **Description** : Fournit l'identifiant du navire pour le traitement.
-- **Type** : `str`
-- **Obligatoire** : Non
-- **Détails** : Si aucun identifiant n'est fourni, un navire par défaut avec des bras de levier à 0 sera utilisé.
-- **Exemple** :
-  ```bash
-  python cli.py /data/fichier1.csv --vessel NAVIRE123
-  ```
+#### Exemples d'utilisation
 
-#### `--waterline`
-- **Description** : Spécifie la distance entre le sondeur et la ligne d'eau.
-- **Type** : `float`
-- **Obligatoire** : Non
-- **Détails** : Si ce paramètre est omis, une ligne d'eau à 0 sera utilisée. 
-- **Exemple** :
-  ```bash
-  python cli.py /data/fichier1.csv --waterline 1.4
-  ```
+**Traitement basique avec navire par défaut :**
+```bash
+python cli.py process data.csv --output ./results
+```
 
+**Traitement avec un navire spécifique :**
+```bash
+python cli.py process data.csv --vessel "CCGS_CARTIER" --output ./results
+```
 
-#### `--config`
-- **Description** : Spécifie le chemin du fichier de configuration (au format TOML).
-- **Type** : `Path`
-- **Obligatoire** : Non
-- **Détails** : Si ce paramètre est omis, un fichier de configuration par défaut sera utilisé.
-- **Exemple** :
-  ```bash
-  python cli.py /data/fichier1.csv --config /config/config.toml
-  ```
+**Traitement avec ligne de flottaison personnalisée :**
+```bash
+python cli.py process data.csv --waterline 2.5 --output ./results
+```
 
-#### `--apply-water-level`
-- **Description** : Active ou désactive la réduction des niveaux d'eau au zéro des cartes lors du géoréférencement.
-- **Type** : `bool`
-- **Obligatoire** : Non
-- **Détails** : Si ce paramètre est omis, le géoréférencement basé sur les niveaux d'eau sera appliqué.
-- **Exemple** :
-  ```bash
-  python cli.py /data/fichier1.csv --apply-water-level True
-  ```
+**Traitement avec configuration personnalisée :**
+```bash
+python cli.py process data.csv --config ./custom_config.toml --output ./results
+```
+
+**Traitement sans réduction des niveaux d'eau :**
+```bash
+python cli.py process data.csv --apply-water-level false --output ./results
+```
+
+**Traitement de plusieurs fichiers :**
+```bash
+python cli.py process file1.csv file2.xyz directory/ --output ./results
+```
+
+### 2. Commande `convert`
+
+Convertit des fichiers GPKG/GeoJSON vers différents formats de sortie.
+
+#### Syntaxe
+```bash
+python cli.py convert [FICHIERS_ENTREE...] [OPTIONS]
+```
+
+#### Arguments
+- `FICHIERS_ENTREE` : Un ou plusieurs fichiers GPKG (`.gpkg`) ou GeoJSON (`.geojson`) à convertir
+
+#### Options disponibles
+
+| Option | Type | Requis | Description |
+|--------|------|--------|-------------|
+| `--output` | Chemin | **Oui** | Chemin du répertoire de sortie |
+| `--format` | Choix multiple | **Oui** | Format(s) de sortie désirés. Peut être spécifié plusieurs fois pour exporter vers plusieurs formats |
+| `--config` | Chemin | Non | Chemin du fichier de configuration. Si non spécifié, le fichier de configuration par défaut sera utilisé |
+| `--group-by-iho-order` | Booléen | Non | Regrouper les données par ordre IHO lors de l'exportation (défaut: `false`) |
+
+#### Formats de sortie supportés
+
+Les formats suivants sont disponibles via l'option `--format` :
+
+- `geojson` - Format GeoJSON
+- `gpkg` - Format GeoPackage  
+- `csar` - Format CSAR
+- `parquet` - Format Apache Parquet
+- `feather` - Format Apache Feather
+- `csv` - Format CSV
+- `geotiff` - Format GeoTIFF
+
+#### Exemples d'utilisation
+
+**Conversion vers un seul format :**
+```bash
+python cli.py convert input.gpkg --output ./output --format geojson
+```
+
+**Conversion vers plusieurs formats :**
+```bash
+python cli.py convert input.gpkg --output ./output --format geojson --format csv --format parquet
+```
+
+**Conversion avec regroupement par ordre IHO :**
+```bash
+python cli.py convert input.gpkg --output ./output --format gpkg --group-by-iho-order true
+```
+
+**Conversion de plusieurs fichiers :**
+```bash
+python cli.py convert file1.gpkg file2.geojson --output ./output --format geotiff
+```
+
+**Conversion avec configuration personnalisée :**
+```bash
+python cli.py convert input.gpkg --output ./output --format csv --config ./custom_config.toml
+```
 
 ---
 
@@ -159,20 +215,28 @@ Le module inclut une gestion robuste des erreurs pour éviter les interruptions 
   ```bash
   [ERROR] Le paramètre --output est obligatoire.
   ```
----
 
-## Exemple d'utilisation complet
+### Restrictions et validations
 
-### Commande
-```bash
-python cli.py /data/fichier1.csv /data/dossier --output /data/output --vessel NAVIRE123 --config /config/config.toml --apply-water-level True
-```
+1. **Options mutuellement exclusives** : Les options `--vessel` et `--waterline` ne peuvent pas être utilisées simultanément dans la commande `process`.
 
-### Étapes détaillées
-1. **Préparer les fichiers** : Assurez-vous que les fichiers sont au format pris en charge (`.csv`, `.txt`, `.xyz`).
-2. **Créer une configuration** : Modifiez un fichier TOML pour définir vos paramètres spécifiques.
-3. **Exécuter la commande** : Fournissez les chemins des fichiers, le répertoire de sortie, et d'autres options comme l'identifiant du navire.
-4. **Vérifier les résultats** : Consultez le répertoire de sortie pour les fichiers traités et les journaux pour toute erreur ou avertissement.
+2. **Validation de la ligne de flottaison** : La valeur de `--waterline` doit être positive.
+
+3. **Fichiers supportés pour `process`** :
+   - Extensions : `.csv`, `.txt`, `.xyz`, `.geojson`
+   - Extensions numériques : `.1`, `.2`, `.3`, etc.
+
+4. **Fichiers supportés pour `convert`** :
+   - Uniquement : `.gpkg` et `.geojson`
+
+### Comportement par défaut
+
+- Si aucun navire ni ligne de flottaison n'est spécifié, un navire par défaut avec des bras de levier à 0 sera utilisé
+- Si aucun fichier de configuration n'est fourni, la configuration par défaut sera utilisée
+- La réduction des niveaux d'eau est appliquée par défaut lors du géoréférencement
+- Le traitement peut s'effectuer sur des fichiers individuels ou des répertoires entiers (traitement récursif)
+
+Le CLI affiche des messages d'erreur explicites en français et en anglais pour faciliter le débogage et assurer une utilisation correcte du système.
 
 ---
 
@@ -227,10 +291,6 @@ flowchart TD
     RunIter --> IterCheck{run <= max_iterations ?}
     IterCheck -->|Non| EndMaxRun[Traitement incomplet: max iterations atteint]
     EndMaxRun --> PlotWL
-    %% EndMaxRun --> PlotWLMax[Création des graphiques des niveaux d'eau disponibles]
-    %% PlotWLMax --> ExportDataMax[Exportation des données partiellement traitées]
-    %% ExportDataMax --> ExportMetadataMax[Exportation des métadonnées]
-    %% ExportMetadataMax --> EndMaxComplete[Fin : export des données disponibles]
 
     IterCheck -->|Oui| GetVoronoi["Récupération des zones de marée (Voronoi)
     sans les stations exclues"]
@@ -246,7 +306,7 @@ flowchart TD
     • Calcul de la THU
     • Calcul de l'ordre de levé"]
 
-    Georeference --> DataComplete{Traitement complété ?
+    Georeference --> DataComplete{Traitement complet ?
     DEPTH_PROCESSED_METER sans NaN ?}
     DataComplete -->|Oui| PlotWL[Création des graphiques des niveaux d'eau]
 
@@ -263,10 +323,10 @@ flowchart TD
     class Start start
     class Config,LoadCarisAPI,VesselConfig,GetSensors,LoadIWLS process
     class CarisConfig,ApplyWL,IterCheck,DataComplete,CheckData decision
-    class EndNoData,EndNoWL,EndMaxRun,EndMaxComplete,End endNode
+    class EndNoData,EndNoWL,EndMaxRun,End endNode
     class ParseFiles,CleanData,GeoreferenceNoWL,Georeference highlighted
     class RunIter,GetVoronoi,GetTideInfo,GetWaterLevel,AddExcluded,Increment iteration
-    class ExportNoWL,ExportWL,PlotWL,PlotWLMax,ExportData,ExportDataMax,ExportMetadata,ExportMetadataMax export
+    class ExportNoWL,ExportWL,PlotWL,ExportData,ExportMetadata export
     class Outliers process
 ```
 
@@ -274,7 +334,7 @@ flowchart TD
 
 # Fichier de configuration (TOML)
 
-Le fichier de configuration au format TOML permet de définir les paramètres pour le traitement. 
+Le fichier de configuration au format TOML permet de définir les paramètres pour le traitement.
 Voici un exemple du fichier de configuration par défaut (./src/CONFIG_csb-processing.toml) :
 
 ```toml
@@ -356,10 +416,10 @@ args = []  # Arguments supplémentaires pour l'exportation au format CSAR.
 
 - `[IWLS.API.TimeSeries]` (Optionnel) : Paramètres pour les séries temporelles. Si aucun paramètre n'est défini, les valeurs par défaut seront utilisées et aucune interpolation ne sera effectuée.
   - `priority` : Liste des séries temporelles à utiliser selon leur priorité (ex. : [`"wlo"`, `"wlp"`]).
-  - `max_time_gap` : Temps maximal sans données avant interpolation (format : `"<nombre> <unité>"`, ex. : `"1 min"`).
+  - `max_time_gap` : Temps maximal sans données avant interpolation (format : `"<nombre> <unit>"`, ex. : `"1 min"`).
   - `threshold_interpolation_filling` : Seuil pour l'interpolation et le remplissage des données manquantes (ex. : `"4 h"`).
   - `wlo_qc_flag_filter` : Filtres de qualité pour les données WLO.
-  - `buffer_time` : Temps tampon pour les interpolations. (format : `"<nombre> <unité>"`, ex. : `"24 h"`).
+  - `buffer_time` : Temps tampon pour les interpolations. (format : `"<nombre> <unit>"`, ex. : `"24 h"`).
 
 - `[IWLS.API.Profile]` (Optionnel) : Définit le profil actif (`"dev"`, `"prod"`, `"public"`). Un profil public est utilisé par défaut avec 15 appels par seconde.
 
@@ -374,14 +434,14 @@ args = []  # Arguments supplémentaires pour l'exportation au format CSAR.
   - `cache_path` : Répertoire pour le stockage du cache.
 
 - `[DATA.Transformation.filter]` (Optionnel) : Définit les limites géographiques, de profondeur et de vitesse pour tagger les données incohérentes.
-  - `filter_to_apply` : Liste des filtres à appliquer. Les données sont directement rejectées si le filtre est appliqué, sinon les données sont simplement taggées. Les filtres disponibles sont :
-    - `DEPTH_FILTER` : Filtre de profondeur (limite définit selon `min_depth` et `max_depth`).
-    - `LATITUDE_FILTER` : Filtre de latitude (limite définit selon `min_latitude` et `max_latitude`).
-    - `LONGITUDE_FILTER` : Filtre de longitude (limite définit selon `min_longitude` et `max_longitude`).
+  - `filter_to_apply` : Liste des filtres à appliquer. Les données sont directement rejetées si le filtre est appliqué, sinon les données sont simplement taggées. Les filtres disponibles sont :
+    - `DEPTH_FILTER` : Filtre de profondeur (limite définie selon `min_depth` et `max_depth`).
+    - `LATITUDE_FILTER` : Filtre de latitude (limite définie selon `min_latitude` et `max_latitude`).
+    - `LONGITUDE_FILTER` : Filtre de longitude (limite définie selon `min_longitude` et `max_longitude`).
     - `TIME_FILTER` : Filtre de temps (vérifie les timestamps valides).
-    - `SPEED_FILTER` : Filtre de vitesse (limite définit selon `min_speed` et `max_speed`).
+    - `SPEED_FILTER` : Filtre de vitesse (limite définie selon `min_speed` et `max_speed`).
 
-- `[DATA.Georeference.water_level]` (Optionnel) : Définit la tolérance pour le géoréférencement basé sur les niveaux d'eau. (format : `"<nombre> <unité>"`, ex. : `"15 min"`).
+- `[DATA.Georeference.water_level]` (Optionnel) : Définit la tolérance pour le géoréférencement basé sur les niveaux d'eau. (format : `"<nombre> <unit>"`, ex. : `"15 min"`).
 
 - `[CSB.Processing.vessel]` (Optionnel) : Configure le gestionnaire et le fichier des navires. Obligatoire seulement si vous utilisez des navires pour le géoréférencement.
   - `manager_type` : Type de gestionnaire de navires (ex. : `"VesselConfigJsonManager"`).
@@ -392,7 +452,7 @@ args = []  # Arguments supplémentaires pour l'exportation au format CSAR.
   - `resolution` : Résolution pour les formats raster (en degrés).
   - `group_by_iho_order` : Regrouper les données par ordre IHO : {`true`, `false`}.
 
-- `[CSB.Processing.options]` (Optionnel) : Options de traitement. 
+- `[CSB.Processing.options]` (Optionnel) : Options de traitement.
   - `log_level` : Niveau de journalisation : {`"DEBUG"`, `"INFO"`, `"WARNING"`, `"ERROR"`, `"CRITICAL"`}.
   - `max_iterations` : Nombre maximal d'itérations.
   - `decimal_precision` : Nombre de décimales significatives pour les données traitées.
@@ -403,13 +463,13 @@ args = []  # Arguments supplémentaires pour l'exportation au format CSAR.
   - `version` : Version spécifique du logiciel CARIS (ex. : `"6.1"`).
   - `python_version` : Version de Python utilisée par l'API CARIS (ex. : `"3.11"`).
   - `args` : Arguments supplémentaires pour l'exportation au format CSAR.
-  
+
 ---
 
 # Fichier des navires (Vessels)
 
-Le fichier de configuration des navires est un fichier JSON contenant les informations nécessaires pour chaque navire, telles que 
-l'identifiant, les conventions d'axes, et les données associées. Le chemin du fichier JSON est défini dans le fichier 
+Le fichier de configuration des navires est un fichier JSON contenant les informations nécessaires pour chaque navire, telles que
+l'identifiant, les conventions d'axes, et les données associées. Le chemin du fichier JSON est défini dans le fichier
 de configuration TOML. Voici un exemple de fichier :
 
 ```json
@@ -480,7 +540,7 @@ de configuration TOML. Voici un exemple de fichier :
 - **`waterline`** : Informations sur la ligne d'eau, incluant l'élévation (`z`) et un horodatage.
 - **`ssp_applied`** : Indique si le modèle de propagation du son a été appliqué (`ssp`).
 
-Pour tous les attributs `time_stamp`, le format doit être ISO 8601 (ex. : `"2021-09-25T00:00:00Z"`). De plus, le `time_stamp` 
+Pour tous les attributs `time_stamp`, le format doit être ISO 8601 (ex. : `"2021-09-25T00:00:00Z"`). De plus, le `time_stamp`
 indique la date à partir de laquelle la configuration est valide.
 
 ---
