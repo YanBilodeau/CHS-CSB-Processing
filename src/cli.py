@@ -83,6 +83,7 @@ def cli_group():
 @click.option(
     "--output",
     type=click.Path(),
+    required=True,
     help="""
     Chemin du répertoire de sortie.\n
     Path of the output directory.
