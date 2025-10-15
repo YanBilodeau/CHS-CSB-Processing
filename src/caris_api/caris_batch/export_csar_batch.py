@@ -60,6 +60,10 @@ def export_geodataframe_to_csar(
             "WaterLevel",
             "--include-band",
             "Outlier",
+            "--include-band",
+            "UncertaintyStation",
+            "--include-band",
+            "SSPUncertaintyPercent",
             "--info-file",
             INFO_FILE_PATH,
         ]

@@ -83,5 +83,18 @@
       <cif:DataType>DOUBLE</cif:DataType>
       <cif:Index>6</cif:Index>
     </cif:Column>
+    <cif:Column>
+      <cif:AttributeName>UncertaintyStation</cif:AttributeName>
+      <cif:Multiplier>1</cif:Multiplier>
+      <cif:Unit>m</cif:Unit>
+      <cif:DataType>DOUBLE</cif:DataType>
+      <cif:Index>8</cif:Index>
+    </cif:Column>
+    <cif:Column>
+      <cif:AttributeName>SSPUncertaintyPercent</cif:AttributeName>
+      <cif:Multiplier>1</cif:Multiplier>
+      <cif:DataType>DOUBLE</cif:DataType>
+      <cif:Index>9</cif:Index>
+    </cif:Column>
   </cif:Delimited>
 </cif:FormatInformation>
