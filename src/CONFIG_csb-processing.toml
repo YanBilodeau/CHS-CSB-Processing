@@ -140,8 +140,8 @@ max_distance_ssp = 30000  # 30 km
 depth_coefficient_tvu = 0.5
 
 [DATA.Georeference.uncertainty.thu]
-# THU = (Profondeur × Coefficient THU[angular_opening_sonar]) + Constante THU [constant_thu]
-# THU = (Depth × THU Coefficient[angular_opening_sonar]) + THU Constant [constant_thu]
+# THU = (Profondeur × (Coefficient THU[angular_opening_sonar] / 2)) + Constante THU [constant_thu]
+# THU = (Depth × (THU Coefficient[angular_opening_sonar] / 2)) + THU Constant [constant_thu]
 
 # Ouverture angulaire du faisceau du sonar (degré) {float}. Utilisé pour déterminer le coefficient THU.
 # Sonar beam angular opening (degrees) {float}. Used to determine the THU coefficient.
@@ -161,7 +161,7 @@ manager_type = "VesselConfigJsonManager"
 json_config_path = "./CONFIG_vessels.json"
 
 [CSB.Processing.export]
-# Liste des formats d'export des données traitées {"geojson", "gpkg", "csar", "parquet", "feather", "csv"}
+# Liste des formats d'export des données traitées {"geojson", "gpkg", "csar", "parquet", "feather", "csv", "geotiff"}
 # Pour le format csar, la section [CARIS.Environment] doit être configurée.
 # List of export formats for processed data {"geojson", "gpkg", "csar", "parquet", "feather", "csv", "geotiff"}
 # For the csar format, the [CARIS.Environment] section must be configured.

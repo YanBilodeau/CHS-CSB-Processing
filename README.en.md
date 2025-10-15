@@ -373,10 +373,10 @@ min_latitude = -90
 max_latitude = 90
 min_longitude = -180
 max_longitude = 180
-# min_speed = 0
-# max_speed = 30
+min_speed = 0  # Minimum speed in knots (optional).
+max_speed = 30  # Maximum speed in knots (optional).
 min_depth = 0
-# max_depth = 1000 # Maximum depth value (disabled by default).
+max_depth = 1000  # Maximum depth value (optional).
 filter_to_apply = [
   "LATITUDE_FILTER",
   "LONGITUDE_FILTER",
@@ -387,6 +387,21 @@ filter_to_apply = [
 
 [DATA.Georeference.water_level]
 water_level_tolerance = "15 min"  # Tolerance for georeferencing water levels.
+
+[DATA.Georeference.uncertainty.tvu]
+constant_tvu_wlo = 0.04  # TVU constant for WLO water levels.
+default_constant_tvu_wlp = 0.35  # TVU constant for WLP water levels.
+depth_coefficient_tvu = 0.5  # Depth coefficient for TVU calculation.
+default_depth_ssp_error_coefficient = 4.1584  # Default SSP error coefficient.
+max_distance_ssp = 30000  # Maximum distance to link an SSP value (in meters).
+
+[DATA.Georeference.uncertainty.thu]
+cone_angle_sonar = 20  # Sonar cone angle for THU calculation (in degrees).
+constant_thu = 3  # THU constant.
+
+[DATA.Processing.bins]
+nbin_x = 35  # Number of bins in X for histograms.
+nbin_y = 35  # Number of bins in Y for histograms.
 
 [CSB.Processing.vessel]
 manager_type = "VesselConfigJsonManager"
@@ -432,6 +447,9 @@ args = []  # Additional arguments for exporting data in CSAR format.
   - `cache_path`: Directory for cache storage.
 
 - `[DATA.Transformation.filter]` (Optional): Defines geographic, depth and speed limits for tagging inconsistent data.
+  - `min_speed`: Minimum speed in knots (optional).
+  - `max_speed`: Maximum speed in knots (optional).
+  - `max_depth`: Maximum depth value in meters (optional).
   - `filter_to_apply`: List of filters to apply. Data is directly rejected if the filter is applied, otherwise data is simply tagged. Available filters are:
     - `DEPTH_FILTER`: Depth filter (limit defined by `min_depth` and `max_depth`).
     - `LATITUDE_FILTER`: Latitude filter (limit defined by `min_latitude` and `max_latitude`).
@@ -440,6 +458,41 @@ args = []  # Additional arguments for exporting data in CSAR format.
     - `SPEED_FILTER`: Speed filter (limit defined by `min_speed` and `max_speed`).
 
 - `[DATA.Georeference.water_level]` (Optional): Defines tolerance for georeferencing based on water levels (format: `"<number> <unit>"`, e.g., `"15 min"`).
+
+- `[DATA.Georeference.uncertainty.tvu]` (Optional): Configuration for TVU (Total Vertical Uncertainty) calculation.
+  - `constant_tvu_wlo`: TVU constant for WLO water levels (default: 0.04).
+  - `default_constant_tvu_wlp`: TVU constant for WLP water levels (default: 0.35).
+  - `depth_coefficient_tvu`: Depth coefficient for TVU calculation (default: 0.5).
+  - `default_depth_ssp_error_coefficient`: Default SSP error coefficient (default: 4.1584).
+  - `max_distance_ssp`: Maximum distance to link an SSP value in meters (default: 30000).
+  
+  **TVU Calculation Formula:**
+  ```
+  TVU = c + (a × d)
+  where:
+  - c = station Component [constant_tvu_wlo, default_constant_tvu_wlp or value in ./static/uncertainty/station_uncertainty.json]
+  - a = depth coefficient (Coefficient[depth_coefficient_tvu] + SSP Coefficient[default_depth_ssp_error_coefficient or value in ./static/uncertainty/canadian_water_ssp_errors.gpkg]))
+  - d = depth in meters
+
+  ```
+
+- `[DATA.Georeference.uncertainty.thu]` (Optional): Configuration for THU (Total Horizontal Uncertainty) calculation.
+  - `cone_angle_sonar`: Sonar cone angle for THU calculation in degrees (default: 20).
+  - `constant_thu`: THU constant (default: 3).
+  
+  **THU Calculation Formula:**
+  ```
+  THU = c + (d × tan(θ/2))
+  where:
+  - c = THU constant (constant_thu)
+  - d = depth in meters
+  - θ = sonar cone angle in degrees (cone_angle_sonar)
+  - tan = trigonometric tangent function
+  ```
+
+- `[DATA.Processing.bins]` (Optional): Configuration for data histograms.
+  - `nbin_x`: Number of bins in X for histograms (default: 35).
+  - `nbin_y`: Number of bins in Y for histograms (default: 35).
 
 - `[CSB.Processing.vessel]` (Optional): Configures the vessel manager and vessel file. Required only if you use vessels for georeferencing.
   - `manager_type`: Type of vessel manager (e.g., `"VesselConfigJsonManager"`).
@@ -452,7 +505,7 @@ args = []  # Additional arguments for exporting data in CSAR format.
 
 - `[CSB.Processing.options]` (Optional): Processing options.
   - `log_level`: Log level: {`"DEBUG"`, `"INFO"`, `"WARNING"`, `"ERROR"`, `"CRITICAL"`}.
-  - `max_iterations`: Maximum number of iterations.
+  - `max_iterations`: Maximum number of iterations (default: 5).
   - `decimal_precision`: Number of significant decimal places for processed data.
 
 - `[CARIS.Environment]` (Optional): CARIS environment-specific parameters. Used to export data in CSAR format.
