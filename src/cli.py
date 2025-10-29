@@ -141,8 +141,9 @@ def cli_group():
     required=False,
     help="""
     Code de la station marégraphique à utiliser pour toutes les données. Si une station est spécifiée, 
-    seulement cette station sera utilisée.\n
+    seulement cette station sera utilisée. (https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=fr)\n
     Water level station code to use for all data. If a station is specified, only that station will be used.
+     (https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=en)
     """,
 )
 def process_bathymetric_data(
