@@ -346,6 +346,7 @@ def processing_workflow(
     config_path: Optional[Path] = CONFIG_FILE,
     apply_water_level: Optional[bool] = True,
     extra_logger: Optional[Iterable[dict]] = None,
+    water_level_station: Optional[str] = None,
 ) -> None:
     """
     Workflow de traitement des données.
@@ -362,6 +363,9 @@ def processing_workflow(
     :type apply_water_level: Optional[bool]
     :param extra_logger: Liste d'objets de configuration supplémentaires pour le logger.
     :type extra_logger: Optional[Iterable[dict]]
+    :param water_level_station: Station de niveau d'eau à utiliser pour toutes les données. Si une station est
+                                spécifiée, seulement cette station sera utilisée.
+    :type water_level_station: Optional[str]
     """
     if not files:
         LOGGER.warning(f"Aucun fichier à traiter.")
@@ -506,8 +510,11 @@ def processing_workflow(
 
     last_run_stations: list[str] = []
     iteration: int = 0
+    max_iterations: int = (
+        processing_config.options.max_iterations if not water_level_station else 1
+    )
 
-    for iteration in range(1, processing_config.options.max_iterations + 1):
+    for iteration in range(1, max_iterations + 1):
         LOGGER.info(
             f"Transformation des données : {iteration}. Stations exclues : {excluded_stations}."
         )
@@ -519,6 +526,7 @@ def processing_workflow(
                 stations_handler=stations_handler,
                 time_series=iwls_api_config.time_series.priority,
                 excluded_stations=excluded_stations,
+                water_level_station=water_level_station,
             )
         )
 
@@ -669,4 +677,8 @@ def processing_workflow(
 
     # todo -> mettre template pour le nom dans le fichier de config
 
-    # todo endpoint pour lire un gpkg et l'exporter dans un autre format
+    # todo : web app pour convert
+
+    # todo : fichier vectoriel avec les stations et leurs incertitudes associées
+
+    # todo : option pour prendre un fichier vectoriel en entré au lieu de calculer un voronoi
