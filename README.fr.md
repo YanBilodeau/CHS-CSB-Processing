@@ -103,6 +103,7 @@ python cli.py process [FICHIERS...] [OPTIONS]
 | `--waterline` | Nombre décimal | Non    | Ligne de flottaison du navire en mètre (distance verticale entre le sondeur et la surface de l'eau). Si non spécifiée, une valeur de 0 sera utilisée. **Incompatible avec `--vessel`** |
 | `--config` | Chemin | Non    | Chemin du fichier de configuration. Si non spécifié, le fichier de configuration par défaut sera utilisé                                                                               |
 | `--apply-water-level` | Booléen | Non    | Appliquer la réduction des niveaux d'eau lors du géoréférencement des sondes (défaut: `true`)                                                                                          |
+| `--water-level-station` | Texte | Non    | Code de la station marégraphique à utiliser pour toutes les données. Si une station est spécifiée, seulement cette station sera utilisée. ([Liste des stations](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=fr)) |
 
 #### Exemples d'utilisation
 
@@ -129,6 +130,11 @@ python cli.py process data.csv --config ./custom_config.toml --output ./results
 **Traitement sans réduction des niveaux d'eau :**
 ```bash
 python cli.py process data.csv --apply-water-level false --output ./results
+```
+
+**Traitement en utilisant une station marégraphique spécifique :**
+```bash
+python cli.py process data.csv --water-level-station "04435" --output ./results
 ```
 
 **Traitement de plusieurs fichiers :**

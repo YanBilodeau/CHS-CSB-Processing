@@ -95,13 +95,14 @@ python cli.py process [FILES...] [OPTIONS]
 
 #### Available Options
 
-| Option | Type | Required | Description                                                                                                                                                    |
-|--------|------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `--output` | Path | **Yes** | Output directory path                                                                                                                                          |
-| `--vessel` | Text | No | Vessel identifier. If not specified, a default vessel with lever arms at 0 will be used. **Incompatible with `--waterline`**                                   |
-| `--waterline` | Decimal | No | Vessel waterline in meter (vertical distance between sounder and water surface). If not specified, a value of 0 will be used. **Incompatible with `--vessel`** |
-| `--config` | Path | No | Configuration file path. If not specified, the default configuration file will be used                                                                         |
-| `--apply-water-level` | Boolean | No | Apply water level reduction when georeferencing soundings (default: `true`)                                                                                    |
+| Option | Type | Required | Description                                                                                                                                                                                   |
+|--------|------|--------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `--output` | Path | **Yes** | Output directory path                                                                                                                                                                         |
+| `--vessel` | Text | No | Vessel identifier. If not specified, a default vessel with lever arms at 0 will be used. **Incompatible with `--waterline`**                                                                  |
+| `--waterline` | Decimal | No | Vessel waterline in meter (vertical distance between sounder and water surface). If not specified, a value of 0 will be used. **Incompatible with `--vessel`**                                |
+| `--config` | Path | No | Configuration file path. If not specified, the default configuration file will be used                                                                                                        |
+| `--apply-water-level` | Boolean | No | Apply water level reduction when georeferencing soundings (default: `true`)                                                                                                                   |
+| `--water-level-station` | Text | No | Water level station code to use for all data. If a station is specified, only that station will be used. ([Stations list](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=en)) |
 
 #### Usage Examples
 
@@ -128,6 +129,11 @@ python cli.py process data.csv --config ./custom_config.toml --output ./results
 **Processing without water level reduction:**
 ```bash
 python cli.py process data.csv --apply-water-level false --output ./results
+```
+
+**Processing with specific water level station:**
+```bash
+python cli.py process data.csv --water-level-station "04435" --output ./results
 ```
 
 **Processing multiple files:**
