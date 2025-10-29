@@ -314,6 +314,37 @@ class StationsHandlerABC(ABC):
         """
         ...
 
+    def get_station_geodataframe(self, station_code: str) -> gpd.GeoDataFrame:
+        """
+        Récupère les données d'une station sous forme de GeoDataFrame.
+
+        :param station_code: Code de la station.
+        :type station_code: str
+        :return: Données de la station sous forme de GeoDataFrame.
+        :rtype: gpd.GeoDataFrame[schema.StationsSchema]
+        """
+        LOGGER.debug(f"Récupération des données de la station '{station_code}'.")
+
+        gdf_stations: gpd.GeoDataFrame = self.get_stations_geodataframe(
+            filter_time_series=None,
+            excluded_stations=None,
+        )
+
+        gdf_station: gpd.GeoDataFrame = gdf_stations[
+            gdf_stations[schema_ids.CODE] == station_code
+        ]
+
+        if gdf_station.empty:
+            LOGGER.error(f"Aucune donnée trouvée pour la station '{station_code}'.")
+
+            raise StationsError(
+                message=f"Aucune donnée trouvée pour la station '{station_code}'.",
+                error="StationNotFound",
+                status_code=404,
+            )
+
+        return gdf_station
+
     @staticmethod
     @abstractmethod
     def _get_event_date(event: dict) -> datetime:
