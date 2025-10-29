@@ -59,3 +59,14 @@ class StationsHandlerProtocol(Protocol):
         :rtype: gpd.GeoDataFrame
         """
         pass
+
+    def get_station_geodataframe(self, station_code: str) -> gpd.GeoDataFrame:
+        """
+        Méthode pour récupérer le GeoDataFrame d'une station spécifique.
+
+        :param station_code: Code de la station.
+        :type station_code: str
+        :return: GeoDataFrame de la station.
+        :rtype: gpd.GeoDataFrame
+        """
+        pass
