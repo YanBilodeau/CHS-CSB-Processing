@@ -135,13 +135,24 @@ def cli_group():
     By default, the water level reduction is applied.
     """,
 )
-def cli(
+@click.option(
+    "--water-level-station",
+    type=str,
+    required=False,
+    help="""
+    Code de la station marégraphique à utiliser pour toutes les données. Si une station est spécifiée, 
+    seulement cette station sera utilisée.\n
+    Water level station code to use for all data. If a station is specified, only that station will be used.
+    """,
+)
+def process_bathymetric_data(
     files: Collection[Path],
     output: Path,
     vessel: Optional[str],
     waterline: Optional[float],
     config: Optional[Path],
     apply_water_level: Optional[bool] = True,
+    water_level_station: Optional[str] = None,
 ) -> None:
     """
     Traite les fichiers de données bathymétriques et les géoréférence. Processes bathymetric data files and georeferences them.
@@ -158,6 +169,9 @@ def cli(
     :type config: Optional[Path]
     :param apply_water_level: Appliquer la réduction des nivaeux d'eau lors du géoréférencement des sondes.
     :type apply_water_level: Optional[bool]
+    :param water_level_station: Station de niveau d'eau à utiliser pour toutes les données. Si une station est
+                                spécifiée, seulement cette station sera utilisée.
+    :type water_level_station: Optional[str]
     :raise click.UsageError: Si les options --vessel et --waterline sont utilisées en même temps.
     :raise click.UsageError: Si la valeur de l'option --waterline est négative.
     :raise click.UsageError: Si aucun fichier valide n'est fourni.
@@ -212,6 +226,7 @@ def cli(
         output=Path(output),
         config_path=Path(config),
         apply_water_level=apply_water_level,
+        water_level_station=water_level_station,
     )
 
 
