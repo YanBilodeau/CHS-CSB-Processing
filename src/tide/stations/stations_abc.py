@@ -92,7 +92,7 @@ class StationsHandlerABC(ABC):
     @abstractmethod
     def _filter_stations(
         stations: Collection[dict],
-        filter_time_series: Collection[TimeSeriesProtocol] | None,
+        filter_time_series: Collection[TimeSeriesProtocol],
         excluded_stations: Collection[str] | None,
     ) -> list[dict]:
         """
@@ -101,7 +101,7 @@ class StationsHandlerABC(ABC):
         :param stations: Liste des stations.
         :type stations: Collection[dict]
         :param filter_time_series: Liste des séries temporelles pour filtrer les stations.
-        :type filter_time_series: Collection[TimeSeriesProtocol] | None
+        :type filter_time_series: Collection[TimeSeriesProtocol]
         :param excluded_stations: Liste des stations à exclure.
         :type excluded_stations: Collection[str] | None
         :return: Liste des stations filtrées.
@@ -240,7 +240,7 @@ class StationsHandlerABC(ABC):
     def _get_stations_geodataframe(
         self,
         stations: Collection[dict],
-        filter_time_series: Collection[TimeSeriesProtocol] | None,
+        filter_time_series: Collection[TimeSeriesProtocol],
         excluded_stations: Collection[str] | None,
         station_name_key: str,
     ) -> gpd.GeoDataFrame:
@@ -249,8 +249,8 @@ class StationsHandlerABC(ABC):
 
         :param stations: Liste des stations.
         :type stations: Collection[dict]
-        :param filter_time_series: Liste des séries temporelles pour filtrer les stations. Si None, toutes les stations sont retournées.
-        :type filter_time_series: Collection[TimeSeriesProtocol] | None
+        :param filter_time_series: Liste des séries temporelles pour filtrer les stations.
+        :type filter_time_series: Collection[TimeSeriesProtocol]
         :param excluded_stations: Liste des stations à exclure.
         :type excluded_stations: Collection[str] | None
         :param station_name_key: Clé du nom de la station.
@@ -296,15 +296,15 @@ class StationsHandlerABC(ABC):
     @abstractmethod
     def get_stations_geodataframe(
         self,
-        filter_time_series: Collection[TimeSeriesProtocol] | None,
+        filter_time_series: Collection[TimeSeriesProtocol],
         excluded_stations: Collection[str] | None = None,
         station_name_key: Optional[str] = "officialName",
     ) -> gpd.GeoDataFrame:
         """
         Récupère les données des stations sous forme de GeoDataFrame.
 
-        :param filter_time_series: Liste des séries temporelles pour filtrer les stations. Si None, toutes les stations sont retournées.
-        :type filter_time_series: Collection[TimeSeriesProtocol] | None
+        :param filter_time_series: Liste des séries temporelles pour filtrer les stations.
+        :type filter_time_series: Collection[TimeSeriesProtocol]
         :param excluded_stations: Liste des stations à exclure.
         :type excluded_stations: Collection[str] | None
         :param station_name_key: Clé du nom de la station.
@@ -314,20 +314,25 @@ class StationsHandlerABC(ABC):
         """
         ...
 
-    def get_station_geodataframe(self, station_code: str) -> gpd.GeoDataFrame:
+    def get_station_geodataframe(
+        self,
+        station_code: str,
+        filter_time_series: Collection[TimeSeriesProtocol],
+    ) -> gpd.GeoDataFrame:
         """
         Récupère les données d'une station sous forme de GeoDataFrame.
 
         :param station_code: Code de la station.
         :type station_code: str
+        :param filter_time_series: Liste des séries temporelles pour filtrer les stations.
+        :type filter_time_series: Collection[TimeSeriesProtocol]
         :return: Données de la station sous forme de GeoDataFrame.
         :rtype: gpd.GeoDataFrame[schema.StationsSchema]
         """
         LOGGER.debug(f"Récupération des données de la station '{station_code}'.")
 
         gdf_stations: gpd.GeoDataFrame = self.get_stations_geodataframe(
-            filter_time_series=None,
-            excluded_stations=None,
+            filter_time_series=filter_time_series
         )
 
         gdf_station: gpd.GeoDataFrame = gdf_stations[

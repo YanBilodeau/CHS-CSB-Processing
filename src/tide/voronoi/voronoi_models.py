@@ -60,12 +60,18 @@ class StationsHandlerProtocol(Protocol):
         """
         pass
 
-    def get_station_geodataframe(self, station_code: str) -> gpd.GeoDataFrame:
+    def get_station_geodataframe(
+        self,
+        station_code: str,
+        filter_time_series: Collection[TimeSeriesProtocol],
+    ) -> gpd.GeoDataFrame:
         """
         Méthode pour récupérer le GeoDataFrame d'une station spécifique.
 
         :param station_code: Code de la station.
         :type station_code: str
+        :param filter_time_series: Liste des séries temporelles pour filtrer la station.
+        :type filter_time_series: Collection[TimeSeriesProtocol]
         :return: GeoDataFrame de la station.
         :rtype: gpd.GeoDataFrame
         """

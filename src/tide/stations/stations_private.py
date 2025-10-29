@@ -47,7 +47,7 @@ class StationsHandlerPrivate(StationsHandlerABC):
     @staticmethod
     def _filter_stations(
         stations: Collection[dict],
-        filter_time_series: Collection[TimeSeriesProtocol] | None,
+        filter_time_series: Collection[TimeSeriesProtocol],
         excluded_stations: Collection[str] | None,
     ) -> list[dict]:
         """
@@ -56,7 +56,7 @@ class StationsHandlerPrivate(StationsHandlerABC):
         :param stations: Liste des stations.
         :type stations: Collection[dict]
         :param filter_time_series: Liste des séries temporelles pour filtrer les stations.
-        :type filter_time_series: Collection[TimeSeriesProtocol] | None
+        :type filter_time_series: Collection[TimeSeriesProtocol]
         :param excluded_stations: Liste des stations à exclure.
         :type excluded_stations: Collection[str] | None
         :return: Liste des stations filtrées.
@@ -176,15 +176,15 @@ class StationsHandlerPrivate(StationsHandlerABC):
 
     def get_stations_geodataframe(
         self,
-        filter_time_series: Collection[TimeSeriesProtocol] | None,
+        filter_time_series: Collection[TimeSeriesProtocol],
         excluded_stations: Collection[str] | None = None,
         station_name_key: str = "name",
     ) -> gpd.GeoDataFrame:
         """
         Récupère les données des stations sous forme de GeoDataFrame.
 
-        :param filter_time_series: Liste des séries temporelles pour filtrer les stations. Si None, toutes les stations sont retournées.
-        :type filter_time_series: Collection[TimeSeriesProtocol] | None
+        :param filter_time_series: Liste des séries temporelles pour filtrer les stations
+        :type filter_time_series: Collection[TimeSeriesProtocol]
         :param excluded_stations: Liste des stations à exclure.
         :type excluded_stations: Collection[str] | None
         :param station_name_key: Clé du nom de la station.
