@@ -10,14 +10,17 @@ from shapely import (
     GeometryCollection,
     voronoi_polygons,
 )
+from shapely.geometry import box
 
 LOGGER = logger.bind(name="CSB-Processing.Tide.Voronoi.Algorithm")
+
+CANADA_EXTENT: Optional[Geometry] = box(-175, 10, -10, 89)
 
 
 def create_voronoi_polygons(
     geometry: Geometry,
     tolerance: Optional[float] = 0.0,
-    extend_to: Optional[Geometry] = None,
+    extend_to: Optional[Geometry] = CANADA_EXTENT,
     only_edges: Optional[bool] = False,
     **kwargs,
 ) -> GeometryCollection:
