@@ -306,11 +306,11 @@ def compute_tvu(
         decimal_precision
     )
 
-    data[schema_ids.UNCERTAINTY_STATION_METER] = station_component.round(
-        decimal_precision
+    data[schema_ids.UNCERTAINTY_STATION_METER] = np.round(
+        station_component, decimal_precision
     )
-    data[schema_ids.SSP_UNCERTAINTY_PERCENT] = data[SSP_ERROR_COEFFICIENT].round(
-        decimal_precision
+    data[schema_ids.SSP_UNCERTAINTY_PERCENT] = np.round(
+        data[SSP_ERROR_COEFFICIENT], decimal_precision
     )
 
     return data
