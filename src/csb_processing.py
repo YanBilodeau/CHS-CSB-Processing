@@ -608,7 +608,7 @@ def processing_workflow(
             )
             export.export_geodataframe_to_gpkg(
                 geodataframe=gdf_voronoi,
-                output_path=export_tide_path / voronoi_output_path,
+                output_path=voronoi_output_path,
             )
 
             # Georeference the bathymetry data
