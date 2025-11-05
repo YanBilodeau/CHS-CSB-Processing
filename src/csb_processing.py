@@ -29,7 +29,7 @@ import transformation.georeference as georeference
 import vessel as vessel_manager
 
 
-__version__ = "0.7.3"
+__version__ = "0.7.4"
 
 
 LOGGER = logger.bind(name="CSB-Processing.WorkFlow")
