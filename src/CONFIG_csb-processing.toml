@@ -1,7 +1,7 @@
 [Config]
 # Version du fichier de configuration {str}.
 # Version of the configuration file {str}.
-version = "0.7.3"
+version = "0.7.4"
 
 [IWLS.API.TimeSeries]
 # Liste des séries temporelles à récupérer selon leur priorité d'utilisation. {"wlo", "wlp"}
