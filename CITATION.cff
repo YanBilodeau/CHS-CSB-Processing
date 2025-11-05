@@ -11,7 +11,7 @@ abstract: >
   Several data formats are supported, including the one from IHO DCDB. The reduction for water levels
   is based on predictions/observations automatically extracted from the CHS Integrated Water Level System (IWLS).
 repository-code: "https://github.com/YanBilodeau/CHS-CSB-Processing"
-license: "GPL-3.0"
+license: "MIT License"
 keywords:
   - bathymetry
   - crowdsourced bathymetry
