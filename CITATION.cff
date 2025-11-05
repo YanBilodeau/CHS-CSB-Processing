@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it as follows:"
+title: "CHS-CSB-Processing: Tools for processing crowdsourced bathymetry (CSB) data for the Canadian Hydrographic Service"
+authors:
+  - family-names: "Bilodeau"
+    given-names: "Yan"
+    affiliation: "Canadian Hydrographic Service (CHS)"
+    orcid: "https://orcid.org/0009-0005-9101-361X"
+abstract: >
+  This project shares CHS's development pipeline for CSB data processing in Canadian waters.
+  Several data formats are supported, including the one from IHO DCDB. The reduction for water levels
+  is based on predictions/observations automatically extracted from the CHS Integrated Water Level System (IWLS).
+repository-code: "https://github.com/YanBilodeau/CHS-CSB-Processing"
+license: "GPL-3.0"
+keywords:
+  - bathymetry
+  - crowdsourced bathymetry
+  - CSB
+  - DCDB
+  - hydrography
+  - geospatial
+  - Python
+version: "0.6.0"
+date-released: "2025-11-05"
+contact:
+  - name: "Yan Bilodeau"
+    email: "yan.bilodeau@dfo-mpo.gc.ca"
+doi: "10.5281/zenodo.17534827"
+preferred-citation:
+  type: software
+  title: "CHS-CSB-Processing"
+  authors:
+    - family-names: "Bilodeau"
+      given-names: "Yan"
+      orcid: "https://orcid.org/0009-0005-9101-361X"
+  version: "0.7.4"
+  repository-code: "https://github.com/YanBilodeau/CHS-CSB-Processing"
+  doi: "10.5281/zenodo.17534827"
+  url: "https://github.com/YanBilodeau/CHS-CSB-Processing"
