@@ -60,6 +60,9 @@ class UIRunner:
                 window_size=(1024, 1080) if self.gui == GuiType.NATIVE else None,
             )
 
+        except KeyboardInterrupt:
+            LOGGER.info("Webui application interrupted by user.")
+
         except Exception as e:
             LOGGER.exception(e)
             LOGGER.error(f"Error running the application: {e}")
