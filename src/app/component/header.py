@@ -25,7 +25,8 @@ class HeaderComponent:
             # Page title - centered
             with ui.column().classes("flex-1 items-center"):
                 ui.html(
-                    "<h1 class='text-4xl font-bold text-center text-blue-600'>Bathymetric Data Processing Tool</h1>"
+                    "<h1 class='text-4xl font-bold text-center text-blue-600'>Bathymetric Data Processing Tool</h1>",
+                    sanitize=False,
                 )
 
             # Spacer for symmetry
