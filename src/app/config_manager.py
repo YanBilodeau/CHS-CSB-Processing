@@ -4,7 +4,12 @@ Handles all configuration-related operations and state.
 """
 
 from pathlib import Path
+
+from loguru import logger
+
 from csb_processing import CONFIG_FILE
+
+LOGGER = logger.bind(name="CSB-Processing.ConfigManager")
 
 
 class ConfigManager:
