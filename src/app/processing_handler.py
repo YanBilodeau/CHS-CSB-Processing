@@ -216,7 +216,7 @@ class ProcessingHandler:
                 apply_water_level=self.config_manager.apply_water_level,
                 extra_logger=(self.log_settings,),
             )
-            LOGGER.info("Processing workflow completed successfully")
+            LOGGER.info("Processing workflow completed successfully.")
 
         LOGGER.info("Launching processing in background thread...")
         await asyncio.get_event_loop().run_in_executor(None, run_processing)
