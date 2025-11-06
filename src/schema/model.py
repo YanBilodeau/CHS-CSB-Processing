@@ -12,7 +12,7 @@ from typing import Optional, Callable, Type, Any
 import geopandas as gpd
 import numpy as np
 import pandas as pd
-import pandera as pa
+import pandera.pandas as pa
 from loguru import logger
 from pandas import DataFrame
 from pandera.typing import Series
