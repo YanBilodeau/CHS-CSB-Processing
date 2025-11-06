@@ -11,6 +11,7 @@ from csb_processing import CONFIG_FILE
 
 LOGGER = logger.bind(name="CSB-Processing.ConfigManager")
 
+
 class ConfigManager:
     """Manages configuration state for the UI application."""
 
@@ -28,7 +29,6 @@ class ConfigManager:
         LOGGER.debug(f"Updating output path with input: {path_str}")
         self.output_path = Path(path_str).expanduser().resolve() if path_str else Path()
         LOGGER.debug(f"Output path updated to: {self.output_path}")
-
 
     def update_config_path(self, path_str: str) -> None:
         """Update config path from string input."""
