@@ -797,6 +797,6 @@ def plot_metadata(
             )
 
         except Exception as e:
-            LOGGER.error(f"Erreur lors de la sauvegarde du PDF : {e}")
+            LOGGER.warning(f"Erreur lors de la sauvegarde du PDF : {e}")
 
     return fig
