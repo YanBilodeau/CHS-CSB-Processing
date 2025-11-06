@@ -21,11 +21,16 @@ class ConfigManager:
 
     def update_output_path(self, path_str: str) -> None:
         """Update output path from string input."""
+        LOGGER.debug(f"Updating output path with input: {path_str}")
         self.output_path = Path(path_str).expanduser().resolve() if path_str else Path()
+        LOGGER.debug(f"Output path updated to: {self.output_path}")
+
 
     def update_config_path(self, path_str: str) -> None:
         """Update config path from string input."""
+        LOGGER.debug(f"Updating config path with input: {path_str}")
         self.config_path = Path(path_str).expanduser().resolve() if path_str else Path()
+        LOGGER.debug(f"Config path updated to: {self.config_path}")
 
     def get_effective_config_path(self) -> Path:
         """Get the effective config path, falling back to default if needed."""
