@@ -59,7 +59,7 @@ class FileOperations:
             )
 
             if selected_directory:
-                self.config_manager.output_path = Path(selected_directory)
+                self.config_manager.update_output_path(selected_directory)
 
                 # Hide warning if validation passes
                 if output_warning_label and self.validator.validate_output_path():
