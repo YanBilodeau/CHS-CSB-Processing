@@ -14,6 +14,7 @@ def show_notification(
     try:
         ui.notification(message, type=type)
         ui.update()  # Ensure the UI updates immediately
+
     except RuntimeError as e:
         LOGGER.warning(f"Failed to show notification: {e}")
 
