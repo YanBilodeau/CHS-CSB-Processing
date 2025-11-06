@@ -63,11 +63,11 @@ class ConfigManagerProtocol(Protocol):
 class EventHandlerProtocol(Protocol):
     """Protocol for event handling operations."""
 
-    def update_output_path(self, path: str):
+    def update_output_path(self, path: str) -> None:
         """Update the output path."""
         ...
 
-    def update_config_path(self, path: str):
+    def update_config_path(self, path: str) -> None:
         """Update the configuration path."""
         ...
 
@@ -75,7 +75,7 @@ class EventHandlerProtocol(Protocol):
         """Select an output directory and return the path."""
         ...
 
-    def select_config_file(self) -> str:
+    async def select_config_file(self) -> str:
         """Select a configuration file and return the path."""
         ...
 
