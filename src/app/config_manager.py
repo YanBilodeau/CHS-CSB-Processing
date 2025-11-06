@@ -11,7 +11,6 @@ from csb_processing import CONFIG_FILE
 
 LOGGER = logger.bind(name="CSB-Processing.ConfigManager")
 
-
 class ConfigManager:
     """Manages configuration state for the UI application."""
 
