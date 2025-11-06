@@ -33,7 +33,7 @@ class FileManager:
         """Open directory selection dialog and return selected directory."""
         try:
             result = await app.native.main_window.create_file_dialog(
-                dialog_type=webview.FOLDER_DIALOG,
+                dialog_type=20,
                 allow_multiple=True,
                 directory=initial_dir,
             )
