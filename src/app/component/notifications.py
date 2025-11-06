@@ -17,4 +17,3 @@ def show_notification(
 
     except RuntimeError as e:
         LOGGER.warning(f"Failed to show notification: {e}")
-
