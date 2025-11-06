@@ -48,4 +48,5 @@ class ConfigManager:
         if self.use_waterline and self.use_vessel:
             self.use_vessel = False
             return True
+
         return False
