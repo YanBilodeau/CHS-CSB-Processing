@@ -2,6 +2,9 @@
 
 - [CHS-CSB-Processing](#chs-csb-processing)
   - [Description](#description)
+- [Installation](#installation)
+  - [Prerequisites](#prerequisites)
+  - [Environment Setup](#environment-setup)
 - [Graphical User Interface (GUI)](#graphical-user-interface-gui)
 - [Command-Line Interface Tutorial for Bathymetric File Processing](#command-line-interface-tutorial-for-bathymetric-file-processing)
   - [Available Commands](#available-commands)
@@ -53,6 +56,45 @@ The supported file formats are as follows:
 - Actisense: coming soon.
 - BlackBox: `.TXT` extension without header with columns in the order `Time`, `Date`, `Latitude`, `Longitude`, `Speed (km/h)` and `Depth (m)`.
 - [WIBL](https://github.com/CCOMJHC/WIBL/tree/main): numeric extension (e.g., `.1`, `.2`, `.3`, etc.).
+
+---
+
+# Installation
+
+## Prerequisites
+
+This project uses [UV](https://github.com/astral-sh/uv) as a Python package and environment manager. UV is a modern, fast, and reliable tool that simplifies dependency management.
+
+To install UV, follow the instructions on the [official page](https://docs.astral.sh/uv/getting-started/installation/).
+
+## Environment Setup
+
+Once UV is installed, create the virtual environment with all necessary dependencies:
+
+```bash
+# Navigate to the project directory
+cd .\CHS-CSB_Processing
+
+# Create the virtual environment and install dependencies
+uv sync
+```
+
+This command:
+- Automatically creates a Python virtual environment
+- Installs all dependencies specified in `pyproject.toml`
+- Ensures all package versions are compatible
+
+To activate the virtual environment:
+
+```bash
+# Windows
+.venv\Scripts\activate
+
+# macOS/Linux
+source .venv/bin/activate
+```
+
+You are now ready to use the CHS-CSB-Processing module!
 
 ---
 

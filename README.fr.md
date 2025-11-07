@@ -2,6 +2,9 @@
 
 - [CHS-CSB-Processing](#chs-csb-processing)
   - [Description](#description)
+- [Installation](#installation)
+  - [Prérequis](#prérequis)
+  - [Configuration de l'environnement](#configuration-de-lenvironnement)
 - [Interface graphique utilisateur (GUI)](#interface-graphique-utilisateur-gui)
 - [Tutoriel d'utilisation de l'interface en ligne de commande pour le traitement des fichiers bathymétriques](#tutoriel-dutilisation-de-linterface-en-ligne-de-commande-pour-le-traitement-des-fichiers-bathymétriques)
   - [Commandes disponibles](#commandes-disponibles)
@@ -54,6 +57,45 @@ Les formats de fichiers pris en charge sont les suivants :
 - BlackBox : extension `.TXT` sans entête avec les colonnes dans l'ordre `Time`, `Date`, `Latitude`, `Longitude`, `Speed (km/h)` 
           et `Depth (m)`.
 - [WIBL](https://github.com/CCOMJHC/WIBL/tree/main) : extension numérique (ex: `.1`, `.2`, `.3`, etc.).
+
+---
+
+# Installation
+
+## Prérequis
+
+Ce projet utilise [UV](https://github.com/astral-sh/uv) comme gestionnaire de paquets et d'environnements Python. UV est un outil moderne, rapide et fiable qui simplifie la gestion des dépendances.
+
+Pour installer UV, suivez les instructions sur la [page officielle](https://docs.astral.sh/uv/getting-started/installation/).
+
+## Configuration de l'environnement
+
+Une fois UV installé, créez l'environnement virtuel avec toutes les dépendances nécessaires :
+
+```bash
+# Se placer dans le répertoire du projet
+cd .\CHS-CSB_Processing
+
+# Créer l'environnement virtuel et installer les dépendances
+uv sync
+```
+
+Cette commande :
+- Crée automatiquement un environnement virtuel Python
+- Installe toutes les dépendances spécifiées dans `pyproject.toml`
+- Garantit que toutes les versions de paquets sont compatibles
+
+Pour activer l'environnement virtuel :
+
+```bash
+# Windows
+.venv\Scripts\activate
+
+# macOS/Linux
+source .venv/bin/activate
+```
+
+Vous êtes maintenant prêt à utiliser le module CHS-CSB-Processing !
 
 ---
 
@@ -479,7 +521,7 @@ args = []  # Arguments supplémentaires pour l'exportation au format CSAR.
   TVU = c + (a × d)
   où :
   - c = composante Station [constant_tvu_wlo, default_constant_tvu_wlp ou valeur dans ./static/uncertainty/station_uncertainty.json]
-  - a = coefficient de profondeur (Coefficient[depth_coefficient_tvu] + Coefficient SSP[default_depth_ssp_error_coefficient ou valeur dans le ./static/uncertainty/canadian_water_ssp_errors.gpkg])
+  - a = coefficient de profondeur (Coefficient[depth_coefficient_tvu] + Coefficient SSP[default_depth_ssp_error_coefficient ou valeur dans le ./static/uncertainty/canadian_water_ssp_errors.gpk])
   - d = profondeur en mètres
   ```
 
