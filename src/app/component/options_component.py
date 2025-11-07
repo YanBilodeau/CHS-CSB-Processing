@@ -181,7 +181,7 @@ class OptionsComponent:
                 ).bind_value(self.config_manager, "use_waterline")
 
                 self.waterline_input = ui.number(
-                    "Waterline (m)", min=0.0, step=0.001, format="%.3f"
+                    "Waterline (m)", min=0.0, step=0.01, format="%.3f"
                 ).bind_value(self.config_manager, "waterline_value")
                 self.waterline_input.bind_visibility_from(
                     self.config_manager, "use_waterline"

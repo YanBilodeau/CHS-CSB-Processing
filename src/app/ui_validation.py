@@ -63,8 +63,8 @@ class Validator:
             errors.append("❌ Please specify a vessel identifier")
 
         waterline_value = self.config_manager.waterline_value
-        if use_waterline and waterline_value <= 0:
-            errors.append("❌ Please specify a valid waterline value (> 0)")
+        if use_waterline and waterline_value < 0:
+            errors.append("❌ Please specify a valid waterline value (>= 0)")
 
         return errors
 
@@ -97,6 +97,6 @@ class Validator:
         use_waterline = self.config_manager.use_waterline
         if use_waterline:
             waterline_value = self.config_manager.waterline_value
-            return waterline_value > 0
+            return waterline_value >= 0
 
         return True
