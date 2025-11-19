@@ -90,12 +90,15 @@ class DataParserABC(ABC):
 
         with WarningCapture() as warnings_list:
             if time_column is not None:
-                dataframe[time_column] = pd.to_datetime(
-                    dataframe[time_column], errors="coerce"
+                LOGGER.debug(
+                    f"Conversion de la colonne de temps {time_column} en datetime64[ns, UTC] pour le fichier {file}."
                 )
-                dataframe[time_column] = dataframe[time_column].astype(
-                    "datetime64[ns, UTC]"
-                )
+                series = pd.to_datetime(dataframe[time_column], errors="coerce")
+                if series.dt.tz is None:
+                    series = series.dt.tz_localize("UTC")
+                else:
+                    series = series.dt.tz_convert("UTC")
+                dataframe[time_column] = series
 
             for column_ in dtype_dict.keys():
                 if column_ in dataframe.columns:
