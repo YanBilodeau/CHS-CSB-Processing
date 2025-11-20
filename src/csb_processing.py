@@ -434,7 +434,9 @@ def processing_workflow(
     )
 
     # Get the parser and the parsed data
-    LOGGER.info(f"Récupération des données brutes des fichiers : {files}.")
+    LOGGER.info(
+        f"Récupération des données brutes des fichiers ({len(files)}) : {files}."
+    )
     parser_files: factory_parser.ParserFiles = factory_parser.get_files_parser(
         files=files
     )
@@ -679,6 +681,6 @@ def processing_workflow(
 
     # todo : web app pour convert
 
-    # todo : fichier vectoriel avec les stations et leurs incertitudes associées
+    # todo : créer fichier vectoriel avec les stations et leurs incertitudes associées
 
     # todo : option pour prendre un fichier vectoriel en entré au lieu de calculer un voronoi
