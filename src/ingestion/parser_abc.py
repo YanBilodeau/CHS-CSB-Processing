@@ -68,6 +68,7 @@ class DataParserABC(ABC):
         dtype_dict: dict[str, str],
         file: Path,
         time_column: Optional[str] = None,
+        time_format: Optional[str] = None,
     ) -> pd.DataFrame | gpd.GeoDataFrame:
         """
         Méthode permettant de convertir et nettoyer le dataframe.
@@ -80,6 +81,8 @@ class DataParserABC(ABC):
         :type time_column: str | None
         :param file: Le fichier source.
         :type file: Path
+        :param time_format: Le format de la colonne de temps.
+        :type time_format: str | None
         :return: Le dataframe converti et nettoyé.
         :rtype: pd.DataFrame | gpd.GeoDataFrame
         """
@@ -93,11 +96,12 @@ class DataParserABC(ABC):
                 LOGGER.debug(
                     f"Conversion de la colonne de temps {time_column} en datetime64[ns, UTC] pour le fichier {file}."
                 )
-                series = pd.to_datetime(dataframe[time_column], errors="coerce")
-                if series.dt.tz is None:
-                    series = series.dt.tz_localize("UTC")
-                else:
-                    series = series.dt.tz_convert("UTC")
+                series = pd.to_datetime(
+                    dataframe[time_column],
+                    errors="coerce",
+                    utc=True,
+                    format=time_format,
+                )
                 dataframe[time_column] = series
 
             for column_ in dtype_dict.keys():

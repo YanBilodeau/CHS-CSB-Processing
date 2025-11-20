@@ -77,6 +77,7 @@ class DataParserLowrance(DataParserABC):
             dtype_dict=dtype_dict,
             time_column=ids.TIME_LOWRANCE,
             file=file,
+            time_format="%Y-%m-%d %H:%M:%S.%fZ",
         )
         # Arrondir les timestamps pour uniformiser la précision
         dataframe[ids.TIME_LOWRANCE] = dataframe[ids.TIME_LOWRANCE].dt.round("100ms")
