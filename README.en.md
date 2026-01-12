@@ -145,6 +145,7 @@ python cli.py process [FILES...] [OPTIONS]
 | `--config` | Path | No | Configuration file path. If not specified, the default configuration file will be used                                                                                                        |
 | `--apply-water-level` | Boolean | No | Apply water level reduction when georeferencing soundings (default: `true`)                                                                                                                   |
 | `--water-level-station` | Text | No | Water level station code to use for all data. If a station is specified, only that station will be used. ([Stations list](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=en)) |
+| `--excluded-stations` | Text | No | Water level station code(s) to exclude from processing. Can be specified multiple times to exclude multiple stations |
 
 #### Usage Examples
 
@@ -176,6 +177,11 @@ python cli.py process data.csv --apply-water-level false --output ./results
 **Processing with specific water level station:**
 ```bash
 python cli.py process data.csv --water-level-station "04435" --output ./results
+```
+
+**Processing excluding certain water level stations:**
+```bash
+python cli.py process data.csv --excluded-stations "04435" --excluded-stations "04436" --output ./results
 ```
 
 **Processing multiple files:**
@@ -642,4 +648,3 @@ Here is an example file:
 For all `time_stamp` attributes, the format must be ISO 8601 (e.g., `"2021-09-25T00:00:00Z"`). Additionally, the
 `time_stamp` indicates the date from which the configuration is valid.
 
----

@@ -146,6 +146,7 @@ python cli.py process [FICHIERS...] [OPTIONS]
 | `--config` | Chemin | Non    | Chemin du fichier de configuration. Si non spécifié, le fichier de configuration par défaut sera utilisé                                                                               |
 | `--apply-water-level` | Booléen | Non    | Appliquer la réduction des niveaux d'eau lors du géoréférencement des sondes (défaut: `true`)                                                                                          |
 | `--water-level-station` | Texte | Non    | Code de la station marégraphique à utiliser pour toutes les données. Si une station est spécifiée, seulement cette station sera utilisée. ([Liste des stations](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=fr)) |
+| `--excluded-stations` | Texte | Non    | Code(s) des stations marégraphiques à exclure du traitement. Peut être spécifié plusieurs fois pour exclure plusieurs stations |
 
 #### Exemples d'utilisation
 
@@ -159,7 +160,7 @@ python cli.py process data.csv --output ./results
 python cli.py process data.csv --vessel "CCGS_CARTIER" --output ./results
 ```
 
-**Traitement avec ligne de flottaison personnalisée :**
+**Traitement avec une ligne de flottaison personnalisée :**
 ```bash
 python cli.py process data.csv --waterline 2.5 --output ./results
 ```
@@ -177,6 +178,11 @@ python cli.py process data.csv --apply-water-level false --output ./results
 **Traitement en utilisant une station marégraphique spécifique :**
 ```bash
 python cli.py process data.csv --water-level-station "04435" --output ./results
+```
+
+**Traitement en excluant certaines stations marégraphiques :**
+```bash
+python cli.py process data.csv --excluded-stations "04435" --excluded-stations "04436" --output ./results
 ```
 
 **Traitement de plusieurs fichiers :**
@@ -643,4 +649,3 @@ de configuration TOML. Voici un exemple de fichier :
 Pour tous les attributs `time_stamp`, le format doit être ISO 8601 (ex. : `"2021-09-25T00:00:00Z"`). De plus, le `time_stamp`
 indique la date à partir de laquelle la configuration est valide.
 
----
