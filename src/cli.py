@@ -141,10 +141,10 @@ def cli_group():
     multiple=True,
     required=False,
     help="""
-    Code(s) des stations marégraphiques à utiliser pour le traitement. Si une station est spécifiée, 
+    Code(s) des stations marégraphiques à utiliser pour le traitement. Peut être spécifié plusieurs fois. Si une station est spécifiée,
     seulement cette station sera utilisée. (https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=fr)\n
-    Water level station code(s) to use for processing. If a station is specified, only that station will be used.
-     (https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=en)
+    Water level station code(s) to use for processing. Can be specified multiple times. If a station is specified,
+    only that station will be used. (https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=en)
     """,
 )
 @click.option(
@@ -154,9 +154,9 @@ def cli_group():
     required=False,
     help="""
     Code(s) des stations marégraphiques à exclure du traitement. Peut être spécifié plusieurs fois pour exclure 
-    plusieurs stations.\n
+    plusieurs stations. (https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=fr)\n
     Water level station code(s) to exclude from processing. Can be specified multiple times to exclude 
-    multiple stations.
+    multiple stations (https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=en).
     """,
 )
 def process_bathymetric_data(
