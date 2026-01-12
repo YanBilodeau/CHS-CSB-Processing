@@ -74,6 +74,35 @@ class StationsHandlerABC(ABC):
 
         return stations.data
 
+    def get_station_id_by_code(
+        self,
+        station_code: str,
+    ) -> str | None:
+        """
+        Récupère l'identifiant d'une station en fonction de son code.
+
+        :param station_code: Code de la station.
+        :type station_code: str
+        :return: Identifiant de la station.
+        :rtype: str | None
+        """
+
+        @cache_result(ttl=self.ttl)
+        def create_code_id_map() -> dict[str, str]:
+            """
+            Crée une carte d'identifiant et de code pour les stations.
+
+            :return: Carte d'identifiant et de code pour les stations.
+            :rtype: dict[str, str]
+            """
+            LOGGER.debug("Création de la carte d'identifiant et de code des stations.")
+
+            return {station["code"]: station["id"] for station in self.stations}
+
+        code_id_map: dict[str, str] = create_code_id_map()
+
+        return code_id_map.get(station_code)
+
     @staticmethod
     def _create_index_map(
         filter_time_series: Collection[TimeSeriesProtocol],
