@@ -346,7 +346,7 @@ def processing_workflow(
     config_path: Optional[Path] = CONFIG_FILE,
     apply_water_level: Optional[bool] = True,
     extra_logger: Optional[Iterable[dict]] = None,
-    water_level_station: Optional[str] = None,
+    water_level_stations: Optional[Collection[str]] = None,
     excluded_stations: Optional[Collection[str]] = None,
 ) -> None:
     """
@@ -364,9 +364,8 @@ def processing_workflow(
     :type apply_water_level: Optional[bool]
     :param extra_logger: Liste d'objets de configuration supplémentaires pour le logger.
     :type extra_logger: Optional[Iterable[dict]]
-    :param water_level_station: Station de niveau d'eau à utiliser pour toutes les données. Si une station est
-                                spécifiée, seulement cette station sera utilisée.
-    :type water_level_station: Optional[str]
+    :param water_level_stations: Liste des stations de niveau d'eau à utiliser pour le traitement.
+    :type water_level_stations: Optional[Collection[str]]
     :param excluded_stations: Liste des stations de niveau d'eau à exclure du traitement.
     :type excluded_stations: Optional[Collection[str]]
     """
@@ -524,7 +523,7 @@ def processing_workflow(
     last_run_stations: list[str] = []
     iteration: int = 0
     max_iterations: int = (
-        processing_config.options.max_iterations if not water_level_station else 1
+        processing_config.options.max_iterations if not water_level_stations else 1
     )
 
     for iteration in range(1, max_iterations + 1):
@@ -539,7 +538,7 @@ def processing_workflow(
                 stations_handler=stations_handler,
                 time_series=iwls_api_config.time_series.priority,
                 excluded_stations=excluded_stations,
-                water_level_station=water_level_station,
+                water_level_stations=water_level_stations,
             )
         )
 

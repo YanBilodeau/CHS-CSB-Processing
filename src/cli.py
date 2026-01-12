@@ -136,13 +136,14 @@ def cli_group():
     """,
 )
 @click.option(
-    "--water-level-station",
+    "--water-level-stations",
     type=str,
+    multiple=True,
     required=False,
     help="""
-    Code de la station marégraphique à utiliser pour toutes les données. Si une station est spécifiée, 
+    Code(s) des stations marégraphiques à utiliser pour le traitement. Si une station est spécifiée, 
     seulement cette station sera utilisée. (https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=fr)\n
-    Water level station code to use for all data. If a station is specified, only that station will be used.
+    Water level station code(s) to use for processing. If a station is specified, only that station will be used.
      (https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=en)
     """,
 )
@@ -165,7 +166,7 @@ def process_bathymetric_data(
     waterline: Optional[float],
     config: Optional[Path],
     apply_water_level: Optional[bool] = True,
-    water_level_station: Optional[str] = None,
+    water_level_stations: Optional[tuple[str, ...]] = None,
     excluded_stations: Optional[tuple[str, ...]] = None,
 ) -> None:
     """
@@ -183,9 +184,8 @@ def process_bathymetric_data(
     :type config: Optional[Path]
     :param apply_water_level: Appliquer la réduction des nivaeux d'eau lors du géoréférencement des sondes.
     :type apply_water_level: Optional[bool]
-    :param water_level_station: Station de niveau d'eau à utiliser pour toutes les données. Si une station est
-                                spécifiée, seulement cette station sera utilisée.
-    :type water_level_station: Optional[str]
+    :param water_level_stations: Stations de niveau d'eau à utiliser pour le traitement.
+    :type water_level_stations: Optional[tuple[str, ...]]
     :param excluded_stations: Stations de niveau d'eau à exclure du traitement.
     :type excluded_stations: Optional[tuple[str, ...]]
     :raise click.UsageError: Si les options --vessel et --waterline sont utilisées en même temps.
@@ -242,7 +242,9 @@ def process_bathymetric_data(
         output=Path(output),
         config_path=Path(config),
         apply_water_level=apply_water_level,
-        water_level_station=water_level_station,
+        water_level_stations=(
+            list(water_level_stations) if water_level_stations else None
+        ),
         excluded_stations=list(excluded_stations) if excluded_stations else None,
     )
 
