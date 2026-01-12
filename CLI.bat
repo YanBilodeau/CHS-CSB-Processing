@@ -6,7 +6,7 @@ echo %processing%
 
 rem "%python%" "%processing%" process --help
 
-"%python%" "%processing%" process D:\Dev\CHS-CSB_Processing\src\ingestion\Lowrance\Tuktoyaktuk --output D:\Dev\CHS-CSB_Processing\Output --water-level-station 04435
+"%python%" "%processing%" process D:\Dev\CHS-CSB_Processing\src\ingestion\Lowrance\Tuktoyaktuk --output D:\Dev\CHS-CSB_Processing\Output --excluded-stations 06525 --excluded-stations 03755
 rem --waterline 1.4 
 rem --apply-water-level False
 rem --vessel Tuktoyaktuk 

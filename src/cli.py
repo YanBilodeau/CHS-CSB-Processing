@@ -146,6 +146,18 @@ def cli_group():
      (https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=en)
     """,
 )
+@click.option(
+    "--excluded-stations",
+    type=str,
+    multiple=True,
+    required=False,
+    help="""
+    Code(s) des stations marégraphiques à exclure du traitement. Peut être spécifié plusieurs fois pour exclure 
+    plusieurs stations.\n
+    Water level station code(s) to exclude from processing. Can be specified multiple times to exclude 
+    multiple stations.
+    """,
+)
 def process_bathymetric_data(
     files: Collection[Path],
     output: Path,
@@ -154,6 +166,7 @@ def process_bathymetric_data(
     config: Optional[Path],
     apply_water_level: Optional[bool] = True,
     water_level_station: Optional[str] = None,
+    excluded_stations: Optional[tuple[str, ...]] = None,
 ) -> None:
     """
     Traite les fichiers de données bathymétriques et les géoréférence. Processes bathymetric data files and georeferences them.
@@ -173,6 +186,8 @@ def process_bathymetric_data(
     :param water_level_station: Station de niveau d'eau à utiliser pour toutes les données. Si une station est
                                 spécifiée, seulement cette station sera utilisée.
     :type water_level_station: Optional[str]
+    :param excluded_stations: Stations de niveau d'eau à exclure du traitement.
+    :type excluded_stations: Optional[tuple[str, ...]]
     :raise click.UsageError: Si les options --vessel et --waterline sont utilisées en même temps.
     :raise click.UsageError: Si la valeur de l'option --waterline est négative.
     :raise click.UsageError: Si aucun fichier valide n'est fourni.
@@ -228,6 +243,7 @@ def process_bathymetric_data(
         config_path=Path(config),
         apply_water_level=apply_water_level,
         water_level_station=water_level_station,
+        excluded_stations=list(excluded_stations) if excluded_stations else None,
     )
 
 

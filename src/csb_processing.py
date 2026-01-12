@@ -29,7 +29,7 @@ import transformation.georeference as georeference
 import vessel as vessel_manager
 
 
-__version__ = "0.7.4"
+__version__ = "0.7.5"
 
 
 LOGGER = logger.bind(name="CSB-Processing.WorkFlow")
@@ -347,6 +347,7 @@ def processing_workflow(
     apply_water_level: Optional[bool] = True,
     extra_logger: Optional[Iterable[dict]] = None,
     water_level_station: Optional[str] = None,
+    excluded_stations: Optional[Collection[str]] = None,
 ) -> None:
     """
     Workflow de traitement des données.
@@ -366,6 +367,8 @@ def processing_workflow(
     :param water_level_station: Station de niveau d'eau à utiliser pour toutes les données. Si une station est
                                 spécifiée, seulement cette station sera utilisée.
     :type water_level_station: Optional[str]
+    :param excluded_stations: Liste des stations de niveau d'eau à exclure du traitement.
+    :type excluded_stations: Optional[Collection[str]]
     """
     if not files:
         LOGGER.warning(f"Aucun fichier à traiter.")
@@ -505,7 +508,7 @@ def processing_workflow(
         config_path=config_path
     )
 
-    excluded_stations: list[str] = []
+    excluded_stations: list[str] = excluded_stations if excluded_stations else []
     wl_combineds_dict: dict[
         str, list[pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]  # type: ignore
     ] = defaultdict(list)
