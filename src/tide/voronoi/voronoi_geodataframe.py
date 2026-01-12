@@ -121,7 +121,7 @@ def get_voronoi_geodataframe(
     stations_handler: StationsHandlerProtocol,
     time_series: Collection[TimeSeriesProtocol],
     excluded_stations: Optional[Collection[str] | None] = None,
-    water_level_station: Optional[str] = None,
+    water_level_stations: Optional[Collection[str] | None] = None,
     **kwargs,
 ) -> gpd.GeoDataFrame:
     """
@@ -133,8 +133,8 @@ def get_voronoi_geodataframe(
     :type time_series: Collection[TimeSeriesProtocol]
     :param excluded_stations: Liste des stations à exclure.
     :type excluded_stations: Collection[str] | None
-    :param water_level_station: Station de niveau d'eau à utiliser. Si une station est fournie, seule cette station sera utilisée.
-    :type water_level_station: str | None
+    :param water_level_stations: Liste des stations de niveau d'eau à utiliser.
+    :type water_level_stations: Collection[str] | None
     :return: Le GeoDataFrame des polygones de Voronoi.
     :rtype: gpd.GeoDataFrame[schema.TideZoneStationSchema]
     """
@@ -146,9 +146,9 @@ def get_voronoi_geodataframe(
                 **kwargs,
             )
         )
-        if not water_level_station
-        else stations_handler.get_station_geodataframe(
-            water_level_station, filter_time_series=time_series
+        if not water_level_stations
+        else stations_handler.get_stations_geodataframe_from_codes(
+            water_level_stations, filter_time_series=time_series
         )
     )
 

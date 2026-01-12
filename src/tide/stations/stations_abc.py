@@ -343,36 +343,36 @@ class StationsHandlerABC(ABC):
         """
         ...
 
-    def get_station_geodataframe(
+    def get_stations_geodataframe_from_codes(
         self,
-        station_code: str,
+        station_codes: Collection[str],
         filter_time_series: Collection[TimeSeriesProtocol],
     ) -> gpd.GeoDataFrame:
         """
         Récupère les données d'une station sous forme de GeoDataFrame.
 
-        :param station_code: Code de la station.
-        :type station_code: str
+        :param station_codes: Liste des codes des stations.
+        :type station_codes: Collection[str]
         :param filter_time_series: Liste des séries temporelles pour filtrer les stations.
         :type filter_time_series: Collection[TimeSeriesProtocol]
         :return: Données de la station sous forme de GeoDataFrame.
         :rtype: gpd.GeoDataFrame[schema.StationsSchema]
         """
-        LOGGER.debug(f"Récupération des données de la station '{station_code}'.")
+        LOGGER.debug(f"Récupération des données des stations '{station_codes}'.")
 
         gdf_stations: gpd.GeoDataFrame = self.get_stations_geodataframe(
             filter_time_series=filter_time_series
         )
 
         gdf_station: gpd.GeoDataFrame = gdf_stations[
-            gdf_stations[schema_ids.CODE] == station_code
+            gdf_stations[schema_ids.CODE].isin(station_codes)
         ]
 
         if gdf_station.empty:
-            LOGGER.error(f"Aucune donnée trouvée pour la station '{station_code}'.")
+            LOGGER.error(f"Aucune donnée trouvée pour les stations '{station_codes}'.")
 
             raise StationsError(
-                message=f"Aucune donnée trouvée pour la station '{station_code}'.",
+                message=f"Aucune donnée trouvée pour les stations '{station_codes}'.",
                 error="StationNotFound",
                 status_code=404,
             )
