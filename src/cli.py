@@ -136,7 +136,7 @@ def cli_group():
     """,
 )
 @click.option(
-    "--water-level-stations",
+    "--water-level-station",
     type=str,
     multiple=True,
     required=False,
@@ -148,7 +148,7 @@ def cli_group():
     """,
 )
 @click.option(
-    "--excluded-stations",
+    "--excluded-station",
     type=str,
     multiple=True,
     required=False,
