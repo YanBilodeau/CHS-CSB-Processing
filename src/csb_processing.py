@@ -644,11 +644,14 @@ def processing_workflow(
         # Add the stations with missing values to the excluded stations
         excluded_stations.extend(wl_exceptions.keys())
 
-        # Check if the stations are the same as the last iteration and if there are no exceptions
-        if not wl_exceptions and (last_run_stations == list(wl_combineds.keys())):
-            excluded_stations.extend(list(wl_combineds.keys()))
-
-        last_run_stations = list(wl_combineds.keys())
+        # Get the data with missing depth values
+        depth_nan_data = data[data[schema_ids.DEPTH_PROCESSED_METER].isna()]
+        # Get the unique tide zone ids with missing depth values
+        unique_tide_zones_id = list(
+            depth_nan_data[schema_ids.TIDE_ZONE_ID].dropna().unique()
+        )
+        # Add the unique tide zone ids to the excluded stations
+        excluded_stations.extend(unique_tide_zones_id)
 
     if not log_sounding_results(data=data, iterations=iteration):
         return None
