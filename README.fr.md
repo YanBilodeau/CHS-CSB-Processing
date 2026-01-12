@@ -138,15 +138,15 @@ python cli.py process [FICHIERS...] [OPTIONS]
 
 #### Options disponibles
 
-| Option | Type | Requis | Description                                                                                                                                                                            |
-|--------|------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `--output` | Chemin | **Oui**     | Chemin du répertoire de sortie                                                                                                                                                         |
-| `--vessel` | Texte | Non    | Identifiant du navire. Si non spécifié, un navire par défaut avec des bras de levier à 0 sera utilisé. **Incompatible avec `--waterline`**                                             |
-| `--waterline` | Nombre décimal | Non    | Ligne de flottaison du navire en mètre (distance verticale entre le sondeur et la surface de l'eau). Si non spécifiée, une valeur de 0 sera utilisée. **Incompatible avec `--vessel`** |
-| `--config` | Chemin | Non    | Chemin du fichier de configuration. Si non spécifié, le fichier de configuration par défaut sera utilisé                                                                               |
-| `--apply-water-level` | Booléen | Non    | Appliquer la réduction des niveaux d'eau lors du géoréférencement des sondes (défaut: `true`)                                                                                          |
-| `--water-level-station` | Texte | Non    | Code de la station marégraphique à utiliser pour toutes les données. Si une station est spécifiée, seulement cette station sera utilisée. ([Liste des stations](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=fr)) |
-| `--excluded-stations` | Texte | Non    | Code(s) des stations marégraphiques à exclure du traitement. Peut être spécifié plusieurs fois pour exclure plusieurs stations |
+| Option                 | Type | Requis | Description                                                                                                                                                                                                                                                          |
+|------------------------|------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `--output`             | Chemin | **Oui**     | Chemin du répertoire de sortie                                                                                                                                                                                                                                       |
+| `--vessel`             | Texte | Non    | Identifiant du navire. Si non spécifié, un navire par défaut avec des bras de levier à 0 sera utilisé. **Incompatible avec `--waterline`**                                                                                                                           |
+| `--waterline`          | Nombre décimal | Non    | Ligne de flottaison du navire en mètre (distance verticale entre le sondeur et la surface de l'eau). Si non spécifiée, une valeur de 0 sera utilisée. **Incompatible avec `--vessel`**                                                                               |
+| `--config`             | Chemin | Non    | Chemin du fichier de configuration. Si non spécifié, le fichier de configuration par défaut sera utilisé                                                                                                                                                             |
+| `--apply-water-level`  | Booléen | Non    | Appliquer la réduction des niveaux d'eau lors du géoréférencement des sondes (défaut: `true`)                                                                                                                                                                        |
+| `--water-level-station` | Texte | Non    | Code(s) des stations marégraphiques à utiliser pour le traitement. Peut être spécifié plusieurs fois. Si une station est spécifiée, seulement cette station sera utilisée. ([Liste des stations](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=fr)) |
+| `--excluded-station`   | Texte | Non    | Code(s) des stations marégraphiques à exclure du traitement. Peut être spécifié plusieurs fois pour exclure plusieurs stations ([Liste des stations](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=fr))                                             |
 
 #### Exemples d'utilisation
 
@@ -175,14 +175,14 @@ python cli.py process data.csv --config ./custom_config.toml --output ./results
 python cli.py process data.csv --apply-water-level false --output ./results
 ```
 
-**Traitement en utilisant une station marégraphique spécifique :**
+**Traitement en utilisant des stations marégraphiques spécifiques :**
 ```bash
-python cli.py process data.csv --water-level-station "04435" --output ./results
+python cli.py process data.csv --water-level-station "04435" --water-level-station "04436" --output ./results
 ```
 
 **Traitement en excluant certaines stations marégraphiques :**
 ```bash
-python cli.py process data.csv --excluded-stations "04435" --excluded-stations "04436" --output ./results
+python cli.py process data.csv --excluded-station "04435" --excluded-station "04436" --output ./results
 ```
 
 **Traitement de plusieurs fichiers :**

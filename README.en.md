@@ -137,15 +137,15 @@ python cli.py process [FILES...] [OPTIONS]
 
 #### Available Options
 
-| Option | Type | Required | Description                                                                                                                                                                                   |
-|--------|------|--------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `--output` | Path | **Yes** | Output directory path                                                                                                                                                                         |
-| `--vessel` | Text | No | Vessel identifier. If not specified, a default vessel with lever arms at 0 will be used. **Incompatible with `--waterline`**                                                                  |
-| `--waterline` | Decimal | No | Vessel waterline in meter (vertical distance between sounder and water surface). If not specified, a value of 0 will be used. **Incompatible with `--vessel`**                                |
-| `--config` | Path | No | Configuration file path. If not specified, the default configuration file will be used                                                                                                        |
-| `--apply-water-level` | Boolean | No | Apply water level reduction when georeferencing soundings (default: `true`)                                                                                                                   |
-| `--water-level-station` | Text | No | Water level station code to use for all data. If a station is specified, only that station will be used. ([Stations list](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=en)) |
-| `--excluded-stations` | Text | No | Water level station code(s) to exclude from processing. Can be specified multiple times to exclude multiple stations |
+| Option                 | Type | Required | Description                                                                                                                                                                                                                         |
+|------------------------|------|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `--output`             | Path | **Yes** | Output directory path                                                                                                                                                                                                               |
+| `--vessel`             | Text | No | Vessel identifier. If not specified, a default vessel with lever arms at 0 will be used. **Incompatible with `--waterline`**                                                                                                        |
+| `--waterline`          | Decimal | No | Vessel waterline in meter (vertical distance between sounder and water surface). If not specified, a value of 0 will be used. **Incompatible with `--vessel`**                                                                      |
+| `--config`             | Path | No | Configuration file path. If not specified, the default configuration file will be used                                                                                                                                              |
+| `--apply-water-level`  | Boolean | No | Apply water level reduction when georeferencing soundings (default: `true`)                                                                                                                                                         |
+| `--water-level-station` | Text | No | Water level station code(s) to use for processing. Can be specified multiple times. If a station is specified, only that station will be used. ([Stations list](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=en)) |
+| `--excluded-station`   | Text | No | Water level station code(s) to exclude from processing. Can be specified multiple times to exclude multiple stations ([Stations list](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=en))                           |
 
 #### Usage Examples
 
@@ -176,12 +176,12 @@ python cli.py process data.csv --apply-water-level false --output ./results
 
 **Processing with specific water level station:**
 ```bash
-python cli.py process data.csv --water-level-station "04435" --output ./results
+python cli.py process data.csv --water-level-station "04435" --water-level-station "04436" --output ./results
 ```
 
 **Processing excluding certain water level stations:**
 ```bash
-python cli.py process data.csv --excluded-stations "04435" --excluded-stations "04436" --output ./results
+python cli.py process data.csv --excluded-station "04435" --excluded-station "04436" --output ./results
 ```
 
 **Processing multiple files:**
