@@ -166,8 +166,8 @@ def process_bathymetric_data(
     waterline: Optional[float],
     config: Optional[Path],
     apply_water_level: Optional[bool] = True,
-    water_level_stations: Optional[tuple[str, ...]] = None,
-    excluded_stations: Optional[tuple[str, ...]] = None,
+    water_level_station: Optional[tuple[str, ...]] = None,
+    excluded_station: Optional[tuple[str, ...]] = None,
 ) -> None:
     """
     Traite les fichiers de données bathymétriques et les géoréférence. Processes bathymetric data files and georeferences them.
@@ -184,10 +184,10 @@ def process_bathymetric_data(
     :type config: Optional[Path]
     :param apply_water_level: Appliquer la réduction des nivaeux d'eau lors du géoréférencement des sondes.
     :type apply_water_level: Optional[bool]
-    :param water_level_stations: Stations de niveau d'eau à utiliser pour le traitement.
-    :type water_level_stations: Optional[tuple[str, ...]]
-    :param excluded_stations: Stations de niveau d'eau à exclure du traitement.
-    :type excluded_stations: Optional[tuple[str, ...]]
+    :param water_level_station: Stations de niveau d'eau à utiliser pour le traitement.
+    :type water_level_station: Optional[tuple[str, ...]]
+    :param excluded_station: Stations de niveau d'eau à exclure du traitement.
+    :type excluded_station: Optional[tuple[str, ...]]
     :raise click.UsageError: Si les options --vessel et --waterline sont utilisées en même temps.
     :raise click.UsageError: Si la valeur de l'option --waterline est négative.
     :raise click.UsageError: Si aucun fichier valide n'est fourni.
@@ -243,9 +243,9 @@ def process_bathymetric_data(
         config_path=Path(config),
         apply_water_level=apply_water_level,
         water_level_stations=(
-            list(water_level_stations) if water_level_stations else None
+            list(water_level_station) if water_level_station else None
         ),
-        excluded_stations=list(excluded_stations) if excluded_stations else None,
+        excluded_stations=list(excluded_station) if excluded_station else None,
     )
 
 
