@@ -508,7 +508,15 @@ def processing_workflow(
         config_path=config_path
     )
 
-    excluded_stations: list[str] = excluded_stations if excluded_stations else []
+    excluded_stations: list[str] = (
+        [
+            stations_handler.get_station_id_by_code(station_code)
+            for station_code in excluded_stations
+        ]
+        if excluded_stations
+        else []
+    )
+
     wl_combineds_dict: dict[
         str, list[pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]  # type: ignore
     ] = defaultdict(list)
