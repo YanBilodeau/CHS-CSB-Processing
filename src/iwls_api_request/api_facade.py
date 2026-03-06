@@ -20,14 +20,14 @@ LOGGER = logger.bind(name="IWLS.API.APIFacade")
 
 
 class EnvironmentType(StrEnum):
-    DEV: str = "dev"
-    PROD: str = "prod"
-    PUBLIC: str = "public"
+    DEV = "dev"
+    PROD = "prod"
+    PUBLIC = "public"
 
 
 class HandlerType(StrEnum):
-    RATE_LIMITER: str = "rate_limiter"
-    REQUESTS: str = "request"
+    RATE_LIMITER = "rate_limiter"
+    REQUESTS = "request"
 
 
 API_FACTORY: dict[EndpointType, type[IWLSapiABC]] = {
