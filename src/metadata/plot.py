@@ -13,6 +13,7 @@ import plotly.graph_objects as go
 import numpy as np
 from plotly.subplots import make_subplots
 
+from .pdf_export import export_metadata_table_as_pdf
 from .order.order_models import OrderEnum
 from .order.s44_computation import ORDERS_CONFIG, compute_threshold
 from schema import model_ids as schema_ids
@@ -731,7 +732,6 @@ def plot_metadata(
     df.columns = ["Metadata", "Value"]
 
     metadata_table: go.Table = create_table_data(df, ["Metadata", "Value"])
-    metadata_fig: go.Figure = go.Figure(data=[metadata_table])
     fig.add_trace(metadata_table, row=1, col=1)
 
     statistic: dict[OrderEnum, dict[str, float | int]] = {}
@@ -789,13 +789,7 @@ def plot_metadata(
         fig.write_html(output_path.with_suffix(".html"))
 
         try:
-            metadata_fig.write_image(
-                output_path.with_suffix(".pdf"),
-                height=1400,
-                width=850,
-                scale=2,
-            )
-
+            export_metadata_table_as_pdf(df, output_path.with_suffix(".pdf"))
         except Exception as e:
             LOGGER.warning(f"Erreur lors de la sauvegarde du PDF : {e}")
 
