@@ -161,4 +161,12 @@ def get_intersected_tide_zone_info(
         schema_ids.TIDE_ZONE_ID
     ].map(time_series_map)
 
+    # Normalise datetime precision to ns to satisfy TideZoneInfoSchema contract.
+    tide_zone_info["min_time"] = pd.to_datetime(
+        tide_zone_info["min_time"], utc=True
+    ).astype(pd.DatetimeTZDtype("ns", "UTC"))
+    tide_zone_info["max_time"] = pd.to_datetime(
+        tide_zone_info["max_time"], utc=True
+    ).astype(pd.DatetimeTZDtype("ns", "UTC"))
+
     return tide_zone_info

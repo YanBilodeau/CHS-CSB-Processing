@@ -235,6 +235,9 @@ class TideZoneInfoSchema(pa.DataFrameModel):
     min_time: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
     max_time: Series[pd.DatetimeTZDtype("ns", tz="UTC")]
 
+    class Config:
+        coerce = True
+
 
 def validate_schema(
     data: gpd.GeoDataFrame | DataFrame, schema: Type[pa.DataFrameModel]
