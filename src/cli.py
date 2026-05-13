@@ -159,6 +159,18 @@ def cli_group():
     multiple stations (https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=en).
     """,
 )
+@click.option(
+    "--vessel-name",
+    type=str,
+    required=False,
+    default=None,
+    help="""
+    Nom du navire à utiliser pour l'export. Surcharge le nom issu de la configuration du navire (vessel_config.name)
+    si fourni. Disponible indépendamment des options --vessel et --waterline.\n
+    Vessel name to use for export. Overrides the name from the vessel configuration (vessel_config.name) if provided.
+    Available independently of the --vessel and --waterline options.
+    """,
+)
 def process_bathymetric_data(
     files: Collection[Path],
     output: Path,
@@ -168,6 +180,7 @@ def process_bathymetric_data(
     apply_water_level: Optional[bool] = True,
     water_level_station: Optional[tuple[str, ...]] = None,
     excluded_station: Optional[tuple[str, ...]] = None,
+    vessel_name: Optional[str] = None,
 ) -> None:
     """
     Traite les fichiers de données bathymétriques et les géoréférence. Processes bathymetric data files and georeferences them.
@@ -188,6 +201,8 @@ def process_bathymetric_data(
     :type water_level_station: Optional[tuple[str, ...]]
     :param excluded_station: Stations de niveau d'eau à exclure du traitement.
     :type excluded_station: Optional[tuple[str, ...]]
+    :param vessel_name: Nom du navire pour l'export. Surcharge vessel_config.name si fourni.
+    :type vessel_name: Optional[str]
     :raise click.UsageError: Si les options --vessel et --waterline sont utilisées en même temps.
     :raise click.UsageError: Si la valeur de l'option --waterline est négative.
     :raise click.UsageError: Si aucun fichier valide n'est fourni.
@@ -246,6 +261,7 @@ def process_bathymetric_data(
             list(water_level_station) if water_level_station else None
         ),
         excluded_stations=list(excluded_station) if excluded_station else None,
+        vessel_name=vessel_name or None,
     )
 
 

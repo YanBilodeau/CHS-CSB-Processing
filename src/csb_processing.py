@@ -156,6 +156,7 @@ def export_metadata(
     nbins_x: Optional[int] = 35,
     nbins_y: Optional[int] = 35,
     already_at_chart_datum: bool = False,
+    vessel_name: Optional[str] = None,
 ) -> None:
     """
     Exporte les métadonnées des données traitées.
@@ -178,10 +179,13 @@ def export_metadata(
     :type nbins_y: Optional[int]
     :param already_at_chart_datum: Les données sont déjà réduites au zéro des cartes.
     :type already_at_chart_datum: bool
+    :param vessel_name: Nom du navire pour l'export. Surcharge vessel_config.name si fourni.
+    :type vessel_name: Optional[str]
     """
+    effective_vessel_name: str = vessel_name or vessel_config.name
     name: str = export.get_export_file_name(
         data_geodataframe=data_geodataframe,
-        vessel_name=vessel_config.name,
+        vessel_name=effective_vessel_name,
         datalogger_type=datalogger_type,
     )
     output_path: Path = output_path / f"{name}_metadata.json"
@@ -203,7 +207,7 @@ def export_metadata(
     survey_metadata: metadata.CSBmetadata = metadata.CSBmetadata(
         start_date=min_time.strftime("%Y-%m-%d"),
         end_date=max_time.strftime("%Y-%m-%d"),
-        vessel=f"{vessel_config.id} - {vessel_config.name}",
+        vessel=f"{vessel_config.id} - {effective_vessel_name}",
         sounding_hardware=f"{datalogger_type} - {attributes.sdghdw}",
         sounding_technique=attributes.tecsou,
         sounder_draft=sounder.z - waterline.z,
@@ -253,6 +257,7 @@ def export_processed_data_and_metadata(
     processing_config: config.CSBprocessingConfig,
     caris_api_config: Optional[config.CarisAPIConfig] = None,
     tide_stations: Optional[Collection[str]] = None,
+    vessel_name: Optional[str] = None,
 ) -> None:
     """
     Exporte les données traitées et les métadonnées.
@@ -271,7 +276,11 @@ def export_processed_data_and_metadata(
     :type caris_api_config: Optional[config.CarisAPIConfig]
     :param tide_stations: Liste des stations de marées.
     :type tide_stations: Optional[Collection[str]]
+    :param vessel_name: Nom du navire pour l'export. Surcharge vessel_config.name si fourni.
+    :type vessel_name: Optional[str]
     """
+    effective_vessel_name: str = vessel_name or vessel_config.name
+
     # Finalize the geodataframe by ensuring correct data types, sorting and columns
     data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = (
         export.finalize_geodataframe(data_geodataframe=data_geodataframe)
@@ -280,7 +289,7 @@ def export_processed_data_and_metadata(
     # Define the base path for output files
     output_base_path: Path = export_data_path / export.get_export_file_name(
         data_geodataframe=data_geodataframe,
-        vessel_name=vessel_config.name,
+        vessel_name=effective_vessel_name,
         datalogger_type=datalogger_type,
     )
 
@@ -305,6 +314,7 @@ def export_processed_data_and_metadata(
         nbins_x=processing_config.plot.nbin_x,
         nbins_y=processing_config.plot.nbin_y,
         already_at_chart_datum=processing_config.options.already_at_chart_datum,
+        vessel_name=effective_vessel_name,
     )
 
 
@@ -354,6 +364,7 @@ def processing_workflow(
     water_level_stations: Optional[Collection[str]] = None,
     excluded_stations: Optional[Collection[str]] = None,
     processing_config: Optional[config.CSBprocessingConfig] = None,
+    vessel_name: Optional[str] = None,
 ) -> None:
     """
     Workflow de traitement des données.
@@ -376,6 +387,8 @@ def processing_workflow(
     :type excluded_stations: Optional[Collection[str]]
     :param processing_config: Configuration du traitement. Si fourni, remplace le chargement depuis config_path.
     :type processing_config: Optional[config.CSBprocessingConfig]
+    :param vessel_name: Nom du navire à utiliser pour l'export. Surcharge vessel_config.name si fourni.
+    :type vessel_name: Optional[str]
     """
     if not files:
         LOGGER.warning(f"Aucun fichier à traiter.")
@@ -513,6 +526,7 @@ def processing_workflow(
             processing_config=processing_config,
             caris_api_config=caris_api_config,
             tide_stations=None,
+            vessel_name=vessel_name,
         )
 
         return None
@@ -696,6 +710,7 @@ def processing_workflow(
             get_station_title(gdf_voronoi=gdf_voronoi, station_id=station_id)
             for station_id in wl_combineds_dict.keys()
         ],
+        vessel_name=vessel_name,
     )
 
     return None

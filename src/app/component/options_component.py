@@ -27,6 +27,7 @@ class OptionsComponent:
         self.output_input = None
         self.config_input = None
         self.vessel_input = None
+        self.vessel_name_input = None
         self.waterline_input = None
         self.output_warning_label = None
         self.apply_water_level_checkbox = None
@@ -81,12 +82,12 @@ class OptionsComponent:
                 self.apply_water_level_checkbox.value = False
                 self.apply_water_level_checkbox.disable()
             if self.already_at_chart_datum_warning:
-                self.already_at_chart_datum_warning.set_visibility(True)
+                self.already_at_chart_datum_warning.style("visibility: visible")
         else:
             if self.apply_water_level_checkbox:
                 self.apply_water_level_checkbox.enable()
             if self.already_at_chart_datum_warning:
-                self.already_at_chart_datum_warning.set_visibility(False)
+                self.already_at_chart_datum_warning.style("visibility: hidden")
 
     def _handle_vessel_toggle(self):
         """Handle vessel option toggle."""
@@ -136,16 +137,12 @@ class OptionsComponent:
         if self.config_manager:
             self._create_water_vessel_rows()
 
-            self.already_at_chart_datum_warning = ui.label(
-                "⚠️ Data already reduced to chart datum — water level reduction is disabled."
-            ).classes("text-sm text-orange-600")
-
             if self.config_manager.already_at_chart_datum:
                 self.apply_water_level_checkbox.value = False
                 self.apply_water_level_checkbox.disable()
-                self.already_at_chart_datum_warning.set_visibility(True)
+                self.already_at_chart_datum_warning.style("visibility: visible")
             else:
-                self.already_at_chart_datum_warning.set_visibility(False)
+                self.already_at_chart_datum_warning.style("visibility: hidden")
 
             self._create_filter_section()
 
@@ -153,22 +150,29 @@ class OptionsComponent:
         """
         Two paired rows with matching flex-1 halves:
           Row 1 — Apply water level (left)  |  Specify waterline + input (right)
-          Row 2 — Already at chart datum (left)  |  Use vessel identifier + input (right)
+          Row 2 — Already at chart datum + warning (left)  |  Use vessel identifier + input (right)
+          Row 3 — Vessel name input (full width, always visible)
         Each checkbox is wrapped in a fixed-width div (13rem) so both inputs always
         start at the same horizontal position regardless of label length.
         """
         # ── Row 1 ────────────────────────────────────────────────────────────────
         with ui.row().classes("w-full items-center gap-8"):
             with ui.element("div").classes("flex-1"):
-                self.apply_water_level_checkbox = ui.checkbox(
-                    "Apply water level reduction"
-                ).bind_value(self.config_manager, "apply_water_level")
+                self.apply_water_level_checkbox = (
+                    ui.checkbox("Apply water level reduction")
+                    .bind_value(self.config_manager, "apply_water_level")
+                    .tooltip(
+                        "Apply IWLS water level reduction to soundings during georeferencing."
+                    )
+                )
 
             with ui.row().classes("flex-1 items-center gap-0"):
                 with ui.element("div").style("width: 13rem; flex-shrink: 0"):
                     ui.checkbox(
                         "Specify waterline", on_change=self._handle_waterline_toggle
-                    ).bind_value(self.config_manager, "use_waterline")
+                    ).bind_value(self.config_manager, "use_waterline").tooltip(
+                        "Enter the vertical distance (m) from the sounder to the water surface."
+                    )
 
                 self.waterline_input = (
                     ui.number("Waterline (m)", min=0.0, step=0.01, format="%.3f")
@@ -180,18 +184,30 @@ class OptionsComponent:
             self.waterline_input.style("visibility: hidden")
 
         # ── Row 2 ────────────────────────────────────────────────────────────────
-        with ui.row().classes("w-full items-center gap-8"):
+        with ui.row().classes("w-full items-start gap-8"):
             with ui.element("div").classes("flex-1"):
                 ui.checkbox(
                     "Already at chart datum",
                     on_change=self._handle_already_at_chart_datum_toggle,
-                ).bind_value(self.config_manager, "already_at_chart_datum")
+                ).bind_value(self.config_manager, "already_at_chart_datum").tooltip(
+                    "Data are already reduced to chart datum — disables water level reduction."
+                )
+                # Warning label — always occupies space (visibility: hidden keeps layout stable)
+                self.already_at_chart_datum_warning = (
+                    ui.label(
+                        "⚠️ Data already reduced to chart datum — water level reduction is disabled."
+                    )
+                    .classes("text-sm text-orange-600")
+                    .style("visibility: hidden")
+                )
 
             with ui.row().classes("flex-1 items-center gap-0"):
                 with ui.element("div").style("width: 13rem; flex-shrink: 0"):
                     ui.checkbox(
                         "Use vessel identifier", on_change=self._handle_vessel_toggle
-                    ).bind_value(self.config_manager, "use_vessel")
+                    ).bind_value(self.config_manager, "use_vessel").tooltip(
+                        "Use a registered vessel configuration (lever arms) identified by its ID."
+                    )
 
                 self.vessel_input = (
                     ui.input("Vessel identifier")
@@ -201,6 +217,25 @@ class OptionsComponent:
 
         if not self.config_manager.use_vessel:
             self.vessel_input.style("visibility: hidden")
+
+        # ── Row 3 — Vessel name (always visible) ─────────────────────────────────
+        with ui.row().classes("w-full items-center gap-8"):
+            with ui.element("div").classes("flex-1"):
+                pass  # left column intentionally empty to keep alignment
+
+            with ui.element("div").classes("flex-1"):
+                self.vessel_name_input = (
+                    ui.input(
+                        "Vessel name (optional)",
+                        placeholder="Override vessel name for export",
+                    )
+                    .bind_value(self.config_manager, "vessel_name")
+                    .classes("w-full")
+                    .tooltip(
+                        "Override the vessel name used in exported filenames and metadata. "
+                        "Overrides the name from the vessel configuration if provided."
+                    )
+                )
 
     def _create_filter_section(self):
         """Create the filter checkboxes section."""

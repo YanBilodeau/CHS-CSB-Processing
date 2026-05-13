@@ -54,6 +54,7 @@ class ConfigManagerProtocol(Protocol):
     output_path: Path
     config_path: Path
     vessel_id: str
+    vessel_name: str
     waterline_value: float
     use_vessel: bool
     use_waterline: bool

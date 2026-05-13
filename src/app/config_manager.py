@@ -21,6 +21,7 @@ class ConfigManager:
         self.output_path: Path = Path()
         self.config_path: Path = Path(CONFIG_FILE)
         self.vessel_id: str = ""
+        self.vessel_name: str = ""
         self.waterline_value: float = 0.0
         self.use_vessel: bool = False
         self.use_waterline: bool = False

@@ -224,6 +224,7 @@ class ProcessingHandler:
                 apply_water_level=self.config_manager.apply_water_level,
                 extra_logger=(self.log_settings,),
                 processing_config=processing_config,
+                vessel_name=self.config_manager.vessel_name or None,
             )
             LOGGER.info("Processing workflow completed successfully.")
 
