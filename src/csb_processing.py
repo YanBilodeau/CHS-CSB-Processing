@@ -348,6 +348,7 @@ def processing_workflow(
     extra_logger: Optional[Iterable[dict]] = None,
     water_level_stations: Optional[Collection[str]] = None,
     excluded_stations: Optional[Collection[str]] = None,
+    processing_config: Optional[config.CSBprocessingConfig] = None,
 ) -> None:
     """
     Workflow de traitement des données.
@@ -368,6 +369,8 @@ def processing_workflow(
     :type water_level_stations: Optional[Collection[str]]
     :param excluded_stations: Liste des stations de niveau d'eau à exclure du traitement.
     :type excluded_stations: Optional[Collection[str]]
+    :param processing_config: Configuration du traitement. Si fourni, remplace le chargement depuis config_path.
+    :type processing_config: Optional[config.CSBprocessingConfig]
     """
     if not files:
         LOGGER.warning(f"Aucun fichier à traiter.")
@@ -375,10 +378,9 @@ def processing_workflow(
 
     export_data_path, export_tide_path, log_path = get_data_structure(output)
 
-    # Read the configuration file
-    processing_config: config.CSBprocessingConfig = config.get_data_config(
-        config_file=config_path
-    )
+    # Read the configuration file (if not already provided)
+    if processing_config is None:
+        processing_config = config.get_data_config(config_file=config_path)
 
     # Configure the logger
     configure_logger(
@@ -696,3 +698,6 @@ def processing_workflow(
     # todo : créer fichier vectoriel avec les stations et leurs incertitudes associées
 
     # todo : option pour prendre un fichier vectoriel en entré au lieu de calculer un voronoi
+
+    # todo : dans nice_gui, ajouter option des filtres à appliquer pour supprimé
+    # todo : longueur de ligne de sondage et temps de sondage
