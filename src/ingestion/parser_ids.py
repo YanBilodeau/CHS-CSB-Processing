@@ -101,6 +101,18 @@ TIME_B12_CSB: str = "time"
 # Constantes pour les noms des colonnes des données WIBL.
 WIBL: str = "WIBL"
 
+# Constantes pour les noms des colonnes des données HydroBlock.
+HYDROBLOCK: str = "HydroBlock"
+"""Valeur de la constante pour le type de données HydroBlock."""
+TIMESTAMP_HYDROBLOCK: str = "timestamp"
+"""Valeur de la constante pour la colonne de timestamp des données HydroBlock."""
+LATITUDE_HYDROBLOCK: str = "latitude"
+"""Valeur de la constante pour la colonne de latitude des données HydroBlock."""
+LONGITUDE_HYDROBLOCK: str = "longitude"
+"""Valeur de la constante pour la colonne de longitude des données HydroBlock."""
+CHARTDATUMHEIGHT_HYDROBLOCK: str = "chartdatumheight"
+"""Valeur de la constante pour la colonne de profondeur au zéro des cartes des données HydroBlock."""
+
 # Constantes pour les dtypes des données.
 FLOAT64: str = "float64"
 """Valeur de la constante pour le type de données float64."""

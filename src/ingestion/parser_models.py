@@ -18,6 +18,7 @@ from .parser_ofm import DataParserOFM
 from .parser_exception import MultipleParsersError
 from .parser_b12_csb import DataParserB12CSB
 from .parser_wibl import DataParserWIBL
+from .parser_hydroblock import DataParserHydroBlock
 
 
 class DataLoggerType(StrEnum):
@@ -39,6 +40,8 @@ class DataLoggerType(StrEnum):
     """Type de données B12-CSB."""
     WIBL = ids.WIBL
     """Type de données WIBL."""
+    HYDROBLOCK = ids.HYDROBLOCK
+    """Type de données HydroBlock."""
 
 
 DATA_TYPE_MAPPING: {Type[DataParserABC], DataLoggerType} = {
@@ -48,6 +51,7 @@ DATA_TYPE_MAPPING: {Type[DataParserABC], DataLoggerType} = {
     DataParserBlackBox: DataLoggerType.BLACKBOX,
     DataParserB12CSB: DataLoggerType.B12_CSB,
     DataParserWIBL: DataLoggerType.WIBL,
+    DataParserHydroBlock: DataLoggerType.HYDROBLOCK,
 }
 """Dictionnaire permettant de faire le lien entre un parser et un type de données."""
 

@@ -21,6 +21,7 @@ from .parser_exception import ParserIdentifierError
 from .parser_models import ParserFiles
 from .parser_b12_csb import DataParserB12CSB
 from .parser_wibl import DataParserWIBL
+from .parser_hydroblock import DataParserHydroBlock
 
 LOGGER = logger.bind(name="CSB-Processing.Ingestion.Parser.Factory")
 
@@ -77,6 +78,14 @@ B12_CSB_HEADER: None = None
 WIBL_HEADER: None = None
 """Entête des fichiers WIBL."""
 
+HYDROBLOCK_HEADER: Header = (
+    ids.TIMESTAMP_HYDROBLOCK,
+    ids.LATITUDE_HYDROBLOCK,
+    ids.LONGITUDE_HYDROBLOCK,
+    ids.CHARTDATUMHEIGHT_HYDROBLOCK,
+)
+"""Entête des fichiers HydroBlock."""
+
 
 FACTORY_PARSER: dict[tuple[Header | None, str], Type[DataParserABC]] = {
     (DCDB_HEADER, ids.NORMALIZED_CSV): DataParserBCDB,
@@ -84,6 +93,7 @@ FACTORY_PARSER: dict[tuple[Header | None, str], Type[DataParserABC]] = {
     (LOWRANCE_HEADER, ids.NORMALIZED_CSV): DataParserLowrance,
     (ACTISENSE_HEADER, ids.NORMALIZED_CSV): "Actisense",
     (BLACKBOX_HEADER, ids.NORMALIZED_TXT): DataParserBlackBox,
+    (HYDROBLOCK_HEADER, ids.NORMALIZED_TXT): DataParserHydroBlock,
     (B12_CSB_HEADER, ids.NORMALIZED_GEOJSON): DataParserB12CSB,
     (WIBL_HEADER, ids.NORMALIZED_WIBL): DataParserWIBL,
 }
@@ -125,13 +135,15 @@ def get_header(
         return None
 
     try:
-        header: pd.DataFrame = pd.read_csv(file, nrows=0)
+        header: pd.DataFrame = pd.read_csv(file, nrows=0, sep=None, engine="python")
 
     except UnicodeDecodeError:
         LOGGER.debug(
             f"Le fichier {file} n'est pas encodé en 'UTF-8'. Tentative en 'latin1'."
         )
-        header: pd.DataFrame = pd.read_csv(file, nrows=0, encoding="latin1")
+        header: pd.DataFrame = pd.read_csv(
+            file, nrows=0, sep=None, engine="python", encoding="latin1"
+        )
 
     if any(pd.to_numeric(header.columns, errors="coerce").notna()):
         LOGGER.debug(f"Le fichier {file} n'a pas d'entête.")
