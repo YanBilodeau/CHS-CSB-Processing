@@ -58,6 +58,7 @@ class ConfigManagerProtocol(Protocol):
     use_vessel: bool
     use_waterline: bool
     apply_water_level: bool
+    already_at_chart_datum: bool
     filter_depth: bool
     filter_speed: bool
     filter_latitude: bool

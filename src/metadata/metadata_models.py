@@ -18,6 +18,8 @@ REDUCTION_METHOD = "The dataset has been reduced to CD thanks to water level pul
 """Méthode de réduction du niveau d'eau"""
 NO_TIDE_STATIONS = "The dataset has not been reduced to CD."
 """Pas de stations de marée"""
+ALREADY_AT_CHART_DATUM = "The dataset was provided already reduced to Chart Datum. No water level reduction was applied."
+"""Données déjà au zéro des cartes"""
 CHART_DATUM = "Chart Datum"
 """Niveau de référence des cartes"""
 
@@ -60,6 +62,8 @@ class CSBmetadata:
     """Système de coordonnées horizontal"""
     data_processing_software: str = "CHS-CSB-Processing {version}"
     """Logiciel de traitement des données"""
+    already_at_chart_datum: bool = False
+    """Les données sont déjà réduites au zéro des cartes"""
     iho_order_statistic: IHOorderQualifiquation = None
     """Statistiques des ordre IHO"""
 
@@ -74,11 +78,15 @@ class CSBmetadata:
         self.water_Level_reduction_method = (
             REDUCTION_METHOD.format(stations=", ".join(self.tide_stations))
             if self.tide_stations
-            else NO_TIDE_STATIONS
+            else (
+                ALREADY_AT_CHART_DATUM
+                if self.already_at_chart_datum
+                else NO_TIDE_STATIONS
+            )
         )
 
         self.vertical_coordinate_reference_system = (
-            CHART_DATUM if self.tide_stations else None
+            CHART_DATUM if (self.tide_stations or self.already_at_chart_datum) else None
         )
 
     def __dict__(self) -> dict:

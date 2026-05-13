@@ -188,6 +188,11 @@ max_iterations = 5
 # Nombre de décimales significatives à conserver pour les données traitées {int}.
 # Number of significant decimals to keep for processed data {int}.
 decimal_precision = 2
+# Indique que les données en entrée sont déjà réduites au zéro des cartes (ex. : Hydroblock).
+# Si True, la réduction marégraphique (apply_water_level) est automatiquement désactivée. {bool}
+# Indicates that the input data is already reduced to chart datum (e.g. Hydroblock).
+# If True, water level reduction (apply_water_level) is automatically disabled. {bool}
+already_at_chart_datum = false
 
 [CARIS.Environment]
 # Cette section est utilisée pour configurer l'environnement de CARIS si vous voulez exporter les données au format *.csar.

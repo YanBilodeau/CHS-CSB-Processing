@@ -29,6 +29,8 @@ class OptionsComponent:
         self.vessel_input = None
         self.waterline_input = None
         self.output_warning_label = None
+        self.apply_water_level_checkbox = None
+        self.already_at_chart_datum_warning = None
 
         self.ui_event_handler = ui_event_handler
         self.config_manager = config_manager
@@ -74,6 +76,24 @@ class OptionsComponent:
             LOGGER.error(f"Error in select_config_file: {ex}")
             ui.notification(f"Error opening file dialog: {str(ex)}", type="negative")
 
+    def _handle_already_at_chart_datum_toggle(self, e) -> None:
+        """Handle 'Already at chart datum' toggle: disable/enable Apply water level accordingly."""
+        is_checked: bool = e.value
+        if is_checked:
+            # Force apply_water_level off and disable its checkbox
+            self.config_manager.apply_water_level = False
+            if self.apply_water_level_checkbox:
+                self.apply_water_level_checkbox.value = False
+                self.apply_water_level_checkbox.disable()
+            if self.already_at_chart_datum_warning:
+                self.already_at_chart_datum_warning.set_visibility(True)
+        else:
+            # Re-enable apply_water_level checkbox
+            if self.apply_water_level_checkbox:
+                self.apply_water_level_checkbox.enable()
+            if self.already_at_chart_datum_warning:
+                self.already_at_chart_datum_warning.set_visibility(False)
+
     def _handle_vessel_toggle(self):
         """Handle vessel option toggle."""
         try:
@@ -106,9 +126,27 @@ class OptionsComponent:
             self._create_right_column()
 
         if self.config_manager:
-            ui.checkbox("Apply water level reduction", value=True).bind_value(
-                self.config_manager, "apply_water_level"
-            )
+            self.apply_water_level_checkbox = ui.checkbox(
+                "Apply water level reduction", value=True
+            ).bind_value(self.config_manager, "apply_water_level")
+
+            ui.checkbox(
+                "Already at chart datum",
+                on_change=self._handle_already_at_chart_datum_toggle,
+            ).bind_value(self.config_manager, "already_at_chart_datum")
+
+            self.already_at_chart_datum_warning = ui.label(
+                "⚠️ Data already reduced to chart datum — water level reduction is disabled."
+            ).classes("text-sm text-orange-600")
+
+            # Apply initial state if already_at_chart_datum is True at load time
+            if self.config_manager.already_at_chart_datum:
+                self.apply_water_level_checkbox.value = False
+                self.apply_water_level_checkbox.disable()
+                self.already_at_chart_datum_warning.set_visibility(True)
+            else:
+                self.already_at_chart_datum_warning.set_visibility(False)
+
             self._create_filter_section()
 
     def _create_filter_section(self):

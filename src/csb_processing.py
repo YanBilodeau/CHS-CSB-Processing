@@ -155,6 +155,7 @@ def export_metadata(
     decimal_precision: int,
     nbins_x: Optional[int] = 35,
     nbins_y: Optional[int] = 35,
+    already_at_chart_datum: bool = False,
 ) -> None:
     """
     Exporte les métadonnées des données traitées.
@@ -175,6 +176,8 @@ def export_metadata(
     :type nbins_x: Optional[int]
     :param nbins_y: Nombre de cellules pour l'axe des Y dans les graphiques.
     :type nbins_y: Optional[int]
+    :param already_at_chart_datum: Les données sont déjà réduites au zéro des cartes.
+    :type already_at_chart_datum: bool
     """
     name: str = export.get_export_file_name(
         data_geodataframe=data_geodataframe,
@@ -206,6 +209,7 @@ def export_metadata(
         sounder_draft=sounder.z - waterline.z,
         sotfware_version=__version__,
         tide_stations=tide_stations,
+        already_at_chart_datum=already_at_chart_datum,
         tvu=(
             data_geodataframe[data_geodataframe[schema_ids.DEPTH_PROCESSED_METER] < 50][
                 schema_ids.UNCERTAINTY
@@ -300,6 +304,7 @@ def export_processed_data_and_metadata(
         decimal_precision=processing_config.options.decimal_precision,
         nbins_x=processing_config.plot.nbin_x,
         nbins_y=processing_config.plot.nbin_y,
+        already_at_chart_datum=processing_config.options.already_at_chart_datum,
     )
 
 
@@ -399,6 +404,14 @@ def processing_workflow(
         f"config_path = {config_path}\n"
         f"apply_water_level = {apply_water_level}"
     )
+
+    # Forcer apply_water_level à False si les données sont déjà au zéro des cartes
+    if processing_config.options.already_at_chart_datum and apply_water_level:
+        LOGGER.warning(
+            "Option 'already_at_chart_datum' activée : les données sont déjà réduites au "
+            "zéro des cartes. La réduction marégraphique (apply_water_level) est désactivée."
+        )
+        apply_water_level = False
 
     # Get the configuration for the API Caris
     try:
@@ -699,5 +712,7 @@ def processing_workflow(
 
     # todo : option pour prendre un fichier vectoriel en entré au lieu de calculer un voronoi
 
-    # todo : dans nice_gui, ajouter option des filtres à appliquer pour supprimé
-    # todo : longueur de ligne de sondage et temps de sondage
+    # todo : refaire le rapport pour style et theme comme dans S44-report
+    # todo : ajouter au métadonnée longueur de ligne de sondage et temps de sondage
+
+    # todo : valeur de thu et tvu dans l'app

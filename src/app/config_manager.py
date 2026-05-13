@@ -25,14 +25,19 @@ class ConfigManager:
         self.use_vessel: bool = False
         self.use_waterline: bool = False
         self.apply_water_level: bool = True
+        self.already_at_chart_datum: bool = False
 
-        # Initialiser les filtres depuis la config TOML par défaut
+        # Initialiser les filtres et options depuis la config TOML par défaut
         try:
             default_config = get_data_config(config_file=Path(CONFIG_FILE))
             default_filters = {
                 f if isinstance(f, str) else f.value
                 for f in (default_config.filter.filter_to_apply or [])
             }
+            self.already_at_chart_datum = default_config.options.already_at_chart_datum
+            if self.already_at_chart_datum:
+                self.apply_water_level = False
+
         except Exception as e:
             LOGGER.error(f"Error initialising configuration: {e}")
             default_filters = {
@@ -103,4 +108,9 @@ class ConfigManager:
         updated_filter = base_config.filter.model_copy(
             update={"filter_to_apply": selected_filters}
         )
-        return base_config.model_copy(update={"filter": updated_filter})
+        updated_options = base_config.options.model_copy(
+            update={"already_at_chart_datum": self.already_at_chart_datum}
+        )
+        return base_config.model_copy(
+            update={"filter": updated_filter, "options": updated_options}
+        )
