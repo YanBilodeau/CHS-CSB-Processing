@@ -520,7 +520,6 @@ def processing_workflow(
         str, list[pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]  # type: ignore
     ] = defaultdict(list)
 
-    last_run_stations: list[str] = []
     iteration: int = 0
     max_iterations: int = (
         processing_config.options.max_iterations if not water_level_stations else 1
