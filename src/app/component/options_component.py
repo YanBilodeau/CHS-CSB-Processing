@@ -154,7 +154,8 @@ class OptionsComponent:
         Two paired rows with matching flex-1 halves:
           Row 1 — Apply water level (left)  |  Specify waterline + input (right)
           Row 2 — Already at chart datum (left)  |  Use vessel identifier + input (right)
-        Both inputs share the same horizontal start position thanks to identical flex layout.
+        Each checkbox is wrapped in a fixed-width div (13rem) so both inputs always
+        start at the same horizontal position regardless of label length.
         """
         # ── Row 1 ────────────────────────────────────────────────────────────────
         with ui.row().classes("w-full items-center gap-8"):
@@ -163,10 +164,11 @@ class OptionsComponent:
                     "Apply water level reduction"
                 ).bind_value(self.config_manager, "apply_water_level")
 
-            with ui.row().classes("flex-1 items-center gap-4"):
-                ui.checkbox(
-                    "Specify waterline", on_change=self._handle_waterline_toggle
-                ).bind_value(self.config_manager, "use_waterline").classes("shrink-0")
+            with ui.row().classes("flex-1 items-center gap-0"):
+                with ui.element("div").style("width: 13rem; flex-shrink: 0"):
+                    ui.checkbox(
+                        "Specify waterline", on_change=self._handle_waterline_toggle
+                    ).bind_value(self.config_manager, "use_waterline")
 
                 self.waterline_input = (
                     ui.number("Waterline (m)", min=0.0, step=0.01, format="%.3f")
@@ -185,10 +187,11 @@ class OptionsComponent:
                     on_change=self._handle_already_at_chart_datum_toggle,
                 ).bind_value(self.config_manager, "already_at_chart_datum")
 
-            with ui.row().classes("flex-1 items-center gap-4"):
-                ui.checkbox(
-                    "Use vessel identifier", on_change=self._handle_vessel_toggle
-                ).bind_value(self.config_manager, "use_vessel").classes("shrink-0")
+            with ui.row().classes("flex-1 items-center gap-0"):
+                with ui.element("div").style("width: 13rem; flex-shrink: 0"):
+                    ui.checkbox(
+                        "Use vessel identifier", on_change=self._handle_vessel_toggle
+                    ).bind_value(self.config_manager, "use_vessel")
 
                 self.vessel_input = (
                     ui.input("Vessel identifier")
