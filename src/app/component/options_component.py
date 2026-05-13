@@ -38,12 +38,11 @@ class OptionsComponent:
     def _handle_output_path_change(self, e):
         """Handle output path change."""
         self.ui_event_handler.update_output_path(e.args[0])
-        # Update warning visibility based on validation result
         if self.output_warning_label:
-            # Assume empty path is invalid for simplicity
-            self.output_warning_label.visible = not bool(
-                e.args[0] and e.args[0].strip()
-            )
+            if e.args[0] and e.args[0].strip():
+                self.output_warning_label.style("visibility: hidden")
+            else:
+                self.output_warning_label.style("visibility: visible")
 
     def _handle_config_path_change(self, e):
         """Handle config path change."""
@@ -55,10 +54,8 @@ class OptionsComponent:
             selected_path = await self.ui_event_handler.select_output_directory()
             if selected_path and self.output_input:
                 self.output_input.value = selected_path
-                # Cacher le label d'avertissement si un chemin valide est sélectionné
                 if self.output_warning_label and selected_path.strip():
-                    self.output_warning_label.visible = False
-
+                    self.output_warning_label.style("visibility: hidden")
         except Exception as ex:
             LOGGER.error(f"Error in select_output_directory: {ex}")
             ui.notification(
@@ -71,7 +68,6 @@ class OptionsComponent:
             selected_path = await self.ui_event_handler.select_config_file()
             if selected_path and self.config_input:
                 self.config_input.value = selected_path
-
         except Exception as ex:
             LOGGER.error(f"Error in select_config_file: {ex}")
             ui.notification(f"Error opening file dialog: {str(ex)}", type="negative")
@@ -80,7 +76,6 @@ class OptionsComponent:
         """Handle 'Already at chart datum' toggle: disable/enable Apply water level accordingly."""
         is_checked: bool = e.value
         if is_checked:
-            # Force apply_water_level off and disable its checkbox
             self.config_manager.apply_water_level = False
             if self.apply_water_level_checkbox:
                 self.apply_water_level_checkbox.value = False
@@ -88,7 +83,6 @@ class OptionsComponent:
             if self.already_at_chart_datum_warning:
                 self.already_at_chart_datum_warning.set_visibility(True)
         else:
-            # Re-enable apply_water_level checkbox
             if self.apply_water_level_checkbox:
                 self.apply_water_level_checkbox.enable()
             if self.already_at_chart_datum_warning:
@@ -100,6 +94,13 @@ class OptionsComponent:
             waterline_disabled = self.ui_event_handler.toggle_vessel()
             if waterline_disabled:
                 ui.notification("Waterline option disabled", type="info")
+                if self.waterline_input:
+                    self.waterline_input.style("visibility: hidden")
+            if self.vessel_input:
+                if self.config_manager.use_vessel:
+                    self.vessel_input.style("visibility: visible")
+                else:
+                    self.vessel_input.style("visibility: hidden")
         except Exception as ex:
             LOGGER.error(f"Error in vessel toggle: {ex}")
             ui.notification(f"Error toggling vessel option: {str(ex)}", type="negative")
@@ -110,6 +111,13 @@ class OptionsComponent:
             vessel_disabled = self.ui_event_handler.toggle_waterline()
             if vessel_disabled:
                 ui.notification("Vessel identifier option disabled", type="info")
+                if self.vessel_input:
+                    self.vessel_input.style("visibility: hidden")
+            if self.waterline_input:
+                if self.config_manager.use_waterline:
+                    self.waterline_input.style("visibility: visible")
+                else:
+                    self.waterline_input.style("visibility: hidden")
         except Exception as ex:
             LOGGER.error(f"Error in waterline toggle: {ex}")
             ui.notification(
@@ -126,20 +134,12 @@ class OptionsComponent:
             self._create_right_column()
 
         if self.config_manager:
-            self.apply_water_level_checkbox = ui.checkbox(
-                "Apply water level reduction", value=True
-            ).bind_value(self.config_manager, "apply_water_level")
-
-            ui.checkbox(
-                "Already at chart datum",
-                on_change=self._handle_already_at_chart_datum_toggle,
-            ).bind_value(self.config_manager, "already_at_chart_datum")
+            self._create_water_vessel_rows()
 
             self.already_at_chart_datum_warning = ui.label(
                 "⚠️ Data already reduced to chart datum — water level reduction is disabled."
             ).classes("text-sm text-orange-600")
 
-            # Apply initial state if already_at_chart_datum is True at load time
             if self.config_manager.already_at_chart_datum:
                 self.apply_water_level_checkbox.value = False
                 self.apply_water_level_checkbox.disable()
@@ -148,6 +148,56 @@ class OptionsComponent:
                 self.already_at_chart_datum_warning.set_visibility(False)
 
             self._create_filter_section()
+
+    def _create_water_vessel_rows(self):
+        """
+        Two paired rows with matching flex-1 halves:
+          Row 1 — Apply water level (left)  |  Specify waterline + input (right)
+          Row 2 — Already at chart datum (left)  |  Use vessel identifier + input (right)
+        Both inputs share the same horizontal start position thanks to identical flex layout.
+        """
+        # ── Row 1 ────────────────────────────────────────────────────────────────
+        with ui.row().classes("w-full items-center gap-8"):
+            with ui.element("div").classes("flex-1"):
+                self.apply_water_level_checkbox = ui.checkbox(
+                    "Apply water level reduction"
+                ).bind_value(self.config_manager, "apply_water_level")
+
+            with ui.row().classes("flex-1 items-center gap-4"):
+                ui.checkbox(
+                    "Specify waterline", on_change=self._handle_waterline_toggle
+                ).bind_value(self.config_manager, "use_waterline").classes("shrink-0")
+
+                self.waterline_input = (
+                    ui.number("Waterline (m)", min=0.0, step=0.01, format="%.3f")
+                    .bind_value(self.config_manager, "waterline_value")
+                    .classes("flex-1")
+                )
+
+        if not self.config_manager.use_waterline:
+            self.waterline_input.style("visibility: hidden")
+
+        # ── Row 2 ────────────────────────────────────────────────────────────────
+        with ui.row().classes("w-full items-center gap-8"):
+            with ui.element("div").classes("flex-1"):
+                ui.checkbox(
+                    "Already at chart datum",
+                    on_change=self._handle_already_at_chart_datum_toggle,
+                ).bind_value(self.config_manager, "already_at_chart_datum")
+
+            with ui.row().classes("flex-1 items-center gap-4"):
+                ui.checkbox(
+                    "Use vessel identifier", on_change=self._handle_vessel_toggle
+                ).bind_value(self.config_manager, "use_vessel").classes("shrink-0")
+
+                self.vessel_input = (
+                    ui.input("Vessel identifier")
+                    .bind_value(self.config_manager, "vessel_id")
+                    .classes("flex-1")
+                )
+
+        if not self.config_manager.use_vessel:
+            self.vessel_input.style("visibility: hidden")
 
     def _create_filter_section(self):
         """Create the filter checkboxes section."""
@@ -179,7 +229,7 @@ class OptionsComponent:
             ).tooltip("Remove soundings with invalid or future timestamps")
 
     def _create_left_column(self):
-        """Create left column of options."""
+        """Create left column: output directory path."""
         with ui.column().classes("flex-1"):
             ui.label("Output Directory *").classes("font-bold text-red-600")
 
@@ -203,24 +253,13 @@ class OptionsComponent:
                     on_click=self._handle_select_output_directory,
                 ).props("color=primary outline").tooltip("Select directory")
 
+            # CSS visibility preserves layout space — no element shift on hide
             self.output_warning_label = ui.label(
                 "⚠️ Required: Specify where to save processed files"
             ).classes("text-sm text-red-500")
 
-            if self.config_manager:
-                ui.checkbox(
-                    "Use vessel identifier", on_change=self._handle_vessel_toggle
-                ).bind_value(self.config_manager, "use_vessel")
-
-                self.vessel_input = ui.input("Vessel identifier").bind_value(
-                    self.config_manager, "vessel_id"
-                )
-                self.vessel_input.bind_visibility_from(
-                    self.config_manager, "use_vessel"
-                )
-
     def _create_right_column(self):
-        """Create right column of options."""
+        """Create right column: configuration file path."""
         with ui.column().classes("flex-1"):
             ui.label("Configuration File").classes("font-bold")
 
@@ -242,15 +281,3 @@ class OptionsComponent:
             ui.label(
                 "If no configuration file is provided, the default file will be used."
             ).classes("text-sm text-gray-500")
-
-            if self.config_manager:
-                ui.checkbox(
-                    "Specify waterline", on_change=self._handle_waterline_toggle
-                ).bind_value(self.config_manager, "use_waterline")
-
-                self.waterline_input = ui.number(
-                    "Waterline (m)", min=0.0, step=0.01, format="%.3f"
-                ).bind_value(self.config_manager, "waterline_value")
-                self.waterline_input.bind_visibility_from(
-                    self.config_manager, "use_waterline"
-                )
