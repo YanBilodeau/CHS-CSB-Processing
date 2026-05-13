@@ -187,7 +187,7 @@ def export_metadata(
 
     min_time: datetime = data_geodataframe[schema_ids.TIME_UTC].min()
     max_time: datetime = data_geodataframe[schema_ids.TIME_UTC].max()
-    attributes: vessel_config.BDBattributes = (
+    attributes: vessel_manager.BDBattribute = (
         vessel_config.get_sensor_config_by_datetime("attribute", min_time, max_time)
     )
     waterline: vessel_manager.Waterline = vessel_config.get_sensor_config_by_datetime(

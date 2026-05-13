@@ -286,7 +286,6 @@ class VesselConfig(BaseModel):
         self,
         sensor_type: Literal[
             ids.SOUNDER,  # type: ignore
-            ids.SOUNDER,
             ids.WATERLINE,
             ids.MOTION,
             ids.SOUND_SPEED,
