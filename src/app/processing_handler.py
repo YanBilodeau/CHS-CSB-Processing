@@ -165,6 +165,7 @@ class ProcessingHandler:
         output = self.config_manager.output_path
         config = self.config_manager.get_effective_config_path()
         vessel_config = self._prepare_vessel_config()
+        processing_config = self.config_manager.build_processing_config()
 
         # Create output directory
         output.mkdir(parents=True, exist_ok=True)
@@ -176,7 +177,9 @@ class ProcessingHandler:
         )
         await asyncio.sleep(1)
 
-        await self._run_processing_workflow(valid_files, vessel_config, output, config)
+        await self._run_processing_workflow(
+            valid_files, vessel_config, output, config, processing_config
+        )
 
     def _prepare_vessel_config(self) -> Any:
         """Prepare vessel configuration based on current settings."""
@@ -202,7 +205,12 @@ class ProcessingHandler:
         return vessel_config
 
     async def _run_processing_workflow(
-        self, valid_files: list, vessel_config: Any, output: Path, config: Path
+        self,
+        valid_files: list,
+        vessel_config: Any,
+        output: Path,
+        config: Path,
+        processing_config,
     ) -> None:
         """Run the processing workflow in a separate thread."""
 
@@ -215,6 +223,7 @@ class ProcessingHandler:
                 config_path=config,
                 apply_water_level=self.config_manager.apply_water_level,
                 extra_logger=(self.log_settings,),
+                processing_config=processing_config,
             )
             LOGGER.info("Processing workflow completed successfully.")
 

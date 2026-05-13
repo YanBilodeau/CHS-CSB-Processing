@@ -58,6 +58,11 @@ class ConfigManagerProtocol(Protocol):
     use_vessel: bool
     use_waterline: bool
     apply_water_level: bool
+    filter_depth: bool
+    filter_speed: bool
+    filter_latitude: bool
+    filter_longitude: bool
+    filter_time: bool
 
 
 class EventHandlerProtocol(Protocol):

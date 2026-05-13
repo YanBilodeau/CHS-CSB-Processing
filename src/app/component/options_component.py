@@ -109,6 +109,36 @@ class OptionsComponent:
             ui.checkbox("Apply water level reduction", value=True).bind_value(
                 self.config_manager, "apply_water_level"
             )
+            self._create_filter_section()
+
+    def _create_filter_section(self):
+        """Create the filter checkboxes section."""
+        ui.separator()
+        ui.label("Filters to Apply").classes("text-base font-bold mt-2")
+        ui.label(
+            "Soundings tagged by checked filters will be removed from the output."
+        ).classes("text-sm text-gray-500 mb-1")
+
+        with ui.row().classes("gap-6 flex-wrap"):
+            ui.checkbox("Depth filter").bind_value(
+                self.config_manager, "filter_depth"
+            ).tooltip("Remove soundings with depth ≤ min_depth or > max_depth")
+
+            ui.checkbox("Speed filter").bind_value(
+                self.config_manager, "filter_speed"
+            ).tooltip("Remove soundings outside the valid speed range")
+
+            ui.checkbox("Latitude filter").bind_value(
+                self.config_manager, "filter_latitude"
+            ).tooltip("Remove soundings outside the valid latitude range")
+
+            ui.checkbox("Longitude filter").bind_value(
+                self.config_manager, "filter_longitude"
+            ).tooltip("Remove soundings outside the valid longitude range")
+
+            ui.checkbox("Time filter").bind_value(
+                self.config_manager, "filter_time"
+            ).tooltip("Remove soundings with invalid or future timestamps")
 
     def _create_left_column(self):
         """Create left column of options."""
