@@ -623,7 +623,7 @@ def georeference_bathymetry(
             data=data_to_process,
             decimal_precision=decimal_precision,
             tvu_config=georeference_config.uncertainty.tvu,
-            constant_tvu=0 if not apply_water_level else None,
+            apply_water_level=apply_water_level,
             processing_context=processing_context,
         )
     )

@@ -49,6 +49,7 @@ class ProcessingContext:
         :return: Constante THU effective.
         :rtype: float
         """
+
         from transformation.uncertainty.compute_tpu import (
             get_constant_thu_for_datalogger,
         )
@@ -60,15 +61,13 @@ class ProcessingContext:
         Retourne la constante TVU à appliquer quand ``already_at_chart_datum=True``.
 
         Interroge ``datalogger_uncertainty.json``. Si le type est absent, retourne *default*.
-        Retourne *default* sans interroger le JSON si ``already_at_chart_datum=False``.
+        N'est appelée que lorsque ``already_at_chart_datum=True`` (garanti par l'appelant).
 
         :param default: Valeur par défaut (0 par convention).
         :type default: float
         :return: Constante TVU effective.
         :rtype: float
         """
-        if not self.already_at_chart_datum:
-            return default
 
         from transformation.uncertainty.compute_tpu import (
             get_constant_tvu_for_datalogger,

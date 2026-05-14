@@ -7,11 +7,11 @@ from .vessel_config import (
     Waterline,
     SoundSpeedProfile,
     BDBattribute,
+    UNKNOWN,
+    DEFAULT_TECSOU,
+    UNKNOWN_DATE,
 )
 
-
-UNKNOWN_DATE: datetime = datetime(1960, 1, 1, tzinfo=timezone.utc)
-UNKNOWN: str = "unknown"
 
 UNKNOWN_VESSEL_CONFIG: VesselConfig = VesselConfig(
     id=UNKNOWN,
@@ -28,7 +28,7 @@ UNKNOWN_VESSEL_CONFIG: VesselConfig = VesselConfig(
         BDBattribute(
             time_stamp=UNKNOWN_DATE,
             pltfrm=UNKNOWN,
-            tecsou=UNKNOWN,
+            tecsou=DEFAULT_TECSOU,
             sdghdw=UNKNOWN,
             poshdw=UNKNOWN,
             bureau=UNKNOWN,

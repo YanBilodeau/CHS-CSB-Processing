@@ -369,7 +369,7 @@ def compute_tvu(
     data: gpd.GeoDataFrame,
     decimal_precision: int,
     tvu_config: TVUConfigProtocol,
-    constant_tvu: Optional[float] = None,
+    apply_water_level: bool = True,
     processing_context: Optional[ProcessingContext] = None,
 ) -> gpd.GeoDataFrame:
     """
@@ -381,22 +381,40 @@ def compute_tvu(
     :type decimal_precision: int
     :param tvu_config: Configuration des paramètres du TVU.
     :type tvu_config: TVUConfigProtocol
-    :param constant_tvu: Constante du TVU. Si None, utilise la valeur par station.
-    :type constant_tvu: Optional[float]
+    :param apply_water_level: Si ``True``, la composante station est dérivée du mapping
+        par zone de marée (WLO/WLP). Si ``False``, une constante fixe (0.0) est utilisée.
+    :type apply_water_level: bool
     :param processing_context: Contexte de traitement. Si ``already_at_chart_datum=True``,
-        résout ``constant_tvu`` depuis ``datalogger_uncertainty.json`` via le contexte
-        (JSON prioritaire sur la valeur par défaut 0).
+        résout la constante TVU depuis ``datalogger_uncertainty.json`` et force
+        l'utilisation de la constante (indépendamment de ``apply_water_level``).
     :type processing_context: Optional[ProcessingContext]
     :return: Données de profondeur avec le TVU.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
-    # Quand les données sont déjà au zéro des cartes, utiliser la valeur JSON si disponible
-    if processing_context is not None and processing_context.already_at_chart_datum:
-        constant_tvu = processing_context.resolve_constant_tvu(
-            default=constant_tvu if constant_tvu is not None else 0
+    already_at_chart_datum: bool = (
+        processing_context.already_at_chart_datum
+        if processing_context is not None
+        else False
+    )
+    # Décision explicite : constante fixe ou composante par station
+    use_constant: bool = not apply_water_level or already_at_chart_datum
+
+    LOGGER.debug(
+        f"TVU — mode : {'constante fixe' if use_constant else 'mapping par station'} "
+        f"(apply_water_level={apply_water_level}, already_at_chart_datum={already_at_chart_datum})."
+    )
+
+    # Résoudre la constante inconditionnellement pour éviter une variable potentiellement
+    # non définie ; la valeur n'est utilisée que si use_constant=True.
+    constant_tvu: float = 0.0
+    if already_at_chart_datum and processing_context is not None:
+        constant_tvu = processing_context.resolve_constant_tvu(default=0.0)
+        LOGGER.debug(
+            f"TVU — constante résolue depuis ProcessingContext "
+            f"(datalogger_type={processing_context.datalogger_type}) : {constant_tvu}."
         )
 
-    station_mapping = create_uncertainty_mapping()
+    # station_mapping = create_uncertainty_mapping()
 
     data = join_with_ssp_errors(
         data,
@@ -410,18 +428,35 @@ def compute_tvu(
         (tvu_config.depth_coefficient_tvu + data[SSP_ERROR_COEFFICIENT]) / 100
     )
 
+    dc = np.asarray(depth_component)
+    LOGGER.debug(
+        f"TVU — depth_component : min={dc.min():.4f}, max={dc.max():.4f}, mean={dc.mean():.4f} "
+        f"(depth_coefficient_tvu={tvu_config.depth_coefficient_tvu}, "
+        f"ssp_coeff min={data[SSP_ERROR_COEFFICIENT].min():.4f} / max={data[SSP_ERROR_COEFFICIENT].max():.4f})."
+    )
+
     station_component = (
         constant_tvu
-        if constant_tvu is not None
+        if use_constant
         else np.where(
             data[schema_ids.TIME_SERIE].str.contains("wlo", case=False, na=False)
             & ~data[schema_ids.TIME_SERIE].str.contains("wlp", case=False, na=False),
             tvu_config.constant_tvu_wlo,
             data[schema_ids.TIDE_ZONE_CODE]
-            .map(station_mapping)
+            .map(create_uncertainty_mapping())
             .fillna(tvu_config.default_constant_tvu_wlp),
         )
     )
+
+    if use_constant:
+        LOGGER.debug(f"TVU — station_component : constante fixe = {constant_tvu}.")
+    else:
+        sc = np.asarray(station_component)
+        LOGGER.debug(
+            f"TVU — station_component : mapping par station — "
+            f"min={sc.min():.4f}, max={sc.max():.4f}, mean={sc.mean():.4f} "
+            f"(wlo={tvu_config.constant_tvu_wlo}, défaut wlp={tvu_config.default_constant_tvu_wlp})."
+        )
 
     data.loc[:, schema_ids.UNCERTAINTY] = (depth_component + station_component).round(
         decimal_precision
@@ -461,17 +496,38 @@ def compute_thu(
     """
     LOGGER.debug(f"Calcul de l'incertitude horizontale des données de profondeur.")
 
-    constant_thu: float = (
-        processing_context.resolve_constant_thu(thu_config.constant_thu)
-        if processing_context is not None
-        else thu_config.constant_thu
-    )
+    if processing_context is not None:
+        constant_thu: float = processing_context.resolve_constant_thu(
+            thu_config.constant_thu
+        )
+        # resolve_constant_thu logue déjà la source (JSON vs défaut TOML) ;
+        # on confirme ici la valeur effective retenue.
+        LOGGER.debug(
+            f"THU — constant_thu résolu depuis ProcessingContext "
+            f"(datalogger_type={processing_context.datalogger_type}) : {constant_thu} "
+            f"(TOML défaut = {thu_config.constant_thu})."
+        )
+    else:
+        constant_thu = thu_config.constant_thu
+        LOGGER.debug(
+            f"THU — constant_thu depuis TOML (pas de ProcessingContext) : {constant_thu}."
+        )
 
     thu_depth_coeficient: float = np.tan(np.radians(thu_config.cone_angle_sonar) / 2)
+    LOGGER.debug(
+        f"THU — cone_angle_sonar={thu_config.cone_angle_sonar}° → "
+        f"thu_depth_coeficient={thu_depth_coeficient:.6f}."
+    )
 
     data.loc[:, schema_ids.THU] = round(
         (data[schema_ids.DEPTH_RAW_METER] * thu_depth_coeficient) + constant_thu,
         decimal_precision,
+    )
+
+    thu_vals = data[schema_ids.THU]
+    LOGGER.debug(
+        f"THU — résultat : min={thu_vals.min():.4f}, max={thu_vals.max():.4f}, "
+        f"mean={thu_vals.mean():.4f}."
     )
 
     return data
