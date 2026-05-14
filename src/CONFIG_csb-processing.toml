@@ -105,9 +105,9 @@ water_level_tolerance = "15 min"
 
 [DATA.Georeference.uncertainty.tvu]
 # TVU = (Profondeur × (Coefficient[depth_coefficient_tvu] + Coefficient SSP[default_depth_ssp_error_coefficient ou valeur dans le ./static/uncertainty/canadian_water_ssp_errors.gpkg]))
-# + Composante Station [constant_tvu_wlo, default_constant_tvu_wlp ou valeur dans ./static/uncertainty/station_uncertainty.json]
+# + {Composante Station [constant_tvu_wlo, default_constant_tvu_wlp ou valeur dans ./static/uncertainty/station_uncertainty.json] ou valeur dans ./static/uncertainty/station_uncertainty.json}
 # TVU = (Depth × (Coefficient[depth_coefficient_tvu] + SSP Coefficient[default_depth_ssp_error_coefficient or value in ./static/uncertainty/canadian_water_ssp_errors.gpkg]))
-# + Station Component [constant_tvu_wlo, default_constant_tvu_wlp or value in ./static/uncertainty/station_uncertainty.json]
+# + {Station Component [constant_tvu_wlo, default_constant_tvu_wlp or value in ./static/uncertainty/station_uncertainty.json] or value in ./static/uncertainty/station_uncertainty.json}
 
 # Constantes pour le calcul de l'incertitude verticale pour les niveaux d'eau de WLO (in meters) {float}.
 # Constants for calculating vertical uncertainty for WLO water levels (in meters) {float}.
@@ -140,8 +140,8 @@ max_distance_ssp = 30000  # 30 km
 depth_coefficient_tvu = 0.5
 
 [DATA.Georeference.uncertainty.thu]
-# THU = (Profondeur × (Coefficient THU[angular_opening_sonar] / 2)) + Constante THU [constant_thu]
-# THU = (Depth × (THU Coefficient[angular_opening_sonar] / 2)) + THU Constant [constant_thu]
+# THU = (Profondeur × (Coefficient THU[angular_opening_sonar] / 2)) + Constante THU [constant_thu ou valeur dans ./static/uncertainty/datalogger_uncertainty.json]
+# THU = (Depth × (THU Coefficient[angular_opening_sonar] / 2)) + THU Constant [constant_thu or value in ./static/uncertainty/datalogger_uncertainty.json]
 
 # Ouverture angulaire du faisceau du sonar (degré) {float}. Utilisé pour déterminer le coefficient THU.
 # Sonar beam angular opening (degrees) {float}. Used to determine the THU coefficient.
