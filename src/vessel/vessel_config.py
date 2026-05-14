@@ -25,6 +25,7 @@ LOGGER = logger.bind(name="CSB-Processing.Vessel.VesselConfig")
 
 UNKNOWN_DATE: datetime = datetime(1960, 1, 1, tzinfo=timezone.utc)
 UNKNOWN: str = "unknown"
+DEFAULT_TECSOU: str = "Echo-sounder"
 
 
 class AxisConvention(StrEnum):
@@ -32,7 +33,7 @@ class AxisConvention(StrEnum):
     Enumération des conventions d'axes.
     """
 
-    CARIS: str = ids.CARIS
+    CARIS = ids.CARIS
     """
     The X-Y-Z fields set the location from the Reference Point (0). The Reference Point is the point on
     the vessel where the X, Y, and Z axes intersect. The X, Y, and Z fields are defined as follows:
@@ -90,7 +91,7 @@ class BDBattribute(BaseModel):
     """Date et heure."""
     pltfrm: str = UNKNOWN
     """Plateforme."""
-    tecsou: str = UNKNOWN
+    tecsou: str = DEFAULT_TECSOU
     """Technologie du sondeur."""
     sdghdw: str = UNKNOWN
     """Système de sondage."""
