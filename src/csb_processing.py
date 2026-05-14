@@ -1,27 +1,26 @@
 """
-Module principal pour le traitement des données des capteurs à bord des navires.
+Module principal pour le traitement des données des capteurs CSB.
 
-Ce module contient le workflow de traitement des données des capteurs à bord des navires. Les données des capteurs sont
-récupérées à partir de fichiers bruts, nettoyées, filtrées, georéférencées et exportées dans un format standardisé.
+Ce module expose :func:`processing_workflow`, le workflow end-to-end de traitement
+des données de bathymétrie crowdsourcée (ingestion → nettoyage → géoréférencement →
+export). Les helpers privés décomposent chaque étape en unités de ~20 lignes.
 """
 
-from collections import defaultdict
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional, Collection, Iterable
 
 from loguru import logger
 import geopandas as gpd
-import pandas as pd
 
-from ingestion import factory_parser, DataLoggerType
 from logger.loguru_config import configure_logger
-from tide import voronoi, time_serie, tide_zone, water_level_export
+from tide import voronoi, water_level_export, run_water_level_reduction
 import config
 import export
+import ingestion
 import iwls_api
 import schema
 import schema.model_ids as schema_ids
-import filter.data_cleaning as cleaner
 import transformation.georeference as georeference
 import vessel as vessel_manager
 from processing_context import ProcessingContext
@@ -29,49 +28,353 @@ from processing_context import ProcessingContext
 
 __version__ = "0.8.0"
 
-
 LOGGER = logger.bind(name="CSB-Processing.WorkFlow")
 configure_logger()
 
 CONFIG_FILE: Path = Path(__file__).parent / "CONFIG_csb-processing.toml"
 
-# Ré-exports pour compatibilité ascendante des importeurs externes
-VesselConfigManagerError = vessel_manager.VesselConfigManagerError
+# Ré-export pour compatibilité ascendante
+# VesselConfigManagerError = vessel_manager.VesselConfigManagerError
+
+
+@dataclass(frozen=True)
+class WorkflowSetup:
+    """
+    Résultat de l'initialisation du workflow (répertoires, config, flags).
+
+    :param export_data_path: Répertoire ``Data/`` de sortie.
+    :type export_data_path: Path
+    :param export_tide_path: Répertoire ``Tide/`` de sortie.
+    :type export_tide_path: Path
+    :param log_path: Répertoire ``Log/`` de sortie.
+    :type log_path: Path
+    :param processing_config: Configuration de traitement chargée et validée.
+    :type processing_config: config.CSBprocessingConfig
+    :param apply_water_level: Flag de réduction marégraphique (potentiellement forcé à
+        ``False`` si ``already_at_chart_datum``).
+    :type apply_water_level: bool
+    """
+
+    export_data_path: Path
+    export_tide_path: Path
+    log_path: Path
+    processing_config: config.CSBprocessingConfig
+    apply_water_level: bool
+
+
+# ---------------------------------------------------------------------------
+# Helpers privés — setup
+# ---------------------------------------------------------------------------
+
+
+def _setup_run(
+    output: Path,
+    config_path: Optional[Path],
+    processing_config: Optional[config.CSBprocessingConfig],
+    extra_logger: Optional[Iterable[dict]],
+    apply_water_level: Optional[bool],
+    already_at_chart_datum: bool,
+) -> WorkflowSetup:
+    """
+    Crée les répertoires, charge la configuration et configure le logger.
+
+    Force ``apply_water_level=False`` si ``already_at_chart_datum=True``.
+
+    :param output: Racine du répertoire de sortie.
+    :type output: Path
+    :param config_path: Chemin du fichier de configuration TOML.
+    :type config_path: Optional[Path]
+    :param processing_config: Config pré-chargée (remplace ``config_path`` si fournie).
+    :type processing_config: Optional[config.CSBprocessingConfig]
+    :param extra_logger: Sinks loguru supplémentaires.
+    :type extra_logger: Optional[Iterable[dict]]
+    :param apply_water_level: Flag d'entrée (peut être ``None``).
+    :type apply_water_level: Optional[bool]
+    :param already_at_chart_datum: Si ``True``, force ``apply_water_level=False``.
+    :type already_at_chart_datum: bool
+    :return: Contexte d'exécution initialisé.
+    :rtype: WorkflowSetup
+    """
+    export_data_path, export_tide_path, log_path = export.get_data_structure(output)
+
+    if processing_config is None:
+        processing_config = config.get_data_config(config_file=config_path)
+
+    configure_logger(
+        log_path / "CHS-CSB-Processing.log",
+        std_level=processing_config.options.log_level,
+        log_file_level="DEBUG",
+        extra_logger=extra_logger,
+    )
+
+    effective_wl = bool(apply_water_level)
+    if already_at_chart_datum and effective_wl:
+        LOGGER.warning(
+            "Option 'already_at_chart_datum' activée : réduction marégraphique désactivée."
+        )
+        effective_wl = False
+
+    return WorkflowSetup(
+        export_data_path=export_data_path,
+        export_tide_path=export_tide_path,
+        log_path=log_path,
+        processing_config=processing_config,
+        apply_water_level=effective_wl,
+    )
+
+
+def _get_caris_api_config(
+    processing_config: config.CSBprocessingConfig,
+    config_path: Optional[Path],
+) -> Optional[config.CarisAPIConfig]:
+    """
+    Charge la configuration Caris si le format CSAR est demandé.
+
+    Lève :exc:`config.CarisConfigError` (après log) si CSAR est demandé mais la
+    configuration est invalide — le caller retourne alors ``None``.
+
+    :param processing_config: Configuration de traitement.
+    :type processing_config: config.CSBprocessingConfig
+    :param config_path: Chemin du fichier de configuration TOML.
+    :type config_path: Optional[Path]
+    :return: Configuration Caris ou ``None`` si CSAR non demandé.
+    :rtype: Optional[config.CarisAPIConfig]
+    :raises config.CarisConfigError: Si CSAR est demandé mais la config Caris est invalide.
+    """
+    if config.FileTypes.CSAR not in processing_config.export.export_format:
+        return None
+
+    try:
+        return config.get_caris_api_config(config_file=config_path)
+
+    except config.CarisConfigError as error:
+        LOGGER.error(f"Configuration Caris obligatoire pour l'export *csar : {error}.")
+        raise
+
+
+def _get_vessel_config(
+    vessel: str | vessel_manager.VesselConfig,
+    processing_config: config.CSBprocessingConfig,
+) -> vessel_manager.VesselConfig:
+    """
+    Valide le gestionnaire de navires et retourne la configuration du navire.
+
+    :param vessel: Identifiant navire ou objet :class:`~vessel.VesselConfig`.
+    :type vessel: str | vessel_manager.VesselConfig
+    :param processing_config: Configuration de traitement.
+    :type processing_config: config.CSBprocessingConfig
+    :return: Configuration du navire.
+    :rtype: vessel_manager.VesselConfig
+    :raises vessel_manager.VesselConfigManagerError: Si l'identifiant est une chaîne mais
+        que le gestionnaire de navires est absent ou incomplet.
+    """
+    if (
+        processing_config.vessel_manager is None
+        or processing_config.vessel_manager.manager_type is None
+        or not processing_config.vessel_manager.kwargs
+    ) and isinstance(vessel, str):
+        LOGGER.error("La configuration du gestionnaire de navires est manquante.")
+        raise vessel_manager.VesselConfigManagerError(
+            vessel_id=vessel, vessel_config_manager=processing_config.vessel_manager
+        )
+
+    vessel_id = vessel.id if isinstance(vessel, vessel_manager.VesselConfig) else vessel
+    LOGGER.info(f"Récupération de la configuration du navire {vessel_id}.")
+
+    return vessel_manager.get_vessel_config(vessel, processing_config.vessel_manager)
+
+
+# ---------------------------------------------------------------------------
+# Helpers privés — branches de traitement
+# ---------------------------------------------------------------------------
+
+
+def _process_without_water_level(
+    data: gpd.GeoDataFrame,
+    waterline,
+    sounder,
+    ctx: ProcessingContext,
+    setup: WorkflowSetup,
+    vessel_config: vessel_manager.VesselConfig,
+    caris_api_config: Optional[config.CarisAPIConfig],
+    vessel_name: Optional[str],
+) -> None:
+    """
+    Géoréférence sans réduction marégraphique et exporte les données.
+
+    :param data: Données nettoyées.
+    :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
+    :param waterline: Configuration de la ligne d'eau.
+    :param sounder: Configuration du sondeur.
+    :param ctx: Contexte de traitement.
+    :type ctx: ProcessingContext
+    :param setup: Contexte d'exécution du workflow.
+    :type setup: WorkflowSetup
+    :param vessel_config: Configuration du navire.
+    :type vessel_config: vessel_manager.VesselConfig
+    :param caris_api_config: Configuration Caris (``None`` si CSAR non demandé).
+    :type caris_api_config: Optional[config.CarisAPIConfig]
+    :param vessel_name: Nom du navire pour l'export.
+    :type vessel_name: Optional[str]
+    :rtype: None
+    """
+    LOGGER.info("Le niveau d'eau ne sera pas appliqué aux données.")
+
+    data = georeference.georeference_bathymetry(
+        data=data,
+        water_level=None,
+        waterline=waterline,
+        sounder=sounder,
+        georeference_config=setup.processing_config.georeference,
+        apply_water_level=setup.apply_water_level,
+        decimal_precision=setup.processing_config.options.decimal_precision,
+        processing_context=ctx,
+    )
+    export.export_processed_data_and_metadata(
+        data_geodataframe=data,
+        export_data_path=setup.export_data_path,
+        vessel_config=vessel_config,
+        processing_config=setup.processing_config,
+        caris_api_config=caris_api_config,
+        tide_stations=None,
+        vessel_name=vessel_name,
+        software_version=__version__,
+        processing_context=ctx,
+    )
+
+
+def _process_with_water_level(
+    data: gpd.GeoDataFrame,
+    waterline,
+    sounder,
+    ctx: ProcessingContext,
+    setup: WorkflowSetup,
+    vessel_config: vessel_manager.VesselConfig,
+    caris_api_config: Optional[config.CarisAPIConfig],
+    vessel_name: Optional[str],
+    water_level_stations: Optional[Collection[str]],
+    excluded_stations: Optional[Collection[str]],
+    config_path: Optional[Path],
+) -> None:
+    """
+    Exécute la boucle de réduction marégraphique IWLS, puis exporte les données.
+
+    :param data: Données nettoyées.
+    :type data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
+    :param waterline: Configuration de la ligne d'eau.
+    :param sounder: Configuration du sondeur.
+    :param ctx: Contexte de traitement.
+    :type ctx: ProcessingContext
+    :param setup: Contexte d'exécution du workflow.
+    :type setup: WorkflowSetup
+    :param vessel_config: Configuration du navire.
+    :type vessel_config: vessel_manager.VesselConfig
+    :param caris_api_config: Configuration Caris.
+    :type caris_api_config: Optional[config.CarisAPIConfig]
+    :param vessel_name: Nom du navire pour l'export.
+    :type vessel_name: Optional[str]
+    :param water_level_stations: Stations forcées (``None`` → Voronoi automatique).
+    :type water_level_stations: Optional[Collection[str]]
+    :param excluded_stations: Codes de stations à exclure dès le départ.
+    :type excluded_stations: Optional[Collection[str]]
+    :param config_path: Chemin du fichier de configuration TOML.
+    :type config_path: Optional[Path]
+    :rtype: None
+    """
+    iwls_api_config, stations_handler = iwls_api.initialize_iwls_api(
+        config_path=config_path
+    )
+    resolved_excluded: list[str] = (
+        [stations_handler.get_station_id_by_code(c) for c in excluded_stations]
+        if excluded_stations
+        else []
+    )
+    max_iterations: int = (
+        setup.processing_config.options.max_iterations
+        if not water_level_stations
+        else 1
+    )
+
+    data, wl_combineds_dict, iteration = run_water_level_reduction(
+        data=data,
+        stations_handler=stations_handler,
+        iwls_api_config=iwls_api_config,
+        waterline=waterline,
+        sounder=sounder,
+        georeference_config=setup.processing_config.georeference,
+        decimal_precision=setup.processing_config.options.decimal_precision,
+        apply_water_level=setup.apply_water_level,
+        processing_context=ctx,
+        water_level_stations=water_level_stations,
+        excluded_stations=resolved_excluded,
+        max_iterations=max_iterations,
+        export_tide_path=setup.export_tide_path,
+    )
+
+    if not log_sounding_results(data=data, iterations=iteration):
+        return
+
+    gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema] = (
+        voronoi.get_voronoi_geodataframe(
+            stations_handler=stations_handler,
+            time_series=iwls_api_config.time_series.priority,
+        )
+    )
+    if wl_combineds_dict:
+        water_level_export.plot_water_levels(
+            wl_combineds_dict=wl_combineds_dict,
+            gdf_voronoi=gdf_voronoi,
+            export_tide_path=setup.export_tide_path,
+        )
+    export.export_processed_data_and_metadata(
+        data_geodataframe=data,
+        export_data_path=setup.export_data_path,
+        vessel_config=vessel_config,
+        processing_config=setup.processing_config,
+        caris_api_config=caris_api_config,
+        tide_stations=[
+            voronoi.get_station_title(gdf_voronoi=gdf_voronoi, station_id=sid)
+            for sid in wl_combineds_dict.keys()
+        ],
+        vessel_name=vessel_name,
+        software_version=__version__,
+        processing_context=ctx,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Fonctions publiques
+# ---------------------------------------------------------------------------
 
 
 def log_sounding_results(data: gpd.GeoDataFrame, iterations: int) -> bool:
     """
-    Vérifie et affiche les résultats du traitement des sondes.
+    Vérifie et journalise les résultats du traitement des sondes.
 
     :param data: Données géoréférencées.
     :type data: gpd.GeoDataFrame
     :param iterations: Nombre d'itérations effectuées.
     :type iterations: int
-    :return: True si des sondes ont été traitées avec succès, False sinon.
+    :return: ``True`` si au moins une sonde a été réduite au zéro des cartes.
     :rtype: bool
     """
-    nan_sounding_count: int = data[schema_ids.DEPTH_PROCESSED_METER].isna().sum()
-    sounding_count: int = data[schema_ids.DEPTH_PROCESSED_METER].notna().sum()
+    nan_count: int = data[schema_ids.DEPTH_PROCESSED_METER].isna().sum()
+    ok_count: int = data[schema_ids.DEPTH_PROCESSED_METER].notna().sum()
 
-    if not sounding_count:
+    if not ok_count:
         LOGGER.warning(
-            f"Aucune sonde n'a été réduite au zéro des cartes. Aucune information de niveau d'eau est disponible pour "
-            f"ces dates et ces stations dans IWLS avec {iterations} itérations. Vous pouvez traiter les données "
-            f"avec un nombre d'itération plus élevé ou sans appliquer le niveau d'eau (--apply-water-level False)."
+            f"Aucune sonde n'a été réduite au zéro des cartes avec {iterations} itérations. "
+            f"Augmenter le nombre d'itérations ou désactiver la réduction marégraphique "
+            f"(--apply-water-level False)."
         )
         return False
 
-    (
-        LOGGER.success(
-            f"{sounding_count:,} sondes ont été réduites au zéro des cartes."
+    if not nan_count:
+        LOGGER.success(f"{ok_count:,} sondes ont été réduites au zéro des cartes.")
+    else:
+        LOGGER.info(
+            f"{ok_count:,} sondes réduites. {nan_count:,} sondes sans niveau d'eau."
         )
-        if not nan_sounding_count
-        else LOGGER.info(
-            f"{sounding_count:,} sondes ont été réduites au zéro des cartes. "
-            f"{nan_sounding_count:,} sondes sont sans niveau d'eau pour la réduction."
-        )
-    )
-
     return True
 
 
@@ -89,143 +392,69 @@ def processing_workflow(
     already_at_chart_datum: bool = False,
 ) -> None:
     """
-    Workflow de traitement des données.
+    Workflow de traitement des données CSB end-to-end.
 
-    :param files: Liste des fichiers à traiter.
+    :param files: Fichiers bruts à traiter.
     :type files: Collection[Path]
-    :param vessel: Identifiant du navire ou configuration du navire.
+    :param vessel: Identifiant navire ou objet :class:`~vessel.VesselConfig`.
     :type vessel: str | vessel_manager.VesselConfig
-    :param output: Chemin du répertoire de sortie.
+    :param output: Répertoire racine de sortie.
     :type output: Path
-    :param config_path: Chemin du fichier de configuration.
+    :param config_path: Chemin du fichier de configuration TOML.
     :type config_path: Optional[Path]
-    :param apply_water_level: Appliquer le niveau d'eau aux données.
+    :param apply_water_level: Appliquer la réduction marégraphique.
     :type apply_water_level: Optional[bool]
-    :param extra_logger: Liste d'objets de configuration supplémentaires pour le logger.
+    :param extra_logger: Sinks loguru supplémentaires (ex. NiceGUI).
     :type extra_logger: Optional[Iterable[dict]]
-    :param water_level_stations: Liste des stations de niveau d'eau à utiliser pour le traitement.
+    :param water_level_stations: Codes de stations forcées (``None`` → Voronoi auto).
     :type water_level_stations: Optional[Collection[str]]
-    :param excluded_stations: Liste des stations de niveau d'eau à exclure du traitement.
+    :param excluded_stations: Codes de stations à exclure dès le départ.
     :type excluded_stations: Optional[Collection[str]]
-    :param processing_config: Configuration du traitement. Si fourni, remplace le chargement depuis config_path.
+    :param processing_config: Config pré-chargée (remplace ``config_path`` si fournie).
     :type processing_config: Optional[config.CSBprocessingConfig]
-    :param vessel_name: Nom du navire à utiliser pour l'export. Surcharge vessel_config.name si fourni.
+    :param vessel_name: Nom du navire pour l'export (surcharge vessel_config.name).
     :type vessel_name: Optional[str]
-    :param already_at_chart_datum: Les données sont déjà réduites au zéro des cartes.
-        Si True, apply_water_level est forcé à False.
+    :param already_at_chart_datum: ``True`` si les données sont déjà réduites au zéro
+        des cartes — force ``apply_water_level=False``.
     :type already_at_chart_datum: bool
+    :rtype: None
     """
     if not files:
-        LOGGER.warning(f"Aucun fichier à traiter.")
+        LOGGER.warning("Aucun fichier à traiter.")
         return None
 
-    export_data_path, export_tide_path, log_path = export.get_data_structure(output)
-
-    # Read the configuration file (if not already provided)
-    if processing_config is None:
-        processing_config = config.get_data_config(config_file=config_path)
-
-    # Configure the logger
-    configure_logger(
-        log_path / f"CHS-CSB-Processing.log",
-        std_level=processing_config.options.log_level,
-        log_file_level="DEBUG",
+    setup = _setup_run(
+        output=output,
+        config_path=config_path,
+        processing_config=processing_config,
         extra_logger=extra_logger,
+        apply_water_level=apply_water_level,
+        already_at_chart_datum=already_at_chart_datum,
     )
-
-    # Log the parameters of the workflow
     LOGGER.debug(
-        f"Paramètres du workflow :\n"
-        f"files = {files}\n"
-        f"vessel = {vessel}\n"
-        f"output = {output}\n"
-        f"config_path = {config_path}\n"
-        f"apply_water_level = {apply_water_level}"
+        f"Workflow — files={files}, vessel={vessel}, output={output}, "
+        f"config_path={config_path}, apply_water_level={setup.apply_water_level}"
     )
 
-    # Forcer apply_water_level à False si les données sont déjà au zéro des cartes
-    if already_at_chart_datum and apply_water_level:
-        LOGGER.warning(
-            "Option 'already_at_chart_datum' activée : les données sont déjà réduites au "
-            "zéro des cartes. La réduction marégraphique (apply_water_level) est désactivée."
-        )
-        apply_water_level = False
-
-    # Get the configuration for the API Caris
     try:
-        caris_api_config: config.CarisAPIConfig | None = (
-            config.get_caris_api_config(config_file=config_path)
-            if config.FileTypes.CSAR in processing_config.export.export_format
-            else None
-        )
-    except config.CarisConfigError as error:
-        if config.FileTypes.CSAR in processing_config.export.export_format:
-            LOGGER.error(
-                f"La configuration de Caris est obligatoire pour l'exportation en format *csar : {error}."
-            )
-            return None
+        caris_api_config = _get_caris_api_config(setup.processing_config, config_path)
 
-        raise error
+    except config.CarisConfigError:
+        return None
 
-    # Check if the vessel configuration is missing
-    if (
-        processing_config.vessel_manager is None
-        or processing_config.vessel_manager.manager_type is None
-        or not processing_config.vessel_manager.kwargs
-    ) and isinstance(vessel, str):
-        LOGGER.error(f"La configuration du gestionnaire de navires est manquante.")
+    vessel_config = _get_vessel_config(vessel, setup.processing_config)
 
-        raise vessel_manager.VesselConfigManagerError(
-            vessel_id=vessel, vessel_config_manager=processing_config.vessel_manager
-        )
-
-    # Get the vessel configuration
-    LOGGER.info(
-        f"Récupération de la configuration du navire {vessel.id if isinstance(vessel, vessel_manager.VesselConfig) else vessel}."
-    )
-    # Get the sensors for the vessel
-    vessel_config: vessel_manager.VesselConfig = vessel_manager.get_vessel_config(
-        vessel, processing_config.vessel_manager
-    )
-
-    # Get the parser and the parsed data
-    LOGGER.info(
-        f"Récupération des données brutes des fichiers ({len(files)}) : {files}."
-    )
-    parser_files: factory_parser.ParserFiles = factory_parser.get_files_parser(
-        files=files
-    )
-    datalogger_type: DataLoggerType = parser_files.datalogger_type
-
-    # Créer le contexte de traitement une seule fois après identification du type de capteur
-    ctx: ProcessingContext = ProcessingContext(
-        datalogger_type=datalogger_type,
+    LOGGER.info(f"Récupération des données brutes ({len(files)} fichiers).")
+    ingestion_result = ingestion.load_and_clean_data(
+        files=files,
+        data_filter_config=setup.processing_config.filter,
         already_at_chart_datum=already_at_chart_datum,
     )
 
-    LOGGER.debug(parser_files)
-
-    if not parser_files.files:
-        LOGGER.warning(f"Aucun fichier valide à traiter.")
+    if ingestion_result is None:
         return None
 
-    # Parse the data
-    data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
-        parser_files.parser.from_files(files=parser_files.files)
-    )
-
-    if data.empty:
-        LOGGER.warning(f"Aucune donnée valide à traiter.")
-        return None
-
-    # Clean the data
-    LOGGER.info(f"Nettoyage et filtrage des données.")
-    data = cleaner.clean_data(data, data_filter_config=processing_config.filter)
-    if data.empty:
-        LOGGER.warning(f"Aucune sonde valide à traiter.")
-        return None
-
-    LOGGER.success(f"{len(data):,} sondes valides récupérées.")
+    data, ctx = ingestion_result
 
     sounder, waterline = vessel_manager.get_sensors_by_datetime(
         vessel_config=vessel_config,
@@ -233,234 +462,38 @@ def processing_workflow(
         max_time=data[schema_ids.TIME_UTC].max(),
     )
 
-    if not apply_water_level:
-        LOGGER.info("Le niveau d'eau ne sera pas appliqué aux données.")
-
-        # Georeference the bathymetry data
-        data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
-            georeference.georeference_bathymetry(
-                data=data,
-                water_level=None,
-                waterline=waterline,
-                sounder=sounder,
-                georeference_config=processing_config.georeference,
-                apply_water_level=apply_water_level,
-                decimal_precision=processing_config.options.decimal_precision,
-                processing_context=ctx,
-            )
-        )
-
-        export.export_processed_data_and_metadata(
-            data_geodataframe=data,
-            export_data_path=export_data_path,
+    if not setup.apply_water_level:
+        return _process_without_water_level(
+            data=data,
+            waterline=waterline,
+            sounder=sounder,
+            ctx=ctx,
+            setup=setup,
             vessel_config=vessel_config,
-            processing_config=processing_config,
             caris_api_config=caris_api_config,
-            tide_stations=None,
             vessel_name=vessel_name,
-            software_version=__version__,
-            processing_context=ctx,
         )
 
-        return None
-
-    # Initialize the IWLS API and the stations handler
-    iwls_api_config, stations_handler = iwls_api.initialize_iwls_api(
-        config_path=config_path
-    )
-
-    excluded_stations: list[str] = (
-        [
-            stations_handler.get_station_id_by_code(station_code)
-            for station_code in excluded_stations
-        ]
-        if excluded_stations
-        else []
-    )
-
-    wl_combineds_dict: dict[
-        str, list[pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]  # type: ignore
-    ] = defaultdict(list)
-
-    iteration: int = 0
-    max_iterations: int = (
-        processing_config.options.max_iterations if not water_level_stations else 1
-    )
-
-    for iteration in range(1, max_iterations + 1):
-        LOGGER.info(
-            f"Transformation des données : {iteration}. Stations exclues : {excluded_stations}."
-        )
-        # Get the Voronoi diagram of the stations. The stations are selected based on the priority of the time series.
-        # The time series priority is defined in the configuration file.
-        LOGGER.info("Récupération des zones de marée (diagramme de Voronoi).")
-        gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema] = (
-            voronoi.get_voronoi_geodataframe(
-                stations_handler=stations_handler,
-                time_series=iwls_api_config.time_series.priority,
-                excluded_stations=excluded_stations,
-                water_level_stations=water_level_stations,
-            )
-        )
-
-        # Add the tide zone id to the data
-        data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
-            tide_zone.add_tide_zone_id_to_geodataframe(
-                data_geodataframe=data, tide_zone=gdf_voronoi
-            )
-        )
-
-        # Get the time and tide zone
-        LOGGER.info(
-            "Récupération des information sur les zones de marées qui intersetent les données brutes."
-        )
-        tide_zonde_info: pd.DataFrame = tide_zone.get_intersected_tide_zone_info(
-            data_geodataframe=data,
-            tide_zone=gdf_voronoi,
-        )
-
-        if tide_zonde_info.empty:
-            LOGGER.warning(
-                f"Aucune zone de marée ne touche les données brutes restantes ("
-                f"{data[schema_ids.DEPTH_PROCESSED_METER].isna().sum()} sondes). "
-                f"Valider la position des sondes et les zones de marée."
-            )
-            break
-
-        for zone, min_time, max_time, time_series in tide_zonde_info.itertuples(
-            index=False
-        ):
-            LOGGER.info(
-                f"Zone de marée {zone} : temps minimum - {min_time}, temps maximum - {max_time}, séries temporelles - {time_series}."
-            )
-
-        # Get the water level data for each station
-        LOGGER.info(
-            "Récupération des données de niveaux d'eau pour chaque station touchant les données brutes."
-        )
-        wl_combineds, wl_exceptions = time_serie.get_water_level_data_for_stations(
-            # Stations handler to retrieve the water level data.
-            stations_handler=stations_handler,
-            # Tide zone information for the water level data. Tide zone id, start time, end time and time series.
-            tide_zone_info=tide_zonde_info,
-            # Quality control flag filter for the wlo time series.
-            wlo_qc_flag_filter=iwls_api_config.time_series.wlo_qc_flag_filter,
-            # Buffer time to add before and after the requested time range for the interpolation.
-            buffer_time=pd.Timedelta(iwls_api_config.time_series.buffer_time),
-            # Maximum time gap allowed for the data. The maximum time gap is defined in the configuration file.
-            # If the gap is greater than this value, data from the next time series will be retrieved to fill
-            # the gaps. For example, if the time series priority is [wlo, wlp] and the maximum time gap is 1 hour, the
-            # data for the time series wlo will be retrieved first. If the gap between two consecutive
-            # data points is greater than 1 hour, the data for the time series wlp will be retrieved to fill the gap.
-            max_time_gap=iwls_api_config.time_series.max_time_gap,
-            # Threshold for the interpolation versus filling of the gaps in the data.
-            threshold_interpolation_filling=iwls_api_config.time_series.threshold_interpolation_filling,
-        )
-        # Add the water level data to the list for the plot
-        for key, value in wl_combineds.items():
-            wl_combineds_dict[key].append(value)
-
-        # Export the water level data for each station
-        water_level_export.export_station_water_levels(
-            wl_combineds=wl_combineds,
-            gdf_voronoi=gdf_voronoi,
-            export_tide_path=export_tide_path,
-        )
-
-        # Log the exceptions
-        LOGGER.debug(f"Exceptions : {wl_exceptions}.")
-        LOGGER.debug(wl_combineds)
-
-        if wl_combineds:
-            # Export the Voronoi diagram to a GeoJSON file
-            voronoi_output_path: Path = (
-                export_tide_path / f"StationVoronoi-{iteration}.gpkg"
-            )
-            LOGGER.info(
-                f"Exportation du diagramme de Voronoi des stations marégraphiques : {voronoi_output_path}."
-            )
-            export.export_geodataframe_to_gpkg(
-                geodataframe=gdf_voronoi,
-                output_path=voronoi_output_path,
-            )
-
-            # Georeference the bathymetry data
-            data: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
-                georeference.georeference_bathymetry(
-                    data=data,
-                    water_level=wl_combineds,
-                    waterline=waterline,
-                    sounder=sounder,
-                    georeference_config=processing_config.georeference,
-                    apply_water_level=apply_water_level,
-                    decimal_precision=processing_config.options.decimal_precision,
-                    processing_context=ctx,
-                )
-            )
-
-        # Check if there are any missing values in the processed data
-        if not data[schema_ids.DEPTH_PROCESSED_METER].isna().any():
-            break
-
-        # Add the stations with missing values to the excluded stations
-        excluded_stations.extend(wl_exceptions.keys())
-
-        # Get the data with missing depth values
-        depth_nan_data = data[data[schema_ids.DEPTH_PROCESSED_METER].isna()]
-        # Get the unique tide zone ids with missing depth values
-        unique_tide_zones_id = list(
-            depth_nan_data[schema_ids.TIDE_ZONE_ID].dropna().unique()
-        )
-        # Add the unique tide zone ids to the excluded stations
-        excluded_stations.extend(unique_tide_zones_id)
-
-    if not log_sounding_results(data=data, iterations=iteration):
-        return None
-
-    # Get the Voronoi diagram of the stations for the final plot
-    gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema] = (
-        voronoi.get_voronoi_geodataframe(
-            stations_handler=stations_handler,
-            time_series=iwls_api_config.time_series.priority,
-        )
-    )
-
-    # Plot the water level data for each station
-    if wl_combineds_dict:
-        water_level_export.plot_water_levels(
-            wl_combineds_dict=wl_combineds_dict,
-            gdf_voronoi=gdf_voronoi,
-            export_tide_path=export_tide_path,
-        )
-
-    export.export_processed_data_and_metadata(
-        data_geodataframe=data,
-        export_data_path=export_data_path,
+    return _process_with_water_level(
+        data=data,
+        waterline=waterline,
+        sounder=sounder,
+        ctx=ctx,
+        setup=setup,
         vessel_config=vessel_config,
-        processing_config=processing_config,
         caris_api_config=caris_api_config,
-        tide_stations=[
-            voronoi.get_station_title(gdf_voronoi=gdf_voronoi, station_id=station_id)
-            for station_id in wl_combineds_dict.keys()
-        ],
         vessel_name=vessel_name,
-        software_version=__version__,
-        processing_context=ctx,
+        water_level_stations=water_level_stations,
+        excluded_stations=excluded_stations,
+        config_path=config_path,
     )
-
-    return None
 
     # todo gérer la valeur np.nan dans les configurations des capteurs
+    # todo optimiser les opérations dans tide.time_serie.time_serie_dataframe
+    # todo mettre template pour le nom dans le fichier de config
+    # todo web app pour convert
+    # todo créer fichier vectoriel avec les stations et leurs incertitudes associées
+    # todo option pour prendre un fichier vectoriel en entrée au lieu de calculer un voronoi
 
-    # todo dans ce fichier, dans tide.time_serie.time_serie_dataframe, optimiser les opérations
-
-    # todo -> mettre template pour le nom dans le fichier de config
-
-    # todo : web app pour convert
-
-    # todo : créer fichier vectoriel avec les stations et leurs incertitudes associées
-
-    # todo : option pour prendre un fichier vectoriel en entré au lieu de calculer un voronoi
-
-    # todo : refaire le rapport pour style et theme comme dans S44-report
-    # todo : ajouter au métadonnée longueur de ligne de sondage et temps de sondage
+    # todo refaire le rapport pour style et theme comme dans S44-report
+    # todo ajouter au métadonnée la longueur de ligne de sondage et le temps de sondage

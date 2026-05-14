@@ -10,6 +10,7 @@ from .parser_models import (
     DataParserBCDB,
     DataParserLowrance,
 )
+from .data_loader import load_and_clean_data
 
 __all__ = [
     "DataLoggerType",
@@ -17,4 +18,5 @@ __all__ = [
     "DataParserOFM",
     "DataParserBCDB",
     "DataParserLowrance",
+    "load_and_clean_data",
 ]
