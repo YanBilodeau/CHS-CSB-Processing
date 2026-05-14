@@ -138,15 +138,17 @@ python cli.py process [FICHIERS...] [OPTIONS]
 
 #### Options disponibles
 
-| Option                 | Type | Requis | Description                                                                                                                                                                                                                                                          |
-|------------------------|------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `--output`             | Chemin | **Oui**     | Chemin du répertoire de sortie                                                                                                                                                                                                                                       |
-| `--vessel`             | Texte | Non    | Identifiant du navire. Si non spécifié, un navire par défaut avec des bras de levier à 0 sera utilisé. **Incompatible avec `--waterline`**                                                                                                                           |
-| `--waterline`          | Nombre décimal | Non    | Ligne de flottaison du navire en mètre (distance verticale entre le sondeur et la surface de l'eau). Si non spécifiée, une valeur de 0 sera utilisée. **Incompatible avec `--vessel`**                                                                               |
-| `--config`             | Chemin | Non    | Chemin du fichier de configuration. Si non spécifié, le fichier de configuration par défaut sera utilisé                                                                                                                                                             |
-| `--apply-water-level`  | Booléen | Non    | Appliquer la réduction des niveaux d'eau lors du géoréférencement des sondes (défaut: `true`)                                                                                                                                                                        |
-| `--water-level-station` | Texte | Non    | Code(s) des stations marégraphiques à utiliser pour le traitement. Peut être spécifié plusieurs fois. Si une station est spécifiée, seulement cette station sera utilisée. ([Liste des stations](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=fr)) |
-| `--excluded-station`   | Texte | Non    | Code(s) des stations marégraphiques à exclure du traitement. Peut être spécifié plusieurs fois pour exclure plusieurs stations ([Liste des stations](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=fr))                                             |
+| Option                        | Type           | Requis     | Description                                                                                                                                                                                                                                                                                                                                              |
+|-------------------------------|----------------|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `--output`                    | Chemin         | **Oui**    | Chemin du répertoire de sortie                                                                                                                                                                                                                                                                                                                           |
+| `--vessel`                    | Texte          | Non        | Identifiant du navire. Si non spécifié, un navire par défaut avec des bras de levier à 0 sera utilisé. **Incompatible avec `--waterline`**                                                                                                                                                                                                               |
+| `--waterline`                 | Nombre décimal | Non        | Ligne de flottaison du navire en mètre. Si non spécifiée, une valeur de 0 sera utilisée. **Incompatible avec `--vessel`**                                                                                                                                                                                                                                |
+| `--vessel-name`               | Texte          | Non        | Nom du navire pour l'export. Surcharge le nom issu de la configuration du navire si fourni. Disponible indépendamment de `--vessel` et `--waterline`                                                                                                                                                                                                     |
+| `--config`                    | Chemin         | Non        | Chemin du fichier de configuration. Si non spécifié, le fichier de configuration par défaut sera utilisé                                                                                                                                                                                                                                                 |
+| `--apply-water-level`         | Booléen        | Non        | Appliquer la réduction des niveaux d'eau lors du géoréférencement des sondes (défaut: `true`)                                                                                                                                                                                                                                                            |
+| `--water-level-station`       | Texte          | Non        | Code(s) des stations marégraphiques à utiliser. Peut être spécifié plusieurs fois. ([Liste des stations](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=fr))                                                                                                                                                                             |
+| `--excluded-station`          | Texte          | Non        | Code(s) des stations marégraphiques à exclure. Peut être spécifié plusieurs fois. ([Liste des stations](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=fr))                                                                                                                                                                              |
+| `--already-at-chart-datum`    | Drapeau        | Non        | Indique que les données sont déjà réduites au zéro des cartes. La réduction marégraphique est désactivée automatiquement. Modifie le calcul de la TVU (constante par type de capteur depuis `datalogger_uncertainty.json`). **Incompatible avec `--apply-water-level true`** |
 
 #### Exemples d'utilisation
 
@@ -188,6 +190,16 @@ python cli.py process data.csv --excluded-station "04435" --excluded-station "04
 **Traitement de plusieurs fichiers :**
 ```bash
 python cli.py process file1.csv file2.xyz directory/ --output ./results
+```
+
+**Traitement avec un nom de navire personnalisé pour l'export :**
+```bash
+python cli.py process data.csv --vessel "CCGS_CARTIER" --vessel-name "Cartier Survey 2025" --output ./results
+```
+
+**Traitement de données déjà réduites au zéro des cartes :**
+```bash
+python cli.py process data.csv --already-at-chart-datum --output ./results
 ```
 
 ### 2. Commande `convert`
@@ -526,9 +538,12 @@ args = []  # Arguments supplémentaires pour l'exportation au format CSAR.
   ```
   TVU = c + (a × d)
   où :
-  - c = composante Station [constant_tvu_wlo, default_constant_tvu_wlp ou valeur dans ./static/uncertainty/station_uncertainty.json]
-  - a = coefficient de profondeur (Coefficient[depth_coefficient_tvu] + Coefficient SSP[default_depth_ssp_error_coefficient ou valeur dans le ./static/uncertainty/canadian_water_ssp_errors.gpk])
-  - d = profondeur en mètres
+  - c = composante réduction au zéro des cartes, déterminée selon le mode :
+      • apply_water_level=True  → station_uncertainty.json (WLO : constant_tvu_wlo, WLP : default_constant_tvu_wlp ou valeur dans station_uncertainty.json)
+      • apply_water_level=False → 0.0
+      • already_at_chart_datum=True → datalogger_uncertainty.json[DataLoggerType]["constant_tvu"] si disponible, sinon 0.0
+  - a = coefficient de profondeur = depth_coefficient_tvu + coefficient SSP (default_depth_ssp_error_coefficient ou valeur dans canadian_water_ssp_errors.gpkg selon la position)
+  - d = profondeur brute en mètres
   ```
 
 - `[DATA.Georeference.uncertainty.thu]` (Optionnel) : Configuration pour le calcul du THU (Total Horizontal Uncertainty).
@@ -539,10 +554,9 @@ args = []  # Arguments supplémentaires pour l'exportation au format CSAR.
   ```
   THU = c + (d × tan(θ/2))
   où :
-  - c = constante THU (constant_thu)
-  - d = profondeur en mètres
-  - θ = angle du cône du sonar en degrés (cone_angle_sonar)
-  - tan = fonction tangente trigonométrique
+  - c = constante THU = datalogger_uncertainty.json[DataLoggerType]["constant_thu"] si disponible pour le type de capteur, sinon constant_thu (valeur TOML)
+  - d = profondeur brute en mètres
+  - θ = angle d'ouverture du faisceau sonar (cone_angle_sonar, en degrés)
   ```
 
 - `[DATA.Processing.bins]` (Optionnel) : Configuration pour les histogrammes de données.
@@ -569,6 +583,47 @@ args = []  # Arguments supplémentaires pour l'exportation au format CSAR.
   - `version` : Version spécifique du logiciel CARIS (ex. : `"6.1"`).
   - `python_version` : Version de Python utilisée par l'API CARIS (ex. : `"3.11"`).
   - `args` : Arguments supplémentaires pour l'exportation au format CSAR.
+
+---
+
+# Fichiers statiques d'incertitude (`src/static/uncertainty/`)
+
+Ces fichiers JSON et GeoPackage définissent les paramètres d'incertitude utilisés
+lors du calcul du TVU et du THU. Ils sont chargés automatiquement pendant le traitement.
+
+## `datalogger_uncertainty.json` — Constantes par type de capteur
+
+Ce fichier permet de surcharger les constantes `constant_thu` et `constant_tvu` du fichier
+TOML pour des types de capteurs spécifiques. Il est utilisé dans deux contextes :
+
+| Constante       | Contexte d'utilisation                                                                              |
+|-----------------|------------------------------------------------------------------------------------------------------|
+| `constant_thu`  | Toujours — priorité JSON sur la valeur TOML pour le type de capteur identifié                      |
+| `constant_tvu`  | Uniquement quand `--already-at-chart-datum` — les données ne passent pas par la correction marée   |
+
+**Format :**
+```json
+{
+  "HydroBlock": {
+    "constant_thu": 0.1,
+    "constant_tvu": 0.2
+  }
+}
+```
+
+La clé correspond à la valeur du `DataLoggerType` identifié lors du parsing des fichiers bruts.
+Si le type de capteur est absent du fichier, les valeurs TOML (`constant_thu`, `constant_tvu`) sont utilisées.
+
+## `station_uncertainty.json` — Incertitude TVU par station marégraphique
+
+Fournit la composante réduction au zéro des cartes du TVU (en mètres) pour chaque station WLP par son code.
+Utilisé uniquement en mode `apply_water_level=True`.
+
+## `canadian_water_ssp_errors.gpkg` — Erreurs de vitesse du son
+
+Fournit le coefficient d'erreur SSP (%) par zone géographique, joint spatialement aux sondages
+pour affiner la composante de profondeur du TVU. Rayon de recherche : `max_distance_ssp` (défaut 30 km).
+Si aucune valeur n'est trouvée dans ce rayon, `default_depth_ssp_error_coefficient` est utilisé.
 
 ---
 
