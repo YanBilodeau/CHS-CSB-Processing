@@ -5,7 +5,7 @@ Ce module contient les modèles de métadonnées pour les données du CSB.
 """
 
 from dataclasses import dataclass, field
-from typing import Collection
+from typing import Collection, Optional
 
 from loguru import logger
 
@@ -67,8 +67,8 @@ class CSBmetadata:
     """Matériel de sondage"""
     sounding_technique: str
     """Technique de sondage"""
-    sounder_draft: float
-    """Tirant d'eau du sondeur"""
+    sounder_draft: Optional[float]
+    """Tirant d'eau du sondeur (None si les données sont déjà au zéro des cartes)"""
     tvu: float
     """Incertitude verticale"""
     thu: float

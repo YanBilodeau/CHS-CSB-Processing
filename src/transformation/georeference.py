@@ -555,6 +555,7 @@ def georeference_bathymetry(
     overwrite: Optional[bool] = False,
     apply_water_level: Optional[bool] = True,
     datalogger_type: Optional[str] = None,
+    already_at_chart_datum: bool = False,
 ) -> gpd.GeoDataFrame:
     """
     Géoréférence les données de bathymétrie.
@@ -575,9 +576,13 @@ def georeference_bathymetry(
     :type overwrite: Optional[bool]
     :param apply_water_level: True pour appliquer le niveau d'eau, sinon un niveau d'eau de 0 sera appliqué.
     :type apply_water_level: Optional[bool]
-    :param datalogger_type: Type de capteur. Si présent dans datalogger_thu.json, la valeur
-        constant_thu du JSON est utilisée en priorité sur celle du TOML.
+    :param datalogger_type: Type de capteur. Si présent dans datalogger_uncertainty.json, la valeur
+        constant_thu du JSON est utilisée en priorité sur celle du TOML pour le THU.
+        Si already_at_chart_datum=True, la valeur constant_tvu du JSON est utilisée pour le TVU.
     :type datalogger_type: Optional[str]
+    :param already_at_chart_datum: Si True, la constante TVU est résolue depuis
+        datalogger_uncertainty.json (JSON prioritaire sur la valeur par défaut 0).
+    :type already_at_chart_datum: bool
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     :raises WaterLevelDataRequiredError: Erreur si les données de niveau d'eau sont requises.
     """
@@ -622,6 +627,8 @@ def georeference_bathymetry(
             decimal_precision=decimal_precision,
             tvu_config=georeference_config.uncertainty.tvu,
             constant_tvu=0 if not apply_water_level else None,
+            datalogger_type=datalogger_type,
+            already_at_chart_datum=already_at_chart_datum,
         )
     )
 

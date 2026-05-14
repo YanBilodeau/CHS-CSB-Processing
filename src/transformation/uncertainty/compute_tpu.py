@@ -17,11 +17,12 @@ from loguru import logger
 
 from .ids_uncertainty import (
     STATION_UNCERTAINTY_JSON,
-    DATALOGGER_THU_JSON,
+    DATALOGGER_UNCERTAINTY_JSON,
     UNCERTAINTY_M,
     SSP_ERRORS_PATH,
     SSP_ERROR_COEFFICIENT,
     CONSTANT_THU_KEY,
+    CONSTANT_TVU_KEY,
 )
 import schema
 from schema import model_ids as schema_ids
@@ -60,68 +61,116 @@ def get_station_uncertainty(
     """
     LOGGER.debug(f"Chargement des incertitudes de WLP par station depuis {json_file}.")
 
-    with open(json_file, "r", encoding="utf-8") as file:
+    with open(json_file, "r", encoding="utf-8-sig") as file:
         data = json.load(file)
 
     return data
 
 
 @lru_cache(maxsize=128)
-def _get_datalogger_thu(
-    json_file: Path = DATALOGGER_THU_JSON,
+def get_datalogger_uncertainty(
+    json_file: Path = DATALOGGER_UNCERTAINTY_JSON,
 ) -> dict[str, dict[str, float]]:
     """
-    Charge les valeurs de constant_thu par DataLoggerType à partir d'un fichier JSON.
+    Charge les constantes d'incertitude (constant_thu et constant_tvu) par DataLoggerType
+    depuis un fichier JSON unique.
 
-    :param json_file: Chemin vers le fichier JSON contenant les valeurs de constant_thu par DataLoggerType.
+    :param json_file: Chemin vers le fichier JSON.
     :type json_file: Path
-    :return: Dictionnaire des valeurs de constant_thu par DataLoggerType.
+    :return: Dictionnaire des constantes d'incertitude par DataLoggerType.
     :rtype: dict[str, dict[str, float]]
     """
-    LOGGER.debug(f"Chargement des constant_thu par DataLoggerType depuis {json_file}.")
+    LOGGER.debug(
+        f"Chargement des constantes d'incertitude par DataLoggerType depuis {json_file}."
+    )
 
-    with open(json_file, "r", encoding="utf-8") as file:
+    with open(json_file, "r", encoding="utf-8-sig") as file:
         data = json.load(file)
 
     return data
 
 
-def _get_constant_thu_for_datalogger(
+def _get_constant_for_datalogger(
+    datalogger_type: Optional[str],
+    key: str,
+    default: float,
+) -> float:
+    """
+    Retourne la valeur d'une constante d'incertitude pour un DataLoggerType donné.
+
+    Si le type est présent dans datalogger_uncertainty.json et que la clé demandée
+    y figure, cette valeur est retournée (priorité JSON). Sinon, la valeur par défaut
+    est utilisée.
+
+    :param datalogger_type: Type de capteur (valeur de DataLoggerType).
+    :type datalogger_type: Optional[str]
+    :param key: Clé de la constante à récupérer (ex. ``constant_thu``, ``constant_tvu``).
+    :type key: str
+    :param default: Valeur par défaut si le type ou la clé est absent du JSON.
+    :type default: float
+    :return: Valeur de la constante à appliquer.
+    :rtype: float
+    """
+    if datalogger_type is None:
+        return default
+
+    entry = get_datalogger_uncertainty().get(datalogger_type)
+    if entry is not None:
+        constant = entry.get(key)
+        if constant is not None:
+            LOGGER.debug(
+                f"{key} pour '{datalogger_type}' trouvée dans le JSON : {constant}."
+            )
+            return float(constant)
+
+    LOGGER.debug(
+        f"DataLoggerType '{datalogger_type}' absent du JSON ({key}) — "
+        f"utilisation de la valeur par défaut : {default}."
+    )
+
+    return default
+
+
+def get_constant_thu_for_datalogger(
     datalogger_type: Optional[str],
     default: float,
 ) -> float:
     """
     Retourne la valeur de constant_thu pour un DataLoggerType donné.
 
-    Si le type est présent dans le fichier JSON des THU par DataLoggerType, cette valeur
-    est retournée (priorité JSON). Sinon, la valeur par défaut fournie est utilisée.
+    Si le type est présent dans datalogger_uncertainty.json (clé ``constant_thu``),
+    cette valeur est retournée (priorité JSON). Sinon, la valeur par défaut fournie
+    (issue du TOML) est utilisée.
 
     :param datalogger_type: Type de capteur (valeur de DataLoggerType).
     :type datalogger_type: Optional[str]
-    :param default: Valeur par défaut à utiliser si le type est absent du JSON.
+    :param default: Valeur par défaut si le type est absent du JSON.
     :type default: float
     :return: Valeur de constant_thu à appliquer.
     :rtype: float
     """
-    if datalogger_type is None:
-        return default
+    return _get_constant_for_datalogger(datalogger_type, CONSTANT_THU_KEY, default)
 
-    datalogger_thu = _get_datalogger_thu()
-    entry = datalogger_thu.get(datalogger_type)
 
-    if entry is not None:
-        constant = entry.get(CONSTANT_THU_KEY)
-        if constant is not None:
-            LOGGER.debug(
-                f"Valeur de constant_thu pour '{datalogger_type}' trouvée dans le JSON : {constant}."
-            )
-            return float(constant)
+def get_constant_tvu_for_datalogger(
+    datalogger_type: Optional[str],
+    default: float,
+) -> float:
+    """
+    Retourne la valeur de constant_tvu pour un DataLoggerType donné.
 
-    LOGGER.debug(
-        f"DataLoggerType '{datalogger_type}' absent du JSON datalogger_thu — utilisation de la valeur par défaut : {default}."
-    )
+    Utilisée uniquement quand ``already_at_chart_datum=True``. Si le type est présent
+    dans datalogger_uncertainty.json (clé ``constant_tvu``), cette valeur est retournée
+    (priorité JSON). Sinon, la valeur par défaut fournie est utilisée.
 
-    return default
+    :param datalogger_type: Type de capteur (valeur de DataLoggerType).
+    :type datalogger_type: Optional[str]
+    :param default: Valeur par défaut si le type est absent du JSON.
+    :type default: float
+    :return: Valeur de constant_tvu à appliquer.
+    :rtype: float
+    """
+    return _get_constant_for_datalogger(datalogger_type, CONSTANT_TVU_KEY, default)
 
 
 def create_uncertainty_mapping() -> dict[str, float]:
@@ -320,6 +369,8 @@ def compute_tvu(
     decimal_precision: int,
     tvu_config: TVUConfigProtocol,
     constant_tvu: Optional[float] = None,
+    datalogger_type: Optional[str] = None,
+    already_at_chart_datum: bool = False,
 ) -> gpd.GeoDataFrame:
     """
     Calcule le TVU des données de bathymétrie.
@@ -332,9 +383,23 @@ def compute_tvu(
     :type tvu_config: TVUConfigProtocol
     :param constant_tvu: Constante du TVU. Si None, utilise la valeur par station.
     :type constant_tvu: Optional[float]
+    :param datalogger_type: Type de capteur. Si already_at_chart_datum=True et que le type est présent
+        dans datalogger_uncertainty.json (clé ``constant_tvu``), la valeur du JSON est utilisée
+        en priorité sur constant_tvu.
+    :type datalogger_type: Optional[str]
+    :param already_at_chart_datum: Si True, résout constant_tvu depuis datalogger_uncertainty.json
+        (JSON prioritaire sur la valeur par défaut 0).
+    :type already_at_chart_datum: bool
     :return: Données de profondeur avec le TVU.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
+    # Quand les données sont déjà au zéro des cartes, utiliser la valeur JSON si disponible
+    if already_at_chart_datum:
+        constant_tvu = get_constant_tvu_for_datalogger(
+            datalogger_type=datalogger_type,
+            default=constant_tvu if constant_tvu is not None else 0,
+        )
+
     station_mapping = create_uncertainty_mapping()
 
     data = join_with_ssp_errors(
@@ -399,7 +464,7 @@ def compute_thu(
     """
     LOGGER.debug(f"Calcul de l'incertitude horizontale des données de profondeur.")
 
-    constant_thu: float = _get_constant_thu_for_datalogger(
+    constant_thu: float = get_constant_thu_for_datalogger(
         datalogger_type=datalogger_type,
         default=thu_config.constant_thu,
     )

@@ -1,0 +1,6 @@
+﻿{
+  "HydroBlock": {
+    "constant_thu": 0.1,
+    "constant_tvu": 0.2
+  }
+}

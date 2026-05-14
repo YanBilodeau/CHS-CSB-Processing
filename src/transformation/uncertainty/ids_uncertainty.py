@@ -2,8 +2,9 @@ from pathlib import Path
 
 UNCERTAINTY_PATH = Path(__file__).parent.parent.parent / "static" / "uncertainty"
 STATION_UNCERTAINTY_JSON: Path = UNCERTAINTY_PATH / "station_uncertainty.json"
-DATALOGGER_THU_JSON: Path = UNCERTAINTY_PATH / "datalogger_thu.json"
+DATALOGGER_UNCERTAINTY_JSON: Path = UNCERTAINTY_PATH / "datalogger_uncertainty.json"
 SSP_ERRORS_PATH: Path = UNCERTAINTY_PATH / "canadian_waters_ssp_errors.gpkg"
 UNCERTAINTY_M: str = "uncertainty_m"
 SSP_ERROR_COEFFICIENT: str = "d_err_p"
 CONSTANT_THU_KEY: str = "constant_thu"
+CONSTANT_TVU_KEY: str = "constant_tvu"

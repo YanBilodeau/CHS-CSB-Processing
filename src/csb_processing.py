@@ -210,7 +210,7 @@ def export_metadata(
         vessel=f"{vessel_config.id} - {effective_vessel_name}",
         sounding_hardware=f"{datalogger_type} - {attributes.sdghdw}",
         sounding_technique=attributes.tecsou,
-        sounder_draft=sounder.z - waterline.z,
+        sounder_draft="N/A" if already_at_chart_datum else sounder.z - waterline.z,
         sotfware_version=__version__,
         tide_stations=tide_stations,
         already_at_chart_datum=already_at_chart_datum,
@@ -524,6 +524,7 @@ def processing_workflow(
                 apply_water_level=apply_water_level,
                 decimal_precision=processing_config.options.decimal_precision,
                 datalogger_type=datalogger_type,
+                already_at_chart_datum=already_at_chart_datum,
             )
         )
 
@@ -672,6 +673,7 @@ def processing_workflow(
                     apply_water_level=apply_water_level,
                     decimal_precision=processing_config.options.decimal_precision,
                     datalogger_type=datalogger_type,
+                    already_at_chart_datum=already_at_chart_datum,
                 )
             )
 
