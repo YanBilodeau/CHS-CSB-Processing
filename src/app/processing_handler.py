@@ -225,6 +225,7 @@ class ProcessingHandler:
                 extra_logger=(self.log_settings,),
                 processing_config=processing_config,
                 vessel_name=self.config_manager.vessel_name or None,
+                already_at_chart_datum=self.config_manager.already_at_chart_datum,
             )
             LOGGER.info("Processing workflow completed successfully.")
 

@@ -171,6 +171,17 @@ def cli_group():
     Available independently of the --vessel and --waterline options.
     """,
 )
+@click.option(
+    "--already-at-chart-datum",
+    is_flag=True,
+    default=False,
+    help="""
+    Indique que les données sont déjà réduites au zéro des cartes. La réduction marégraphique
+    sera automatiquement désactivée.\n
+    Indicates that input data is already reduced to chart datum. Water level reduction
+    will be automatically disabled.
+    """,
+)
 def process_bathymetric_data(
     files: Collection[Path],
     output: Path,
@@ -181,6 +192,7 @@ def process_bathymetric_data(
     water_level_station: Optional[tuple[str, ...]] = None,
     excluded_station: Optional[tuple[str, ...]] = None,
     vessel_name: Optional[str] = None,
+    already_at_chart_datum: bool = False,
 ) -> None:
     """
     Traite les fichiers de données bathymétriques et les géoréférence. Processes bathymetric data files and georeferences them.
@@ -203,6 +215,8 @@ def process_bathymetric_data(
     :type excluded_station: Optional[tuple[str, ...]]
     :param vessel_name: Nom du navire pour l'export. Surcharge vessel_config.name si fourni.
     :type vessel_name: Optional[str]
+    :param already_at_chart_datum: Les données sont déjà réduites au zéro des cartes.
+    :type already_at_chart_datum: bool
     :raise click.UsageError: Si les options --vessel et --waterline sont utilisées en même temps.
     :raise click.UsageError: Si la valeur de l'option --waterline est négative.
     :raise click.UsageError: Si aucun fichier valide n'est fourni.
@@ -262,6 +276,7 @@ def process_bathymetric_data(
         ),
         excluded_stations=list(excluded_station) if excluded_station else None,
         vessel_name=vessel_name or None,
+        already_at_chart_datum=already_at_chart_datum,
     )
 
 

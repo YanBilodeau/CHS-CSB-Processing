@@ -376,8 +376,6 @@ class OptionsConfig(BaseModel):
     """Le nombre maximal d'itérations pour le traitement."""
     decimal_precision: int = DECIMAL_PRECISION
     """La précision décimale pour les calculs."""
-    already_at_chart_datum: bool = False
-    """Les données sont déjà réduites au zéro des cartes. Si True, apply_water_level est forcé à False."""
 
     @field_validator("max_iterations")
     def validate_max_iterations(cls, value: int) -> int:

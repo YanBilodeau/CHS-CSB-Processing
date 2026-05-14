@@ -35,9 +35,6 @@ class ConfigManager:
                 f if isinstance(f, str) else f.value
                 for f in (default_config.filter.filter_to_apply or [])
             }
-            self.already_at_chart_datum = default_config.options.already_at_chart_datum
-            if self.already_at_chart_datum:
-                self.apply_water_level = False
 
         except Exception as e:
             LOGGER.error(f"Error initialising configuration: {e}")
@@ -109,9 +106,4 @@ class ConfigManager:
         updated_filter = base_config.filter.model_copy(
             update={"filter_to_apply": selected_filters}
         )
-        updated_options = base_config.options.model_copy(
-            update={"already_at_chart_datum": self.already_at_chart_datum}
-        )
-        return base_config.model_copy(
-            update={"filter": updated_filter, "options": updated_options}
-        )
+        return base_config.model_copy(update={"filter": updated_filter})

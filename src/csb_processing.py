@@ -29,7 +29,7 @@ import transformation.georeference as georeference
 import vessel as vessel_manager
 
 
-__version__ = "0.7.5"
+__version__ = "0.7.6"
 
 
 LOGGER = logger.bind(name="CSB-Processing.WorkFlow")
@@ -258,6 +258,7 @@ def export_processed_data_and_metadata(
     caris_api_config: Optional[config.CarisAPIConfig] = None,
     tide_stations: Optional[Collection[str]] = None,
     vessel_name: Optional[str] = None,
+    already_at_chart_datum: bool = False,
 ) -> None:
     """
     Exporte les données traitées et les métadonnées.
@@ -278,6 +279,8 @@ def export_processed_data_and_metadata(
     :type tide_stations: Optional[Collection[str]]
     :param vessel_name: Nom du navire pour l'export. Surcharge vessel_config.name si fourni.
     :type vessel_name: Optional[str]
+    :param already_at_chart_datum: Les données sont déjà réduites au zéro des cartes.
+    :type already_at_chart_datum: bool
     """
     effective_vessel_name: str = vessel_name or vessel_config.name
 
@@ -313,7 +316,7 @@ def export_processed_data_and_metadata(
         decimal_precision=processing_config.options.decimal_precision,
         nbins_x=processing_config.plot.nbin_x,
         nbins_y=processing_config.plot.nbin_y,
-        already_at_chart_datum=processing_config.options.already_at_chart_datum,
+        already_at_chart_datum=already_at_chart_datum,
         vessel_name=effective_vessel_name,
     )
 
@@ -365,6 +368,7 @@ def processing_workflow(
     excluded_stations: Optional[Collection[str]] = None,
     processing_config: Optional[config.CSBprocessingConfig] = None,
     vessel_name: Optional[str] = None,
+    already_at_chart_datum: bool = False,
 ) -> None:
     """
     Workflow de traitement des données.
@@ -389,6 +393,9 @@ def processing_workflow(
     :type processing_config: Optional[config.CSBprocessingConfig]
     :param vessel_name: Nom du navire à utiliser pour l'export. Surcharge vessel_config.name si fourni.
     :type vessel_name: Optional[str]
+    :param already_at_chart_datum: Les données sont déjà réduites au zéro des cartes.
+        Si True, apply_water_level est forcé à False.
+    :type already_at_chart_datum: bool
     """
     if not files:
         LOGGER.warning(f"Aucun fichier à traiter.")
@@ -419,7 +426,7 @@ def processing_workflow(
     )
 
     # Forcer apply_water_level à False si les données sont déjà au zéro des cartes
-    if processing_config.options.already_at_chart_datum and apply_water_level:
+    if already_at_chart_datum and apply_water_level:
         LOGGER.warning(
             "Option 'already_at_chart_datum' activée : les données sont déjà réduites au "
             "zéro des cartes. La réduction marégraphique (apply_water_level) est désactivée."
@@ -527,6 +534,7 @@ def processing_workflow(
             caris_api_config=caris_api_config,
             tide_stations=None,
             vessel_name=vessel_name,
+            already_at_chart_datum=already_at_chart_datum,
         )
 
         return None
@@ -711,6 +719,7 @@ def processing_workflow(
             for station_id in wl_combineds_dict.keys()
         ],
         vessel_name=vessel_name,
+        already_at_chart_datum=already_at_chart_datum,
     )
 
     return None
@@ -730,4 +739,4 @@ def processing_workflow(
     # todo : refaire le rapport pour style et theme comme dans S44-report
     # todo : ajouter au métadonnée longueur de ligne de sondage et temps de sondage
 
-    # todo : valeur de thu et tvu dans l'app
+    # todo : valeur de thu et tvu dans l'app et WAAS pour Hydroblock
