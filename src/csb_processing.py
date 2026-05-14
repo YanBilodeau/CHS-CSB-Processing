@@ -235,6 +235,7 @@ def export_metadata(
         iho_order_statistic=classify_iho_order(
             data_geodataframe=data_geodataframe, decimal_precision=decimal_precision
         ),
+        positioning_method=metadata.get_positioning_method(datalogger_type),
     )
 
     metadata.export_metadata_to_json(metadata=survey_metadata, output_path=output_path)
@@ -522,6 +523,7 @@ def processing_workflow(
                 georeference_config=processing_config.georeference,
                 apply_water_level=apply_water_level,
                 decimal_precision=processing_config.options.decimal_precision,
+                datalogger_type=datalogger_type,
             )
         )
 
@@ -669,6 +671,7 @@ def processing_workflow(
                     georeference_config=processing_config.georeference,
                     apply_water_level=apply_water_level,
                     decimal_precision=processing_config.options.decimal_precision,
+                    datalogger_type=datalogger_type,
                 )
             )
 
@@ -738,5 +741,3 @@ def processing_workflow(
 
     # todo : refaire le rapport pour style et theme comme dans S44-report
     # todo : ajouter au métadonnée longueur de ligne de sondage et temps de sondage
-
-    # todo : valeur de thu et tvu dans l'app et WAAS pour Hydroblock

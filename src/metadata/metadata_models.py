@@ -9,6 +9,7 @@ from typing import Collection
 
 from loguru import logger
 
+from ingestion import DataLoggerType
 from .order.order_models import IHOorderQualifiquation
 
 LOGGER = logger.bind(name="CSB-Processing.Metadata.Models")
@@ -22,6 +23,32 @@ ALREADY_AT_CHART_DATUM = "The dataset was provided already reduced to Chart Datu
 """Données déjà au zéro des cartes"""
 CHART_DATUM = "Chart Datum"
 """Niveau de référence des cartes"""
+
+DEFAULT_POSITIONING_METHOD: str = "Wide Area Augmentation System (WAAS)"
+"""Méthode de positionnement par défaut."""
+
+POSITIONING_METHOD_BY_DATALOGGER: dict[DataLoggerType, str] = {
+    DataLoggerType.HYDROBLOCK: "Precise Point Positioning (PPP)",
+}
+"""Correspondance DataLoggerType → méthode de positionnement.
+Contient uniquement les types dont la méthode diffère de DEFAULT_POSITIONING_METHOD."""
+
+
+def get_positioning_method(datalogger_type: DataLoggerType) -> str:
+    """
+    Retourne la méthode de positionnement associée au type de capteur.
+
+    Retourne ``DEFAULT_POSITIONING_METHOD`` si le type n'est pas présent dans
+    ``POSITIONING_METHOD_BY_DATALOGGER``.
+
+    :param datalogger_type: Type de capteur.
+    :type datalogger_type: DataLoggerType
+    :return: Méthode de positionnement.
+    :rtype: str
+    """
+    return POSITIONING_METHOD_BY_DATALOGGER.get(
+        datalogger_type, DEFAULT_POSITIONING_METHOD
+    )
 
 
 @dataclass
@@ -54,7 +81,7 @@ class CSBmetadata:
     """Système de coordonnées vertical"""
     water_Level_reduction_method: str = field(init=False)
     """Méthode de réduction du niveau d'eau"""
-    positioning_method: str = "WAAS"
+    positioning_method: str = DEFAULT_POSITIONING_METHOD
     """Méthode de positionnement"""
     resolution: str = "Point Cloud"
     """Résolution des données"""
