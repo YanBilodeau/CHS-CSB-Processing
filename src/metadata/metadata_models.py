@@ -11,6 +11,7 @@ from loguru import logger
 
 from ingestion import DataLoggerType
 from .order.order_models import IHOorderQualifiquation
+from processing_context import ProcessingContext
 
 LOGGER = logger.bind(name="CSB-Processing.Metadata.Models")
 
@@ -81,6 +82,8 @@ class CSBmetadata:
     """Système de coordonnées vertical"""
     water_Level_reduction_method: str = field(init=False)
     """Méthode de réduction du niveau d'eau"""
+    already_at_chart_datum: bool = field(init=False, default=False)
+    """Les données sont déjà réduites au zéro des cartes (dérivé de processing_context)"""
     positioning_method: str = DEFAULT_POSITIONING_METHOD
     """Méthode de positionnement"""
     resolution: str = "Point Cloud"
@@ -89,8 +92,8 @@ class CSBmetadata:
     """Système de coordonnées horizontal"""
     data_processing_software: str = "CHS-CSB-Processing {version}"
     """Logiciel de traitement des données"""
-    already_at_chart_datum: bool = False
-    """Les données sont déjà réduites au zéro des cartes"""
+    processing_context: Optional[ProcessingContext] = field(default=None, repr=False)
+    """Contexte de traitement (type de capteur, statut de réduction au zéro des cartes)"""
     iho_order_statistic: IHOorderQualifiquation = None
     """Statistiques des ordre IHO"""
 
@@ -98,6 +101,12 @@ class CSBmetadata:
         """
         Méthode pour initialiser les valeurs par défaut.
         """
+        self.already_at_chart_datum = (
+            self.processing_context.already_at_chart_datum
+            if self.processing_context is not None
+            else False
+        )
+
         self.data_processing_software = self.data_processing_software.format(
             version=self.sotfware_version
         )

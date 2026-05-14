@@ -27,9 +27,10 @@ import schema.model_ids as schema_ids
 import filter.data_cleaning as cleaner
 import transformation.georeference as georeference
 import vessel as vessel_manager
+from processing_context import ProcessingContext
 
 
-__version__ = "0.7.6"
+__version__ = "0.8.0"
 
 
 LOGGER = logger.bind(name="CSB-Processing.WorkFlow")
@@ -150,13 +151,12 @@ def export_metadata(
     data_geodataframe: gpd.GeoDataFrame,
     output_path: Path,
     vessel_config: vessel_manager.VesselConfig,
-    datalogger_type: DataLoggerType,
     tide_stations: Optional[Collection[str]],
     decimal_precision: int,
     nbins_x: Optional[int] = 35,
     nbins_y: Optional[int] = 35,
-    already_at_chart_datum: bool = False,
     vessel_name: Optional[str] = None,
+    processing_context: Optional[ProcessingContext] = None,
 ) -> None:
     """
     Exporte les métadonnées des données traitées.
@@ -167,8 +167,6 @@ def export_metadata(
     :type output_path: Path
     :param vessel_config: Configuration du navire.
     :type vessel_config: vessel_manager.VesselConfig
-    :param datalogger_type: Type de capteur.
-    :type datalogger_type: DataLoggerType
     :param tide_stations: Liste des stations de marées.
     :type tide_stations: Optional[Collection[str]]
     :param decimal_precision: Précision des décimales.
@@ -177,16 +175,18 @@ def export_metadata(
     :type nbins_x: Optional[int]
     :param nbins_y: Nombre de cellules pour l'axe des Y dans les graphiques.
     :type nbins_y: Optional[int]
-    :param already_at_chart_datum: Les données sont déjà réduites au zéro des cartes.
-    :type already_at_chart_datum: bool
     :param vessel_name: Nom du navire pour l'export. Surcharge vessel_config.name si fourni.
     :type vessel_name: Optional[str]
+    :param processing_context: Contexte de traitement (type de capteur, statut de réduction).
+    :type processing_context: Optional[ProcessingContext]
     """
     effective_vessel_name: str = vessel_name or vessel_config.name
     name: str = export.get_export_file_name(
         data_geodataframe=data_geodataframe,
         vessel_name=effective_vessel_name,
-        datalogger_type=datalogger_type,
+        datalogger_type=(
+            processing_context.datalogger_type if processing_context else None
+        ),
     )
     output_path: Path = output_path / f"{name}_metadata.json"
 
@@ -208,12 +208,16 @@ def export_metadata(
         start_date=min_time.strftime("%Y-%m-%d"),
         end_date=max_time.strftime("%Y-%m-%d"),
         vessel=f"{vessel_config.id} - {effective_vessel_name}",
-        sounding_hardware=f"{datalogger_type} - {attributes.sdghdw}",
+        sounding_hardware=f"{processing_context.datalogger_type if processing_context else ''} - {attributes.sdghdw}",
         sounding_technique=attributes.tecsou,
-        sounder_draft="N/A" if already_at_chart_datum else sounder.z - waterline.z,
+        sounder_draft=(
+            processing_context.resolve_sounder_draft(sounder, waterline)
+            if processing_context is not None
+            else sounder.z - waterline.z
+        ),
         sotfware_version=__version__,
         tide_stations=tide_stations,
-        already_at_chart_datum=already_at_chart_datum,
+        processing_context=processing_context,
         tvu=(
             data_geodataframe[data_geodataframe[schema_ids.DEPTH_PROCESSED_METER] < 50][
                 schema_ids.UNCERTAINTY
@@ -235,7 +239,11 @@ def export_metadata(
         iho_order_statistic=classify_iho_order(
             data_geodataframe=data_geodataframe, decimal_precision=decimal_precision
         ),
-        positioning_method=metadata.get_positioning_method(datalogger_type),
+        positioning_method=metadata.get_positioning_method(
+            processing_context.datalogger_type
+            if processing_context is not None
+            else None
+        ),
     )
 
     metadata.export_metadata_to_json(metadata=survey_metadata, output_path=output_path)
@@ -254,12 +262,11 @@ def export_processed_data_and_metadata(
     data_geodataframe: gpd.GeoDataFrame,
     export_data_path: Path,
     vessel_config: vessel_manager.VesselConfig,
-    datalogger_type: DataLoggerType,
     processing_config: config.CSBprocessingConfig,
     caris_api_config: Optional[config.CarisAPIConfig] = None,
     tide_stations: Optional[Collection[str]] = None,
     vessel_name: Optional[str] = None,
-    already_at_chart_datum: bool = False,
+    processing_context: Optional[ProcessingContext] = None,
 ) -> None:
     """
     Exporte les données traitées et les métadonnées.
@@ -270,8 +277,6 @@ def export_processed_data_and_metadata(
     :type export_data_path: Path
     :param vessel_config: Configuration du navire.
     :type vessel_config: vessel_manager.VesselConfig
-    :param datalogger_type: Type de capteur.
-    :type datalogger_type: DataLoggerType
     :param processing_config: Configuration du traitement.
     :type processing_config: config.CSBprocessingConfig
     :param caris_api_config: Configuration de l'API Caris.
@@ -280,8 +285,8 @@ def export_processed_data_and_metadata(
     :type tide_stations: Optional[Collection[str]]
     :param vessel_name: Nom du navire pour l'export. Surcharge vessel_config.name si fourni.
     :type vessel_name: Optional[str]
-    :param already_at_chart_datum: Les données sont déjà réduites au zéro des cartes.
-    :type already_at_chart_datum: bool
+    :param processing_context: Contexte de traitement (type de capteur, statut de réduction).
+    :type processing_context: Optional[ProcessingContext]
     """
     effective_vessel_name: str = vessel_name or vessel_config.name
 
@@ -294,7 +299,9 @@ def export_processed_data_and_metadata(
     output_base_path: Path = export_data_path / export.get_export_file_name(
         data_geodataframe=data_geodataframe,
         vessel_name=effective_vessel_name,
-        datalogger_type=datalogger_type,
+        datalogger_type=(
+            processing_context.datalogger_type if processing_context else None
+        ),
     )
 
     # Export the processed data
@@ -312,13 +319,12 @@ def export_processed_data_and_metadata(
         data_geodataframe=data_geodataframe,
         output_path=export_data_path,
         vessel_config=vessel_config,
-        datalogger_type=datalogger_type,
         tide_stations=tide_stations,
         decimal_precision=processing_config.options.decimal_precision,
         nbins_x=processing_config.plot.nbin_x,
         nbins_y=processing_config.plot.nbin_y,
-        already_at_chart_datum=already_at_chart_datum,
         vessel_name=effective_vessel_name,
+        processing_context=processing_context,
     )
 
 
@@ -480,6 +486,12 @@ def processing_workflow(
     )
     datalogger_type: DataLoggerType = parser_files.datalogger_type
 
+    # Créer le contexte de traitement une seule fois après identification du type de capteur
+    ctx: ProcessingContext = ProcessingContext(
+        datalogger_type=datalogger_type,
+        already_at_chart_datum=already_at_chart_datum,
+    )
+
     LOGGER.debug(parser_files)
 
     if not parser_files.files:
@@ -523,8 +535,7 @@ def processing_workflow(
                 georeference_config=processing_config.georeference,
                 apply_water_level=apply_water_level,
                 decimal_precision=processing_config.options.decimal_precision,
-                datalogger_type=datalogger_type,
-                already_at_chart_datum=already_at_chart_datum,
+                processing_context=ctx,
             )
         )
 
@@ -532,12 +543,11 @@ def processing_workflow(
             data_geodataframe=data,
             export_data_path=export_data_path,
             vessel_config=vessel_config,
-            datalogger_type=datalogger_type,
             processing_config=processing_config,
             caris_api_config=caris_api_config,
             tide_stations=None,
             vessel_name=vessel_name,
-            already_at_chart_datum=already_at_chart_datum,
+            processing_context=ctx,
         )
 
         return None
@@ -672,8 +682,7 @@ def processing_workflow(
                     georeference_config=processing_config.georeference,
                     apply_water_level=apply_water_level,
                     decimal_precision=processing_config.options.decimal_precision,
-                    datalogger_type=datalogger_type,
-                    already_at_chart_datum=already_at_chart_datum,
+                    processing_context=ctx,
                 )
             )
 
@@ -716,7 +725,6 @@ def processing_workflow(
         data_geodataframe=data,
         export_data_path=export_data_path,
         vessel_config=vessel_config,
-        datalogger_type=datalogger_type,
         processing_config=processing_config,
         caris_api_config=caris_api_config,
         tide_stations=[
@@ -724,7 +732,7 @@ def processing_workflow(
             for station_id in wl_combineds_dict.keys()
         ],
         vessel_name=vessel_name,
-        already_at_chart_datum=already_at_chart_datum,
+        processing_context=ctx,
     )
 
     return None

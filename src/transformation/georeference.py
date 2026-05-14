@@ -19,6 +19,7 @@ from .transformation_models import SensorProtocol, WaterlineProtocol
 from . import uncertainty
 import schema
 from schema import model_ids as schema_ids
+from processing_context import ProcessingContext
 
 LOGGER = logger.bind(name="CSB-Processing.Transformation.Georeferencing")
 
@@ -554,8 +555,7 @@ def georeference_bathymetry(
     decimal_precision: Optional[int] = 2,
     overwrite: Optional[bool] = False,
     apply_water_level: Optional[bool] = True,
-    datalogger_type: Optional[str] = None,
-    already_at_chart_datum: bool = False,
+    processing_context: Optional[ProcessingContext] = None,
 ) -> gpd.GeoDataFrame:
     """
     Géoréférence les données de bathymétrie.
@@ -576,13 +576,10 @@ def georeference_bathymetry(
     :type overwrite: Optional[bool]
     :param apply_water_level: True pour appliquer le niveau d'eau, sinon un niveau d'eau de 0 sera appliqué.
     :type apply_water_level: Optional[bool]
-    :param datalogger_type: Type de capteur. Si présent dans datalogger_uncertainty.json, la valeur
-        constant_thu du JSON est utilisée en priorité sur celle du TOML pour le THU.
-        Si already_at_chart_datum=True, la valeur constant_tvu du JSON est utilisée pour le TVU.
-    :type datalogger_type: Optional[str]
-    :param already_at_chart_datum: Si True, la constante TVU est résolue depuis
-        datalogger_uncertainty.json (JSON prioritaire sur la valeur par défaut 0).
-    :type already_at_chart_datum: bool
+    :param processing_context: Contexte de traitement. Porte le type de capteur et le statut de
+        réduction au zéro des cartes, utilisés pour résoudre les constantes THU/TVU depuis
+        ``datalogger_uncertainty.json``.
+    :type processing_context: Optional[ProcessingContext]
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     :raises WaterLevelDataRequiredError: Erreur si les données de niveau d'eau sont requises.
     """
@@ -627,8 +624,7 @@ def georeference_bathymetry(
             decimal_precision=decimal_precision,
             tvu_config=georeference_config.uncertainty.tvu,
             constant_tvu=0 if not apply_water_level else None,
-            datalogger_type=datalogger_type,
-            already_at_chart_datum=already_at_chart_datum,
+            processing_context=processing_context,
         )
     )
 
@@ -638,7 +634,7 @@ def georeference_bathymetry(
             data=data_to_process,
             decimal_precision=decimal_precision,
             thu_config=georeference_config.uncertainty.thu,
-            datalogger_type=datalogger_type,
+            processing_context=processing_context,
         )
     )
 

@@ -26,6 +26,7 @@ from .ids_uncertainty import (
 )
 import schema
 from schema import model_ids as schema_ids
+from processing_context import ProcessingContext
 
 LOGGER = logger.bind(name="CSB-Processing.Transformation.Uncertainty")
 
@@ -369,8 +370,7 @@ def compute_tvu(
     decimal_precision: int,
     tvu_config: TVUConfigProtocol,
     constant_tvu: Optional[float] = None,
-    datalogger_type: Optional[str] = None,
-    already_at_chart_datum: bool = False,
+    processing_context: Optional[ProcessingContext] = None,
 ) -> gpd.GeoDataFrame:
     """
     Calcule le TVU des données de bathymétrie.
@@ -383,21 +383,17 @@ def compute_tvu(
     :type tvu_config: TVUConfigProtocol
     :param constant_tvu: Constante du TVU. Si None, utilise la valeur par station.
     :type constant_tvu: Optional[float]
-    :param datalogger_type: Type de capteur. Si already_at_chart_datum=True et que le type est présent
-        dans datalogger_uncertainty.json (clé ``constant_tvu``), la valeur du JSON est utilisée
-        en priorité sur constant_tvu.
-    :type datalogger_type: Optional[str]
-    :param already_at_chart_datum: Si True, résout constant_tvu depuis datalogger_uncertainty.json
+    :param processing_context: Contexte de traitement. Si ``already_at_chart_datum=True``,
+        résout ``constant_tvu`` depuis ``datalogger_uncertainty.json`` via le contexte
         (JSON prioritaire sur la valeur par défaut 0).
-    :type already_at_chart_datum: bool
+    :type processing_context: Optional[ProcessingContext]
     :return: Données de profondeur avec le TVU.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
     # Quand les données sont déjà au zéro des cartes, utiliser la valeur JSON si disponible
-    if already_at_chart_datum:
-        constant_tvu = get_constant_tvu_for_datalogger(
-            datalogger_type=datalogger_type,
-            default=constant_tvu if constant_tvu is not None else 0,
+    if processing_context is not None and processing_context.already_at_chart_datum:
+        constant_tvu = processing_context.resolve_constant_tvu(
+            default=constant_tvu if constant_tvu is not None else 0
         )
 
     station_mapping = create_uncertainty_mapping()
@@ -445,7 +441,7 @@ def compute_thu(
     data: gpd.GeoDataFrame,
     decimal_precision: int,
     thu_config: THUConfigProtocol,
-    datalogger_type: Optional[str] = None,
+    processing_context: Optional[ProcessingContext] = None,
 ) -> gpd.GeoDataFrame:
     """
     Calcule le THU des données de bathymétrie.
@@ -456,17 +452,19 @@ def compute_thu(
     :type decimal_precision: int
     :param thu_config: Configuration des paramètres du THU.
     :type thu_config: THUConfigProtocol
-    :param datalogger_type: Type de capteur. Si présent dans le fichier JSON datalogger_thu.json,
-        la valeur constant_thu du JSON est utilisée en priorité sur celle du TOML.
-    :type datalogger_type: Optional[str]
+    :param processing_context: Contexte de traitement. Si le type de capteur est présent
+        dans ``datalogger_uncertainty.json``, la valeur ``constant_thu`` du JSON est utilisée
+        en priorité sur celle du TOML.
+    :type processing_context: Optional[ProcessingContext]
     :return: Données de profondeur avec le THU.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
     LOGGER.debug(f"Calcul de l'incertitude horizontale des données de profondeur.")
 
-    constant_thu: float = get_constant_thu_for_datalogger(
-        datalogger_type=datalogger_type,
-        default=thu_config.constant_thu,
+    constant_thu: float = (
+        processing_context.resolve_constant_thu(thu_config.constant_thu)
+        if processing_context is not None
+        else thu_config.constant_thu
     )
 
     thu_depth_coeficient: float = np.tan(np.radians(thu_config.cone_angle_sonar) / 2)
