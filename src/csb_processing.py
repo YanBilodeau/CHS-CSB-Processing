@@ -5,9 +5,7 @@ Ce module contient le workflow de traitement des données des capteurs à bord d
 récupérées à partir de fichiers bruts, nettoyées, filtrées, georéférencées et exportées dans un format standardisé.
 """
 
-from dataclasses import dataclass
 from collections import defaultdict
-from datetime import datetime
 from pathlib import Path
 from typing import Optional, Collection, Iterable
 
@@ -21,7 +19,6 @@ from tide import voronoi, time_serie, tide_zone, water_level_export
 import config
 import export
 import iwls_api
-import metadata
 import schema
 import schema.model_ids as schema_ids
 import filter.data_cleaning as cleaner
@@ -38,294 +35,8 @@ configure_logger()
 
 CONFIG_FILE: Path = Path(__file__).parent / "CONFIG_csb-processing.toml"
 
-
-@dataclass(frozen=True)
-class VesselConfigManagerError(Exception):
-    """
-    Exception levée lorsque la configuration du gestionnaire de navires est manquante pour récupérer la configuration du navire.
-    """
-
-    vessel_id: str
-    """L'identifiant du navire."""
-    vessel_config_manager: Optional[config.VesselManagerConfig]
-    """La configuration du gestionnaire de navires."""
-
-    def __str__(self) -> str:
-        return (
-            f"La configuration du gestionnaire de navires [{self.vessel_config_manager}] est "
-            f"manquante ou incomplète pour récupérer la configuration du navire : {self.vessel_id}."
-        )
-
-
-def get_data_structure(output_path: Path) -> tuple[Path, Path, Path]:
-    """
-    Récupère la structure de répertoires pour les données.
-
-    :param output_path: Chemin du répertoire de sortie.
-    :type output_path: Path
-    :return: Chemin des répertoires pour les données.
-    :rtype: tuple[Path, Path, Path]
-    """
-    LOGGER.debug(
-        f"Initialisation de la structure de répertoires pour les données : {output_path}."
-    )
-
-    data_path: Path = output_path / "Data"
-    tide_path: Path = output_path / "Tide"
-    log_path: Path = output_path / "Log"
-
-    # Create the directories if they do not exist
-    if not data_path.exists():
-        data_path.mkdir(parents=True)
-    if not tide_path.exists():
-        tide_path.mkdir()
-    if not log_path.exists():
-        log_path.mkdir()
-
-    return data_path, tide_path, log_path
-
-
-def get_station_title(gdf_voronoi: gpd.GeoDataFrame, station_id: str) -> str:
-    """
-    Récupère le titre de la station.
-
-    :param gdf_voronoi: GeoDataFrame contenant les informations des stations.
-    :type gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema]
-    :param station_id: Identifiant de la station.
-    :type station_id: str
-    :return: Titre de la station.
-    :rtype: str
-    """
-    return (
-        f"{voronoi.get_name_by_station_id(gdf_voronoi=gdf_voronoi, station_id=station_id)} "
-        f"({voronoi.get_code_by_station_id(gdf_voronoi=gdf_voronoi, station_id=station_id)})"
-    )
-
-
-def get_sensors_by_datetime(
-    vessel_config: vessel_manager.VesselConfig, min_time: datetime, max_time: datetime
-) -> tuple[vessel_manager.Sensor, vessel_manager.Waterline]:
-    """
-    Méthode pour récupérer les données des capteurs et valider que la configuration du navire couvre la période de temps.
-
-    :param vessel_config: Configuration du navire.
-    :type vessel_config: vessel_manager.VesselConfig
-    :param min_time: Date et heure minimale.
-    :type min_time: datetime
-    :param max_time: Date et heure maximale.
-    :type max_time: datetime
-    :return: Données des capteurs pour le moment donné.
-    :rtype: tuple[vessel_manager.Sensor, vessel_manager.Waterline]
-    """
-    sounder: vessel_manager.Sensor = vessel_config.get_sensor_config_by_datetime(
-        "sounder", min_time, max_time
-    )
-    waterline: vessel_manager.Waterline = vessel_config.get_sensor_config_by_datetime(
-        "waterline", min_time, max_time
-    )
-
-    return sounder, waterline
-
-
-def classify_iho_order(
-    data_geodataframe: gpd.GeoDataFrame, decimal_precision: int
-) -> metadata.IHOorderQualifiquation:
-    """
-    Classifie l'ordre IHO des données.
-
-    :param data_geodataframe: Données traitées à classifier.
-    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
-    :param decimal_precision: Précision des décimales.
-    :type decimal_precision: int
-    :return: La qualification des données selon les ordres IHO.
-    :rtype: IHOorderQualifiquation
-    """
-    LOGGER.debug(f"Classification de l'ordre IHO des données.")
-
-    return metadata.classify_iho_order(
-        data_geodataframe=data_geodataframe, decimal_precision=decimal_precision
-    )
-
-
-def export_metadata(
-    data_geodataframe: gpd.GeoDataFrame,
-    output_path: Path,
-    vessel_config: vessel_manager.VesselConfig,
-    tide_stations: Optional[Collection[str]],
-    decimal_precision: int,
-    nbins_x: Optional[int] = 35,
-    nbins_y: Optional[int] = 35,
-    vessel_name: Optional[str] = None,
-    processing_context: Optional[ProcessingContext] = None,
-) -> None:
-    """
-    Exporte les métadonnées des données traitées.
-
-    :param data_geodataframe: Données traitées à exporter.
-    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
-    :param output_path: Chemin du répertoire d'exportation.
-    :type output_path: Path
-    :param vessel_config: Configuration du navire.
-    :type vessel_config: vessel_manager.VesselConfig
-    :param tide_stations: Liste des stations de marées.
-    :type tide_stations: Optional[Collection[str]]
-    :param decimal_precision: Précision des décimales.
-    :type decimal_precision: int
-    :param nbins_x: Nombre de cellules pour l'axe des X dans les graphiques.
-    :type nbins_x: Optional[int]
-    :param nbins_y: Nombre de cellules pour l'axe des Y dans les graphiques.
-    :type nbins_y: Optional[int]
-    :param vessel_name: Nom du navire pour l'export. Surcharge vessel_config.name si fourni.
-    :type vessel_name: Optional[str]
-    :param processing_context: Contexte de traitement (type de capteur, statut de réduction).
-    :type processing_context: Optional[ProcessingContext]
-    """
-    effective_vessel_name: str = vessel_name or vessel_config.name
-    name: str = export.get_export_file_name(
-        data_geodataframe=data_geodataframe,
-        vessel_name=effective_vessel_name,
-        datalogger_type=(
-            processing_context.datalogger_type if processing_context else None
-        ),
-    )
-    output_path: Path = output_path / f"{name}_metadata.json"
-
-    LOGGER.info(f"Exportation des métadonnées des données traitées : {output_path}.")
-
-    min_time: datetime = data_geodataframe[schema_ids.TIME_UTC].min()
-    max_time: datetime = data_geodataframe[schema_ids.TIME_UTC].max()
-    attributes: vessel_manager.BDBattribute = (
-        vessel_config.get_sensor_config_by_datetime("attribute", min_time, max_time)
-    )
-    waterline: vessel_manager.Waterline = vessel_config.get_sensor_config_by_datetime(
-        "waterline", min_time, max_time
-    )
-    sounder: vessel_manager.Sensor = vessel_config.get_sensor_config_by_datetime(
-        "sounder", min_time, max_time
-    )
-
-    survey_metadata: metadata.CSBmetadata = metadata.CSBmetadata(
-        start_date=min_time.strftime("%Y-%m-%d"),
-        end_date=max_time.strftime("%Y-%m-%d"),
-        vessel=f"{vessel_config.id} - {effective_vessel_name}",
-        sounding_hardware=f"{processing_context.datalogger_type if processing_context else ''} - {attributes.sdghdw}",
-        sounding_technique=attributes.tecsou,
-        sounder_draft=(
-            processing_context.resolve_sounder_draft(sounder, waterline)
-            if processing_context is not None
-            else sounder.z - waterline.z
-        ),
-        sotfware_version=__version__,
-        tide_stations=tide_stations,
-        processing_context=processing_context,
-        tvu=(
-            data_geodataframe[data_geodataframe[schema_ids.DEPTH_PROCESSED_METER] < 50][
-                schema_ids.UNCERTAINTY
-            ].max()
-            if not data_geodataframe[
-                data_geodataframe[schema_ids.DEPTH_PROCESSED_METER] < 50
-            ].empty
-            else data_geodataframe[schema_ids.UNCERTAINTY].max()
-        ),
-        thu=(
-            data_geodataframe[data_geodataframe[schema_ids.DEPTH_PROCESSED_METER] < 50][
-                schema_ids.THU
-            ].max()
-            if not data_geodataframe[
-                data_geodataframe[schema_ids.DEPTH_PROCESSED_METER] < 50
-            ].empty
-            else data_geodataframe[schema_ids.THU].max()
-        ),
-        iho_order_statistic=classify_iho_order(
-            data_geodataframe=data_geodataframe, decimal_precision=decimal_precision
-        ),
-        positioning_method=metadata.get_positioning_method(
-            processing_context.datalogger_type
-            if processing_context is not None
-            else None
-        ),
-    )
-
-    metadata.export_metadata_to_json(metadata=survey_metadata, output_path=output_path)
-
-    metadata.plot_metadata(
-        metadata=survey_metadata.__dict__(),
-        title=name,
-        output_path=output_path,
-        dataframe=data_geodataframe,
-        nbins_x=nbins_x,
-        nbins_y=nbins_y,
-    )
-
-
-def export_processed_data_and_metadata(
-    data_geodataframe: gpd.GeoDataFrame,
-    export_data_path: Path,
-    vessel_config: vessel_manager.VesselConfig,
-    processing_config: config.CSBprocessingConfig,
-    caris_api_config: Optional[config.CarisAPIConfig] = None,
-    tide_stations: Optional[Collection[str]] = None,
-    vessel_name: Optional[str] = None,
-    processing_context: Optional[ProcessingContext] = None,
-) -> None:
-    """
-    Exporte les données traitées et les métadonnées.
-
-    :param data_geodataframe: Données géoréférencées traitées.
-    :type data_geodataframe: gpd.GeoDataFrame
-    :param export_data_path: Chemin du répertoire d'exportation des données.
-    :type export_data_path: Path
-    :param vessel_config: Configuration du navire.
-    :type vessel_config: vessel_manager.VesselConfig
-    :param processing_config: Configuration du traitement.
-    :type processing_config: config.CSBprocessingConfig
-    :param caris_api_config: Configuration de l'API Caris.
-    :type caris_api_config: Optional[config.CarisAPIConfig]
-    :param tide_stations: Liste des stations de marées.
-    :type tide_stations: Optional[Collection[str]]
-    :param vessel_name: Nom du navire pour l'export. Surcharge vessel_config.name si fourni.
-    :type vessel_name: Optional[str]
-    :param processing_context: Contexte de traitement (type de capteur, statut de réduction).
-    :type processing_context: Optional[ProcessingContext]
-    """
-    effective_vessel_name: str = vessel_name or vessel_config.name
-
-    # Finalize the geodataframe by ensuring correct data types, sorting and columns
-    data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = (
-        export.finalize_geodataframe(data_geodataframe=data_geodataframe)
-    )
-
-    # Define the base path for output files
-    output_base_path: Path = export_data_path / export.get_export_file_name(
-        data_geodataframe=data_geodataframe,
-        vessel_name=effective_vessel_name,
-        datalogger_type=(
-            processing_context.datalogger_type if processing_context else None
-        ),
-    )
-
-    # Export the processed data
-    export.export_processed_data_to_file_types(
-        data_geodataframe=data_geodataframe,
-        output_base_path=output_base_path,
-        file_types=processing_config.export.export_format,
-        config_caris=caris_api_config,
-        resolution=processing_config.export.resolution,
-        groub_by_iho_order=processing_config.export.group_by_iho_order,
-    )
-
-    # Export the metadata
-    export_metadata(
-        data_geodataframe=data_geodataframe,
-        output_path=export_data_path,
-        vessel_config=vessel_config,
-        tide_stations=tide_stations,
-        decimal_precision=processing_config.options.decimal_precision,
-        nbins_x=processing_config.plot.nbin_x,
-        nbins_y=processing_config.plot.nbin_y,
-        vessel_name=effective_vessel_name,
-        processing_context=processing_context,
-    )
+# Ré-exports pour compatibilité ascendante des importeurs externes
+VesselConfigManagerError = vessel_manager.VesselConfigManagerError
 
 
 def log_sounding_results(data: gpd.GeoDataFrame, iterations: int) -> bool:
@@ -408,7 +119,7 @@ def processing_workflow(
         LOGGER.warning(f"Aucun fichier à traiter.")
         return None
 
-    export_data_path, export_tide_path, log_path = get_data_structure(output)
+    export_data_path, export_tide_path, log_path = export.get_data_structure(output)
 
     # Read the configuration file (if not already provided)
     if processing_config is None:
@@ -464,7 +175,7 @@ def processing_workflow(
     ) and isinstance(vessel, str):
         LOGGER.error(f"La configuration du gestionnaire de navires est manquante.")
 
-        raise VesselConfigManagerError(
+        raise vessel_manager.VesselConfigManagerError(
             vessel_id=vessel, vessel_config_manager=processing_config.vessel_manager
         )
 
@@ -516,7 +227,7 @@ def processing_workflow(
 
     LOGGER.success(f"{len(data):,} sondes valides récupérées.")
 
-    sounder, waterline = get_sensors_by_datetime(
+    sounder, waterline = vessel_manager.get_sensors_by_datetime(
         vessel_config=vessel_config,
         min_time=data[schema_ids.TIME_UTC].min(),
         max_time=data[schema_ids.TIME_UTC].max(),
@@ -539,7 +250,7 @@ def processing_workflow(
             )
         )
 
-        export_processed_data_and_metadata(
+        export.export_processed_data_and_metadata(
             data_geodataframe=data,
             export_data_path=export_data_path,
             vessel_config=vessel_config,
@@ -547,6 +258,7 @@ def processing_workflow(
             caris_api_config=caris_api_config,
             tide_stations=None,
             vessel_name=vessel_name,
+            software_version=__version__,
             processing_context=ctx,
         )
 
@@ -721,17 +433,18 @@ def processing_workflow(
             export_tide_path=export_tide_path,
         )
 
-    export_processed_data_and_metadata(
+    export.export_processed_data_and_metadata(
         data_geodataframe=data,
         export_data_path=export_data_path,
         vessel_config=vessel_config,
         processing_config=processing_config,
         caris_api_config=caris_api_config,
         tide_stations=[
-            get_station_title(gdf_voronoi=gdf_voronoi, station_id=station_id)
+            voronoi.get_station_title(gdf_voronoi=gdf_voronoi, station_id=station_id)
             for station_id in wl_combineds_dict.keys()
         ],
         vessel_name=vessel_name,
+        software_version=__version__,
         processing_context=ctx,
     )
 

@@ -17,7 +17,10 @@ from .export_helpers import (
     split_data_by_iho_order,
     export_processed_data,
     export_processed_data_to_file_types,
+    export_metadata,
+    export_processed_data_and_metadata,
 )
+from .path import get_data_structure, sanitize_path_name
 
 
 __all__ = [
@@ -34,4 +37,8 @@ __all__ = [
     "split_data_by_iho_order",
     "export_processed_data",
     "export_processed_data_to_file_types",
+    "export_metadata",
+    "export_processed_data_and_metadata",
+    "get_data_structure",
+    "sanitize_path_name",
 ]

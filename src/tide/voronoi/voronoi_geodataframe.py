@@ -313,3 +313,20 @@ def get_concave_hull(
     LOGGER.debug(f"Création de l'enveloppe concave avec un ratio de {ratio}.")
 
     return concave_hull(geometry, ratio=ratio, allow_holes=allow_holes)
+
+
+def get_station_title(gdf_voronoi: gpd.GeoDataFrame, station_id: str) -> str:
+    """
+    Retourne le titre formaté d'une station marégraphique (nom + code).
+
+    :param gdf_voronoi: GeoDataFrame des polygones de Voronoi.
+    :type gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema]
+    :param station_id: Identifiant de la station.
+    :type station_id: str
+    :return: Titre de la station au format ``"Nom (code)"``.
+    :rtype: str
+    """
+    return (
+        f"{get_name_by_station_id(gdf_voronoi=gdf_voronoi, station_id=station_id)} "
+        f"({get_code_by_station_id(gdf_voronoi=gdf_voronoi, station_id=station_id)})"
+    )

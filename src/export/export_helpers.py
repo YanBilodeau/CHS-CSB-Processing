@@ -5,6 +5,7 @@ Ce module contient des fonctions utilitaires pour finaliser, séparer et exporte
 """
 
 import concurrent.futures
+from datetime import datetime
 from pathlib import Path
 from typing import Optional, Collection
 
@@ -199,3 +200,185 @@ def export_processed_data_to_file_types(
                     resolution=resolution,
                     **kwargs,
                 )
+
+
+def export_metadata(
+    data_geodataframe: gpd.GeoDataFrame,
+    output_path: Path,
+    vessel_config,
+    tide_stations: Optional[Collection[str]],
+    decimal_precision: int,
+    nbins_x: Optional[int] = 35,
+    nbins_y: Optional[int] = 35,
+    vessel_name: Optional[str] = None,
+    software_version: str = "",
+    processing_context=None,
+) -> None:
+    """
+    Exporte les métadonnées d'un levé CSB (JSON + rapport graphique).
+
+    :param data_geodataframe: Données traitées.
+    :type data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema]
+    :param output_path: Répertoire de sortie (le fichier JSON sera nommé automatiquement).
+    :type output_path: Path
+    :param vessel_config: Configuration du navire.
+    :param tide_stations: Liste des stations de marées utilisées.
+    :type tide_stations: Optional[Collection[str]]
+    :param decimal_precision: Précision des décimales.
+    :type decimal_precision: int
+    :param nbins_x: Nombre de colonnes dans les graphiques.
+    :type nbins_x: Optional[int]
+    :param nbins_y: Nombre de lignes dans les graphiques.
+    :type nbins_y: Optional[int]
+    :param vessel_name: Nom du navire pour l'export (surcharge vessel_config.name).
+    :type vessel_name: Optional[str]
+    :param software_version: Version du logiciel à inscrire dans les métadonnées.
+    :type software_version: str
+    :param processing_context: Contexte de traitement (type capteur, statut réduction).
+    """
+    import metadata as _metadata
+
+    effective_vessel_name: str = vessel_name or vessel_config.name
+    name: str = get_export_file_name(
+        data_geodataframe=data_geodataframe,
+        vessel_name=effective_vessel_name,
+        datalogger_type=(
+            processing_context.datalogger_type if processing_context else None
+        ),
+    )
+    json_output_path: Path = output_path / f"{name}_metadata.json"
+
+    LOGGER.info(
+        f"Exportation des métadonnées des données traitées : {json_output_path}."
+    )
+
+    min_time: datetime = data_geodataframe[schema_ids.TIME_UTC].min()
+    max_time: datetime = data_geodataframe[schema_ids.TIME_UTC].max()
+    attributes = vessel_config.get_sensor_config_by_datetime(
+        "attribute", min_time, max_time
+    )
+    waterline = vessel_config.get_sensor_config_by_datetime(
+        "waterline", min_time, max_time
+    )
+    sounder = vessel_config.get_sensor_config_by_datetime("sounder", min_time, max_time)
+
+    survey_metadata = _metadata.CSBmetadata(
+        start_date=min_time.strftime("%Y-%m-%d"),
+        end_date=max_time.strftime("%Y-%m-%d"),
+        vessel=f"{vessel_config.id} - {effective_vessel_name}",
+        sounding_hardware=(
+            f"{processing_context.datalogger_type if processing_context else ''} - {attributes.sdghdw}"
+        ),
+        sounding_technique=attributes.tecsou,
+        sounder_draft=(
+            processing_context.resolve_sounder_draft(sounder, waterline)
+            if processing_context is not None
+            else sounder.z - waterline.z
+        ),
+        sotfware_version=software_version,
+        tide_stations=tide_stations,
+        processing_context=processing_context,
+        tvu=(
+            data_geodataframe[data_geodataframe[schema_ids.DEPTH_PROCESSED_METER] < 50][
+                schema_ids.UNCERTAINTY
+            ].max()
+            if not data_geodataframe[
+                data_geodataframe[schema_ids.DEPTH_PROCESSED_METER] < 50
+            ].empty
+            else data_geodataframe[schema_ids.UNCERTAINTY].max()
+        ),
+        thu=(
+            data_geodataframe[data_geodataframe[schema_ids.DEPTH_PROCESSED_METER] < 50][
+                schema_ids.THU
+            ].max()
+            if not data_geodataframe[
+                data_geodataframe[schema_ids.DEPTH_PROCESSED_METER] < 50
+            ].empty
+            else data_geodataframe[schema_ids.THU].max()
+        ),
+        iho_order_statistic=_metadata.classify_iho_order(
+            data_geodataframe=data_geodataframe, decimal_precision=decimal_precision
+        ),
+        positioning_method=_metadata.get_positioning_method(
+            processing_context.datalogger_type
+            if processing_context is not None
+            else None
+        ),
+    )
+
+    _metadata.export_metadata_to_json(
+        metadata=survey_metadata, output_path=json_output_path
+    )
+
+    _metadata.plot_metadata(
+        metadata=survey_metadata.__dict__(),
+        title=name,
+        output_path=json_output_path,
+        dataframe=data_geodataframe,
+        nbins_x=nbins_x,
+        nbins_y=nbins_y,
+    )
+
+
+def export_processed_data_and_metadata(
+    data_geodataframe: gpd.GeoDataFrame,
+    export_data_path: Path,
+    vessel_config,
+    processing_config,
+    caris_api_config=None,
+    tide_stations: Optional[Collection[str]] = None,
+    vessel_name: Optional[str] = None,
+    software_version: str = "",
+    processing_context=None,
+) -> None:
+    """
+    Finalise, exporte les données traitées et génère les métadonnées.
+
+    :param data_geodataframe: Données géoréférencées traitées.
+    :type data_geodataframe: gpd.GeoDataFrame
+    :param export_data_path: Répertoire de sortie pour les données.
+    :type export_data_path: Path
+    :param vessel_config: Configuration du navire.
+    :param processing_config: Configuration du traitement.
+    :param caris_api_config: Configuration de l'API Caris (optionnel).
+    :param tide_stations: Liste des stations de marées.
+    :type tide_stations: Optional[Collection[str]]
+    :param vessel_name: Nom du navire pour l'export (surcharge vessel_config.name).
+    :type vessel_name: Optional[str]
+    :param software_version: Version du logiciel à inscrire dans les métadonnées.
+    :type software_version: str
+    :param processing_context: Contexte de traitement (type capteur, statut réduction).
+    """
+    effective_vessel_name: str = vessel_name or vessel_config.name
+
+    data_geodataframe = finalize_geodataframe(data_geodataframe=data_geodataframe)
+
+    output_base_path: Path = export_data_path / get_export_file_name(
+        data_geodataframe=data_geodataframe,
+        vessel_name=effective_vessel_name,
+        datalogger_type=(
+            processing_context.datalogger_type if processing_context else None
+        ),
+    )
+
+    export_processed_data_to_file_types(
+        data_geodataframe=data_geodataframe,
+        output_base_path=output_base_path,
+        file_types=processing_config.export.export_format,
+        config_caris=caris_api_config,
+        resolution=processing_config.export.resolution,
+        groub_by_iho_order=processing_config.export.group_by_iho_order,
+    )
+
+    export_metadata(
+        data_geodataframe=data_geodataframe,
+        output_path=export_data_path,
+        vessel_config=vessel_config,
+        tide_stations=tide_stations,
+        decimal_precision=processing_config.options.decimal_precision,
+        nbins_x=processing_config.plot.nbin_x,
+        nbins_y=processing_config.plot.nbin_y,
+        vessel_name=effective_vessel_name,
+        software_version=software_version,
+        processing_context=processing_context,
+    )

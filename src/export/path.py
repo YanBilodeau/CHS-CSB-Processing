@@ -25,3 +25,33 @@ def sanitize_path_name(path: Path) -> Path:
     sanitized_name = re.sub(invalid_chars, "_", path.name)
 
     return path.with_name(sanitized_name)
+
+
+def get_data_structure(output_path: Path) -> tuple[Path, Path, Path]:
+    """
+    Crée et retourne la structure de répertoires standard pour les sorties de traitement.
+
+    Les trois répertoires ``Data/``, ``Tide/`` et ``Log/`` sont créés sous *output_path*
+    s'ils n'existent pas encore.
+
+    :param output_path: Chemin racine du répertoire de sortie.
+    :type output_path: Path
+    :return: Triplet ``(data_path, tide_path, log_path)``.
+    :rtype: tuple[Path, Path, Path]
+    """
+    LOGGER.debug(
+        f"Initialisation de la structure de répertoires pour les données : {output_path}."
+    )
+
+    data_path: Path = output_path / "Data"
+    tide_path: Path = output_path / "Tide"
+    log_path: Path = output_path / "Log"
+
+    if not data_path.exists():
+        data_path.mkdir(parents=True)
+    if not tide_path.exists():
+        tide_path.mkdir()
+    if not log_path.exists():
+        log_path.mkdir()
+
+    return data_path, tide_path, log_path

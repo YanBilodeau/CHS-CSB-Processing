@@ -10,6 +10,7 @@ from .vessel_config import (
     BDBattribute,
     Waterline,
     SoundSpeedProfile,
+    get_sensors_by_datetime,
 )
 from .vessel_config_json_manager import VesselConfigJsonManager
 from .vessel_config_sqlite_manager import VesselConfigSQLiteManager
@@ -19,6 +20,7 @@ from .factory_vessel_config_manager import (
     get_vessel_config_manager_factory,
 )
 from .factory_vessel_config import get_vessel_config
+from .exception_vessel import VesselConfigManagerError
 
 
 __all__ = [
@@ -28,6 +30,7 @@ __all__ = [
     "BDBattribute",
     "Waterline",
     "SoundSpeedProfile",
+    "get_sensors_by_datetime",
     "VesselConfigJsonManager",
     "VesselConfigSQLiteManager",
     "VesselConfigManagerABC",
@@ -36,4 +39,5 @@ __all__ = [
     "UNKNOWN_VESSEL_CONFIG",
     "UNKNOWN_DATE",
     "get_vessel_config",
+    "VesselConfigManagerError",
 ]

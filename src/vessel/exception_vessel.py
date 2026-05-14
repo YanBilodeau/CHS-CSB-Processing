@@ -6,6 +6,7 @@ Ce module contient les exceptions spécifiques à l'application Vessel.
 
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Optional
 
 
 @dataclass(frozen=True)
@@ -87,3 +88,27 @@ class SensorConfigurationError(Exception):
 
     def __str__(self) -> str:
         return f"La configuration du capteur {self.sensor_type} a changé durant la période de temps couverte par les données."
+
+
+@dataclass(frozen=True)
+class VesselConfigManagerError(Exception):
+    """
+    Exception levée lorsque la configuration du gestionnaire de navires est manquante
+    pour récupérer la configuration du navire.
+
+    :param vessel_id: L'identifiant du navire.
+    :type vessel_id: str
+    :param vessel_config_manager: La configuration du gestionnaire de navires.
+    :type vessel_config_manager: Optional[VesselManagerConfig]
+    """
+
+    vessel_id: str
+    """L'identifiant du navire."""
+    vessel_config_manager: Optional[object]
+    """La configuration du gestionnaire de navires."""
+
+    def __str__(self) -> str:
+        return (
+            f"La configuration du gestionnaire de navires [{self.vessel_config_manager}] est "
+            f"manquante ou incomplète pour récupérer la configuration du navire : {self.vessel_id}."
+        )

@@ -6,7 +6,7 @@ Ce module contient les classes et les fonctions pour la configuration du navire.
 
 from datetime import datetime, timezone
 from enum import StrEnum
-from typing import Optional, Literal
+from typing import Optional, Literal, Tuple
 
 from loguru import logger
 from pydantic import BaseModel
@@ -357,3 +357,27 @@ def get_vessel_config_from_config_dict(config: VesselConfigDict) -> VesselConfig
             else None
         ),
     )
+
+
+def get_sensors_by_datetime(
+    vessel_config: VesselConfig, min_time: datetime, max_time: datetime
+) -> Tuple[Sensor, Waterline]:
+    """
+    Récupère la configuration du sondeur et de la ligne d'eau pour une période donnée.
+
+    :param vessel_config: Configuration du navire.
+    :type vessel_config: VesselConfig
+    :param min_time: Date et heure minimale.
+    :type min_time: datetime
+    :param max_time: Date et heure maximale.
+    :type max_time: datetime
+    :return: Sondeur et ligne d'eau valides pour la période.
+    :rtype: Tuple[Sensor, Waterline]
+    """
+    sounder: Sensor = vessel_config.get_sensor_config_by_datetime(
+        "sounder", min_time, max_time
+    )
+    waterline: Waterline = vessel_config.get_sensor_config_by_datetime(
+        "waterline", min_time, max_time
+    )
+    return sounder, waterline
