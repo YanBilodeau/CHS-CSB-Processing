@@ -289,7 +289,7 @@ def export_metadata(
     survey_metadata = _metadata.CSBmetadata(
         start_date=min_time.strftime("%Y-%m-%d"),
         end_date=max_time.strftime("%Y-%m-%d"),
-        vessel=f"{vessel_config.id} - {effective_vessel_name}",
+        vessel=f"{effective_vessel_name}",
         sounding_hardware=(
             f"{processing_context.datalogger_type if processing_context else ''} - {attributes.sdghdw}"
         ),
