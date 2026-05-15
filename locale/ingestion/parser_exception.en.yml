@@ -1,0 +1,4 @@
+en:
+  error_parser_identification: "Error identifying parser for file: %{file}."
+  error_multiple_parsers: "More than one parser type identified for files: %{parsers}."
+

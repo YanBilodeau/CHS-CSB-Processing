@@ -1,0 +1,7 @@
+en:
+  loading_file: "Loading raw data file of type %{type}: %{file}."
+  converting_to_geodataframe: "Converting data to GeoDataFrame: %{file}."
+  transforming_geodataframe: "Transforming GeoDataFrame."
+  renaming_columns: "Renaming GeoDataFrame columns."
+  missing_speed_column: "Column '%{column}' is not present in the GeoDataFrame."
+

@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Type
 
+import i18n
+
 
 @dataclass(frozen=True)
 class ParsingError(Exception):
@@ -22,7 +24,11 @@ class ParsingError(Exception):
     """Le nom de la colonne en erreur."""
 
     def __str__(self) -> str:
-        return f"Erreur lors de la lecture du fichier : {self.file}. Le fichier n'a pas de colonne '{self.column}'."
+        return i18n.t(
+            "ingestion.parsing_exception.error_missing_column",
+            file=self.file,
+            column=self.column,
+        )
 
 
 @dataclass(frozen=True)

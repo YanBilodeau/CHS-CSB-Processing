@@ -5,6 +5,7 @@ Module permettant de parser les données de type B12_CSB.
 from pathlib import Path
 
 import geopandas as gpd
+import i18n
 from loguru import logger
 
 from .parser_abc import DataParserABC
@@ -49,7 +50,7 @@ class DataParserB12CSB(DataParserABC):
         :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(
-            f"Chargement d'un fichier de données brutes de type {ids.B12_CSB} : {file}"
+            i18n.t("ingestion.parser_shared.loading_file", type=ids.B12_CSB, file=file)
         )
 
         if dtype_dict is None:
@@ -84,9 +85,9 @@ class DataParserB12CSB(DataParserABC):
         :return: Le geodataframe transformé et respectant le schéma de données DataLoggerSchema.
         :rtype: gpd.GeoDataFrame[schema_ids.DataLoggerSchema]
         """
-        LOGGER.debug("Transformation du geodataframe.")
+        LOGGER.debug(i18n.t("ingestion.parser_shared.transforming_geodataframe"))
 
-        LOGGER.debug(f"Renommage des colonnes du geodataframe.")
+        LOGGER.debug(i18n.t("ingestion.parser_shared.renaming_columns"))
         data: gpd.GeoDataFrame = data.rename(
             columns={
                 ids.TIME_B12_CSB: schema_ids.TIME_UTC,

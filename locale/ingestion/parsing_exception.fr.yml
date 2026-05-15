@@ -1,0 +1,3 @@
+fr:
+  error_missing_column: "Erreur lors de la lecture du fichier : %{file}. Le fichier n'a pas de colonne '%{column}'."
+

@@ -5,6 +5,7 @@ Module permettant de parser les données de type OFM.
 from pathlib import Path
 
 import geopandas as gpd
+import i18n
 from loguru import logger
 import pandas as pd
 
@@ -59,7 +60,7 @@ class DataParserOFM(DataParserABC):
         :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(
-            f"Chargement d'un fichier de données brutes de type {ids.OFM} : {file}"
+            i18n.t("ingestion.parser_shared.loading_file", type=ids.OFM, file=file)
         )
 
         if dtype_dict is None:
@@ -78,7 +79,9 @@ class DataParserOFM(DataParserABC):
             file=file,
         )
 
-        LOGGER.debug(f"Conversion des données en GeoDataFrame : {file}")
+        LOGGER.debug(
+            i18n.t("ingestion.parser_shared.converting_to_geodataframe", file=file)
+        )
         gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
             data=dataframe,
             geometry=gpd.points_from_xy(
@@ -101,25 +104,29 @@ class DataParserOFM(DataParserABC):
         :return: Le GeoDataFrame avec les données de vitesse ajoutées
         """
         if not file.exists():
-            LOGGER.warning(f"Le fichier de vitesse n'existe pas : {file}.")
+            LOGGER.warning(
+                i18n.t("ingestion.parser_ofm.speed_file_not_found", file=file)
+            )
 
             return data
 
         try:
-            LOGGER.debug(f"Chargement du fichier de vitesse : {file}.")
+            LOGGER.debug(i18n.t("ingestion.parser_ofm.loading_speed_file", file=file))
             speed_gdf = pd.read_csv(file)
 
             speed_columns = [col for col in speed_gdf.columns if "Sog" in col]
             if not speed_columns:
-                LOGGER.warning(
-                    f"Aucune colonne contenant 'Sog' n'a été trouvée dans le fichier : {file}."
-                )
+                LOGGER.warning(i18n.t("ingestion.parser_ofm.no_sog_column", file=file))
 
                 return data
 
             speed_column = speed_columns[0]
             LOGGER.debug(
-                f"Colonne de vitesse trouvée : {speed_column} dans le fichier : {file}."
+                i18n.t(
+                    "ingestion.parser_ofm.speed_column_found",
+                    column=speed_column,
+                    file=file,
+                )
             )
 
             # Renommer et sélectionner uniquement les colonnes nécessaires
@@ -151,7 +158,7 @@ class DataParserOFM(DataParserABC):
 
         except Exception as e:
             LOGGER.error(
-                f"Erreur lors du chargement du fichier de vitesse : {file}. {e}"
+                i18n.t("ingestion.parser_ofm.speed_file_error", file=file, error=e)
             )
 
             return data
@@ -165,9 +172,9 @@ class DataParserOFM(DataParserABC):
         :return: e geodataframe transformé et respectant le schéma de données DataLoggerSchema.
         :rtype: gpd.GeoDataFrame[schema_ids.DataLoggerSchema]
         """
-        LOGGER.debug("Transformation du geodataframe.")
+        LOGGER.debug(i18n.t("ingestion.parser_shared.transforming_geodataframe"))
 
-        LOGGER.debug(f"Renommage des colonnes du geodataframe.")
+        LOGGER.debug(i18n.t("ingestion.parser_shared.renaming_columns"))
         data: gpd.GeoDataFrame = data.rename(
             columns={
                 ids.TIME_OFM: schema_ids.TIME_UTC,

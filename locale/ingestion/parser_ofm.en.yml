@@ -1,0 +1,7 @@
+en:
+  speed_file_not_found: "Speed file does not exist: %{file}."
+  loading_speed_file: "Loading speed file: %{file}."
+  no_sog_column: "No column containing 'Sog' found in file: %{file}."
+  speed_column_found: "Speed column found: %{column} in file: %{file}."
+  speed_file_error: "Error loading speed file: %{file}. %{error}"
+

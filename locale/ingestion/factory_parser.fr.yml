@@ -1,0 +1,12 @@
+fr:
+  reading_header: "Lecture de l'entête du fichier : %{file}."
+  no_header: "Le fichier %{file} n'a pas d'entête."
+  encoding_fallback: "Le fichier %{file} n'est pas encodé en 'UTF-8'. Tentative en 'latin1'."
+  header_found: "Entête du fichier %{file} : %{header}."
+  getting_extension: "Récupération de l'extension du fichier : %{file}."
+  extension_match: "Extension %{extension} correspond au pattern %{pattern}. Normalisation vers %{normalized_ext}."
+  extension_unknown: "Extension du fichier %{file} : %{extension} (non reconnue)."
+  getting_parser: "Récupération du parser associé au fichier : %{file}."
+  processing_file: "Traitement du fichier : %{file}."
+  parser_identified: "Parser identifié pour le fichier %{file} : %{parser}."
+

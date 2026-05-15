@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Type, Collection
 
+import i18n
+
 from .parser_abc import DataParserABC
 
 
@@ -21,8 +23,8 @@ class ParserIdentifierError(Exception):
     """Le fichier en erreur."""
 
     def __str__(self) -> str:
-        return (
-            f"Erreur lors de l'idendification du parser pour le fichier : {self.file}."
+        return i18n.t(
+            "ingestion.parser_exception.error_parser_identification", file=self.file
         )
 
 
@@ -36,4 +38,6 @@ class MultipleParsersError(Exception):
     """Liste des parsers trouvés."""
 
     def __str__(self) -> str:
-        return f"Plus d'un type de parser a été identifié pour les fichiers : {self.parsers}"
+        return i18n.t(
+            "ingestion.parser_exception.error_multiple_parsers", parsers=self.parsers
+        )

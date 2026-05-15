@@ -1,0 +1,15 @@
+en:
+  validating_columns: "Validating columns %{columns} of dataframe: %{file}."
+  converting_dtype: "Converting dtype of columns %{columns} of dataframe: %{file}."
+  converting_time_column: "Converting time column %{column} to datetime64[ns, UTC] for file %{file}."
+  conversion_warnings: "Conversion errors detected in file %{file}: %{warnings}."
+  converting_files: "Converting raw data files to GeoDataFrame: %{files}."
+  dropping_na: "Dropping missing values on mandatory columns: %{columns}."
+  missing_values_removed: "%{count} rows with missing values removed for attributes: %{columns}."
+  removing_duplicates: "Removing duplicates."
+  duplicates_removed: "%{count} duplicates removed with same values for attributes: %{columns}."
+  sorting_by_datetime: "Sorting GeoDataFrame by datetime."
+  adding_empty_column: "Adding column %{column} with NaN values."
+  no_data_found: "No data found in files."
+  raw_soundings_count: "%{count} raw soundings."
+

@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Collection, Optional
 
 import geopandas as gpd
+import i18n
 from loguru import logger
 import pandas as pd
 
@@ -55,7 +56,11 @@ class DataParserABC(ABC):
         :raises ParsingDataframeTimeError: Erreur si la colonne de temps est absente.
         """
         LOGGER.debug(
-            f"Validation des colonnes {[column_.column_name for column_ in column_exceptions]} du dataframe : {file}."
+            i18n.t(
+                "ingestion.parser_abc.validating_columns",
+                columns=[c.column_name for c in column_exceptions],
+                file=file,
+            )
         )
 
         for column_ in column_exceptions:
@@ -87,14 +92,22 @@ class DataParserABC(ABC):
         :rtype: pd.DataFrame | gpd.GeoDataFrame
         """
         LOGGER.debug(
-            f"Conversion du dtype des colonnes {[column_ for column_ in dtype_dict.keys()] + [time_column] if time_column is not None else []} "
-            f" du dataframe : {file}."
+            i18n.t(
+                "ingestion.parser_abc.converting_dtype",
+                columns=list(dtype_dict.keys())
+                + ([time_column] if time_column else []),
+                file=file,
+            )
         )
 
         with WarningCapture() as warnings_list:
             if time_column is not None:
                 LOGGER.debug(
-                    f"Conversion de la colonne de temps {time_column} en datetime64[ns, UTC] pour le fichier {file}."
+                    i18n.t(
+                        "ingestion.parser_abc.converting_time_column",
+                        column=time_column,
+                        file=file,
+                    )
                 )
                 series = pd.to_datetime(
                     dataframe[time_column],
@@ -112,7 +125,11 @@ class DataParserABC(ABC):
 
         if warnings_list.captured_warnings:
             LOGGER.warning(
-                f"Des erreurs de conversion ont été détectées dans le fichier {file} : {warnings_list.captured_warnings}."
+                i18n.t(
+                    "ingestion.parser_abc.conversion_warnings",
+                    file=file,
+                    warnings=warnings_list.captured_warnings,
+                )
             )
 
         return dataframe
@@ -138,9 +155,7 @@ class DataParserABC(ABC):
         :return: Un GeoDataFrame.
         :rtype: gpd.GeoDataFrame
         """
-        LOGGER.debug(
-            f"Conversion des fichiers de données brutes en geodataframe : {files}."
-        )
+        LOGGER.debug(i18n.t("ingestion.parser_abc.converting_files", files=files))
 
         geodataframe_list = []
         with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -173,7 +188,7 @@ class DataParserABC(ABC):
         :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(
-            f"Suppression des valeurs manquantes sur les colonnes obligatoires : {MANDATORY_COLUNMS}."
+            i18n.t("ingestion.parser_abc.dropping_na", columns=MANDATORY_COLUNMS)
         )
 
         initial_count: int = len(data)
@@ -182,7 +197,11 @@ class DataParserABC(ABC):
 
         if missing_values_count > 0:
             LOGGER.warning(
-                f"{missing_values_count:,} lignes avec des valeurs manquantes ont été supprimées pour les attributs : {MANDATORY_COLUNMS}."
+                i18n.t(
+                    "ingestion.parser_abc.missing_values_removed",
+                    count=f"{missing_values_count:,}",
+                    columns=MANDATORY_COLUNMS,
+                )
             )
 
         return data
@@ -197,7 +216,7 @@ class DataParserABC(ABC):
         :return: Le geodataframe nettoyé.
         :rtype: gpd.GeoDataFrame
         """
-        LOGGER.debug("Suppression des doublons.")
+        LOGGER.debug(i18n.t("ingestion.parser_abc.removing_duplicates"))
 
         initial_count: int = len(data)
         data: gpd.GeoDataFrame = data.drop_duplicates(subset=MANDATORY_COLUNMS)
@@ -205,7 +224,11 @@ class DataParserABC(ABC):
 
         if duplicates_count > 0:
             LOGGER.warning(
-                f"{duplicates_count:,} doublons ont été supprimés avec les mêmes valeurs pour les attributs : {MANDATORY_COLUNMS}."
+                i18n.t(
+                    "ingestion.parser_abc.duplicates_removed",
+                    count=f"{duplicates_count:,}",
+                    columns=MANDATORY_COLUNMS,
+                )
             )
 
         return data
@@ -220,7 +243,7 @@ class DataParserABC(ABC):
         :return: Le geodataframe trié.
         :rtype: gpd.GeoDataFrame
         """
-        LOGGER.debug("Tri du geodataframe par datetime.")
+        LOGGER.debug(i18n.t("ingestion.parser_abc.sorting_by_datetime"))
 
         data = data.reset_index(drop=True)
         data = data.sort_values(by=[schema_ids.TIME_UTC])
@@ -256,7 +279,11 @@ class DataParserABC(ABC):
 
         for column_name, empty_column in columns.items():
             if column_name not in data.columns:
-                LOGGER.debug(f"Ajout de la colonne {column_name} avec des valeurs nan.")
+                LOGGER.debug(
+                    i18n.t(
+                        "ingestion.parser_abc.adding_empty_column", column=column_name
+                    )
+                )
 
                 data[column_name] = empty_column
                 if column_name == schema_ids.OUTLIER:
@@ -267,9 +294,7 @@ class DataParserABC(ABC):
         return data
 
     @classmethod
-    @schema.validate_schemas(
-        return_schema=schema.DataLoggerWithTideZoneSchema,
-    )
+    @schema.validate_schemas(return_schema=schema.DataLoggerWithTideZoneSchema)
     def from_files(cls, files: Collection[Path]) -> gpd.GeoDataFrame:
         """
         Méthode permettant de lire les fichiers brutes et retourne un geodataframe.
@@ -283,13 +308,18 @@ class DataParserABC(ABC):
         data_geodataframe: gpd.GeoDataFrame = parser.read_files(files=files)
 
         if data_geodataframe.empty:
-            LOGGER.warning("Aucune donnée trouvée dans les fichiers.")
+            LOGGER.warning(i18n.t("ingestion.parser_abc.no_data_found"))
             return data_geodataframe
 
         data_geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = parser.transform(
             data=data_geodataframe
         )
-        LOGGER.debug(f"{len(data_geodataframe):,} sondes de données brutes.")
+        LOGGER.debug(
+            i18n.t(
+                "ingestion.parser_abc.raw_soundings_count",
+                count=f"{len(data_geodataframe):,}",
+            )
+        )
 
         data_geodataframe = parser.drop_na(data=data_geodataframe)
         data_geodataframe = parser.remove_duplicates(data=data_geodataframe)

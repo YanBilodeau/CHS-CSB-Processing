@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Type, Collection
 import re
 
+import i18n
 import pandas as pd
 from loguru import logger
 
@@ -127,30 +128,32 @@ def get_header(
     :return: Un tuple contenant les noms des colonnes ou None si l'entête n'est pas trouvé.
     :rtype: tuple[str, ...] | None
     """
-    LOGGER.debug(f"Lecture de l'entête du fichier : {file}.")
+    LOGGER.debug(i18n.t("ingestion.factory_parser.reading_header", file=file))
 
     if extension in no_header_extension:
-        LOGGER.debug(f"Le fichier {file} n'a pas d'entête.")
-
+        LOGGER.debug(i18n.t("ingestion.factory_parser.no_header", file=file))
         return None
 
     try:
         header: pd.DataFrame = pd.read_csv(file, nrows=0, sep=None, engine="python")
 
     except UnicodeDecodeError:
-        LOGGER.debug(
-            f"Le fichier {file} n'est pas encodé en 'UTF-8'. Tentative en 'latin1'."
-        )
+        LOGGER.debug(i18n.t("ingestion.factory_parser.encoding_fallback", file=file))
         header: pd.DataFrame = pd.read_csv(
             file, nrows=0, sep=None, engine="python", encoding="latin1"
         )
 
     if any(pd.to_numeric(header.columns, errors="coerce").notna()):
-        LOGGER.debug(f"Le fichier {file} n'a pas d'entête.")
-
+        LOGGER.debug(i18n.t("ingestion.factory_parser.no_header", file=file))
         return None
 
-    LOGGER.debug(f"Entête du fichier {file} : {header.columns.tolist()}.")
+    LOGGER.debug(
+        i18n.t(
+            "ingestion.factory_parser.header_found",
+            file=file,
+            header=header.columns.tolist(),
+        )
+    )
 
     return tuple(header.columns.tolist())
 
@@ -164,7 +167,7 @@ def get_extension(file: Path) -> str:
     :return: L'extension normalisée du fichier.
     :rtype: str
     """
-    LOGGER.debug(f"Récupération de l'extension du fichier : {file}.")
+    LOGGER.debug(i18n.t("ingestion.factory_parser.getting_extension", file=file))
 
     extension: str = file.suffix
 
@@ -172,11 +175,20 @@ def get_extension(file: Path) -> str:
     for pattern, normalized_ext in EXTENSION_PATTERNS.items():
         if re.match(pattern, extension, re.IGNORECASE):
             LOGGER.debug(
-                f"Extension {extension} correspond au pattern {pattern}. Normalisation vers {normalized_ext}."
+                i18n.t(
+                    "ingestion.factory_parser.extension_match",
+                    extension=extension,
+                    pattern=pattern,
+                    normalized_ext=normalized_ext,
+                )
             )
             return normalized_ext
 
-    LOGGER.debug(f"Extension du fichier {file} : {extension} (non reconnue).")
+    LOGGER.debug(
+        i18n.t(
+            "ingestion.factory_parser.extension_unknown", file=file, extension=extension
+        )
+    )
 
     return extension
 
@@ -191,7 +203,7 @@ def get_parser_factory(file: Path) -> Type[DataParserABC]:
     :rtype: Type[DataParserABC]
     :raises ParserIdentifierError: Si le parser n'est pas trouvé.
     """
-    LOGGER.debug(f"Récupération du parser associé au fichier : {file}.")
+    LOGGER.debug(i18n.t("ingestion.factory_parser.getting_parser", file=file))
 
     extension: str = get_extension(file)
     header_file: tuple[str, ...] | None = get_header(file, extension)
@@ -226,14 +238,17 @@ def get_files_parser(files: Collection[Path,]) -> ParserFiles:
     parser_files: ParserFiles = ParserFiles()
 
     for file in files:
-        LOGGER.debug(f"Traitement du fichier : {file}.")
+        LOGGER.debug(i18n.t("ingestion.factory_parser.processing_file", file=file))
 
         try:
             parser: Type[DataParserABC] = get_parser_factory(file)
             LOGGER.debug(
-                f"Parser identifié pour le fichier {file} : {parser.__name__}."
+                i18n.t(
+                    "ingestion.factory_parser.parser_identified",
+                    file=file,
+                    parser=parser.__name__,
+                )
             )
-
         except ParserIdentifierError as error:
             LOGGER.error(error)
             raise error

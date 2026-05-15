@@ -7,6 +7,7 @@ from typing import Any
 import json
 
 import geopandas as gpd
+import i18n
 from loguru import logger
 
 from .parser_abc import DataParserABC
@@ -49,7 +50,7 @@ class DataParserWIBL(DataParserABC):
         :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(
-            f"Chargement d'un fichier de données brutes de type {ids.WIBL} : {file}"
+            i18n.t("ingestion.parser_shared.loading_file", type=ids.WIBL, file=file)
         )
 
         # Traitement fonctionnel du fichier WIBL vers GeoJSON
@@ -86,7 +87,11 @@ def process_wibl_file(
     :rtype: DataWIBL | None
     """
     LOGGER.debug(
-        f"Traitement d'un fichier WIBL avec quantum {elapsed_time_quantum} : {file}"
+        i18n.t(
+            "ingestion.parser_wibl.processing_wibl_file",
+            quantum=elapsed_time_quantum,
+            file=file,
+        )
     )
 
     try:
@@ -95,11 +100,11 @@ def process_wibl_file(
             elapsed_time_quantum=elapsed_time_quantum,
         )
     except ts.NoTimeSource:
-        LOGGER.warning(f"Aucune source de temps trouvée pour le fichier WIBL : {file}")
+        LOGGER.warning(i18n.t("ingestion.parser_wibl.no_time_source", file=file))
         return None
 
     except ts.NoData:
-        LOGGER.warning(f"Aucune donnée trouvée dans le fichier WIBL : {file}")
+        LOGGER.warning(i18n.t("ingestion.parser_wibl.no_wibl_data", file=file))
         return None
 
 
@@ -112,7 +117,7 @@ def convert_to_geojson(data_dict: DataWIBL) -> GeoJSONWIBL:
     :return: Les données au format GeoJSON.
     :rtype: GeoJSONWIBL
     """
-    LOGGER.debug("Conversion des données WIBL en GeoJSON")
+    LOGGER.debug(i18n.t("ingestion.parser_wibl.converting_wibl_to_geojson"))
 
     return translate(data_dict)
 
@@ -126,7 +131,7 @@ def save_geojson(geojson_dict: GeoJSONWIBL, output_file: Path) -> None:
     :param output_file: Le fichier de sortie.
     :type output_file: Path
     """
-    LOGGER.debug(f"Sauvegarde du GeoJSON vers : {output_file}")
+    LOGGER.debug(i18n.t("ingestion.parser_wibl.saving_geojson", file=output_file))
 
     with open(output_file, "w", encoding="utf-8") as geojson_file:
         json.dump(geojson_dict, geojson_file, indent=2, ensure_ascii=False)

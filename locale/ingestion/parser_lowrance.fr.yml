@@ -1,0 +1,6 @@
+fr:
+  renaming_columns_detail: "Renommage des colonnes du geodataframe : %{columns}."
+  removing_special_chars: "Suppression des caractères spéciaux des noms de colonnes."
+  converting_depth_feet: "Conversion de la profondeur (pieds) en mètres."
+  converting_speed_ms: "Conversion de la vitesse (m/s) en noeuds."
+

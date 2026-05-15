@@ -1,0 +1,15 @@
+fr:
+  validating_columns: "Validation des colonnes %{columns} du dataframe : %{file}."
+  converting_dtype: "Conversion du dtype des colonnes %{columns} du dataframe : %{file}."
+  converting_time_column: "Conversion de la colonne de temps %{column} en datetime64[ns, UTC] pour le fichier %{file}."
+  conversion_warnings: "Des erreurs de conversion ont été détectées dans le fichier %{file} : %{warnings}."
+  converting_files: "Conversion des fichiers de données brutes en geodataframe : %{files}."
+  dropping_na: "Suppression des valeurs manquantes sur les colonnes obligatoires : %{columns}."
+  missing_values_removed: "%{count} lignes avec des valeurs manquantes ont été supprimées pour les attributs : %{columns}."
+  removing_duplicates: "Suppression des doublons."
+  duplicates_removed: "%{count} doublons ont été supprimés avec les mêmes valeurs pour les attributs : %{columns}."
+  sorting_by_datetime: "Tri du geodataframe par datetime."
+  adding_empty_column: "Ajout de la colonne %{column} avec des valeurs nan."
+  no_data_found: "Aucune donnée trouvée dans les fichiers."
+  raw_soundings_count: "%{count} sondes de données brutes."
+

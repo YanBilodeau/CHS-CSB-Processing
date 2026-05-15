@@ -11,6 +11,7 @@ avec l'axe positif vers le bas.
 from pathlib import Path
 
 import geopandas as gpd
+import i18n
 from loguru import logger
 import pandas as pd
 
@@ -73,7 +74,9 @@ class DataParserHydroBlock(DataParserABC):
         :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(
-            f"Chargement d'un fichier de données brutes de type {ids.HYDROBLOCK} : {file}"
+            i18n.t(
+                "ingestion.parser_shared.loading_file", type=ids.HYDROBLOCK, file=file
+            )
         )
 
         if dtype_dict is None:
@@ -92,7 +95,9 @@ class DataParserHydroBlock(DataParserABC):
             file=file,
         )
 
-        LOGGER.debug(f"Conversion des données en GeoDataFrame : {file}")
+        LOGGER.debug(
+            i18n.t("ingestion.parser_shared.converting_to_geodataframe", file=file)
+        )
         gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
             data=dataframe,
             geometry=gpd.points_from_xy(
@@ -117,9 +122,9 @@ class DataParserHydroBlock(DataParserABC):
         :return: Le GeoDataFrame transformé respectant le schéma ``DataLoggerSchema``.
         :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
         """
-        LOGGER.debug("Transformation du geodataframe.")
+        LOGGER.debug(i18n.t("ingestion.parser_shared.transforming_geodataframe"))
 
-        LOGGER.debug("Renommage des colonnes du geodataframe.")
+        LOGGER.debug(i18n.t("ingestion.parser_shared.renaming_columns"))
         data: gpd.GeoDataFrame = data.rename(
             columns={
                 ids.TIMESTAMP_HYDROBLOCK: schema_ids.TIME_UTC,

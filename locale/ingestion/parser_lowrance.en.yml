@@ -1,0 +1,6 @@
+en:
+  renaming_columns_detail: "Renaming GeoDataFrame columns: %{columns}."
+  removing_special_chars: "Removing special characters from column names."
+  converting_depth_feet: "Converting depth (feet) to meters."
+  converting_speed_ms: "Converting speed (m/s) to knots."
+

@@ -1,0 +1,7 @@
+en:
+  no_valid_files: "No valid files to process."
+  no_valid_data: "No valid data to process."
+  cleaning_data: "Cleaning and filtering data."
+  no_valid_soundings: "No valid soundings to process."
+  soundings_retrieved: "%{count} valid soundings retrieved."
+

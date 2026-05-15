@@ -5,6 +5,7 @@ Module permettant de parser les données de type DCDB.
 from pathlib import Path
 
 import geopandas as gpd
+import i18n
 from loguru import logger
 import pandas as pd
 
@@ -55,7 +56,7 @@ class DataParserBCDB(DataParserABC):
         :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(
-            f"Chargement d'un fichier de données brutes de type {ids.DCDB} : {file}"
+            i18n.t("ingestion.parser_shared.loading_file", type=ids.DCDB, file=file)
         )
 
         if dtype_dict is None:
@@ -74,7 +75,9 @@ class DataParserBCDB(DataParserABC):
             file=file,
         )
 
-        LOGGER.debug(f"Conversion des données en GeoDataFrame : {file}")
+        LOGGER.debug(
+            i18n.t("ingestion.parser_shared.converting_to_geodataframe", file=file)
+        )
         gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
             data=dataframe,
             geometry=gpd.points_from_xy(
@@ -93,9 +96,9 @@ class DataParserBCDB(DataParserABC):
         :return: e geodataframe transformé et respectant le schéma de données DataLoggerSchema.
         :rtype: gpd.GeoDataFrame[schema_ids.DataLoggerSchema]
         """
-        LOGGER.debug("Transformation du geodataframe.")
+        LOGGER.debug(i18n.t("ingestion.parser_shared.transforming_geodataframe"))
 
-        LOGGER.debug(f"Renommage des colonnes du geodataframe.")
+        LOGGER.debug(i18n.t("ingestion.parser_shared.renaming_columns"))
         data: gpd.GeoDataFrame = data.rename(
             columns={
                 ids.TIME_DCDB: schema_ids.TIME_UTC,

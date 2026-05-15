@@ -1,0 +1,12 @@
+en:
+  reading_header: "Reading file header: %{file}."
+  no_header: "File %{file} has no header."
+  encoding_fallback: "File %{file} is not UTF-8 encoded. Retrying with 'latin1'."
+  header_found: "File %{file} header: %{header}."
+  getting_extension: "Getting file extension: %{file}."
+  extension_match: "Extension %{extension} matches pattern %{pattern}. Normalizing to %{normalized_ext}."
+  extension_unknown: "File %{file} extension: %{extension} (unrecognized)."
+  getting_parser: "Getting parser for file: %{file}."
+  processing_file: "Processing file: %{file}."
+  parser_identified: "Parser identified for file %{file}: %{parser}."
+

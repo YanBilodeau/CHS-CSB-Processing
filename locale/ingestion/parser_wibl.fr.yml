@@ -1,0 +1,7 @@
+fr:
+  processing_wibl_file: "Traitement d'un fichier WIBL avec quantum %{quantum} : %{file}."
+  no_time_source: "Aucune source de temps trouvée pour le fichier WIBL : %{file}."
+  no_wibl_data: "Aucune donnée trouvée dans le fichier WIBL : %{file}."
+  converting_wibl_to_geojson: "Conversion des données WIBL en GeoJSON."
+  saving_geojson: "Sauvegarde du GeoJSON vers : %{file}."
+

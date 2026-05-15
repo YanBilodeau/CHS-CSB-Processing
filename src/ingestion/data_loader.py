@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
 import geopandas as gpd
+import i18n
 from loguru import logger
 
 from . import factory_parser
@@ -52,7 +53,7 @@ def load_and_clean_data(
     LOGGER.debug(parser_files)
 
     if not parser_files.files:
-        LOGGER.warning("Aucun fichier valide à traiter.")
+        LOGGER.warning(i18n.t("ingestion.data_loader.no_valid_files"))
         return None
 
     ctx = ProcessingContext(
@@ -64,15 +65,17 @@ def load_and_clean_data(
         parser_files.parser.from_files(files=parser_files.files)
     )
     if data.empty:
-        LOGGER.warning("Aucune donnée valide à traiter.")
+        LOGGER.warning(i18n.t("ingestion.data_loader.no_valid_data"))
         return None
 
-    LOGGER.info("Nettoyage et filtrage des données.")
+    LOGGER.info(i18n.t("ingestion.data_loader.cleaning_data"))
     data = cleaner.clean_data(data, data_filter_config=data_filter_config)
     if data.empty:
-        LOGGER.warning("Aucune sonde valide à traiter.")
+        LOGGER.warning(i18n.t("ingestion.data_loader.no_valid_soundings"))
         return None
 
-    LOGGER.success(f"{len(data):,} sondes valides récupérées.")
+    LOGGER.success(
+        i18n.t("ingestion.data_loader.soundings_retrieved", count=f"{len(data):,}")
+    )
 
     return data, ctx

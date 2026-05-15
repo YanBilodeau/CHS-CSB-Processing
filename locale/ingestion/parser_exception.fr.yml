@@ -1,0 +1,4 @@
+fr:
+  error_parser_identification: "Erreur lors de l'identification du parser pour le fichier : %{file}."
+  error_multiple_parsers: "Plus d'un type de parser a été identifié pour les fichiers : %{parsers}."
+

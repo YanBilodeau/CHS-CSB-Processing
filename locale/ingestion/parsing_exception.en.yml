@@ -1,0 +1,3 @@
+en:
+  error_missing_column: "Error reading file: %{file}. The file has no column '%{column}'."
+

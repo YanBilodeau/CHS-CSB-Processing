@@ -5,6 +5,7 @@ Module permettant de définir un parser pour les données de type BlackBox.
 from pathlib import Path
 
 import geopandas as gpd
+import i18n
 from loguru import logger
 import pandas as pd
 
@@ -61,7 +62,7 @@ class DataParserBlackBox(DataParserABC):
         :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(
-            f"Chargement d'un fichier de données brutes de type {ids.BLACKBOX} : {file}"
+            i18n.t("ingestion.parser_shared.loading_file", type=ids.BLACKBOX, file=file)
         )
 
         if dtype_dict is None:
@@ -103,7 +104,9 @@ class DataParserBlackBox(DataParserABC):
 
         dataframe = dataframe.drop(columns=[ids.DATE_BLACKBOX, ids.TIME_BLACKBOX])
 
-        LOGGER.debug(f"Conversion des données en GeoDataFrame : {file}")
+        LOGGER.debug(
+            i18n.t("ingestion.parser_shared.converting_to_geodataframe", file=file)
+        )
         gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
             data=dataframe,
             geometry=gpd.points_from_xy(
@@ -127,11 +130,14 @@ class DataParserBlackBox(DataParserABC):
         """
         if ids.SPEED_BLACKBOX not in data.columns:
             LOGGER.warning(
-                f"La colonne '{ids.SPEED_BLACKBOX}' n'est pas présente dans le geodataframe."
+                i18n.t(
+                    "ingestion.parser_shared.missing_speed_column",
+                    column=ids.SPEED_BLACKBOX,
+                )
             )
             return data
 
-        LOGGER.debug(f"Conversion de la vitesse (km/h) en noeuds.")
+        LOGGER.debug(i18n.t("ingestion.parser_black_box.converting_speed_kmh"))
         data[schema_ids.SPEED_KN] = round(data[ids.SPEED_BLACKBOX] * 0.539957, 3)
         data = data.drop(columns=[ids.SPEED_BLACKBOX])
 
@@ -146,7 +152,7 @@ class DataParserBlackBox(DataParserABC):
         :return: Le geodataframe transformé.
         :rtype: gpd.GeoDataFrame
         """
-        LOGGER.debug(f"Transformation du geodataframe.")
+        LOGGER.debug(i18n.t("ingestion.parser_shared.transforming_geodataframe"))
 
         data = self.convert_speed_to_knots(data)
 

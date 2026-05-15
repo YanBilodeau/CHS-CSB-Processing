@@ -1,0 +1,7 @@
+fr:
+  loading_file: "Chargement d'un fichier de données brutes de type %{type} : %{file}."
+  converting_to_geodataframe: "Conversion des données en GeoDataFrame : %{file}."
+  transforming_geodataframe: "Transformation du geodataframe."
+  renaming_columns: "Renommage des colonnes du geodataframe."
+  missing_speed_column: "La colonne '%{column}' n'est pas présente dans le geodataframe."
+

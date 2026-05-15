@@ -5,6 +5,7 @@ Module permettant de définir un parser pour les données de type Lowrance.
 from pathlib import Path
 
 import geopandas as gpd
+import i18n
 from loguru import logger
 import pandas as pd
 
@@ -60,7 +61,7 @@ class DataParserLowrance(DataParserABC):
         :rtype: gpd.GeoDataFrame
         """
         LOGGER.debug(
-            f"Chargement du fichier de données brutes de type {ids.LOWRANCE} : {file}"
+            i18n.t("ingestion.parser_shared.loading_file", type=ids.LOWRANCE, file=file)
         )
 
         if dtype_dict is None:
@@ -85,7 +86,9 @@ class DataParserLowrance(DataParserABC):
             f"{ids.SURVEY_TYPE_LOWRANCE} == '{ids.PRIMARY_LOWRANCE}'"
         )
 
-        LOGGER.debug(f"Conversion des données en GeoDataFrame : {file}")
+        LOGGER.debug(
+            i18n.t("ingestion.parser_shared.converting_to_geodataframe", file=file)
+        )
         gdf: gpd.GeoDataFrame = gpd.GeoDataFrame(
             data=dataframe,
             geometry=gpd.points_from_xy(
@@ -115,7 +118,9 @@ class DataParserLowrance(DataParserABC):
             ids.SPEED_LOWRANCE: schema_ids.SPEED_KN,
         }
 
-        LOGGER.debug(f"Renommage des colonnes du geodataframe : {columns}")
+        LOGGER.debug(
+            i18n.t("ingestion.parser_lowrance.renaming_columns_detail", columns=columns)
+        )
 
         data: gpd.GeoDataFrame[schema.DataLoggerSchema] = data.rename(columns=columns)
 
@@ -133,7 +138,7 @@ class DataParserLowrance(DataParserABC):
         :return: Le geodataframe transformé.
         :rtype: gpd.GeoDataFrame
         """
-        LOGGER.debug("Suppression des caractères spéciaux des noms de colonnes.")
+        LOGGER.debug(i18n.t("ingestion.parser_lowrance.removing_special_chars"))
         data.columns = (
             data.columns.str.replace("[", "_")
             .str.replace("]", "")
@@ -152,7 +157,7 @@ class DataParserLowrance(DataParserABC):
         :return: Le geodataframe transformé.
         :rtype: gpd.GeoDataFrame
         """
-        LOGGER.debug(f"Conversion de la profondeur (pieds) en mètres.")
+        LOGGER.debug(i18n.t("ingestion.parser_lowrance.converting_depth_feet"))
         data[schema_ids.DEPTH_RAW_METER] = round(data[ids.DEPTH_LOWRANCE] * 0.3048, 3)
         data = data.drop(columns=[ids.DEPTH_LOWRANCE])
 
@@ -170,11 +175,14 @@ class DataParserLowrance(DataParserABC):
         """
         if ids.SPEED_LOWRANCE not in data.columns:
             LOGGER.warning(
-                f"La colonne '{ids.SPEED_LOWRANCE}' n'est pas présente dans le geodataframe."
+                i18n.t(
+                    "ingestion.parser_shared.missing_speed_column",
+                    column=ids.SPEED_LOWRANCE,
+                )
             )
             return data
 
-        LOGGER.debug(f"Conversion de la vitesse (m/s) en noeuds.")
+        LOGGER.debug(i18n.t("ingestion.parser_lowrance.converting_speed_ms"))
         data[schema_ids.SPEED_KN] = round(data[ids.SPEED_LOWRANCE] * 1.94384, 3)
         data = data.drop(columns=[ids.SPEED_LOWRANCE])
 
@@ -189,7 +197,7 @@ class DataParserLowrance(DataParserABC):
         :return: Le geodataframe transformé respectant le schéma de données DataLoggerSchema.
         :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
         """
-        LOGGER.debug("Transformation du geodataframe.")
+        LOGGER.debug(i18n.t("ingestion.parser_shared.transforming_geodataframe"))
 
         data = self.convert_depth_to_meters(data)
         data = self.convert_speed_to_knots(data)

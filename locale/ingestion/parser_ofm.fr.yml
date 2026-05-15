@@ -1,0 +1,7 @@
+fr:
+  speed_file_not_found: "Le fichier de vitesse n'existe pas : %{file}."
+  loading_speed_file: "Chargement du fichier de vitesse : %{file}."
+  no_sog_column: "Aucune colonne contenant 'Sog' n'a été trouvée dans le fichier : %{file}."
+  speed_column_found: "Colonne de vitesse trouvée : %{column} dans le fichier : %{file}."
+  speed_file_error: "Erreur lors du chargement du fichier de vitesse : %{file}. %{error}"
+
