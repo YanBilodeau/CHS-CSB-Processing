@@ -27,6 +27,7 @@ class ConfigManager:
         self.use_waterline: bool = False
         self.apply_water_level: bool = True
         self.already_at_chart_datum: bool = False
+        self.merge_files: bool = True
 
         # Initialiser les filtres et options depuis la config TOML par défaut
         try:

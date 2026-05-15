@@ -213,6 +213,7 @@ def export_metadata(
     vessel_name: Optional[str] = None,
     software_version: str = "",
     processing_context=None,
+    output_file_name: Optional[str] = None,
 ) -> None:
     """
     Exporte les métadonnées d'un levé CSB (JSON + rapport graphique).
@@ -235,11 +236,14 @@ def export_metadata(
     :param software_version: Version du logiciel à inscrire dans les métadonnées.
     :type software_version: str
     :param processing_context: Contexte de traitement (type capteur, statut réduction).
+    :param output_file_name: Nom de fichier de sortie forcé (surcharge le nom calculé automatiquement).
+        Utilisé en mode split (merge_files=False) pour conserver le nom du fichier d'entrée.
+    :type output_file_name: Optional[str]
     """
     import metadata as _metadata
 
     effective_vessel_name: str = vessel_name or vessel_config.name
-    name: str = get_export_file_name(
+    name: str = output_file_name or get_export_file_name(
         data_geodataframe=data_geodataframe,
         vessel_name=effective_vessel_name,
         datalogger_type=(
@@ -330,6 +334,7 @@ def export_processed_data_and_metadata(
     vessel_name: Optional[str] = None,
     software_version: str = "",
     processing_context=None,
+    output_file_name: Optional[str] = None,
 ) -> None:
     """
     Finalise, exporte les données traitées et génère les métadonnées.
@@ -348,18 +353,22 @@ def export_processed_data_and_metadata(
     :param software_version: Version du logiciel à inscrire dans les métadonnées.
     :type software_version: str
     :param processing_context: Contexte de traitement (type capteur, statut réduction).
+    :param output_file_name: Nom de fichier de sortie forcé (surcharge le nom calculé automatiquement).
+        Utilisé en mode split (merge_files=False) pour conserver le nom du fichier d'entrée.
+    :type output_file_name: Optional[str]
     """
     effective_vessel_name: str = vessel_name or vessel_config.name
 
     data_geodataframe = finalize_geodataframe(data_geodataframe=data_geodataframe)
 
-    output_base_path: Path = export_data_path / get_export_file_name(
+    computed_name: str = output_file_name or get_export_file_name(
         data_geodataframe=data_geodataframe,
         vessel_name=effective_vessel_name,
         datalogger_type=(
             processing_context.datalogger_type if processing_context else None
         ),
     )
+    output_base_path: Path = export_data_path / computed_name
 
     export_processed_data_to_file_types(
         data_geodataframe=data_geodataframe,
@@ -381,4 +390,5 @@ def export_processed_data_and_metadata(
         vessel_name=effective_vessel_name,
         software_version=software_version,
         processing_context=processing_context,
+        output_file_name=output_file_name,
     )

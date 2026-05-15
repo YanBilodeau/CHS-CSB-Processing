@@ -198,6 +198,7 @@ def _process_without_water_level(
     vessel_config: vessel_manager.VesselConfig,
     caris_api_config: Optional[config.CarisAPIConfig],
     vessel_name: Optional[str],
+    output_file_name: Optional[str] = None,
 ) -> None:
     """
     Géoréférence sans réduction marégraphique et exporte les données.
@@ -216,6 +217,8 @@ def _process_without_water_level(
     :type caris_api_config: Optional[config.CarisAPIConfig]
     :param vessel_name: Nom du navire pour l'export.
     :type vessel_name: Optional[str]
+    :param output_file_name: Nom de fichier forcé (mode split). ``None`` → nom calculé.
+    :type output_file_name: Optional[str]
     :rtype: None
     """
     LOGGER.info("Le niveau d'eau ne sera pas appliqué aux données.")
@@ -240,6 +243,7 @@ def _process_without_water_level(
         vessel_name=vessel_name,
         software_version=__version__,
         processing_context=ctx,
+        output_file_name=output_file_name,
     )
 
 
@@ -255,6 +259,7 @@ def _process_with_water_level(
     water_level_stations: Optional[Collection[str]],
     excluded_stations: Optional[Collection[str]],
     config_path: Optional[Path],
+    output_file_name: Optional[str] = None,
 ) -> None:
     """
     Exécute la boucle de réduction marégraphique IWLS, puis exporte les données.
@@ -279,6 +284,8 @@ def _process_with_water_level(
     :type excluded_stations: Optional[Collection[str]]
     :param config_path: Chemin du fichier de configuration TOML.
     :type config_path: Optional[Path]
+    :param output_file_name: Nom de fichier forcé (mode split). ``None`` → nom calculé.
+    :type output_file_name: Optional[str]
     :rtype: None
     """
     iwls_api_config, stations_handler = iwls_api.initialize_iwls_api(
@@ -339,12 +346,45 @@ def _process_with_water_level(
         vessel_name=vessel_name,
         software_version=__version__,
         processing_context=ctx,
+        output_file_name=output_file_name,
     )
 
 
 # ---------------------------------------------------------------------------
 # Fonctions publiques
 # ---------------------------------------------------------------------------
+
+
+def run_processing_workflow(
+    files: Collection[Path],
+    merge_files: bool = True,
+    **kwargs,
+) -> None:
+    """
+    Dispatche le traitement en mode fusion ou mode split selon ``merge_files``.
+
+    En mode fusion (défaut), tous les fichiers sont traités ensemble en un seul fichier
+    de sortie nommé automatiquement. En mode split, chaque fichier est traité
+    individuellement et le nom de sortie correspond au ``stem`` du fichier d'entrée.
+
+    :param files: Fichiers bruts à traiter.
+    :type files: Collection[Path]
+    :param merge_files: Si ``True``, fusionne tous les fichiers en un seul traitement.
+        Si ``False``, traite chaque fichier séparément.
+    :type merge_files: bool
+    :param kwargs: Arguments transmis directement à :func:`processing_workflow`.
+    :rtype: None
+    """
+    files = list(files)
+
+    if merge_files:
+        LOGGER.info(f"Merge mode: {len(files)} file(s) processed together.")
+        processing_workflow(files=files, **kwargs)
+    else:
+        LOGGER.info(f"Split mode: {len(files)} file(s) processed individually.")
+        for file in files:
+            LOGGER.info(f"Processing file: {file.name}")
+            processing_workflow(files=[file], output_file_name=file.stem, **kwargs)
 
 
 def log_sounding_results(data: gpd.GeoDataFrame, iterations: int) -> bool:
@@ -390,6 +430,7 @@ def processing_workflow(
     processing_config: Optional[config.CSBprocessingConfig] = None,
     vessel_name: Optional[str] = None,
     already_at_chart_datum: bool = False,
+    output_file_name: Optional[str] = None,
 ) -> None:
     """
     Workflow de traitement des données CSB end-to-end.
@@ -417,6 +458,10 @@ def processing_workflow(
     :param already_at_chart_datum: ``True`` si les données sont déjà réduites au zéro
         des cartes — force ``apply_water_level=False``.
     :type already_at_chart_datum: bool
+    :param output_file_name: Nom de fichier de sortie forcé (surcharge le nom calculé
+        automatiquement). Utilisé en mode split (``merge_files=False``) pour conserver
+        le nom du fichier d'entrée.
+    :type output_file_name: Optional[str]
     :rtype: None
     """
     if not files:
@@ -472,6 +517,7 @@ def processing_workflow(
             vessel_config=vessel_config,
             caris_api_config=caris_api_config,
             vessel_name=vessel_name,
+            output_file_name=output_file_name,
         )
 
     return _process_with_water_level(
@@ -486,6 +532,7 @@ def processing_workflow(
         water_level_stations=water_level_stations,
         excluded_stations=excluded_stations,
         config_path=config_path,
+        output_file_name=output_file_name,
     )
 
     # todo gérer la valeur np.nan dans les configurations des capteurs

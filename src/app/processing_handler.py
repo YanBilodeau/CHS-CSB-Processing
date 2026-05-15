@@ -6,7 +6,7 @@ from typing import Any, Iterable
 
 from loguru import logger
 
-from csb_processing import processing_workflow
+from csb_processing import run_processing_workflow
 from vessel import UNKNOWN_VESSEL_CONFIG, UNKNOWN_DATE, Waterline
 
 from .component.log_display import LogDisplay
@@ -213,11 +213,13 @@ class ProcessingHandler:
         processing_config,
     ) -> None:
         """Run the processing workflow in a separate thread."""
+        merge_files: bool = self.config_manager.merge_files
 
         def run_processing():
             LOGGER.info("Starting bathymetric data processing...")
-            processing_workflow(
+            run_processing_workflow(
                 files=valid_files,
+                merge_files=merge_files,
                 vessel=vessel_config,
                 output=output,
                 config_path=config,
@@ -227,6 +229,7 @@ class ProcessingHandler:
                 vessel_name=self.config_manager.vessel_name or None,
                 already_at_chart_datum=self.config_manager.already_at_chart_datum,
             )
+
             LOGGER.info("Processing workflow completed successfully.")
 
         LOGGER.info("Launching processing in background thread...")

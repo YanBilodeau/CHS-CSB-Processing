@@ -13,7 +13,7 @@ from loguru import logger
 
 from config import FileTypes
 import converter
-from csb_processing import processing_workflow, CONFIG_FILE
+from csb_processing import run_processing_workflow, CONFIG_FILE
 from logger.loguru_config import configure_logger
 from vessel import UNKNOWN_VESSEL_CONFIG, UNKNOWN_DATE, Waterline
 
@@ -124,13 +124,11 @@ def cli_group():
     """,
 )
 @click.option(
-    "--apply-water-level",
-    type=bool,
-    required=False,
+    "--apply-water-level / --no-apply-water-level",
     default=True,
     help="""
     Appliquer la réduction des niveaux d'eau lors du géoréférencement des sondes. Par défaut, 
-    la réduction des niveaux d'eau est appliqué.\n
+    la réduction des niveaux d'eau est appliquée.\n
     Apply the water level reduction when georeferencing the soundings. 
     By default, the water level reduction is applied.
     """,
@@ -182,17 +180,30 @@ def cli_group():
     will be automatically disabled.
     """,
 )
+@click.option(
+    "--merge-files / --no-merge-files",
+    default=True,
+    help="""
+    Fusionner tous les fichiers d'entrée en un seul fichier de sortie (défaut : activé).
+    Si désactivé, chaque fichier est traité séparément et le nom du fichier de sortie
+    correspond au nom du fichier d'entrée.\n
+    Merge all input files into a single output file (default: enabled).
+    If disabled, each file is processed separately and the output filename
+    matches the input filename.
+    """,
+)
 def process_bathymetric_data(
     files: Collection[Path],
     output: Path,
     vessel: Optional[str],
     waterline: Optional[float],
     config: Optional[Path],
-    apply_water_level: Optional[bool] = True,
+    apply_water_level: bool = True,
     water_level_station: Optional[tuple[str, ...]] = None,
     excluded_station: Optional[tuple[str, ...]] = None,
     vessel_name: Optional[str] = None,
     already_at_chart_datum: bool = False,
+    merge_files: bool = True,
 ) -> None:
     """
     Traite les fichiers de données bathymétriques et les géoréférence. Processes bathymetric data files and georeferences them.
@@ -207,8 +218,8 @@ def process_bathymetric_data(
     :type waterline: Optional[float]
     :param config: Chemin du fichier de configuration.
     :type config: Optional[Path]
-    :param apply_water_level: Appliquer la réduction des nivaeux d'eau lors du géoréférencement des sondes.
-    :type apply_water_level: Optional[bool]
+    :param apply_water_level: Appliquer la réduction des niveaux d'eau lors du géoréférencement des sondes.
+    :type apply_water_level: bool
     :param water_level_station: Stations de niveau d'eau à utiliser pour le traitement.
     :type water_level_station: Optional[tuple[str, ...]]
     :param excluded_station: Stations de niveau d'eau à exclure du traitement.
@@ -217,6 +228,10 @@ def process_bathymetric_data(
     :type vessel_name: Optional[str]
     :param already_at_chart_datum: Les données sont déjà réduites au zéro des cartes.
     :type already_at_chart_datum: bool
+    :param merge_files: Fusionner tous les fichiers en un seul traitement. Si ``False``,
+        chaque fichier est traité individuellement et le nom de sortie correspond au nom
+        du fichier d'entrée.
+    :type merge_files: bool
     :raise click.UsageError: Si les options --vessel et --waterline sont utilisées en même temps.
     :raise click.UsageError: Si la valeur de l'option --waterline est négative.
     :raise click.UsageError: Si aucun fichier valide n'est fourni.
@@ -265,8 +280,9 @@ def process_bathymetric_data(
         )
         config = CONFIG_FILE
 
-    processing_workflow(
+    run_processing_workflow(
         files=files,
+        merge_files=merge_files,
         vessel=vessel,
         output=Path(output),
         config_path=Path(config),
