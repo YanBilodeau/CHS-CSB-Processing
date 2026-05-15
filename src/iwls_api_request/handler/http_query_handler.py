@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Optional, Collection
 
+import i18n
 import pytz
 import requests
 from loguru import logger
@@ -27,7 +28,12 @@ class HTTPQueryHandler(ABC):
     def __init__(self, session=None, **kwargs) -> None:
         self._session = session
 
-        LOGGER.debug(f"Objet de type '{type(self).__name__}' initialisé.")
+        LOGGER.debug(
+            i18n.t(
+                "iwls_api_request.http_query_handler.handler_initialized",
+                handler_type=type(self).__name__,
+            )
+        )
 
     @abstractmethod
     def query(
@@ -61,13 +67,23 @@ class RequestsHandler(HTTPQueryHandler):
         super().__init__(session=session, **kwargs)
 
     def __enter__(self):
-        LOGGER.debug(f"Récupération d'une session de type : '{self._session_type}'.")
+        LOGGER.debug(
+            i18n.t(
+                "iwls_api_request.http_query_handler.session_type_retrieval",
+                session_type=self._session_type,
+            )
+        )
 
         self._session = get_session(
             session_type=self._session_type, cache_config=self._cache_config
         )
 
-        LOGGER.debug(f"Session ouverte : {self._session}")
+        LOGGER.debug(
+            i18n.t(
+                "iwls_api_request.http_query_handler.session_opened",
+                session=self._session,
+            )
+        )
 
         return self
 
@@ -108,7 +124,11 @@ class RequestsHandler(HTTPQueryHandler):
                         response_data.data = response.text
 
                     LOGGER.info(
-                        f"Status code {response.status_code} : {response.url}"  # [{get_cache_status(response)}]"
+                        i18n.t(
+                            "iwls_api_request.http_query_handler.request_success",
+                            status_code=response.status_code,
+                            url=response.url,
+                        )
                     )
                     return response_data
 
@@ -121,30 +141,38 @@ class RequestsHandler(HTTPQueryHandler):
                     )
 
                 LOGGER.warning(
-                    f"Status code {response.status_code} : {response_data.error} - {response_data.message} - {response.url}"
+                    i18n.t(
+                        "iwls_api_request.http_query_handler.request_warning",
+                        status_code=response.status_code,
+                        error=response_data.error,
+                        message=response_data.message,
+                        url=response.url,
+                    )
                 )
                 return response_data
 
         except requests.exceptions.ConnectionError as e:
-            LOGGER.error(f"La demande de connexion à IWLS a échoué pour la requête.")
+            LOGGER.error(i18n.t("iwls_api_request.http_query_handler.connection_error"))
             LOGGER.exception(e)
 
         except requests.exceptions.Timeout as e:
-            LOGGER.error(f"La requête à IWLS a expiré.")
+            LOGGER.error(i18n.t("iwls_api_request.http_query_handler.timeout_error"))
             LOGGER.exception(e)
 
         except requests.exceptions.TooManyRedirects as e:
             LOGGER.error(
-                f"La requête {url} à IWLS a dépassé le nombre maximum de redirection."
+                i18n.t(
+                    "iwls_api_request.http_query_handler.too_many_redirects", url=url
+                )
             )
             LOGGER.exception(e)
 
         except requests.exceptions.RequestException as e:
-            LOGGER.error(f"La requête à IWLS est en erreur.")
+            LOGGER.error(i18n.t("iwls_api_request.http_query_handler.request_error"))
             LOGGER.exception(e)
 
         except Exception as e:
-            LOGGER.error(f"Une erreur non-liée à IWLS est survenue.")
+            LOGGER.error(i18n.t("iwls_api_request.http_query_handler.unexpected_error"))
             LOGGER.exception(e)
 
     def mount_adapter(
@@ -156,7 +184,12 @@ class RequestsHandler(HTTPQueryHandler):
         :param adapter: (HTTPAdapter) Un adaptateur.
         :param prefix: (List[str]) Une liste de préfixe de urls sur lesquels monter l'adaptateur.
         """
-        LOGGER.debug(f"Ajout d'un adapdateur à la session : {adapter.__dict__}.")
+        LOGGER.debug(
+            i18n.t(
+                "iwls_api_request.http_query_handler.adapter_mounted",
+                adapter=adapter.__dict__,
+            )
+        )
 
         prefix = ["https://", "http://"] if prefix is None else prefix
         for pre in prefix:
@@ -166,7 +199,7 @@ class RequestsHandler(HTTPQueryHandler):
         """
         Méthode permettant de nettoyer la cache.
         """
-        LOGGER.debug("Réinitialisation de la cache.")
+        LOGGER.debug(i18n.t("iwls_api_request.http_query_handler.cache_cleared"))
 
         if self._session_type == SessionType.CACHE:
             self._session.cache.clear()
@@ -195,7 +228,13 @@ class RateLimiterHandler(RequestsHandler):
         self._rate_limiter = RateLimiter(max_calls=self._calls, period=self._period)
         super().__init__(session_type=session_type, cache_config=cache_config, **kwargs)
 
-        LOGGER.debug(f"Limite de {self._calls} requêtes par {self._period} secondes.")
+        LOGGER.debug(
+            i18n.t(
+                "iwls_api_request.http_query_handler.rate_limit",
+                calls=self._calls,
+                period=self._period,
+            )
+        )
 
     def query(
         self,
@@ -231,7 +270,12 @@ def get_retry_adapter(
     status_code = (429, 500, 502, 503, 504) if status_code is None else status_code
 
     LOGGER.debug(
-        f"Récupération d'un adaptateur : STATUS_CODE={status_code}, MAX_RETRIES={max_retry}, BACKOFF_FACTOR={backoff_factor}."
+        i18n.t(
+            "iwls_api_request.http_query_handler.retry_adapter",
+            status_code=status_code,
+            max_retry=max_retry,
+            backoff_factor=backoff_factor,
+        )
     )
 
     return HTTPAdapter(
@@ -287,7 +331,13 @@ def get_cache_session(
     :return: (requests_cache.CachedSession) Un objet requests_cache.CachedSession.
     """
     LOGGER.debug(
-        f"Chargement de la cache : DB={db}, BACKEND={backend}, EXPIRE_AFTER={expire_after}, TIMEOUT={timeout}."
+        i18n.t(
+            "iwls_api_request.http_query_handler.cache_loading",
+            db=db,
+            backend=backend,
+            expire_after=expire_after,
+            timeout=timeout,
+        )
     )
 
     return CachedSession(

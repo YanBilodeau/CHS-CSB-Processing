@@ -1,0 +1,17 @@
+en:
+  handler_initialized: "Object of type '%{handler_type}' initialized."
+  session_type_retrieval: "Retrieving a session of type: '%{session_type}'."
+  session_opened: "Session opened: %{session}."
+  request_success: "Status code %{status_code}: %{url}."
+  request_warning: "Status code %{status_code}: %{error} - %{message} - %{url}."
+  connection_error: "IWLS connection request failed."
+  timeout_error: "IWLS request timed out."
+  too_many_redirects: "Request %{url} to IWLS exceeded the maximum number of redirects."
+  request_error: "IWLS request encountered an error."
+  unexpected_error: "An error unrelated to IWLS occurred."
+  adapter_mounted: "Adapter added to the session: %{adapter}."
+  cache_cleared: "Cache cleared."
+  rate_limit: "Rate limit: %{calls} requests per %{period} seconds."
+  retry_adapter: "Retry adapter retrieved: STATUS_CODE=%{status_code}, MAX_RETRIES=%{max_retry}, BACKOFF_FACTOR=%{backoff_factor}."
+  cache_loading: "Loading cache: DB=%{db}, BACKEND=%{backend}, EXPIRE_AFTER=%{expire_after}, TIMEOUT=%{timeout}."
+

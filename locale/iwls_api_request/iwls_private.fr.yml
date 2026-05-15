@@ -1,0 +1,3 @@
+fr:
+  time_serie_code_unavailable: "Le code de série temporelle '%{code}' n'est pas disponible pour la station '%{station}'. Liste des choix disponibles : %{choices}."
+

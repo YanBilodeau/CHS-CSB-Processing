@@ -1,0 +1,3 @@
+fr:
+  missing_data_warning: "Impossible de récupérer les données : %{error}."
+

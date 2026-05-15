@@ -5,6 +5,7 @@ from datetime import timedelta
 from itertools import repeat
 from typing import Any, Optional, Callable, Generator, Collection, Sequence
 
+import i18n
 from cachetools.func import ttl_cache
 from geopy import distance
 from loguru import logger
@@ -69,16 +70,22 @@ class IWLSapiABC(ABC):
         :raise: CoordinatesError si les coordonnées sont invalides.
         """
         if not isinstance(latitude, (int, float)):
-            raise TypeError("La latitude doit être de type 'int' ou 'float'.")
+            raise TypeError(i18n.t("iwls_api_request.iwls_api_abc.error_latitude_type"))
 
         if not isinstance(longitude, (int, float)):
-            raise TypeError("La longitude doit être de type 'int' ou 'float'.")
+            raise TypeError(
+                i18n.t("iwls_api_request.iwls_api_abc.error_longitude_type")
+            )
 
         if not abs(latitude) <= 90:
-            raise CoordinatesError("La latitude doit être comprise entre -90 et 90.")
+            raise CoordinatesError(
+                i18n.t("iwls_api_request.iwls_api_abc.error_latitude_range")
+            )
 
         if not abs(longitude) <= 180:
-            raise CoordinatesError("La longitude doit être comprise entre -180 et 180.")
+            raise CoordinatesError(
+                i18n.t("iwls_api_request.iwls_api_abc.error_longitude_range")
+            )
 
         return latitude, longitude
 
@@ -92,9 +99,7 @@ class IWLSapiABC(ABC):
         :raise: ValueError si la date est invalide.
         """
         if not bool(re.match(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$", date)):
-            raise ValueError(
-                "La date doit être en format ISO 8601 UTC (ex: 2021-02-13T19:18:00Z)."
-            )
+            raise ValueError(i18n.t("iwls_api_request.iwls_api_abc.error_invalid_date"))
 
         return date
 
@@ -108,17 +113,25 @@ class IWLSapiABC(ABC):
         :raise: ValueError si l'identifiant est invalide.
         """
         if not isinstance(station_id, str):
-            raise TypeError("L'identifiant de la station doit être de type 'string'.")
+            raise TypeError(
+                i18n.t("iwls_api_request.iwls_api_abc.error_station_id_type")
+            )
 
         if len(station_id) != 24:
             raise ValueError(
-                f"L'identifiant de la station ('stationId') doit contenir 24 caractères: {station_id}."
+                i18n.t(
+                    "iwls_api_request.iwls_api_abc.error_station_id_length",
+                    station_id=station_id,
+                )
             )
 
         if self.stations_list is not None:
             if station_id not in self.stations_list:
                 raise ValueError(
-                    f"L'identifiant de la station ('stationId') est invalide: {station_id}."
+                    i18n.t(
+                        "iwls_api_request.iwls_api_abc.error_station_id_invalid",
+                        station_id=station_id,
+                    )
                 )
 
         return station_id
@@ -143,8 +156,11 @@ class IWLSapiABC(ABC):
                         query_params[param] = kwargs[param]
                     else:
                         LOGGER.warning(
-                            f"Le code de série temporelle '{kwargs[param]}' est invalide. "
-                            f"Liste des choix valides : {', '.join(TimeSeries.get_values())}."
+                            i18n.t(
+                                "iwls_api_request.iwls_api_abc.invalid_time_serie_code",
+                                code=kwargs[param],
+                                choices=", ".join(TimeSeries.get_values()),
+                            )
                         )
 
                 elif param == ids.CHS_REGION_CODE:
@@ -152,8 +168,11 @@ class IWLSapiABC(ABC):
                         query_params[param] = kwargs[param]
                     else:
                         LOGGER.warning(
-                            f"La région '{kwargs[param]}' est invalide. "
-                            f"Liste des choix valides : {', '.join(Regions.get_values())}."
+                            i18n.t(
+                                "iwls_api_request.iwls_api_abc.invalid_region_code",
+                                region=kwargs[param],
+                                choices=", ".join(Regions.get_values()),
+                            )
                         )
 
                 elif param == ids.STATION:
@@ -229,7 +248,12 @@ class IWLSapiABC(ABC):
                     f"MISSING DATA FROM {start} TO {end} FOR '{time_serie_code}' AT '{station}'"
                 )
                 errors.append(error)
-                LOGGER.warning(f"Impossible de récupérer les données : {error}.")
+                LOGGER.warning(
+                    i18n.t(
+                        "iwls_api_request.iwls_api_abc.missing_data_warning",
+                        error=error,
+                    )
+                )
 
         return data_aggregated, errors
 

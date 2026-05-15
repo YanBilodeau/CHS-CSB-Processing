@@ -1,0 +1,13 @@
+en:
+  invalid_time_serie_code: "Time series code '%{code}' is invalid. Valid choices: %{choices}."
+  invalid_region_code: "Region '%{region}' is invalid. Valid choices: %{choices}."
+  missing_data_warning: "Unable to retrieve data: %{error}."
+  error_latitude_type: "Latitude must be of type 'int' or 'float'."
+  error_longitude_type: "Longitude must be of type 'int' or 'float'."
+  error_latitude_range: "Latitude must be between -90 and 90."
+  error_longitude_range: "Longitude must be between -180 and 180."
+  error_invalid_date: "Date must be in ISO 8601 UTC format (e.g. 2021-02-13T19:18:00Z)."
+  error_station_id_type: "Station identifier must be of type 'string'."
+  error_station_id_length: "Station identifier ('stationId') must contain 24 characters: %{station_id}."
+  error_station_id_invalid: "Station identifier ('stationId') is invalid: %{station_id}."
+

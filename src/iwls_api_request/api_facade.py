@@ -1,6 +1,7 @@
 from enum import StrEnum
 from typing import Optional
 
+import i18n
 from loguru import logger
 
 from .api.endpoint import Endpoint, EndpointType
@@ -46,7 +47,9 @@ def get_api_factory(endpoint: EndpointType) -> type[IWLSapiABC]:
     :return: La classe de l'API IWLS.
     :rtype: type[IWLSapiABC]
     """
-    LOGGER.debug(f"Initialisation de l'API IWLS pour le l'endpoint : '{endpoint}'.")
+    LOGGER.debug(
+        i18n.t("iwls_api_request.api_facade.init_api_endpoint", endpoint=endpoint)
+    )
 
     return API_FACTORY.get(endpoint)
 

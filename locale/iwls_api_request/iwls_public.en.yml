@@ -1,0 +1,3 @@
+en:
+  missing_data_warning: "Unable to retrieve data: %{error}."
+

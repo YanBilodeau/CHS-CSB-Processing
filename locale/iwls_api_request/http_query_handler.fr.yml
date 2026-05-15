@@ -1,0 +1,17 @@
+fr:
+  handler_initialized: "Objet de type '%{handler_type}' initialisé."
+  session_type_retrieval: "Récupération d'une session de type : '%{session_type}'."
+  session_opened: "Session ouverte : %{session}."
+  request_success: "Status code %{status_code} : %{url}."
+  request_warning: "Status code %{status_code} : %{error} - %{message} - %{url}."
+  connection_error: "La demande de connexion à IWLS a échoué pour la requête."
+  timeout_error: "La requête à IWLS a expiré."
+  too_many_redirects: "La requête %{url} à IWLS a dépassé le nombre maximum de redirection."
+  request_error: "La requête à IWLS est en erreur."
+  unexpected_error: "Une erreur non-liée à IWLS est survenue."
+  adapter_mounted: "Ajout d'un adaptateur à la session : %{adapter}."
+  cache_cleared: "Réinitialisation de la cache."
+  rate_limit: "Limite de %{calls} requêtes par %{period} secondes."
+  retry_adapter: "Récupération d'un adaptateur : STATUS_CODE=%{status_code}, MAX_RETRIES=%{max_retry}, BACKOFF_FACTOR=%{backoff_factor}."
+  cache_loading: "Chargement de la cache : DB=%{db}, BACKEND=%{backend}, EXPIRE_AFTER=%{expire_after}, TIMEOUT=%{timeout}."
+

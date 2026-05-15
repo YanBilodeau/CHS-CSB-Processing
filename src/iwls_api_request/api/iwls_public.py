@@ -1,6 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Optional, Collection, Callable
 
+import i18n
 from cachetools.func import ttl_cache
 from loguru import logger
 
@@ -381,7 +382,11 @@ class IWLSapiPublic(IWLSapiABC):
                     f"{data.message} - {data.error} MISSING BENCHMARKS FOR STATION {station_id}"
                 )
                 errors.append(error)
-                LOGGER.warning(f"Impossible de récupérer les données : {error}.")
+                LOGGER.warning(
+                    i18n.t(
+                        "iwls_api_request.iwls_public.missing_data_warning", error=error
+                    )
+                )
 
         return data_aggregated, errors
 

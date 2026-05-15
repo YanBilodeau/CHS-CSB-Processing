@@ -1,0 +1,3 @@
+en:
+  time_serie_code_unavailable: "Time series code '%{code}' is not available for station '%{station}'. Available choices: %{choices}."
+

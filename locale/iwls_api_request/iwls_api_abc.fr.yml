@@ -1,0 +1,13 @@
+fr:
+  invalid_time_serie_code: "Le code de série temporelle '%{code}' est invalide. Liste des choix valides : %{choices}."
+  invalid_region_code: "La région '%{region}' est invalide. Liste des choix valides : %{choices}."
+  missing_data_warning: "Impossible de récupérer les données : %{error}."
+  error_latitude_type: "La latitude doit être de type 'int' ou 'float'."
+  error_longitude_type: "La longitude doit être de type 'int' ou 'float'."
+  error_latitude_range: "La latitude doit être comprise entre -90 et 90."
+  error_longitude_range: "La longitude doit être comprise entre -180 et 180."
+  error_invalid_date: "La date doit être en format ISO 8601 UTC (ex: 2021-02-13T19:18:00Z)."
+  error_station_id_type: "L'identifiant de la station doit être de type 'string'."
+  error_station_id_length: "L'identifiant de la station ('stationId') doit contenir 24 caractères : %{station_id}."
+  error_station_id_invalid: "L'identifiant de la station ('stationId') est invalide : %{station_id}."
+

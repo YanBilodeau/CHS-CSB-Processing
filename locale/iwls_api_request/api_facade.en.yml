@@ -1,0 +1,3 @@
+en:
+  init_api_endpoint: "Initializing the IWLS API for endpoint: '%{endpoint}'."
+

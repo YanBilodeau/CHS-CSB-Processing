@@ -1,6 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
 from typing import Optional, Collection, Sequence
 
+import i18n
 from cachetools.func import ttl_cache
 from loguru import logger
 
@@ -116,10 +117,13 @@ class IWLSapiPrivate(IWLSapiABC):
 
         ts_id = self.get_time_serie_id_from_code(station, time_serie_code)
         if ts_id is None:
-            message = (
-                f"Le code de série temporelle '{time_serie_code.value}' n'est pas disponible pour "
-                f"la station '{station}'. Liste des choix disponibles : "
-                f"{', '.join([ts.get(ids.CODE) for ts in self.get_time_series_station(station).data])}."
+            message = i18n.t(
+                "iwls_api_request.iwls_private.time_serie_code_unavailable",
+                code=time_serie_code.value,
+                station=station,
+                choices=", ".join(
+                    [ts.get(ids.CODE) for ts in self.get_time_series_station(station).data]
+                ),
             )
             LOGGER.warning(message)
             return Response(
