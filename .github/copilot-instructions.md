@@ -72,7 +72,7 @@ src/
   metadata/                   # Metadata models, HTML/PDF report generation
   vessel/                     # Vessel configuration management (JSON, SQLite, factory)
   schema/                     # Pandera schemas (DataLoggerSchema, TideZoneStationSchema…)
-  logger/                     # loguru configuration (configure_logger, prefect routing)
+  logger/                     # loguru configuration (configure_logger, routing)
   app/                        # NiceGUI web UI components and handlers
   iwls_api_request/           # IWLS HTTP client (private/public API, rate limiter, cache)
   caris_api/                  # Optional CARIS integration (CSAR export — pyapi + batch)
@@ -166,7 +166,7 @@ def get_valid_lines(per_line: dict) -> list[str]:
   shorthand `Iterator[YieldType]` when send/return are unused.
 - **Do not** use generators when random access, `len()`, or multiple passes are required — convert to `list` explicitly
   at the call site.
-- For async pipelines (Prefect), use `AsyncGenerator` / `async for` instead of blocking generators.
+- For async pipelines (use `AsyncGenerator` / `async for` instead of blocking generators.
 
 ### Vectorized Operations
 
@@ -215,25 +215,25 @@ class SwathInfo:
 
 ## Application Sub-packages (`src/`)
 
-| Sub-package           | Role                                                                                   |
-|-----------------------|----------------------------------------------------------------------------------------|
-| `cli.py`              | Click CLI — `process` and `convert` commands; file validation and workflow dispatch    |
-| `web_ui.py`           | NiceGUI web interface — mirrors CLI behaviour through `app/processing_handler.py`      |
-| `csb_processing.py`   | Core orchestration — `processing_workflow()` (parse → clean → georeference → export)  |
-| `converter.py`        | Standalone conversion of processed GPKG/GeoJSON to other formats                      |
-| `config/`             | Pydantic config models (`CSBprocessingConfig`, `CarisAPIConfig`, `IWLSConfig`); TOML loader with `@lru_cache` |
-| `ingestion/`          | Factory-based raw data parsers (DCDB, BlackBox, Lowrance, OFM, B12-CSB, WIBL, HydroBlock) |
-| `filter/`             | Data cleaning, speed/depth/position/datetime filters, outlier detection                |
-| `transformation/`     | Georeferencing (`georeference_bathymetry`), uncertainty computation, IHO order         |
-| `tide/`               | Voronoi diagram, tide-zone join, IWLS time series fetch/interpolation, water level plot |
-| `export/`             | Multi-format export factory (GPKG, GeoJSON, CSV, Parquet, Feather, GeoTIFF, CSAR)     |
-| `metadata/`           | Metadata models, HTML/PDF report generation                                            |
-| `vessel/`             | Vessel config: JSON manager, SQLite manager, factory, unknown vessel fallback           |
-| `schema/`             | Pandera schemas (`DataLoggerSchema`, `DataLoggerWithTideZoneSchema`, `TideZoneStationSchema`, `WaterLevelSerieDataWithMetaDataSchema`) + column ID constants |
-| `logger/`             | loguru `configure_logger()`, Prefect log routing, logger IDs                           |
-| `app/`                | NiceGUI UI components: `ProcessingHandler`, `FileManager`, `ConfigManager`, `Validator`, `UIRunner`, and UI sections/components |
-| `iwls_api_request/`   | IWLS HTTP client — `get_iwls_api()` factory, private/public API, `RateLimiterHandler`, retry adapter, optional cache session |
-| `caris_api/`          | Optional CARIS integration — `export_csar_api` (Python API), `export_csar_batch` (CLI); guarded by runtime imports |
+| Sub-package         | Role                                                                                                                                                         |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `cli.py`            | Click CLI — `process` and `convert` commands; file validation and workflow dispatch                                                                          |
+| `web_ui.py`         | NiceGUI web interface — mirrors CLI behaviour through `app/processing_handler.py`                                                                            |
+| `csb_processing.py` | Core orchestration — `processing_workflow()` (parse → clean → georeference → export)                                                                         |
+| `converter.py`      | Standalone conversion of processed GPKG/GeoJSON to other formats                                                                                             |
+| `config/`           | Pydantic config models (`CSBprocessingConfig`, `CarisAPIConfig`, `IWLSConfig`); TOML loader with `@lru_cache`                                                |
+| `ingestion/`        | Factory-based raw data parsers (DCDB, BlackBox, Lowrance, OFM, B12-CSB, WIBL, HydroBlock)                                                                    |
+| `filter/`           | Data cleaning, speed/depth/position/datetime filters, outlier detection                                                                                      |
+| `transformation/`   | Georeferencing (`georeference_bathymetry`), uncertainty computation, IHO order                                                                               |
+| `tide/`             | Voronoi diagram, tide-zone join, IWLS time series fetch/interpolation, water level plot                                                                      |
+| `export/`           | Multi-format export factory (GPKG, GeoJSON, CSV, Parquet, Feather, GeoTIFF, CSAR)                                                                            |
+| `metadata/`         | Metadata models, HTML/PDF report generation                                                                                                                  |
+| `vessel/`           | Vessel config: JSON manager, SQLite manager, factory, unknown vessel fallback                                                                                |
+| `schema/`           | Pandera schemas (`DataLoggerSchema`, `DataLoggerWithTideZoneSchema`, `TideZoneStationSchema`, `WaterLevelSerieDataWithMetaDataSchema`) + column ID constants |
+| `logger/`           | loguru `configure_logger()`, log routing, logger IDs                                                                                                         |
+| `app/`              | NiceGUI UI components: `ProcessingHandler`, `FileManager`, `ConfigManager`, `Validator`, `UIRunner`, and UI sections/components                              |
+| `iwls_api_request/` | IWLS HTTP client — `get_iwls_api()` factory, private/public API, `RateLimiterHandler`, retry adapter, optional cache session                                 |
+| `caris_api/`        | Optional CARIS integration — `export_csar_api` (Python API), `export_csar_batch` (CLI); guarded by runtime imports                                           |
 
 ---
 
@@ -248,8 +248,8 @@ Treat it as executable documentation — all options with defaults are defined h
 from config.helper import load_config
 from config import get_data_config, get_caris_api_config
 
-processing_config = get_data_config(config_file=config_path)    # CSBprocessingConfig (Pydantic)
-caris_api_config  = get_caris_api_config(config_file=config_path)  # CarisAPIConfig (Pydantic)
+processing_config = get_data_config(config_file=config_path)  # CSBprocessingConfig (Pydantic)
+caris_api_config = get_caris_api_config(config_file=config_path)  # CarisAPIConfig (Pydantic)
 ```
 
 `load_config()` in `src/config/helper.py` is decorated with `@lru_cache` — avoid side effects that depend on
@@ -260,12 +260,12 @@ re-reading TOML within the same process.
 
 **Key Pydantic models** (all in `src/config/processing_config.py`):
 
-| Model                   | Purpose                                              |
-|-------------------------|------------------------------------------------------|
-| `CSBprocessingConfig`   | Top-level config (filter, export, georeference, …)  |
-| `FileTypes`             | Output format enum (`gpkg`, `geojson`, `csar`, …)   |
-| `Filter`                | Active filter enum (`SPEED_FILTER`, `DEPTH_FILTER`, …) |
-| `CarisAPIConfig`        | CARIS BASE Editor paths (optional, CSAR only)        |
+| Model                 | Purpose                                                |
+|-----------------------|--------------------------------------------------------|
+| `CSBprocessingConfig` | Top-level config (filter, export, georeference, …)     |
+| `FileTypes`           | Output format enum (`gpkg`, `geojson`, `csar`, …)      |
+| `Filter`              | Active filter enum (`SPEED_FILTER`, `DEPTH_FILTER`, …) |
+| `CarisAPIConfig`      | CARIS BASE Editor paths (optional, CSAR only)          |
 
 > Always use **`pathlib.Path`** for path construction and manipulation. Never use string concatenation or `os.path`.
 >
@@ -301,7 +301,7 @@ configure_logger(
     log_file=log_path / "CHS-CSB-Processing.log",
     std_level=processing_config.options.log_level,
     log_file_level="DEBUG",
-    extra_logger=extra_logger,   # optional NiceGUI log handler sink
+    extra_logger=extra_logger,  # optional NiceGUI log handler sink
 )
 ```
 
@@ -309,22 +309,14 @@ configure_logger(
 
 ```python
 def configure_logger(
-    log_file: Optional[Path] = None,
-    std_level: str = "INFO",
-    log_file_level: str = "TRACE",
-    rotation: str | int = "1 day",
-    retention: str | int = "30 days",
-    enqueue: bool = True,
-    extra_logger: Optional[Iterable[dict]] = None,
+        log_file: Optional[Path] = None,
+        std_level: str = "INFO",
+        log_file_level: str = "TRACE",
+        rotation: str | int = "1 day",
+        retention: str | int = "30 days",
+        enqueue: bool = True,
+        extra_logger: Optional[Iterable[dict]] = None,
 ) -> None: ...
-```
-
-For Prefect pipelines, route loguru to Prefect via `src/logger/prefect_config.py`:
-
-```python
-from logger.prefect_config import configure_prefect_logger
-
-configure_prefect_logger()
 ```
 
 ---
@@ -341,13 +333,16 @@ injected as a parameter — it decides *how* to behave, not *what* to compute.
 ```python
 from typing import Protocol
 
+
 class NamingStrategy(Protocol):
     def build_name(self, project: str, vessel: str) -> str: ...
+
 
 _STRATEGIES: dict[Structure, NamingStrategy] = {
     Structure.CH: SeawayNaming(),
     Structure.LR: SurveyNaming(),
 }
+
 
 def get_coverage_name(structure: Structure, project: str, vessel: str) -> str:
     """Retourne le nom de couverture selon la stratégie de levé."""
@@ -372,9 +367,11 @@ from typing import TypeVar
 
 T = TypeVar("T")
 
+
 def pipe(*fns: Callable[[T], T]) -> Callable[[T], T]:
     """Compose plusieurs transformations en une seule fonction de gauche à droite."""
     return lambda x: reduce(lambda v, f: f(v), fns, x)
+
 
 # Usage
 process = pipe(
@@ -403,21 +400,24 @@ never instantiate collaborators inside a class.
 from typing import Protocol
 from pathlib import Path
 
+
 # Abstraction (port)
 class DiffComputer(Protocol):
     def compute(self, coverage: Path, reference: Path) -> Path | None: ...
+
 
 # High-level module depends only on the protocol
 class GroundTruthPipeline:
     """Pipeline de comparaison ground truth."""
 
     def __init__(self, diff_computer: DiffComputer) -> None:
-        self._diff_computer = diff_computer   # injected, not instantiated here
+        self._diff_computer = diff_computer  # injected, not instantiated here
 
     def run(self, coverage: Path, reference: Path) -> GroundTruthResult | None:
         """Exécute la comparaison ground truth."""
         diff_file = self._diff_computer.compute(coverage, reference)
         ...
+
 
 # Wiring lives in main.py / factory — not in the pipeline
 pipeline = GroundTruthPipeline(diff_computer=CarisBatchDiffComputer())
@@ -451,10 +451,13 @@ cli.py / web_ui.py  ← wiring only — entrypoints that assemble and call proce
 class VesselConfigManagerABC(Protocol):
     def get_vessel_config(self, vessel_id: str) -> VesselConfig: ...
 
+
 # vessel/vessel_config_json_manager.py — adapter
 class VesselConfigJsonManager:
     """Gestionnaire de configuration de navires depuis un fichier JSON."""
+
     def get_vessel_config(self, vessel_id: str) -> VesselConfig: ...
+
 
 # csb_processing.py — wiring
 vessel_config = vessel_manager.get_vessel_config(vessel, processing_config.vessel_manager)
@@ -474,6 +477,7 @@ Used in `lib/hips_command_line_utilities/` for HIPS CLI commands.
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
 
+
 class Command(ABC):
     """Commande CLI abstraite."""
 
@@ -481,6 +485,7 @@ class Command(ABC):
     def to_args(self) -> list[str]:
         """Retourne la liste d'arguments pour subprocess."""
         ...
+
 
 @dataclass(frozen=True)
 class ExportSoundingsCommand(Command):
@@ -513,11 +518,13 @@ from collections.abc import AsyncGenerator, AsyncIterable
 
 type Item = dict  # replace with your domain type
 
+
 async def read_source(paths: list[Path]) -> AsyncGenerator[Item, None]:
     """Lit les fichiers source et émet des items bruts."""
     for path in paths:
         async for item in _parse_file(path):
             yield item
+
 
 async def validate(source: AsyncIterable[Item]) -> AsyncGenerator[Item, None]:
     """Filtre les items invalides."""
@@ -525,10 +532,12 @@ async def validate(source: AsyncIterable[Item]) -> AsyncGenerator[Item, None]:
         if _is_valid(item):
             yield item
 
+
 async def enrich(source: AsyncIterable[Item]) -> AsyncGenerator[Item, None]:
     """Enrichit chaque item avec des métadonnées."""
     async for item in source:
         yield {**item, "metadata": await _fetch_metadata(item["id"])}
+
 
 async def run_pipeline(paths: list[Path]) -> None:
     """Orchestre le pipeline complet."""
@@ -538,11 +547,10 @@ async def run_pipeline(paths: list[Path]) -> None:
 ```
 
 **Rules:**
+
 - Each stage has **one responsibility** — filter, transform, or enrich.
 - Stages must be **pure generators** (no side effects except the final sink).
 - The **sink** (final `async for` loop) is the only place with side effects (persist, log, notify).
-- Use `aiolimiter` (`lib/prefect/limiter.py`) for rate-limiting inside async stages.
-- In Prefect pipelines, wrap each stage as a `@task`; the orchestrating `run_pipeline` becomes a `@flow`.
 
 ---
 
@@ -565,12 +573,12 @@ data: gpd.GeoDataFrame = parser_files.parser.from_files(files=parser_files.files
 ```python
 # ingestion/factory_parser.py
 FACTORY_PARSER: dict[str, type[DataParserABC]] = {
-    "dcdb":       DataParserBCDB,
-    "black_box":  DataParserBlackBox,
-    "lowrance":   DataParserLowrance,
-    "ofm":        DataParserOFM,
-    "b12_csb":    DataParserB12CSB,
-    "wibl":       DataParserWIBL,
+    "dcdb": DataParserBCDB,
+    "black_box": DataParserBlackBox,
+    "lowrance": DataParserLowrance,
+    "ofm": DataParserOFM,
+    "b12_csb": DataParserB12CSB,
+    "wibl": DataParserWIBL,
     "hydroblock": DataParserHydroBlock,
 }
 ```
@@ -643,18 +651,18 @@ from app import (
 
 **Key components** (`src/app/`):
 
-| Module                  | Role                                                                    |
-|-------------------------|-------------------------------------------------------------------------|
+| Module                  | Role                                                                                  |
+|-------------------------|---------------------------------------------------------------------------------------|
 | `processing_handler.py` | `ProcessingHandler.process_files()` — calls `processing_workflow()` in asyncio thread |
-| `config_manager.py`     | `ConfigManager` — reads/writes TOML config from the UI                 |
-| `file_manager.py`       | `FileManager` — manages the list of input files                        |
-| `file_operations.py`    | `FileOperations` — drag-and-drop, file dialog helpers                  |
-| `log_handler.py`        | `UILogHandler` — loguru sink that streams log messages to the UI        |
-| `ui_validation.py`      | `Validator` — validates vessel/waterline/config UI inputs              |
-| `runner.py`             | `UIRunner` — async task runner that bridges NiceGUI event loop          |
-| `ui_events.py`          | `UIEventHandler` — wires NiceGUI events to handlers                    |
-| `network_helper.py`     | Network utility helpers (port availability…)                            |
-| `component/`            | Reusable NiceGUI component classes (log display, status, file display…) |
+| `config_manager.py`     | `ConfigManager` — reads/writes TOML config from the UI                                |
+| `file_manager.py`       | `FileManager` — manages the list of input files                                       |
+| `file_operations.py`    | `FileOperations` — drag-and-drop, file dialog helpers                                 |
+| `log_handler.py`        | `UILogHandler` — loguru sink that streams log messages to the UI                      |
+| `ui_validation.py`      | `Validator` — validates vessel/waterline/config UI inputs                             |
+| `runner.py`             | `UIRunner` — async task runner that bridges NiceGUI event loop                        |
+| `ui_events.py`          | `UIEventHandler` — wires NiceGUI events to handlers                                   |
+| `network_helper.py`     | Network utility helpers (port availability…)                                          |
+| `component/`            | Reusable NiceGUI component classes (log display, status, file display…)               |
 
 **CLI / UI parity rule:** file filtering logic (`is_valid_file` / `get_files`) is duplicated in
 `src/cli.py` and `src/app/processing_handler.py` — **keep both in sync** when changing file acceptance rules.
@@ -673,14 +681,18 @@ python src/web_ui.py        # or
 ### `src/csb_processing.py`
 
 - `processing_workflow(files, vessel, output, ...)` — canonical end-to-end behavior anchor.
-- Sequence: load config → parse → `cleaner.clean_data` → georeference → optional IWLS iteration loop → export data + metadata.
-- IWLS loop iterates over Voronoi zones and excluded stations until `Depth_processed_meter` has no NaN or `max_iterations` reached.
+- Sequence: load config → parse → `cleaner.clean_data` → georeference → optional IWLS iteration loop → export data +
+  metadata.
+- IWLS loop iterates over Voronoi zones and excluded stations until `Depth_processed_meter` has no NaN or
+  `max_iterations` reached.
 - Completion criterion: `schema_ids.DEPTH_PROCESSED_METER` without NaN.
 
 ### `src/config/`
 
-- `processing_config.py` — `CSBprocessingConfig` (top-level Pydantic model), `FileTypes` enum, `Filter` enum; duration regex `^\d+\s*(min|h)$`.
-- `iwls_api_config.py` — `IWLSConfig`, `CacheConfig`; `CacheConfig.validate_cache_path` resolves relative paths and creates the folder.
+- `processing_config.py` — `CSBprocessingConfig` (top-level Pydantic model), `FileTypes` enum, `Filter` enum; duration
+  regex `^\d+\s*(min|h)$`.
+- `iwls_api_config.py` — `IWLSConfig`, `CacheConfig`; `CacheConfig.validate_cache_path` resolves relative paths and
+  creates the folder.
 - `caris_config.py` — `CarisAPIConfig`; validates CARIS install paths before run.
 - `helper.py` — `load_config(config_file: Path)` with `@lru_cache`; `get_data_config()`, `get_caris_api_config()`.
 
@@ -689,7 +701,8 @@ python src/web_ui.py        # or
 - `parser_abc.py` — abstract `DataParserABC` with `from_files()`.
 - `factory_parser.py` — `FACTORY_PARSER` dict + `get_files_parser()` entry point.
 - `parser_models.py` — `ParserFiles` dataclass; `DATA_TYPE_MAPPING`; `MultipleParsersError`.
-- Implementations: `parser_dcdb.py`, `parser_black_box.py`, `parser_lowrance.py`, `parser_ofm.py`, `parser_b12_csb.py`, `parser_wibl.py`, `parser_hydroblock.py`.
+- Implementations: `parser_dcdb.py`, `parser_black_box.py`, `parser_lowrance.py`, `parser_ofm.py`, `parser_b12_csb.py`,
+  `parser_wibl.py`, `parser_hydroblock.py`.
 - `warning_capture.py` — captures parser warnings without propagation.
 
 ### `src/filter/`
@@ -703,7 +716,8 @@ python src/web_ui.py        # or
 
 ### `src/transformation/`
 
-- `georeference.py` — `georeference_bathymetry()` — applies waterline, sounder offset, water level correction, TVU/THU computation.
+- `georeference.py` — `georeference_bathymetry()` — applies waterline, sounder offset, water level correction, TVU/THU
+  computation.
 - `transformation_models.py` — `SensorProtocol`, `WaterlineProtocol` (structural typing for sensor injection).
 - `uncertainty/` — TVU and THU computation modules.
 - `order/` — IHO order classification support.
@@ -713,8 +727,10 @@ python src/web_ui.py        # or
 - `voronoi/voronoi_algorithm.py` — Voronoi diagram computation from station positions.
 - `voronoi/voronoi_geodataframe.py` — `get_voronoi_geodataframe()`, `get_station_title()`.
 - `voronoi/voronoi_models.py` — Voronoi model types.
-- `tide_zone_processing.py` — `add_tide_zone_id_to_geodataframe()` (rename contract: `id/code/name` → `Tide_zone_*`); `get_intersected_tide_zone_info()`.
-- `time_serie/time_serie_dataframe.py` — `get_water_level_data_for_stations()` — fetches and interpolates IWLS time series per zone.
+- `tide_zone_processing.py` — `add_tide_zone_id_to_geodataframe()` (rename contract: `id/code/name` → `Tide_zone_*`);
+  `get_intersected_tide_zone_info()`.
+- `time_serie/time_serie_dataframe.py` — `get_water_level_data_for_stations()` — fetches and interpolates IWLS time
+  series per zone.
 - `time_serie/time_serie_models.py` — time series data models.
 - `time_serie/time_serie_retry.py` — retry logic for time series fetching.
 - `water_level_export.py` — `export_station_water_levels()`, `plot_water_levels()`.
@@ -724,7 +740,8 @@ python src/web_ui.py        # or
 
 ### `src/export/`
 
-- `export_helpers.py` — `get_export_file_name()` (`CH-<logger>-<vessel>-<start>-<end>` convention); `finalize_geodataframe()`; `export_processed_data_and_metadata()`.
+- `export_helpers.py` — `get_export_file_name()` (`CH-<logger>-<vessel>-<start>-<end>` convention);
+  `finalize_geodataframe()`; `export_processed_data_and_metadata()`.
 - `factory_export.py` — `FACTORY_EXPORT_GEODATAFRAME` dict; `export_geodataframe()` entry point.
 - `export_format.py` — per-format implementations; CARIS imports are **runtime-only** (inside functions).
 - `crs.py` — CRS helpers for export.
@@ -752,10 +769,12 @@ python src/web_ui.py        # or
 
 ### `src/schema/`
 
-- `model.py` — Pandera schemas: `DataLoggerSchema`, `DataLoggerWithTideZoneSchema`, `TideZoneStationSchema`, `WaterLevelSerieDataWithMetaDataSchema`.
+- `model.py` — Pandera schemas: `DataLoggerSchema`, `DataLoggerWithTideZoneSchema`, `TideZoneStationSchema`,
+  `WaterLevelSerieDataWithMetaDataSchema`.
 - `model_ids.py` — Column name constants (`DEPTH_PROCESSED_METER`, `TIME_UTC`, `TIDE_ZONE_ID`, …).
 
-> **When adding/changing dataframe columns:** update `model.py` first, then tide/georeference transforms, then `export_helpers.py::finalize_geodataframe()`.
+> **When adding/changing dataframe columns:** update `model.py` first, then tide/georeference transforms, then
+`export_helpers.py::finalize_geodataframe()`.
 
 ### `src/iwls_api_request/`
 
@@ -763,7 +782,8 @@ python src/web_ui.py        # or
 - `api/iwls_private.py`, `api/iwls_public.py` — private/public API implementations.
 - `api/iwls_api_abc.py` — `IWLSapiABC` protocol.
 - `api/endpoint.py` — `Endpoint`, `EndpointType` models.
-- `handler/http_query_handler.py` — `RateLimiterHandler`, `RequestsHandler`, `CachedSessionConfig`, `get_retry_adapter()`.
+- `handler/http_query_handler.py` — `RateLimiterHandler`, `RequestsHandler`, `CachedSessionConfig`,
+  `get_retry_adapter()`.
 - `handler/models_handler.py` — `RetryAdapterConfig`.
 
 ### `src/caris_api/` (optional — CSAR export only)
@@ -773,30 +793,31 @@ python src/web_ui.py        # or
 - `caris_batch/export_csar_batch.py` — CSAR export via carisbatch.exe CLI fallback.
 - `model_caris.py` — CARIS data models.
 
-> **Never import from `caris_api/` at module level.** All imports must be inside functions to avoid hard dependency failures when CARIS is absent.
+> **Never import from `caris_api/` at module level.** All imports must be inside functions to avoid hard dependency
+> failures when CARIS is absent.
 
 ---
 
 ## External Dependencies
 
-| Dependency        | Version         | Usage                                                        |
-|-------------------|-----------------|--------------------------------------------------------------|
-| Python            | 3.11            | Required (CARIS API constraint if CSAR export used)          |
-| geopandas         | pip             | Spatial data processing (GeoDataFrame)                       |
-| pandas            | pip             | Tabular data, time series                                    |
-| numpy             | pip             | Vectorized numerical computation                             |
-| pandera           | pip             | DataFrame schema validation (`src/schema/model.py`)          |
-| pydantic          | pip             | Config model validation (`src/config/`)                      |
-| loguru            | pip             | Logging (`src/logger/loguru_config.py`)                      |
-| click             | pip             | CLI (`src/cli.py`)                                           |
-| nicegui           | pip             | Web UI (`src/web_ui.py`, `src/app/`)                         |
-| shapely           | pip             | Geometry operations (Voronoi, spatial joins)                 |
-| pyproj            | pip             | CRS transformations                                          |
-| requests          | pip             | HTTP client for IWLS API                                     |
-| requests-ratelimiter | pip          | Rate limiting for IWLS API requests                          |
-| requests-cache    | pip             | Optional HTTP caching for IWLS API                           |
-| cachetools        | pip             | `LRUCache` in `transformation/georeference.py`               |
-| CARIS BASE Editor | 6.1 (optional)  | CSAR export — `C:\Program Files\CARIS\BASE Editor\6.1\`      |
+| Dependency           | Version        | Usage                                                   |
+|----------------------|----------------|---------------------------------------------------------|
+| Python               | 3.11           | Required (CARIS API constraint if CSAR export used)     |
+| geopandas            | pip            | Spatial data processing (GeoDataFrame)                  |
+| pandas               | pip            | Tabular data, time series                               |
+| numpy                | pip            | Vectorized numerical computation                        |
+| pandera              | pip            | DataFrame schema validation (`src/schema/model.py`)     |
+| pydantic             | pip            | Config model validation (`src/config/`)                 |
+| loguru               | pip            | Logging (`src/logger/loguru_config.py`)                 |
+| click                | pip            | CLI (`src/cli.py`)                                      |
+| nicegui              | pip            | Web UI (`src/web_ui.py`, `src/app/`)                    |
+| shapely              | pip            | Geometry operations (Voronoi, spatial joins)            |
+| pyproj               | pip            | CRS transformations                                     |
+| requests             | pip            | HTTP client for IWLS API                                |
+| requests-ratelimiter | pip            | Rate limiting for IWLS API requests                     |
+| requests-cache       | pip            | Optional HTTP caching for IWLS API                      |
+| cachetools           | pip            | `LRUCache` in `transformation/georeference.py`          |
+| CARIS BASE Editor    | 6.1 (optional) | CSAR export — `C:\Program Files\CARIS\BASE Editor\6.1\` |
 
 > Install dependencies with `uv`: `uv sync`
 
@@ -828,23 +849,23 @@ python src/web_ui.py
 
 ## Important Reference Files
 
-| File                                        | Purpose                                                      |
-|---------------------------------------------|--------------------------------------------------------------|
-| `src/csb_processing.py`                     | Canonical workflow — behavior anchor for all feature changes |
-| `src/CONFIG_csb-processing.toml`            | Executable defaults — source of truth for all options        |
-| `src/config/processing_config.py`           | `CSBprocessingConfig` Pydantic model (all config sections)   |
-| `src/config/helper.py`                      | `load_config()` with `@lru_cache`                            |
-| `src/schema/model.py`                       | Pandera schemas — update first for any column changes        |
-| `src/schema/model_ids.py`                   | Column name constants — always import from here              |
-| `src/ingestion/factory_parser.py`           | Parser factory — register new parsers here                   |
-| `src/ingestion/parser_models.py`            | `ParserFiles`, `DATA_TYPE_MAPPING`                           |
-| `src/export/factory_export.py`              | Export factory — register new formats here                   |
-| `src/export/export_helpers.py`              | `get_export_file_name()`, `finalize_geodataframe()`          |
-| `src/logger/loguru_config.py`               | `configure_logger()` — centralized loguru setup              |
-| `src/iwls_api_request/api_facade.py`        | `get_iwls_api()` — IWLS client factory                       |
-| `src/app/processing_handler.py`             | UI workflow mirror — keep in sync with `cli.py`              |
-| `src/tide/tide_zone_processing.py`          | Tide-zone join contract (`id/code/name` → `Tide_zone_*`)     |
-| `flow.mermaid`                              | Visual mirror of `processing_workflow` branches              |
+| File                                 | Purpose                                                      |
+|--------------------------------------|--------------------------------------------------------------|
+| `src/csb_processing.py`              | Canonical workflow — behavior anchor for all feature changes |
+| `src/CONFIG_csb-processing.toml`     | Executable defaults — source of truth for all options        |
+| `src/config/processing_config.py`    | `CSBprocessingConfig` Pydantic model (all config sections)   |
+| `src/config/helper.py`               | `load_config()` with `@lru_cache`                            |
+| `src/schema/model.py`                | Pandera schemas — update first for any column changes        |
+| `src/schema/model_ids.py`            | Column name constants — always import from here              |
+| `src/ingestion/factory_parser.py`    | Parser factory — register new parsers here                   |
+| `src/ingestion/parser_models.py`     | `ParserFiles`, `DATA_TYPE_MAPPING`                           |
+| `src/export/factory_export.py`       | Export factory — register new formats here                   |
+| `src/export/export_helpers.py`       | `get_export_file_name()`, `finalize_geodataframe()`          |
+| `src/logger/loguru_config.py`        | `configure_logger()` — centralized loguru setup              |
+| `src/iwls_api_request/api_facade.py` | `get_iwls_api()` — IWLS client factory                       |
+| `src/app/processing_handler.py`      | UI workflow mirror — keep in sync with `cli.py`              |
+| `src/tide/tide_zone_processing.py`   | Tide-zone join contract (`id/code/name` → `Tide_zone_*`)     |
+| `flow.mermaid`                       | Visual mirror of `processing_workflow` branches              |
 
 ---
 
@@ -866,7 +887,8 @@ These rules apply when operating as an autonomous coding agent (Claude Code, Cop
 
 - **`src/caris_api/`** — CARIS integration. Do not modify unless explicitly asked. Keep all imports runtime-only.
 - **`src/schema/model.py`** — Pandera schemas are the data contract. Never remove or rename columns without being asked.
-- **`src/CONFIG_csb-processing.toml`** — Source of truth for defaults. Only add keys, never remove or rename without being asked.
+- **`src/CONFIG_csb-processing.toml`** — Source of truth for defaults. Only add keys, never remove or rename without
+  being asked.
 - **Pre-existing dead code** — Mention it, don't delete it. Only remove code that YOUR changes made orphaned.
 
 ### During Implementation
@@ -874,8 +896,10 @@ These rules apply when operating as an autonomous coding agent (Claude Code, Cop
 - **Surgical edits.** Every changed line must trace directly to the user's request.
 - **Match existing style.** Even if you'd do it differently — don't improve unrelated adjacent code.
 - **Short functions.** If a function exceeds ~30 lines, extract helpers.
-- **CLI / UI parity.** If you change file acceptance logic, update **both** `src/cli.py` and `src/app/processing_handler.py`.
-- **Schema first.** If you add/change DataFrame columns, update `src/schema/model.py` before touching transformations or exports.
+- **CLI / UI parity.** If you change file acceptance logic, update **both** `src/cli.py` and
+  `src/app/processing_handler.py`.
+- **Schema first.** If you add/change DataFrame columns, update `src/schema/model.py` before touching transformations or
+  exports.
 
 ### After Each File Change
 
