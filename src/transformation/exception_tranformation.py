@@ -6,6 +6,8 @@ Ce module contient les classes d'exceptions qui sont levées lors de la transfor
 
 from dataclasses import dataclass
 
+import i18n
+
 
 @dataclass(frozen=True)
 class WaterLevelDataRequiredError(Exception):
@@ -14,4 +16,4 @@ class WaterLevelDataRequiredError(Exception):
     """
 
     def __str__(self):
-        return "Les données de niveau d'eau sont requises pour effectuer le géoréférencement."
+        return i18n.t("transformation.exception_tranformation.water_level_required")

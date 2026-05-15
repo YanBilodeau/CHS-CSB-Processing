@@ -8,6 +8,7 @@ from multiprocessing import cpu_count
 
 from cachetools import LRUCache
 import geopandas as gpd
+import i18n
 import numpy as np
 from loguru import logger
 import pandas as pd
@@ -55,7 +56,7 @@ def _validate_and_sort_data(water_level_data: dict[str, pd.DataFrame]) -> None:
     :param water_level_data: Niveau d'eau.
     :type water_level_data: dict[str, pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]]
     """
-    LOGGER.debug("Validation du schéma et tri des données de niveau d'eau.")
+    LOGGER.debug(i18n.t("transformation.georeference.validate_sort_water_level"))
 
     for water_level_df in water_level_data.values():
         schema.validate_schema(
@@ -63,7 +64,10 @@ def _validate_and_sort_data(water_level_data: dict[str, pd.DataFrame]) -> None:
         )
 
         LOGGER.debug(
-            f"Dataframe des niveaux d'eau validé : {water_level_df.attrs.get(schema_ids.STATION_ID)}."
+            i18n.t(
+                "transformation.georeference.water_level_dataframe_validated",
+                station_id=water_level_df.attrs.get(schema_ids.STATION_ID),
+            )
         )
 
         water_level_df.sort_values(by=schema_ids.EVENT_DATE, inplace=True)
@@ -116,7 +120,9 @@ def get_water_levels_vectorized(
     """
     _validate_and_sort_data(water_level_data)
 
-    LOGGER.debug(f"Récupération des niveaux d'eau pour les {len(data)} sondes.")
+    LOGGER.debug(
+        i18n.t("transformation.georeference.fetching_water_levels", count=len(data))
+    )
 
     # Initialiser les colonnes de résultat directement dans le DataFrame original
     data.loc[:, schema_ids.WATER_LEVEL_METER] = np.nan
@@ -181,7 +187,10 @@ def get_water_levels_vectorized(
             )
 
     LOGGER.debug(
-        f"Récupération des niveaux d'eau terminée. Il reste {data[schema_ids.WATER_LEVEL_METER].isna().sum()} sondes sans niveau d'eau."
+        i18n.t(
+            "transformation.georeference.fetching_water_levels_done",
+            remaining=data[schema_ids.WATER_LEVEL_METER].isna().sum(),
+        )
     )
 
     return data
@@ -218,9 +227,7 @@ def _handle_out_of_bounds_after(
     if not out_of_bounds_after.any():
         return
 
-    LOGGER.debug(
-        f"Récupération des niveaux d'eau pour les sondes qui sont hors limites après."
-    )
+    LOGGER.debug(i18n.t("transformation.georeference.out_of_bounds_after"))
 
     max_event_idx = len(event_dates_wl) - 1
     last_event_time = event_dates_wl[max_event_idx]
@@ -271,9 +278,7 @@ def _handle_out_of_bounds_before(
     if not out_of_bounds_before.any():
         return
 
-    LOGGER.debug(
-        f"Récupération des niveaux d'eau pour les sondes qui sont hors limites avant."
-    )
+    LOGGER.debug(i18n.t("transformation.georeference.out_of_bounds_before"))
 
     first_event_time = event_dates_wl[0]
     time_diffs_first = np.abs(
@@ -329,9 +334,7 @@ def _handle_interpolation(
     if not valid_interpolation.any():
         return
 
-    LOGGER.debug(
-        f"Récupération des niveaux d'eau pour les sondes qui nécessitent une interpolation."
-    )
+    LOGGER.debug(i18n.t("transformation.georeference.interpolation_needed"))
 
     interp_indices = indices_to_process[valid_interpolation]
     interp_pos_before = positions_before[valid_interpolation]
@@ -467,7 +470,7 @@ def get_zero_water_levels(data: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
     LOGGER.debug(
-        f"Utilisation d'un niveau d'eau de 0 mètre pour les {len(data)} sondes."
+        i18n.t("transformation.georeference.zero_water_level", count=len(data))
     )
 
     data.loc[:, schema_ids.WATER_LEVEL_METER] = 0.0
@@ -495,7 +498,7 @@ def apply_georeference_bathymetry(
     :return: Données de profondeur géoréférencées.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
-    LOGGER.debug(f"Application des niveaux d'eau et des bras de levier aux sondes.")
+    LOGGER.debug(i18n.t("transformation.georeference.applying_lever_arms"))
 
     data.loc[:, schema_ids.DEPTH_PROCESSED_METER] = round(
         (
@@ -521,9 +524,7 @@ def compute_order(
     :return: Données de profondeur avec l'ordre de la TVU et de la THU.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
-    LOGGER.debug(
-        f"Calcul de l'ordre IHO selon la TVU et la THU des données de profondeur."
-    )
+    LOGGER.debug(i18n.t("transformation.georeference.computing_iho_order"))
 
     depths = data[schema_ids.DEPTH_RAW_METER].values
     tvus = data[schema_ids.UNCERTAINTY].values
@@ -591,10 +592,13 @@ def georeference_bathymetry(
     )
 
     LOGGER.info(
-        f"Géoréférencement des données bathymétriques : {len(data_to_process):,} sondes à traiter."
+        i18n.t(
+            "transformation.georeference.georeferencing_soundings",
+            count=f"{len(data_to_process):,}",
+        )
     )
 
-    LOGGER.info("Récupération des niveaux d'eau pour les sondes.")
+    LOGGER.info(i18n.t("transformation.georeference.retrieving_water_levels"))
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
         (
             get_water_levels_vectorized(
@@ -607,7 +611,7 @@ def georeference_bathymetry(
         else get_zero_water_levels(data=data_to_process)
     )
 
-    LOGGER.info("Application des niveaux d'eau et des bras de levier aux sondes.")
+    LOGGER.info(i18n.t("transformation.georeference.applying_water_levels_lever_arms"))
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
         apply_georeference_bathymetry(
             data=data_to_process,
@@ -617,7 +621,7 @@ def georeference_bathymetry(
         )
     )
 
-    LOGGER.info("Calcul de l'incertitude verticale des données de profondeur.")
+    LOGGER.info(i18n.t("transformation.georeference.computing_tvu"))
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
         uncertainty.compute_tvu(
             data=data_to_process,
@@ -628,7 +632,7 @@ def georeference_bathymetry(
         )
     )
 
-    LOGGER.info("Calcul de l'incertitude horizontale des données de profondeur.")
+    LOGGER.info(i18n.t("transformation.georeference.computing_thu"))
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
         uncertainty.compute_thu(
             data=data_to_process,
@@ -638,22 +642,28 @@ def georeference_bathymetry(
         )
     )
 
-    LOGGER.info("Calcul de l'ordre IHO selon la TVU et la THU.")
+    LOGGER.info(i18n.t("transformation.georeference.computing_order"))
     data_to_process: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema] = (
         compute_order(data=data_to_process)
     )
 
     data.update(data_to_process)  # Mise à jour des données
 
-    LOGGER.info(f"Géoréférencement des données bathymétrique terminé.")
+    LOGGER.info(i18n.t("transformation.georeference.georeferencing_done"))
     LOGGER.success(
-        f"{data_to_process['Depth_processed_meter'].notna().sum():,} sondes géoréférencées."
+        i18n.t(
+            "transformation.georeference.soundings_georeferenced",
+            count=f"{data_to_process['Depth_processed_meter'].notna().sum():,}",
+        )
     )
 
     depth_nan: np.int64 = data[schema_ids.DEPTH_PROCESSED_METER].isna().sum()
     if depth_nan > 0:
         LOGGER.warning(
-            f"Il reste {depth_nan:,} sondes sans valeur de profondeur réduite."
+            i18n.t(
+                "transformation.georeference.remaining_soundings_without_depth",
+                count=f"{depth_nan:,}",
+            )
         )
 
     return data

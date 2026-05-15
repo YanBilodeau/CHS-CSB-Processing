@@ -12,6 +12,7 @@ from typing import Optional, Protocol
 import json
 
 import geopandas as gpd
+import i18n
 import numpy as np
 from loguru import logger
 
@@ -60,7 +61,12 @@ def get_station_uncertainty(
     :return: Dictionnaire des valeurs d'incertitude par station.
     :rtype: dict[str, dict[str, str | float]]
     """
-    LOGGER.debug(f"Chargement des incertitudes de WLP par station depuis {json_file}.")
+    LOGGER.debug(
+        i18n.t(
+            "transformation.uncertainty.compute_tpu.loading_station_uncertainty",
+            json_file=json_file,
+        )
+    )
 
     with open(json_file, "r", encoding="utf-8-sig") as file:
         data = json.load(file)
@@ -82,7 +88,10 @@ def get_datalogger_uncertainty(
     :rtype: dict[str, dict[str, float]]
     """
     LOGGER.debug(
-        f"Chargement des constantes d'incertitude par DataLoggerType depuis {json_file}."
+        i18n.t(
+            "transformation.uncertainty.compute_tpu.loading_datalogger_uncertainty",
+            json_file=json_file,
+        )
     )
 
     with open(json_file, "r", encoding="utf-8-sig") as file:
@@ -120,13 +129,22 @@ def _get_constant_for_datalogger(
         constant = entry.get(key)
         if constant is not None:
             LOGGER.debug(
-                f"{key} pour '{datalogger_type}' trouvée dans le JSON : {constant}."
+                i18n.t(
+                    "transformation.uncertainty.compute_tpu.constant_found_in_json",
+                    constant_key=key,
+                    datalogger_type=datalogger_type,
+                    constant=constant,
+                )
             )
             return float(constant)
 
     LOGGER.debug(
-        f"DataLoggerType '{datalogger_type}' absent du JSON ({key}) — "
-        f"utilisation de la valeur par défaut : {default}."
+        i18n.t(
+            "transformation.uncertainty.compute_tpu.datalogger_not_in_json",
+            datalogger_type=datalogger_type,
+            constant_key=key,
+            default=default,
+        )
     )
 
     return default
@@ -197,7 +215,12 @@ def get_ssp_errors(file_path: Path = SSP_ERRORS_PATH) -> gpd.GeoDataFrame:
     :return: GeoDataFrame des erreurs SSP.
     :rtype: gpd.GeoDataFrame
     """
-    LOGGER.debug(f"Chargement des erreurs SSP depuis {file_path}.")
+    LOGGER.debug(
+        i18n.t(
+            "transformation.uncertainty.compute_tpu.loading_ssp_errors",
+            file_path=file_path,
+        )
+    )
 
     return gpd.read_file(file_path)
 
@@ -221,7 +244,11 @@ def get_equidistant_azimuthal_crs(
     proj_str = f"+proj=aeqd +lat_0={central_lat} +lon_0={central_lon} +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
 
     LOGGER.debug(
-        f"Projection équidistante azimutale centrée sur ({central_lat}, {central_lon})."
+        i18n.t(
+            "transformation.uncertainty.compute_tpu.azimuthal_projection",
+            lat=central_lat,
+            lon=central_lon,
+        )
     )
 
     return proj_str
@@ -241,7 +268,9 @@ def reproject_to_crs(
     :return: Liste de GeoDataFrames reprojetées.
     :rtype: list[gpd.GeoDataFrame]
     """
-    LOGGER.debug(f"Reprojection des données vers le CRS: {crs}.")
+    LOGGER.debug(
+        i18n.t("transformation.uncertainty.compute_tpu.reprojecting_to_crs", crs=crs)
+    )
 
     reprojected_gdfs = [gdf.to_crs(crs) for gdf in data]
 
@@ -266,7 +295,11 @@ def filter_data_by_bbox(
     :rtype: gpd.GeoDataFrame
     """
     LOGGER.debug(
-        f"Filtrage données par bounding box ({bbox}) avec un buffer de {buffer} mètres."
+        i18n.t(
+            "transformation.uncertainty.compute_tpu.filtering_by_bbox",
+            bbox=bbox,
+            buffer=buffer,
+        )
     )
 
     return data.cx[
@@ -299,7 +332,11 @@ def perform_spatial_join_with_data(
     :rtype: gpd.GeoDataFrame
     """
     LOGGER.debug(
-        f"Jointure spatiale de la colonne '{column_to_join}' avec une distance maximale de {max_distance} mètres."
+        i18n.t(
+            "transformation.uncertainty.compute_tpu.spatial_join_column",
+            column=column_to_join,
+            max_distance=max_distance,
+        )
     )
 
     # Jointure spatiale optimisée
@@ -349,7 +386,7 @@ def join_with_ssp_errors(
         data=ssp_errors_to_join, bbox=data_to_join.total_bounds, buffer=max_distance
     )
 
-    LOGGER.debug("Jointure spatiale des données de profondeur avec les erreurs SSP.")
+    LOGGER.debug(i18n.t("transformation.uncertainty.compute_tpu.joining_ssp_errors"))
     data_with_ssp = perform_spatial_join_with_data(
         data=data_to_join,
         data_to_join=ssp_errors_to_join,
@@ -400,8 +437,16 @@ def compute_tvu(
     use_constant: bool = not apply_water_level or already_at_chart_datum
 
     LOGGER.debug(
-        f"TVU — mode : {'constante fixe' if use_constant else 'mapping par station'} "
-        f"(apply_water_level={apply_water_level}, already_at_chart_datum={already_at_chart_datum})."
+        i18n.t(
+            "transformation.uncertainty.compute_tpu.tvu_mode",
+            mode=(
+                i18n.t("transformation.uncertainty.compute_tpu.tvu_mode_constant")
+                if use_constant
+                else i18n.t("transformation.uncertainty.compute_tpu.tvu_mode_mapping")
+            ),
+            apply_water_level=apply_water_level,
+            already_at_chart_datum=already_at_chart_datum,
+        )
     )
 
     # Résoudre la constante inconditionnellement pour éviter une variable potentiellement
@@ -410,8 +455,11 @@ def compute_tvu(
     if already_at_chart_datum and processing_context is not None:
         constant_tvu = processing_context.resolve_constant_tvu(default=0.0)
         LOGGER.debug(
-            f"TVU — constante résolue depuis ProcessingContext "
-            f"(datalogger_type={processing_context.datalogger_type}) : {constant_tvu}."
+            i18n.t(
+                "transformation.uncertainty.compute_tpu.tvu_constant_resolved",
+                datalogger_type=processing_context.datalogger_type,
+                constant_tvu=constant_tvu,
+            )
         )
 
     # station_mapping = create_uncertainty_mapping()
@@ -422,7 +470,7 @@ def compute_tvu(
         tvu_config.default_depth_ssp_error_coefficient,
     )
 
-    LOGGER.debug(f"Calcul du l'incertitude verticale des données de profondeur.")
+    LOGGER.debug(i18n.t("transformation.uncertainty.compute_tpu.computing_tvu"))
 
     depth_component = data[schema_ids.DEPTH_RAW_METER] * (
         (tvu_config.depth_coefficient_tvu + data[SSP_ERROR_COEFFICIENT]) / 100
@@ -430,9 +478,15 @@ def compute_tvu(
 
     dc = np.asarray(depth_component)
     LOGGER.debug(
-        f"TVU — depth_component : min={dc.min():.4f}, max={dc.max():.4f}, mean={dc.mean():.4f} "
-        f"(depth_coefficient_tvu={tvu_config.depth_coefficient_tvu}, "
-        f"ssp_coeff min={data[SSP_ERROR_COEFFICIENT].min():.4f} / max={data[SSP_ERROR_COEFFICIENT].max():.4f})."
+        i18n.t(
+            "transformation.uncertainty.compute_tpu.tvu_depth_component",
+            dc_min=f"{dc.min():.4f}",
+            dc_max=f"{dc.max():.4f}",
+            dc_mean=f"{dc.mean():.4f}",
+            depth_coeff=tvu_config.depth_coefficient_tvu,
+            ssp_min=f"{data[SSP_ERROR_COEFFICIENT].min():.4f}",
+            ssp_max=f"{data[SSP_ERROR_COEFFICIENT].max():.4f}",
+        )
     )
 
     station_component = (
@@ -449,13 +503,23 @@ def compute_tvu(
     )
 
     if use_constant:
-        LOGGER.debug(f"TVU — station_component : constante fixe = {constant_tvu}.")
+        LOGGER.debug(
+            i18n.t(
+                "transformation.uncertainty.compute_tpu.tvu_station_component_constant",
+                constant=constant_tvu,
+            )
+        )
     else:
         sc = np.asarray(station_component)
         LOGGER.debug(
-            f"TVU — station_component : mapping par station — "
-            f"min={sc.min():.4f}, max={sc.max():.4f}, mean={sc.mean():.4f} "
-            f"(wlo={tvu_config.constant_tvu_wlo}, défaut wlp={tvu_config.default_constant_tvu_wlp})."
+            i18n.t(
+                "transformation.uncertainty.compute_tpu.tvu_station_component_mapping",
+                sc_min=f"{sc.min():.4f}",
+                sc_max=f"{sc.max():.4f}",
+                sc_mean=f"{sc.mean():.4f}",
+                wlo=tvu_config.constant_tvu_wlo,
+                wlp=tvu_config.default_constant_tvu_wlp,
+            )
         )
 
     data.loc[:, schema_ids.UNCERTAINTY] = (depth_component + station_component).round(
@@ -494,29 +558,36 @@ def compute_thu(
     :return: Données de profondeur avec le THU.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
-    LOGGER.debug(f"Calcul de l'incertitude horizontale des données de profondeur.")
+    LOGGER.debug(i18n.t("transformation.uncertainty.compute_tpu.computing_thu"))
 
     if processing_context is not None:
         constant_thu: float = processing_context.resolve_constant_thu(
             thu_config.constant_thu
         )
-        # resolve_constant_thu logue déjà la source (JSON vs défaut TOML) ;
-        # on confirme ici la valeur effective retenue.
         LOGGER.debug(
-            f"THU — constant_thu résolu depuis ProcessingContext "
-            f"(datalogger_type={processing_context.datalogger_type}) : {constant_thu} "
-            f"(TOML défaut = {thu_config.constant_thu})."
+            i18n.t(
+                "transformation.uncertainty.compute_tpu.thu_constant_resolved",
+                datalogger_type=processing_context.datalogger_type,
+                constant_thu=constant_thu,
+                toml_default=thu_config.constant_thu,
+            )
         )
     else:
         constant_thu = thu_config.constant_thu
         LOGGER.debug(
-            f"THU — constant_thu depuis TOML (pas de ProcessingContext) : {constant_thu}."
+            i18n.t(
+                "transformation.uncertainty.compute_tpu.thu_constant_toml",
+                constant_thu=constant_thu,
+            )
         )
 
     thu_depth_coeficient: float = np.tan(np.radians(thu_config.cone_angle_sonar) / 2)
     LOGGER.debug(
-        f"THU — cone_angle_sonar={thu_config.cone_angle_sonar}° → "
-        f"thu_depth_coeficient={thu_depth_coeficient:.6f}."
+        i18n.t(
+            "transformation.uncertainty.compute_tpu.thu_cone_angle",
+            cone_angle=thu_config.cone_angle_sonar,
+            depth_coeff=f"{thu_depth_coeficient:.6f}",
+        )
     )
 
     data.loc[:, schema_ids.THU] = round(
@@ -526,8 +597,12 @@ def compute_thu(
 
     thu_vals = data[schema_ids.THU]
     LOGGER.debug(
-        f"THU — résultat : min={thu_vals.min():.4f}, max={thu_vals.max():.4f}, "
-        f"mean={thu_vals.mean():.4f}."
+        i18n.t(
+            "transformation.uncertainty.compute_tpu.thu_result",
+            thu_min=f"{thu_vals.min():.4f}",
+            thu_max=f"{thu_vals.max():.4f}",
+            thu_mean=f"{thu_vals.mean():.4f}",
+        )
     )
 
     return data
