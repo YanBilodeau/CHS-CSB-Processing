@@ -1,0 +1,8 @@
+en:
+  validating_schema: "Validating schema %{schema}."
+  schema_validation_error: "Schema validation error for %{schema}: %{error}."
+  schema_expected_attrs: "Expected attributes in schema %{schema}: %{attrs}."
+  metadata_validated: "Time series metadata for %{name} validated successfully."
+  error_missing_metadata_attrs: "Missing attributes in metadata of %{name}: %{attrs}."
+  error_param_not_found: "Parameter '%{param}' not found in kwargs."
+

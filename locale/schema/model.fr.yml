@@ -1,0 +1,7 @@
+fr:
+  validating_schema: "Validation du schéma %{schema}."
+  schema_validation_error: "Erreur de validation du schéma %{schema} : %{error}."
+  schema_expected_attrs: "Attributs attendus dans le schéma %{schema} : %{attrs}."
+  metadata_validated: "Métadonnées des séries temporelles de %{name} validées avec succès."
+  error_missing_metadata_attrs: "Attributs manquants dans les métadonnées de %{name} : %{attrs}."
+  error_param_not_found: "Paramètre '%{param}' non trouvé dans les kwargs."

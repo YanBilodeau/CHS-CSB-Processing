@@ -4,4 +4,4 @@ fr:
   already_at_chart_datum: "Le jeu de données a été fourni déjà réduit au zéro des cartes. Aucune réduction du niveau d'eau n'a été appliquée."
   chart_datum: "Zéro des cartes"
   default_positioning_method: "Wide Area Augmentation System (WAAS)"
-  positioning_method_hydroblock: "Positionnement par point précis (PPP)"
+  positioning_method_hydroblock: "Precise Point Positioning (PPP)"

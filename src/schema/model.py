@@ -10,6 +10,7 @@ import functools
 from typing import Optional, Callable, Type, Any
 
 import geopandas as gpd
+import i18n
 import numpy as np
 import pandas as pd
 import pandera.pandas as pa
@@ -171,12 +172,14 @@ class WaterLevelSerieDataWithMetaDataSchema(WaterLevelSerieDataSchema):
         missing_attrs = [attr for attr in required_attrs if attr not in validated_df.attrs]  # type: ignore
         if missing_attrs:
             raise ValueError(
-                f"Attributs manquants dans les métadonnées de {cls.__name__} : {', '.join(missing_attrs)}"
+                i18n.t(
+                    "schema.model.error_missing_metadata_attrs",
+                    name=cls.__name__,
+                    attrs=", ".join(missing_attrs),
+                )
             )
 
-        LOGGER.debug(
-            f"Métadonnées des séries temporelles de {cls.__name__} validées avec succès."
-        )
+        LOGGER.debug(i18n.t("schema.model.metadata_validated", name=cls.__name__))
 
         return validated_df  # type: ignore
 
@@ -251,13 +254,19 @@ def validate_schema(
     :type schema: Type[pa.DataFrameModel]
     """
     try:
-        LOGGER.debug(f"Validation du schéma {schema}.")
+        LOGGER.debug(i18n.t("schema.model.validating_schema", schema=schema))
         schema.validate(data)
 
     except pa.errors.SchemaError as error:
-        LOGGER.error(f"Erreur de validation du schéma {schema} : {error}.")
         LOGGER.error(
-            f"Attributs attendus dans le schéma {schema} : {schema.__annotations__}"
+            i18n.t("schema.model.schema_validation_error", schema=schema, error=error)
+        )
+        LOGGER.error(
+            i18n.t(
+                "schema.model.schema_expected_attrs",
+                schema=schema,
+                attrs=schema.__annotations__,
+            )
         )
 
         raise error
@@ -287,7 +296,7 @@ def validate_schemas(
                     validate_schema(kwargs[arg_name], arg_schema)
                 else:
                     raise ValueError(
-                        f"Paramètre '{arg_name}' non trouvé dans les kwargs."
+                        i18n.t("schema.model.error_param_not_found", param=arg_name)
                     )
 
             # Appeler la fonction originale
