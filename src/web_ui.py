@@ -6,6 +6,7 @@ It allows executing the same functionalities as the CLI but through a web interf
 
 from typing import Any
 
+import i18n
 from loguru import logger
 from nicegui import ui
 
@@ -144,7 +145,7 @@ def main():
 
     except Exception as e:
         LOGGER.exception(e)
-        LOGGER.error(f"Failed to start the application: {str(e)}")
+        LOGGER.error(i18n.t("web_ui.startup_error", error=str(e)))
 
 
 if __name__ == "__main__":

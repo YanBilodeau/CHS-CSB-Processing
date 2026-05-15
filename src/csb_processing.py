@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional, Collection, Iterable
 
+import i18n
 from loguru import logger
 import geopandas as gpd
 
@@ -114,9 +115,7 @@ def _setup_run(
 
     effective_wl = bool(apply_water_level)
     if already_at_chart_datum and effective_wl:
-        LOGGER.warning(
-            "Option 'already_at_chart_datum' activée : réduction marégraphique désactivée."
-        )
+        LOGGER.warning(i18n.t("csb_processing.already_at_chart_datum_warning"))
         effective_wl = False
 
     return WorkflowSetup(
@@ -153,7 +152,7 @@ def _get_caris_api_config(
         return config.get_caris_api_config(config_file=config_path)
 
     except config.CarisConfigError as error:
-        LOGGER.error(f"Configuration Caris obligatoire pour l'export *csar : {error}.")
+        LOGGER.error(i18n.t("csb_processing.caris_config_error", error=error))
         raise
 
 
@@ -178,13 +177,13 @@ def _get_vessel_config(
         or processing_config.vessel_manager.manager_type is None
         or not processing_config.vessel_manager.kwargs
     ) and isinstance(vessel, str):
-        LOGGER.error("La configuration du gestionnaire de navires est manquante.")
+        LOGGER.error(i18n.t("csb_processing.vessel_manager_missing"))
         raise vessel_manager.VesselConfigManagerError(
             vessel_id=vessel, vessel_config_manager=processing_config.vessel_manager
         )
 
     vessel_id = vessel.id if isinstance(vessel, vessel_manager.VesselConfig) else vessel
-    LOGGER.info(f"Récupération de la configuration du navire {vessel_id}.")
+    LOGGER.info(i18n.t("csb_processing.vessel_config_retrieving", vessel_id=vessel_id))
 
     return vessel_manager.get_vessel_config(vessel, processing_config.vessel_manager)
 
@@ -226,7 +225,7 @@ def _process_without_water_level(
     :type output_file_name: Optional[str]
     :rtype: None
     """
-    LOGGER.info("Le niveau d'eau ne sera pas appliqué aux données.")
+    LOGGER.info(i18n.t("csb_processing.no_water_level"))
 
     data = georeference.georeference_bathymetry(
         data=data,
@@ -383,12 +382,12 @@ def run_processing_workflow(
     files = list(files)
 
     if merge_files:
-        LOGGER.info(f"Merge mode: {len(files)} file(s) processed together.")
+        LOGGER.info(i18n.t("csb_processing.merge_mode", count=len(files)))
         processing_workflow(files=files, **kwargs)
     else:
-        LOGGER.info(f"Split mode: {len(files)} file(s) processed individually.")
+        LOGGER.info(i18n.t("csb_processing.split_mode", count=len(files)))
         for file in files:
-            LOGGER.info(f"Processing file: {file.name}")
+            LOGGER.info(i18n.t("csb_processing.processing_file", filename=file.name))
             processing_workflow(files=[file], output_file_name=file.stem, **kwargs)
 
 
@@ -408,17 +407,24 @@ def log_sounding_results(data: gpd.GeoDataFrame, iterations: int) -> bool:
 
     if not ok_count:
         LOGGER.warning(
-            f"Aucune sonde n'a été réduite au zéro des cartes avec {iterations} itérations. "
-            f"Augmenter le nombre d'itérations ou désactiver la réduction marégraphique "
-            f"(--apply-water-level False)."
+            i18n.t(
+                "csb_processing.no_soundings_reduced",
+                iterations=iterations,
+            )
         )
         return False
 
     if not nan_count:
-        LOGGER.success(f"{ok_count:,} sondes ont été réduites au zéro des cartes.")
+        LOGGER.success(
+            i18n.t("csb_processing.all_soundings_reduced", count=f"{ok_count:,}")
+        )
     else:
         LOGGER.info(
-            f"{ok_count:,} sondes réduites. {nan_count:,} sondes sans niveau d'eau."
+            i18n.t(
+                "csb_processing.partial_soundings_reduced",
+                ok_count=f"{ok_count:,}",
+                nan_count=f"{nan_count:,}",
+            )
         )
     return True
 
@@ -470,7 +476,7 @@ def processing_workflow(
     :rtype: None
     """
     if not files:
-        LOGGER.warning("Aucun fichier à traiter.")
+        LOGGER.warning(i18n.t("csb_processing.no_files"))
         return None
 
     setup = _setup_run(
@@ -482,8 +488,14 @@ def processing_workflow(
         already_at_chart_datum=already_at_chart_datum,
     )
     LOGGER.debug(
-        f"Workflow — files={files}, vessel={vessel}, output={output}, "
-        f"config_path={config_path}, apply_water_level={setup.apply_water_level}"
+        i18n.t(
+            "csb_processing.workflow_params",
+            files=files,
+            vessel=vessel,
+            output=output,
+            config_path=config_path,
+            apply_water_level=setup.apply_water_level,
+        )
     )
 
     try:
@@ -494,7 +506,7 @@ def processing_workflow(
 
     vessel_config = _get_vessel_config(vessel, setup.processing_config)
 
-    LOGGER.info(f"Récupération des données brutes ({len(files)} fichiers).")
+    LOGGER.info(i18n.t("csb_processing.loading_raw_data", count=len(files)))
     ingestion_result = ingestion.load_and_clean_data(
         files=files,
         data_filter_config=setup.processing_config.filter,

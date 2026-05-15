@@ -1,0 +1,2 @@
+fr:
+  loading_profile: "Chargement du profil '%{profile}' pour l'API IWLS. [%{environment}]."

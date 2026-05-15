@@ -1,0 +1,2 @@
+en:
+  startup_error: "Failed to start the application: %{error}"

@@ -1,0 +1,2 @@
+fr:
+  startup_error: "Échec du démarrage de l'application : %{error}"

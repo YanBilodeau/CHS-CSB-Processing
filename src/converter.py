@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Collection, Optional, Tuple
 
 import geopandas as gpd
+import i18n
 from loguru import logger
 
 import config
@@ -34,28 +35,31 @@ def read_geospatial_file(input_file_path: Path) -> Optional[gpd.GeoDataFrame]:
     :rtype: Optional[gpd.GeoDataFrame[schema.DataLoggerSchema]]
     """
     if not input_file_path.exists():
-        LOGGER.error(f"Le fichier d'entrée n'existe pas : {input_file_path}.")
+        LOGGER.error(i18n.t("converter.file_not_found", path=input_file_path))
         return None
 
-    # Vérifier l'extension du fichier
     supported_extensions = {".gpkg", ".geojson"}
     if input_file_path.suffix.lower() not in supported_extensions:
         LOGGER.error(
-            f"Format de fichier non supporté : {input_file_path.suffix}. Formats supportés : {supported_extensions}"
+            i18n.t(
+                "converter.unsupported_format",
+                suffix=input_file_path.suffix,
+                formats=supported_extensions,
+            )
         )
         return None
 
-    LOGGER.info(f"Lecture du fichier géospatial : {input_file_path}.")
+    LOGGER.info(i18n.t("converter.reading_file", path=input_file_path))
 
     try:
         data_geodataframe: gpd.GeoDataFrame = gpd.read_file(input_file_path)
 
         LOGGER.success(
-            f"Fichier géospatial lu avec succès : {len(data_geodataframe):,} sondes."
+            i18n.t("converter.file_read_success", count=f"{len(data_geodataframe):,}")
         )
 
         if data_geodataframe.empty:
-            LOGGER.warning("Le fichier géospatial est vide.")
+            LOGGER.warning(i18n.t("converter.file_empty"))
             return None
 
         schema.validate_schema(data_geodataframe, schema.DataLoggerSchema)
@@ -63,7 +67,7 @@ def read_geospatial_file(input_file_path: Path) -> Optional[gpd.GeoDataFrame]:
         return data_geodataframe
 
     except Exception as error:
-        LOGGER.error(f"Erreur lors de la lecture du fichier géospatial : {error}")
+        LOGGER.error(i18n.t("converter.file_read_error", error=error))
         return None
 
 
@@ -81,20 +85,19 @@ def load_configurations(
     :rtype: Tuple[Optional[config.CSBprocessingConfig], Optional[config.CarisAPIConfig]]
     """
     if not config_path.exists():
-        LOGGER.warning("Le fichier de configuration n'existe pas.")
+        LOGGER.warning(i18n.t("converter.config_not_found"))
 
         if config.FileTypes.CSAR in file_types:
-            LOGGER.error("La configuration Caris est requise pour l'exportation CSAR.")
+            LOGGER.error(i18n.t("converter.caris_config_required"))
 
         return None, None
 
-    LOGGER.info(f"Chargement de la configuration : {config_path}.")
+    LOGGER.info(i18n.t("converter.loading_config", path=config_path))
 
     try:
         processing_config = config.get_data_config(config_file=config_path)
         caris_api_config = None
 
-        # Charger la configuration Caris si nécessaire
         if not config.FileTypes.CSAR in file_types:
             return processing_config, caris_api_config
 
@@ -102,17 +105,13 @@ def load_configurations(
             caris_api_config = config.get_caris_api_config(config_file=config_path)
 
         except config.CarisConfigError as error:
-            LOGGER.error(
-                f"Configuration Caris requise pour l'exportation CSAR : {error}"
-            )
-
+            LOGGER.error(i18n.t("converter.caris_config_error", error=error))
             return None, None
 
         return processing_config, caris_api_config
 
     except Exception as error:
-        LOGGER.error(f"Erreur lors du chargement de la configuration : {error}")
-
+        LOGGER.error(i18n.t("converter.config_load_error", error=error))
         return None, None
 
 
@@ -142,7 +141,7 @@ def export_to_file_types(
     :return: True si l'exportation réussit, False sinon.
     :rtype: bool
     """
-    LOGGER.info(f"Exportation vers les formats : {file_types}.")
+    LOGGER.info(i18n.t("converter.exporting_formats", formats=file_types))
 
     try:
         export.export_processed_data_to_file_types(
@@ -153,13 +152,11 @@ def export_to_file_types(
             groub_by_iho_order=group_by_iho_order,
             config_caris=caris_api_config,
         )
-        LOGGER.success(f"Conversion terminée avec succès : {output_base_path}.")
-
+        LOGGER.success(i18n.t("converter.export_success", path=output_base_path))
         return True
 
     except Exception as error:
-        LOGGER.error(f"Erreur lors de l'exportation : {error}")
-
+        LOGGER.error(i18n.t("converter.export_error", error=error))
         return False
 
 
@@ -182,12 +179,11 @@ def convert_single_file(
     :param group_by_iho_order: Regrouper par ordre IHO.
     :return: True si succès, False sinon.
     """
-    LOGGER.info(f"Traitement du fichier : {input_file}")
+    LOGGER.info(i18n.t("converter.processing_file", file=input_file))
 
-    # Lire le fichier géospatial
     data_geodataframe = read_geospatial_file(input_file)
     if data_geodataframe is None:
-        LOGGER.error(f"Échec de lecture du fichier : {input_file}")
+        LOGGER.error(i18n.t("converter.file_read_failed", file=input_file))
         return False
 
     # Générer le nom de fichier de base
@@ -226,14 +222,14 @@ def convert_files_to_formats(
     :type group_by_iho_order: Optional[bool]
     """
     if not input_files:
-        LOGGER.error("Aucun fichier d'entrée fourni.")
+        LOGGER.error(i18n.t("converter.no_input_files"))
         return
 
     files_count = len(input_files)
-    LOGGER.info(
-        f"Conversion de {files_count} fichier{'s' if files_count > 1 else ''} "
-        f"géospatia{'l' if files_count == 1 else 'ux'}."
-    )
+    if files_count == 1:
+        LOGGER.info(i18n.t("converter.converting_file"))
+    else:
+        LOGGER.info(i18n.t("converter.converting_files", count=files_count))
 
     # Charger les configurations une seule fois
     processing_config, caris_api_config = load_configurations(config_path, file_types)
@@ -276,14 +272,25 @@ def convert_files_to_formats(
                     failed_conversions += 1
 
             except Exception as error:
-                LOGGER.error(f"Erreur lors du traitement de {input_file}: {error}")
+                LOGGER.error(
+                    i18n.t("converter.conversion_error", file=input_file, error=error)
+                )
                 failed_conversions += 1
 
     if failed_conversions == 0:
-        LOGGER.success(
-            f"Conversion terminée avec succès : {successful_conversions} fichier{'s' if successful_conversions > 1 else ''} traité{'s' if successful_conversions > 1 else ''}."
-        )
+        if successful_conversions == 1:
+            LOGGER.success(i18n.t("converter.conversion_success_single"))
+        else:
+            LOGGER.success(
+                i18n.t(
+                    "converter.conversion_success_plural", count=successful_conversions
+                )
+            )
     else:
         LOGGER.warning(
-            f"Conversion terminée avec des erreurs : {successful_conversions} succès, {failed_conversions} échec{'s' if failed_conversions > 1 else ''}."
+            i18n.t(
+                "converter.conversion_partial",
+                success=successful_conversions,
+                failed=failed_conversions,
+            )
         )

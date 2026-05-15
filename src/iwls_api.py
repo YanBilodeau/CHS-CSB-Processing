@@ -8,6 +8,7 @@ obtenir l'API et le gestionnaire des stations.
 from pathlib import Path
 from typing import Optional
 
+import i18n
 from loguru import logger
 
 import config
@@ -33,7 +34,11 @@ def get_iwls_environment(iwls_config: config.IWLSAPIConfig) -> iwls.APIEnvironme
     )
 
     LOGGER.debug(
-        f"Chargement du profil '{activated_profile}' pour l'API IWLS. [{activated_environment}]."
+        i18n.t(
+            "iwls_api.loading_profile",
+            profile=activated_profile,
+            environment=activated_environment,
+        )
     )
 
     return activated_environment

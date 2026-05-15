@@ -34,6 +34,7 @@ dependencies = [
     "sphinx-rtd-theme>=3.0.2",
     "sqlalchemy>=2.0.44",
     "tenacity>=9.1.2",
+    "python-i18n[YAML]>=0.3.9",
     "toml>=0.10.2",
     "uvicorn>=0.38.0",
 ]
