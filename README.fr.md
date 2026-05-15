@@ -145,10 +145,11 @@ python cli.py process [FICHIERS...] [OPTIONS]
 | `--waterline`                 | Nombre décimal | Non        | Ligne de flottaison du navire en mètre. Si non spécifiée, une valeur de 0 sera utilisée. **Incompatible avec `--vessel`**                                                                                                                                                                                                                                |
 | `--vessel-name`               | Texte          | Non        | Nom du navire pour l'export. Surcharge le nom issu de la configuration du navire si fourni. Disponible indépendamment de `--vessel` et `--waterline`                                                                                                                                                                                                     |
 | `--config`                    | Chemin         | Non        | Chemin du fichier de configuration. Si non spécifié, le fichier de configuration par défaut sera utilisé                                                                                                                                                                                                                                                 |
-| `--apply-water-level`         | Booléen        | Non        | Appliquer la réduction des niveaux d'eau lors du géoréférencement des sondes (défaut: `true`)                                                                                                                                                                                                                                                            |
+| `--apply-water-level`         | Drapeau        | Non        | Appliquer la réduction des niveaux d'eau lors du géoréférencement des sondes (défaut: activé). Utiliser `--no-apply-water-level` pour désactiver                                                                                                                                                                                                         |
 | `--water-level-station`       | Texte          | Non        | Code(s) des stations marégraphiques à utiliser. Peut être spécifié plusieurs fois. ([Liste des stations](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=fr))                                                                                                                                                                             |
 | `--excluded-station`          | Texte          | Non        | Code(s) des stations marégraphiques à exclure. Peut être spécifié plusieurs fois. ([Liste des stations](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=fr))                                                                                                                                                                              |
-| `--already-at-chart-datum`    | Drapeau        | Non        | Indique que les données sont déjà réduites au zéro des cartes. La réduction marégraphique est désactivée automatiquement. Modifie le calcul de la TVU (constante par type de capteur depuis `datalogger_uncertainty.json`). **Incompatible avec `--apply-water-level true`** |
+| `--already-at-chart-datum`    | Drapeau        | Non        | Indique que les données sont déjà réduites au zéro des cartes. La réduction marégraphique est désactivée automatiquement. Modifie le calcul de la TVU (constante par type de capteur depuis `datalogger_uncertainty.json`). **Incompatible avec `--apply-water-level`** |
+| `--merge-files`               | Drapeau        | Non        | Fusionner tous les fichiers d'entrée en un seul fichier de sortie (défaut: activé). Utiliser `--no-merge-files` pour traiter chaque fichier séparément ; le nom du fichier de sortie correspond alors au nom du fichier d'entrée                                                                                                                          |
 
 #### Exemples d'utilisation
 
@@ -174,7 +175,7 @@ python cli.py process data.csv --config ./custom_config.toml --output ./results
 
 **Traitement sans réduction des niveaux d'eau :**
 ```bash
-python cli.py process data.csv --apply-water-level false --output ./results
+python cli.py process data.csv --no-apply-water-level --output ./results
 ```
 
 **Traitement en utilisant des stations marégraphiques spécifiques :**
@@ -200,6 +201,11 @@ python cli.py process data.csv --vessel "CCGS_CARTIER" --vessel-name "Cartier Su
 **Traitement de données déjà réduites au zéro des cartes :**
 ```bash
 python cli.py process data.csv --already-at-chart-datum --output ./results
+```
+
+**Traitement de plusieurs fichiers sans fusion (sortie par fichier) :**
+```bash
+python cli.py process file1.csv file2.xyz --no-merge-files --output ./results
 ```
 
 ### 2. Commande `convert`
@@ -299,7 +305,8 @@ Le module inclut une gestion robuste des erreurs pour éviter les interruptions 
 
 - Si aucun navire ni ligne de flottaison n'est spécifié, un navire par défaut avec des bras de levier à 0 sera utilisé
 - Si aucun fichier de configuration n'est fourni, la configuration par défaut sera utilisée
-- La réduction des niveaux d'eau est appliquée par défaut lors du géoréférencement
+- La réduction des niveaux d'eau est appliquée par défaut lors du géoréférencement (`--apply-water-level`)
+- Les fichiers d'entrée sont fusionnés en un seul fichier de sortie par défaut (`--merge-files`)
 - Le traitement peut s'effectuer sur des fichiers individuels ou des répertoires entiers (traitement récursif)
 
 Le CLI affiche des messages d'erreur explicites en français et en anglais pour faciliter le débogage et assurer une utilisation correcte du système.

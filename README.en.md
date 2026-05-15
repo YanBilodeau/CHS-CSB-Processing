@@ -144,10 +144,11 @@ python cli.py process [FILES...] [OPTIONS]
 | `--waterline`                 | Decimal        | No         | Vessel waterline in meters. If not specified, a value of 0 will be used. **Incompatible with `--vessel`**                                                                                                                                                                                                                                         |
 | `--vessel-name`               | Text           | No         | Vessel name used for export. Overrides the name from vessel configuration if provided. Available independently of `--vessel` and `--waterline`                                                                                                                                                                                                    |
 | `--config`                    | Path           | No         | Configuration file path. If not specified, the default configuration file will be used                                                                                                                                                                                                                                                            |
-| `--apply-water-level`         | Boolean        | No         | Apply water level reduction when georeferencing soundings (default: `true`)                                                                                                                                                                                                                                                                       |
+| `--apply-water-level`         | Flag           | No         | Apply water level reduction when georeferencing soundings (default: enabled). Use `--no-apply-water-level` to disable                                                                                                                                                                                                                                      |
 | `--water-level-station`       | Text           | No         | Water level station code(s) to use for processing. Can be specified multiple times. ([Stations list](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=en))                                                                                                                                                                          |
 | `--excluded-station`          | Text           | No         | Water level station code(s) to exclude from processing. Can be specified multiple times. ([Stations list](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=en))                                                                                                                                                                     |
-| `--already-at-chart-datum`    | Flag           | No         | Indicates that input data is already reduced to chart datum. Water level reduction is automatically disabled. Modifies TVU calculation (per-datalogger constant from `datalogger_uncertainty.json`). **Incompatible with `--apply-water-level true`** |
+| `--already-at-chart-datum`    | Flag           | No         | Indicates that input data is already reduced to chart datum. Water level reduction is automatically disabled. Modifies TVU calculation (per-datalogger constant from `datalogger_uncertainty.json`). **Incompatible with `--apply-water-level`** |
+| `--merge-files`               | Flag           | No         | Merge all input files into a single output file (default: enabled). Use `--no-merge-files` to process each file separately; the output filename will then match the input filename                                                                                                                                                                        |
 
 #### Usage Examples
 
@@ -173,7 +174,7 @@ python cli.py process data.csv --config ./custom_config.toml --output ./results
 
 **Processing without water level reduction:**
 ```bash
-python cli.py process data.csv --apply-water-level false --output ./results
+python cli.py process data.csv --no-apply-water-level --output ./results
 ```
 
 **Processing with specific water level station:**
@@ -199,6 +200,11 @@ python cli.py process data.csv --vessel "CCGS_CARTIER" --vessel-name "Cartier Su
 **Processing data already reduced to chart datum:**
 ```bash
 python cli.py process data.csv --already-at-chart-datum --output ./results
+```
+
+**Processing multiple files without merging (one output per file):**
+```bash
+python cli.py process file1.csv file2.xyz --no-merge-files --output ./results
 ```
 
 ### 2. `convert` Command
@@ -298,7 +304,8 @@ The module includes robust error handling to avoid unexpected interruptions. Bel
 
 - If neither vessel nor waterline is specified, a default vessel with lever arms at 0 will be used
 - If no configuration file is provided, the default configuration will be used
-- Water level reduction is applied by default during georeferencing
+- Water level reduction is applied by default during georeferencing (`--apply-water-level`)
+- Input files are merged into a single output file by default (`--merge-files`)
 - Processing can be performed on individual files or entire directories (recursive processing)
 
 The CLI displays explicit error messages in French and English to facilitate debugging and ensure correct system usage.
