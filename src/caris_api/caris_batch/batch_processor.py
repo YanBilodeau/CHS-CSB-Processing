@@ -8,6 +8,7 @@ from pathlib import Path
 import subprocess
 from typing import Optional
 
+import i18n
 from loguru import logger
 
 from . import ids_batch as ids
@@ -44,7 +45,7 @@ def make_command_line(
     :return: Une commande Caris Batch prête à être exécutée.
     :rtype: Command
     """
-    LOGGER.debug("Construction de la ligne de commande Caris Batch.")
+    LOGGER.debug(i18n.t("caris_api.batch_processor.building_command"))
 
     destination_list = destination or []
     source_list = source or []
@@ -71,7 +72,7 @@ def run_command_line(command: Command) -> CarisBatchResponse:
     :return: Un objet CarisBatchResponse.
     :rtype: CarisBatchResponse
     """
-    LOGGER.debug(f"Exécution de la commande Caris Batch.")
+    LOGGER.debug(i18n.t("caris_api.batch_processor.running_command"))
 
     process = subprocess.Popen(
         command,

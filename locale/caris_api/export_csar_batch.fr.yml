@@ -1,0 +1,6 @@
+fr:
+  batch_command: "Commande Caris Batch : %{command}."
+  batch_response: "Réponse Caris Batch : %{response}."
+  export_error: "Erreur lors de l'exportation du fichier '%{data}' vers '%{output_path}'."
+  error_message: "Message d'erreur : %{stderr}."
+

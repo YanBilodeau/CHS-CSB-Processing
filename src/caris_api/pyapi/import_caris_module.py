@@ -9,6 +9,7 @@ from pathlib import Path
 import sys
 from types import ModuleType
 
+import i18n
 from loguru import logger
 
 from ..model_caris import CarisConfigProtocol
@@ -32,7 +33,7 @@ class CarisModuleImporter:
         :type config: CarisConfigProtocol
         :raise: VersionError si la version de Python ne correspond pas.
         """
-        LOGGER.debug("Initialisation de l'importateur des modules de l'API de Caris.")
+        LOGGER.debug(i18n.t("caris_api.import_caris_module.init_importer"))
 
         self._configuration: CarisConfigProtocol = config
         self.validate_python_version()
@@ -51,20 +52,27 @@ class CarisModuleImporter:
 
         :raise: VersionError si la version ne correspond pas.
         """
-        LOGGER.debug("Validation de la version de Python.")
+        LOGGER.debug(i18n.t("caris_api.import_caris_module.validating_python_version"))
 
         sys_version = f"{str(sys.version_info.major)}.{str(sys.version_info.minor)}"
         if sys_version != str(self._configuration.python_version):
             raise VersionError(
-                f"La version système de Python ({sys_version}) doit correspondre avec la version de l'API de "
-                f"Caris {self._configuration.python_version}."
+                i18n.t(
+                    "caris_api.import_caris_module.version_error",
+                    sys_version=sys_version,
+                    python_version=self._configuration.python_version,
+                )
             )
 
     def _add_environment(self) -> None:
         """
         Méthode permettant d'ajouter self._python_env des chemins du système.
         """
-        LOGGER.debug(f"Ajout de '{self._python_env}' dans les chemins du système.")
+        LOGGER.debug(
+            i18n.t(
+                "caris_api.import_caris_module.adding_path", python_env=self._python_env
+            )
+        )
 
         sys.path.insert(0, str(self._python_env))
 
@@ -72,7 +80,12 @@ class CarisModuleImporter:
         """
         Méthode permettant d'enlever self._python_env des chemins du système.
         """
-        LOGGER.debug(f"Suppression de '{self._python_env}' des chemins du système.")
+        LOGGER.debug(
+            i18n.t(
+                "caris_api.import_caris_module.removing_path",
+                python_env=self._python_env,
+            )
+        )
 
         sys.path.remove(str(self._python_env))
 
@@ -84,7 +97,7 @@ class CarisModuleImporter:
         :return: Retourne le module caris.
         :rtype: ModuleType
         """
-        LOGGER.debug("Importation du module 'caris'.")
+        LOGGER.debug(i18n.t("caris_api.import_caris_module.importing_caris"))
 
         import caris  # type: ignore
 
@@ -98,7 +111,7 @@ class CarisModuleImporter:
         :return: Retourne le module caris.bathy.db.
         :rtype: ModuleType
         """
-        LOGGER.debug("Importation du module 'caris.bathy.db'.")
+        LOGGER.debug(i18n.t("caris_api.import_caris_module.importing_bathy_db"))
 
         import caris.bathy.db as bathy_db  # type: ignore
 
@@ -112,7 +125,7 @@ class CarisModuleImporter:
         :return: Retourne le module caris.coverage.
         :rtype: ModuleType
         """
-        LOGGER.debug("Importation du module 'caris.coverage'.")
+        LOGGER.debug(i18n.t("caris_api.import_caris_module.importing_coverage"))
 
         from caris import coverage as coverage  # type: ignore
 

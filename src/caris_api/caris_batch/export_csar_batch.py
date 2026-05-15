@@ -6,6 +6,7 @@ Ce module contient les fonctions permettant d'exporter des données vers un fich
 
 from pathlib import Path
 
+import i18n
 from loguru import logger
 
 from ..model_caris import CarisConfigProtocol
@@ -72,14 +73,22 @@ def export_geodataframe_to_csar(
         destination=[str(output_path)],
     )
 
-    LOGGER.debug(f"Commande Caris Batch : {command}.")
+    LOGGER.debug(i18n.t("caris_api.export_csar_batch.batch_command", command=command))
 
     response: CarisBatchResponse = run_command_line(command)
 
-    LOGGER.debug(f"Réponse Caris Batch : {response}.")
+    LOGGER.debug(
+        i18n.t("caris_api.export_csar_batch.batch_response", response=response)
+    )
 
     if not response.is_ok:
         LOGGER.error(
-            f"Erreur lors de l'exportation du fichier '{data}' vers '{output_path}'."
+            i18n.t(
+                "caris_api.export_csar_batch.export_error",
+                data=data,
+                output_path=output_path,
+            )
         )
-        LOGGER.error(f"Message d'erreur : {response.stderr}.")
+        LOGGER.error(
+            i18n.t("caris_api.export_csar_batch.error_message", stderr=response.stderr)
+        )

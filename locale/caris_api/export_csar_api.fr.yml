@@ -1,0 +1,10 @@
+fr:
+  creating_bands: "Création des bandes du fichier CSAR."
+  creating_band_options: "Création des options des bandes du fichier CSAR."
+  preparing_blocks: "Préparation des blocs de données à partir du GeoDataFrame."
+  creating_polygon: "Création du polygone de délimitation du fichier CSAR : %{csar_file_path}."
+  checking_directory: "Validation que le répertoire existe : %{directory}."
+  removing_file: "Suppression du fichier existant : %{file}."
+  no_data_to_export: "Aucune donnée à exporter en CSAR."
+  creation_error: "Erreur lors de la création du fichier CSAR %{name} : %{error}"
+

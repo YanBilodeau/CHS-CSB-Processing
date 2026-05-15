@@ -1,0 +1,10 @@
+fr:
+  init_importer: "Initialisation de l'importateur des modules de l'API de Caris."
+  validating_python_version: "Validation de la version de Python."
+  version_error: "La version système de Python (%{sys_version}) doit correspondre avec la version de l'API de Caris %{python_version}."
+  adding_path: "Ajout de '%{python_env}' dans les chemins du système."
+  removing_path: "Suppression de '%{python_env}' des chemins du système."
+  importing_caris: "Importation du module 'caris'."
+  importing_bathy_db: "Importation du module 'caris.bathy.db'."
+  importing_coverage: "Importation du module 'caris.coverage'."
+

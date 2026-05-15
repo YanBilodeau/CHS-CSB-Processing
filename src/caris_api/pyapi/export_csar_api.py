@@ -11,6 +11,7 @@ from types import ModuleType
 from typing import Optional
 
 import geopandas as gpd
+import i18n
 from loguru import logger
 
 from .import_caris_module import CarisModuleImporter, CarisConfigProtocol
@@ -52,7 +53,7 @@ def _get_band_info() -> dict[str, coverage.BandInfo]:
     :return: Un dictionnaire de bandes.
     :rtype: dict[str, coverage.Band]
     """
-    LOGGER.debug("Création des bandes du fichier CSAR.")
+    LOGGER.debug(i18n.t("caris_api.export_csar_api.creating_bands"))
 
     return {
         POSITION: coverage.BandInfo(
@@ -120,7 +121,7 @@ def _get_band_options(
     :return: Les options pour le fichier CSAR.
     :rtype: coverage.Options
     """
-    LOGGER.debug("Création des options des bandes du fichier CSAR.")
+    LOGGER.debug(i18n.t("caris_api.export_csar_api.creating_band_options"))
 
     options = coverage.Options()
     options.open_type = coverage.OpenType.WRITE
@@ -141,7 +142,7 @@ def _get_value_blocks(data: gpd.GeoDataFrame) -> list[dict[str, list]]:
     :return: Les blocks de données.
     :rtype: list[dict[str, list]]
     """
-    LOGGER.debug(f"Préparation des blocks de données à partir du Geodataframe.")
+    LOGGER.debug(i18n.t("caris_api.export_csar_api.preparing_blocks"))
 
     return [
         {
@@ -167,7 +168,10 @@ def _create_bounding_polygon(csar_file_path: Path) -> None:
     :type csar_file_path: Path
     """
     LOGGER.debug(
-        f"Création du polygone de délimitation du fichier CSAR : {csar_file_path}."
+        i18n.t(
+            "caris_api.export_csar_api.creating_polygon",
+            csar_file_path=csar_file_path,
+        )
     )
 
     csar_file: coverage.Cloud = coverage.Cloud(
@@ -184,7 +188,9 @@ def ensure_directory_exists(directory: Path) -> None:
     :param directory: Le répertoire.
     :type directory: Path
     """
-    LOGGER.debug(f"Validation que le répertoire existe : {directory}.")
+    LOGGER.debug(
+        i18n.t("caris_api.export_csar_api.checking_directory", directory=directory)
+    )
 
     if not directory.exists():
         directory.mkdir(parents=True)
@@ -199,7 +205,7 @@ def remove_existing_files(files: list[Path]) -> None:
     """
     for file in files:
         if file.exists():
-            LOGGER.debug(f"Suppression du fichier existant : {file}.")
+            LOGGER.debug(i18n.t("caris_api.export_csar_api.removing_file", file=file))
             file.unlink()
 
 
@@ -229,7 +235,7 @@ def export_geodataframe_to_csar(
     blocks: list[dict[str, list]] | None = _get_value_blocks(data=data)
 
     if not blocks:
-        LOGGER.warning(f"Aucune donnée à exporter en CSAR.")
+        LOGGER.warning(i18n.t("caris_api.export_csar_api.no_data_to_export"))
         return
 
     opts.iterator = lambda: iter(blocks)
@@ -241,5 +247,9 @@ def export_geodataframe_to_csar(
 
     except Exception as error:
         LOGGER.error(
-            f"Erreur lors de la création du fichier de séparation {output_path.name}: {error}"
+            i18n.t(
+                "caris_api.export_csar_api.creation_error",
+                name=output_path.name,
+                error=error,
+            )
         )
