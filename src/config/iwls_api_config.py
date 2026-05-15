@@ -10,6 +10,7 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Optional
 
+import i18n
 from loguru import logger
 from pydantic import BaseModel, field_validator
 
@@ -74,10 +75,7 @@ class TimeSeriesConfig(BaseModel):
         if value is not None:
             pattern = re.compile(r"^\d+\s*(min|h)$")
             if not pattern.match(value):
-                raise ValueError(
-                    "Le time gap, le threshold interpolation filling et le buffer doivent être au format "
-                    '"<number> <min|h>".'
-                )
+                raise ValueError(i18n.t("config.iwls_api_config.error_time_format"))
 
         return value
 
@@ -131,7 +129,7 @@ class CacheConfig(BaseModel):
         :raises ValueError: Si le temps de vie du cache est négatif.
         """
         if value < 0:
-            raise ValueError("Le temps de vie du cache doit être positif.")
+            raise ValueError(i18n.t("config.iwls_api_config.error_ttl"))
 
         return value
 
@@ -191,7 +189,7 @@ def get_api_config(config_file: Path) -> IWLSAPIConfig:
     cache_config = config_data.get("IWLS", {}).get("API", {}).get("Cache")
     profile_config = config_data.get("IWLS", {}).get("API", {}).get("Profile")
 
-    LOGGER.debug(f"Initialisation de la configuration de l'API IWLS.")
+    LOGGER.debug(i18n.t("config.iwls_api_config.init_config"))
 
     return IWLSAPIConfig(
         dev=environments.get("dev") if environments else None,

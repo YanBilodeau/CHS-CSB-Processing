@@ -1,0 +1,11 @@
+en:
+  init_data_config: "Initializing data transformation configuration."
+  error_latitude: "Latitude must be between %{min} and %{max}."
+  error_longitude: "Longitude must be between %{min} and %{max}."
+  error_depth: "Depth must be greater than or equal to %{min}."
+  error_positive: "Value must be positive."
+  error_water_level_tolerance: "Water level tolerance must be in format '<number> <min|h>'."
+  error_resolution: "Resolution must be positive."
+  error_max_iterations: "Parameter max_iterations must be greater than 0."
+  error_decimal_precision: "Parameter decimal_precision must be greater than or equal to 0."
+  error_nbin: "Parameters nbin_x and nbin_y must be greater than 0."

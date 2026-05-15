@@ -7,6 +7,7 @@ Ce module contient la classe de configuration pour l'API Python de Caris.
 from dataclasses import dataclass
 from pathlib import Path
 
+import i18n
 from loguru import logger
 from pydantic import BaseModel, Field
 
@@ -22,7 +23,9 @@ class CarisConfigError(Exception):
     config_file: Path
 
     def __str__(self) -> str:
-        return f"Aucune configuration pour Caris n'a été trouvée dans le fichier de configuration : {self.config_file}"
+        return i18n.t(
+            "config.caris_config.error_no_config", config_file=self.config_file
+        )
 
 
 @dataclass(frozen=True)
@@ -30,7 +33,9 @@ class CarisApiConfigError(Exception):
     python_path: Path
 
     def __str__(self) -> str:
-        return f"L'API Python de Caris n'existe pas à l'emplacement {self.python_path}"
+        return i18n.t(
+            "config.caris_config.error_python_path", python_path=self.python_path
+        )
 
 
 @dataclass(frozen=True)
@@ -38,8 +43,8 @@ class CarisBatchConfigError(Exception):
     caris_batch: Path
 
     def __str__(self) -> str:
-        return (
-            f"Le fichier carisbatch.exe n'existe pas à l'emplacement {self.caris_batch}"
+        return i18n.t(
+            "config.caris_config.error_caris_batch", caris_batch=self.caris_batch
         )
 
 
@@ -112,6 +117,6 @@ def get_caris_api_config(
     if not config_caris_api:
         raise CarisConfigError(config_file=config_file)
 
-    LOGGER.debug(f"Initialisation de la configuration pour Caris.")
+    LOGGER.debug(i18n.t("config.caris_config.init_config"))
 
     return CarisAPIConfig(**config_caris_api)

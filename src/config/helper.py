@@ -8,6 +8,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Optional
 
+import i18n
 from loguru import logger
 import toml
 
@@ -25,7 +26,7 @@ def load_config(config_file: Optional[Path]) -> dict:
     :return: Les données de configuration.
     :rtype: DataConfigDict
     """
-    LOGGER.debug(f"Chargement du fichier de configuration : '{config_file}'.")
+    LOGGER.debug(i18n.t("config.helper.loading_config", config_file=config_file))
 
     with open(config_file, "r") as file:
         data = toml.load(file)

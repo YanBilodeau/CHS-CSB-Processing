@@ -1,0 +1,5 @@
+en:
+  init_config: "Initializing Caris configuration."
+  error_no_config: "No Caris configuration found in configuration file: %{config_file}"
+  error_python_path: "Caris Python API does not exist at location %{python_path}"
+  error_caris_batch: "carisbatch.exe does not exist at location %{caris_batch}"

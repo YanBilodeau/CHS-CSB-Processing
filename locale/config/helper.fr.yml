@@ -1,0 +1,2 @@
+fr:
+  loading_config: "Chargement du fichier de configuration : '%{config_file}'."

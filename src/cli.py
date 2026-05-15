@@ -14,6 +14,7 @@ from loguru import logger
 from config import FileTypes
 import converter
 from csb_processing import run_processing_workflow, CONFIG_FILE
+from i18n_setup import setup_i18n
 from logger.loguru_config import configure_logger
 from vessel import UNKNOWN_VESSEL_CONFIG, UNKNOWN_DATE, Waterline
 
@@ -236,6 +237,7 @@ def process_bathymetric_data(
     :raise click.UsageError: Si la valeur de l'option --waterline est négative.
     :raise click.UsageError: Si aucun fichier valide n'est fourni.
     """
+    setup_i18n()
     configure_logger()
     LOGGER.info(f"Ligne de commande exécutée : python {' '.join(sys.argv)}")
 
@@ -364,6 +366,7 @@ def convert_gpkg(
     :type group_by_iho_order: bool
     :raise click.UsageError: Si aucun fichier valide n'est fourni.
     """
+    setup_i18n()
     configure_logger()
     LOGGER.info(f"Ligne de commande exécutée : python {' '.join(sys.argv)}")
 

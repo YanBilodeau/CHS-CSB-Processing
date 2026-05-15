@@ -97,6 +97,11 @@ def _setup_run(
     """
     export_data_path, export_tide_path, log_path = export.get_data_structure(output)
 
+    configure_logger(
+        log_path / "CHS-CSB-Processing.log",
+        log_file_level="DEBUG",
+        extra_logger=extra_logger,
+    )
     if processing_config is None:
         processing_config = config.get_data_config(config_file=config_path)
 

@@ -18,6 +18,9 @@ from .ui_events import UIEventHandler
 from .ui_validation import Validator
 from .runner import UIRunner, GuiType
 from .dependancy_container import DependencyContainer
+from i18n_setup import setup_i18n
+
+setup_i18n()
 
 
 __all__ = [

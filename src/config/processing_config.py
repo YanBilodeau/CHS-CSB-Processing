@@ -8,6 +8,7 @@ les configurations de filtrage des données.
 from enum import StrEnum
 from pathlib import Path
 
+import i18n
 from pydantic import BaseModel, field_validator
 import re
 import pandas as pd
@@ -138,7 +139,11 @@ class DataFilterConfig(BaseModel):
         """
         if value < MIN_LATITUDE or value > MAX_LATITUDE:
             raise ValueError(
-                f"La latitude doit être comprise entre {MIN_LATITUDE} et {MAX_LATITUDE}."
+                i18n.t(
+                    "config.processing_config.error_latitude",
+                    min=MIN_LATITUDE,
+                    max=MAX_LATITUDE,
+                )
             )
 
         return value
@@ -156,7 +161,11 @@ class DataFilterConfig(BaseModel):
         """
         if value < MIN_LONGITUDE or value > MAX_LONGITUDE:
             raise ValueError(
-                f"La longitude doit être comprise entre {MIN_LONGITUDE} et {MAX_LONGITUDE}."
+                i18n.t(
+                    "config.processing_config.error_longitude",
+                    min=MIN_LONGITUDE,
+                    max=MAX_LONGITUDE,
+                )
             )
 
         return value
@@ -174,7 +183,7 @@ class DataFilterConfig(BaseModel):
         """
         if value is not None and value < 0:
             raise ValueError(
-                f"La profondeur doit être supérieure ou égale à {MIN_DEPTH}."
+                i18n.t("config.processing_config.error_depth", min=MIN_DEPTH)
             )
 
         return value
@@ -217,7 +226,7 @@ class GeoreferenceTideConfig(BaseModel):
             pattern = re.compile(r"^\d+\s*(min|h)$")
             if not pattern.match(value):
                 raise ValueError(
-                    'La tolerance pour water level doit être au format "<number> <min|h>".'
+                    i18n.t("config.processing_config.error_water_level_tolerance")
                 )
 
         return pd.Timedelta(value)
@@ -255,7 +264,7 @@ class TVUConfig(BaseModel):
     )
     def validate_positive(cls, value: Optional[float]) -> Optional[float]:
         if value is not None and value < 0:
-            raise ValueError("La valeur doit être positive.")
+            raise ValueError(i18n.t("config.processing_config.error_positive"))
 
         return value
 
@@ -278,7 +287,7 @@ class THUConfig(BaseModel):
     @field_validator("cone_angle_sonar", "constant_thu")
     def validate_positive(cls, value: Optional[float]) -> Optional[float]:
         if value is not None and value < 0:
-            raise ValueError("La valeur doit être positive.")
+            raise ValueError(i18n.t("config.processing_config.error_positive"))
 
         return value
 
@@ -360,7 +369,7 @@ class ExportConfig(BaseModel):
             return RESOLUTION
 
         if value <= 0:
-            raise ValueError("La résolution doit être positive.")
+            raise ValueError(i18n.t("config.processing_config.error_resolution"))
 
         return value
 
@@ -389,7 +398,7 @@ class OptionsConfig(BaseModel):
         :raises ValueError: Si max_iterations est inférieur ou égal à 0.
         """
         if value <= 0:
-            raise ValueError("Le paramètre max_iterations doit être supérieur à 0.")
+            raise ValueError(i18n.t("config.processing_config.error_max_iterations"))
 
         return value
 
@@ -405,9 +414,7 @@ class OptionsConfig(BaseModel):
         :raises ValueError: Si decimal_precision est inférieur ou égal à 0.
         """
         if value < 0:
-            raise ValueError(
-                "Le paramètre decimal_precision doit être supérieur ou égale à 0."
-            )
+            raise ValueError(i18n.t("config.processing_config.error_decimal_precision"))
 
         return value
 
@@ -439,7 +446,7 @@ class PlotConfig(BaseModel):
         :raises ValueError: Si nbin_x ou nbin_y est inférieur ou égal à 0.
         """
         if value <= 0:
-            raise ValueError("Le paramètre nbin_x et nbin_y doit être supérieur à 0.")
+            raise ValueError(i18n.t("config.processing_config.error_nbin"))
 
         return value
 
@@ -487,9 +494,7 @@ def get_data_config(
     """
     config_data: CSBconfigDict = load_config(config_file=config_file)
 
-    LOGGER.debug(
-        f"Initialisation de la configuration de pour la transformation des données."
-    )
+    LOGGER.debug(i18n.t("config.processing_config.init_data_config"))
 
     data_filter: ConfigDict = (
         config_data.get("DATA", {}).get("Transformation", {}).get("filter")

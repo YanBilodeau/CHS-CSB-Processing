@@ -1,0 +1,4 @@
+en:
+  init_config: "Initializing IWLS API configuration."
+  error_time_format: "Time gap, threshold interpolation filling and buffer must be in format '<number> <min|h>'."
+  error_ttl: "Cache lifetime must be positive."

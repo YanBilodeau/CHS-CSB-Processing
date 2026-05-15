@@ -1,0 +1,3 @@
+en:
+  loading_config: "Loading configuration file: '%{config_file}'."
+

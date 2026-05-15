@@ -1,0 +1,4 @@
+fr:
+  init_config: "Initialisation de la configuration de l'API IWLS."
+  error_time_format: "Le time gap, le threshold interpolation filling et le buffer doivent être au format '<nombre> <min|h>'."
+  error_ttl: "Le temps de vie du cache doit être positif."
