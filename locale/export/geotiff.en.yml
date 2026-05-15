@@ -1,0 +1,7 @@
+en:
+  saving_geotiff: "Saving GeoDataFrame to GeoTIFF file (resolution: %{resolution}): '%{output_path}'."
+  spatial_index_error: "Error using spatial index: %{error}"
+  error_no_crs: "The GeoDataFrame must have a coordinate reference system defined."
+  error_invalid_dimensions: "Raster dimensions must be positive."
+  error_invalid_resolution: "Resolution must be a positive float."
+

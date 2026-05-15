@@ -1,0 +1,11 @@
+fr:
+  finalizing_geodataframe: "Finalisation du GeoDataFrame des données."
+  splitting_by_iho_order: "Séparation du GeoDataFrame par ordre de levé OHI."
+  iho_order_group: "Ordre IHO %{iho_order} : %{count} sondes."
+  iho_order_keys: "Ordres IHO : %{keys}."
+  caris_config_required: "La configuration de l'API Caris est requise pour exporter les données au format CSAR."
+  exporting_data: "Exportation des données traitées (%{count} sondes) au format %{file_type} : %{output_path}."
+  export_success: "Exportation des données traitées au format %{file_type} complétée : %{output_path}."
+  export_error: "Erreur lors de l'exportation des données au format %{file_type} : %{error}."
+  exporting_metadata: "Exportation des métadonnées des données traitées : %{output_path}."
+

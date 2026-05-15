@@ -1,0 +1,8 @@
+fr:
+  saving_geodataframe: "Sauvegarde du GeoDataFrame en fichier %{driver} : '%{output_path}'."
+  saving_csv: "Sauvegarde du GeoDataFrame en fichier CSV : '%{output_path}'."
+  saving_parquet: "Sauvegarde du GeoDataFrame en fichier Parquet : '%{output_path}'."
+  saving_feather: "Sauvegarde du GeoDataFrame en fichier Feather : '%{output_path}'."
+  saving_csar: "Sauvegarde du GeoDataFrame en fichier CSAR : '%{output_path}'."
+  saving_dataframe_csv: "Sauvegarde du DataFrame en fichier CSV : '%{output_path}'."
+

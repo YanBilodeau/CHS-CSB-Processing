@@ -1,0 +1,4 @@
+fr:
+  sanitizing_path: "Validation du nom du fichier : '%{name}'."
+  init_data_structure: "Initialisation de la structure de répertoires pour les données : %{output_path}."
+

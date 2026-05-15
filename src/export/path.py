@@ -5,6 +5,7 @@ Module pour la gestion des chemins de fichiers, y compris la validation et la co
 import re
 from pathlib import Path
 
+import i18n
 from loguru import logger
 
 LOGGER = logger.bind(name="CSB-Processing.Export.Path")
@@ -19,7 +20,7 @@ def sanitize_path_name(path: Path) -> Path:
     :return: Le chemin du fichier avec un nom sans caractères invalides.
     :rtype: Path
     """
-    LOGGER.debug(f"Validation du nom du fichier : '{path.name}'.")
+    LOGGER.debug(i18n.t("export.path.sanitizing_path", name=path.name))
 
     invalid_chars = r'[<>:"/\\|?*]'
     sanitized_name = re.sub(invalid_chars, "_", path.name)
@@ -39,9 +40,7 @@ def get_data_structure(output_path: Path) -> tuple[Path, Path, Path]:
     :return: Triplet ``(data_path, tide_path, log_path)``.
     :rtype: tuple[Path, Path, Path]
     """
-    LOGGER.debug(
-        f"Initialisation de la structure de répertoires pour les données : {output_path}."
-    )
+    LOGGER.debug(i18n.t("export.path.init_data_structure", output_path=output_path))
 
     data_path: Path = output_path / "Data"
     tide_path: Path = output_path / "Tide"

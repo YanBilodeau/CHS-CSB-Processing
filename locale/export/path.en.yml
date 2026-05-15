@@ -1,0 +1,4 @@
+en:
+  sanitizing_path: "Sanitizing file name: '%{name}'."
+  init_data_structure: "Initializing output directory structure: %{output_path}."
+

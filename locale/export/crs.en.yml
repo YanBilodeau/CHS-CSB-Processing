@@ -1,0 +1,3 @@
+en:
+  transforming_crs: "Transforming GeoDataFrame from EPSG:%{from_epsg} to EPSG:%{to_epsg}."
+

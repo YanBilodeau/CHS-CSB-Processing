@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Optional, Any
 
 import geopandas as gpd
+import i18n
 import pandas as pd
 from loguru import logger
 
@@ -67,7 +68,13 @@ def export_geodataframe(
     :param to_epsg: Le code EPSG de la projection.
     :type to_epsg: Optional[int]
     """
-    LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier {driver} : '{output_path}'.")
+    LOGGER.debug(
+        i18n.t(
+            "export.export_format.saving_geodataframe",
+            driver=driver,
+            output_path=output_path,
+        )
+    )
 
     transform_geodataframe_crs(geodataframe=geodataframe, to_epsg=to_epsg)
     geodataframe: gpd.GeoDataFrame = transform_additional_geometry_columns_to_wkt(
@@ -152,7 +159,7 @@ def export_geodataframe_to_csv(
     :param to_epsg: Le code EPSG de la projection.
     :type to_epsg: Optional[int]
     """
-    LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier CSV : '{output_path}'.")
+    LOGGER.debug(i18n.t("export.export_format.saving_csv", output_path=output_path))
 
     # Transformer le système de coordonnées si nécessaire
     transform_geodataframe_crs(geodataframe, to_epsg)
@@ -180,7 +187,7 @@ def export_geodataframe_to_parquet(
     :param to_epsg: Le code EPSG de la projection.
     :type to_epsg: Optional[int]
     """
-    LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier Parquet : '{output_path}'.")
+    LOGGER.debug(i18n.t("export.export_format.saving_parquet", output_path=output_path))
 
     transform_geodataframe_crs(geodataframe, to_epsg)
 
@@ -203,7 +210,7 @@ def export_geodataframe_to_feather(
     :param to_epsg: Le code EPSG de la projection.
     :type to_epsg: Optional[int]
     """
-    LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier Feather : '{output_path}'.")
+    LOGGER.debug(i18n.t("export.export_format.saving_feather", output_path=output_path))
 
     transform_geodataframe_crs(geodataframe, to_epsg)
 
@@ -259,7 +266,7 @@ def export_geodataframe_to_csar_api(
     # Importation au runtime pour éviter des problèmes de dépendances si Caris n'est pas installé
     from caris_api import export_csar_api
 
-    LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier CSAR : '{output_path}'.")
+    LOGGER.debug(i18n.t("export.export_format.saving_csar", output_path=output_path))
 
     export_csar_api.export_geodataframe_to_csar(
         data=geo_dataframe,
@@ -293,7 +300,7 @@ def export_geodataframe_to_csar_batch(
         dataframe=geo_dataframe.fillna("<NA>"), output_path=csv_path
     )
 
-    LOGGER.debug(f"Sauvegarde du GeoDataFrame en fichier CSAR : '{output_path}'.")
+    LOGGER.debug(i18n.t("export.export_format.saving_csar", output_path=output_path))
 
     export_csar_batch.export_geodataframe_to_csar(
         data=csv_path,
@@ -315,6 +322,8 @@ def export_dataframe_to_csv(
     :param output_path: Le chemin du fichier de sortie.
     :type output_path: Path
     """
-    LOGGER.debug(f"Sauvegarde du DataFrame en fichier CSV : '{output_path}'.")
+    LOGGER.debug(
+        i18n.t("export.export_format.saving_dataframe_csv", output_path=output_path)
+    )
 
     dataframe.to_csv(sanitize_path_name(output_path), index=False)

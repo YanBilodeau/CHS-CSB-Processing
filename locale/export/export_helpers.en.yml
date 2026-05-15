@@ -1,0 +1,11 @@
+en:
+  finalizing_geodataframe: "Finalizing data GeoDataFrame."
+  splitting_by_iho_order: "Splitting GeoDataFrame by IHO survey order."
+  iho_order_group: "IHO order %{iho_order}: %{count} soundings."
+  iho_order_keys: "IHO orders: %{keys}."
+  caris_config_required: "Caris API configuration is required to export data in CSAR format."
+  exporting_data: "Exporting processed data (%{count} soundings) in %{file_type} format: %{output_path}."
+  export_success: "Processed data export in %{file_type} format completed: %{output_path}."
+  export_error: "Error exporting data in %{file_type} format: %{error}."
+  exporting_metadata: "Exporting processed data metadata: %{output_path}."
+

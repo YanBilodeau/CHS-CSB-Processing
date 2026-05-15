@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Optional, Collection
 
 import geopandas as gpd
+import i18n
 import pandas as pd
 from loguru import logger
 
@@ -56,7 +57,7 @@ def finalize_geodataframe(data_geodataframe: gpd.GeoDataFrame) -> gpd.GeoDataFra
     :return: GeoDataFrame des données finalisé.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
-    LOGGER.debug(f"Finalisation du GeoDataFrame des données.")
+    LOGGER.debug(i18n.t("export.export_helpers.finalizing_geodataframe"))
 
     # Création vectorisée des objets WaterLevelInfo
     water_level_infos = [
@@ -92,7 +93,7 @@ def split_data_by_iho_order(
     :return: Un dictionnaire contenant les GeoDataFrames séparés par ordre IHO.
     :rtype: dict[str, gpd.GeoDataFrame]
     """
-    LOGGER.debug(f"Séparation du GeoDataFrame par ordre de levé OHI.")
+    LOGGER.debug(i18n.t("export.export_helpers.splitting_by_iho_order"))
 
     grouped_data = {}
     for iho_order, group in data_geodataframe.groupby(
@@ -100,9 +101,17 @@ def split_data_by_iho_order(
     ):  # todo : dropna=False ?
         key = "NAN" if pd.isna(iho_order) else str(iho_order)
         grouped_data[key] = group
-        LOGGER.debug(f"Ordre IHO {iho_order}: {len(group):,} sondes")
+        LOGGER.debug(
+            i18n.t(
+                "export.export_helpers.iho_order_group",
+                iho_order=iho_order,
+                count=f"{len(group):,}",
+            )
+        )
 
-    LOGGER.debug(f"Ordre IHO : {grouped_data.keys()}")
+    LOGGER.debug(
+        i18n.t("export.export_helpers.iho_order_keys", keys=grouped_data.keys())
+    )
 
     return grouped_data
 
@@ -127,12 +136,15 @@ def export_processed_data(
     :type resolution: float
     """
     if file_type == FileTypes.CSAR and "config_caris" not in kwargs:
-        LOGGER.warning(
-            "La configuration de l'API Caris est requise pour exporter les données au format CSAR."
-        )
+        LOGGER.warning(i18n.t("export.export_helpers.caris_config_required"))
 
     logger.info(
-        f"Exportation des données traitées ({len(data_geodataframe):,} sondes) au format {file_type} : {output_data_path}."
+        i18n.t(
+            "export.export_helpers.exporting_data",
+            count=f"{len(data_geodataframe):,}",
+            file_type=file_type,
+            output_path=output_data_path,
+        )
     )
 
     try:
@@ -144,12 +156,20 @@ def export_processed_data(
             **kwargs,
         )
         LOGGER.success(
-            f"Exportation des données traitées au format {file_type} complété : {output_data_path}."
+            i18n.t(
+                "export.export_helpers.export_success",
+                file_type=file_type,
+                output_path=output_data_path,
+            )
         )
 
     except Exception as error:
         LOGGER.error(
-            f"Erreur lors de l'exportation des données au format {file_type} : {error}."
+            i18n.t(
+                "export.export_helpers.export_error",
+                file_type=file_type,
+                error=error,
+            )
         )
 
 
@@ -253,7 +273,7 @@ def export_metadata(
     json_output_path: Path = output_path / f"{name}_metadata.json"
 
     LOGGER.info(
-        f"Exportation des métadonnées des données traitées : {json_output_path}."
+        i18n.t("export.export_helpers.exporting_metadata", output_path=json_output_path)
     )
 
     min_time: datetime = data_geodataframe[schema_ids.TIME_UTC].min()

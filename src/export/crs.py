@@ -3,6 +3,7 @@ Module pour la gestion des systèmes de coordonnées dans les GeoDataFrames.
 """
 
 import geopandas as gpd
+import i18n
 from loguru import logger
 
 LOGGER = logger.bind(name="CSB-Processing.Export.CRS")
@@ -20,6 +21,10 @@ def transform_geodataframe_crs(geodataframe: gpd.GeoDataFrame, to_epsg: int) -> 
     epsg_input: int = geodataframe.crs.to_epsg()
     if to_epsg is not None and epsg_input != to_epsg:
         LOGGER.debug(
-            f"Transformation du GeoDataFrame du EPSG:{geodataframe.crs.to_epsg()} au EPSG:{to_epsg}."
+            i18n.t(
+                "export.crs.transforming_crs",
+                from_epsg=geodataframe.crs.to_epsg(),
+                to_epsg=to_epsg,
+            )
         )
         geodataframe.to_crs(epsg=to_epsg, inplace=True)

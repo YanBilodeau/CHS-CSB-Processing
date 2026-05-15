@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Optional, Any
 
 import geopandas as gpd
+import i18n
 import pandas as pd
 import rasterio
 import numpy as np
@@ -45,7 +46,7 @@ def _validate_and_transform_crs(
     :raises ValueError: Si le GeoDataFrame n'a pas de CRS défini.
     """
     if geodataframe.crs is None:
-        raise ValueError("Le GeoDataFrame doit avoir un système de coordonnées défini.")
+        raise ValueError(i18n.t("export.geotiff.error_no_crs"))
 
     transform_geodataframe_crs(geodataframe, to_epsg)
 
@@ -68,7 +69,7 @@ def _compute_grid(
     height = int(np.ceil((maxy - miny) / resolution))
 
     if width <= 0 or height <= 0:
-        raise ValueError("Les dimensions du raster doivent être positives.")
+        raise ValueError(i18n.t("export.geotiff.error_invalid_dimensions"))
 
     transform = from_bounds(minx, miny, maxx, maxy, width, height)
 
@@ -98,7 +99,7 @@ def _prepare_shapes_window(
         sub = geodataframe.iloc[idx]
 
     except Exception as e:
-        LOGGER.warning(f"Erreur lors de l'utilisation de l'index spatial : {e}")
+        LOGGER.warning(i18n.t("export.geotiff.spatial_index_error", error=e))
         sub = geodataframe[geodataframe.geometry.intersects(box(*bounds))]
 
     shapes_with_values = [
@@ -295,9 +296,13 @@ def export_geodataframe_to_geotiff(
     :param to_epsg: Le code EPSG pour le CRS du raster.
     """
     if resolution is None or resolution <= 0:
-        raise ValueError("La résolution doit être un flottant positif.")
+        raise ValueError(i18n.t("export.geotiff.error_invalid_resolution"))
     LOGGER.debug(
-        f"Sauvegarde du GeoDataFrame en fichier GeoTIFF (résolution: {resolution}) : '{output_path}'."
+        i18n.t(
+            "export.geotiff.saving_geotiff",
+            resolution=resolution,
+            output_path=output_path,
+        )
     )
 
     _validate_and_transform_crs(geodataframe, to_epsg)
