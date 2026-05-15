@@ -259,7 +259,7 @@ def get_name_by_station_id(gdf_voronoi: gpd.GeoDataFrame, station_id: str) -> st
     ].values[0]
 
 
-def get_position_by_station_id(
+def get_station_position_by_station_id(
     gdf_voronoi: gpd.GeoDataFrame, station_id: str
 ) -> gpd.GeoSeries:
     """
@@ -283,7 +283,7 @@ def get_position_by_station_id(
     ]
 
 
-def get_voronoi_polygon_by_geometry(
+def get_polygon_by_geometry(
     gdf_voronoi: gpd.GeoDataFrame,
     geometry: gpd.GeoDataFrame,
 ) -> gpd.GeoDataFrame:

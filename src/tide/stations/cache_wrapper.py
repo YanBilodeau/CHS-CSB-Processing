@@ -61,14 +61,18 @@ def cache_result(ttl: int = 86400) -> Callable:
 
             if cache_key in cache:
                 LOGGER.trace(
-                    i18n.t("tide.stations.cache_wrapper.cache_hit", key=cache_key)
+                    i18n.t("tide.stations.cache_wrapper.cache_hit", cache_key=cache_key)
                 )
                 return cache[cache_key]
 
             result = func(*args, **kwargs)
 
             LOGGER.trace(
-                i18n.t("tide.stations.cache_wrapper.cache_set", ttl=ttl, key=cache_key)
+                i18n.t(
+                    "tide.stations.cache_wrapper.cache_set",
+                    ttl=ttl,
+                    cache_key=cache_key,
+                )
             )
             cache.set(key=cache_key, value=result, expire=ttl)
 
