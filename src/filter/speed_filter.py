@@ -5,6 +5,7 @@ Ce module contient les fonctions qui permettent de nettoyer les données de vite
 """
 
 import geopandas as gpd
+import i18n
 from loguru import logger
 import pandas as pd
 
@@ -33,8 +34,12 @@ def filter_speed(
     :return: Le GeoDataFrame nettoyé.
     """
     LOGGER.debug(
-        f"Nettoyage des données de vitesse {[schema_ids.SPEED_KN]}."
-        f"Vitesse minimale : {min_speed}, vitesse maximale : {max_speed}."
+        i18n.t(
+            "filter.speed_filter.cleaning_speed",
+            column=[schema_ids.SPEED_KN],
+            min_speed=min_speed,
+            max_speed=max_speed,
+        )
     )
 
     invalid_speeds: pd.Series = (~geodataframe[schema_ids.SPEED_KN].isna()) & (
@@ -51,14 +56,14 @@ def filter_speed(
     )
 
     if invalid_speeds.any():
-        LOGGER.warning(f"{invalid_speeds.sum():,} entrées ont des vitesses invalides.")
+        LOGGER.warning(
+            i18n.t(
+                "filter.speed_filter.invalid_speeds", count=f"{invalid_speeds.sum():,}"
+            )
+        )
 
         geodataframe.loc[invalid_speeds, schema_ids.OUTLIER] = geodataframe.loc[
             invalid_speeds, schema_ids.OUTLIER
         ].apply(lambda x: x.tags.append(Status.REJECTED_BY_SPEED_FILTER) or x)
-
-    # geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
-    #     ~invalid_speeds
-    # ]
 
     return geodataframe

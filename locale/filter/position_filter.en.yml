@@ -1,0 +1,6 @@
+en:
+  cleaning_latitude: "Cleaning latitude data %{column}. Min latitude: %{min_latitude}, max latitude: %{max_latitude}."
+  invalid_latitudes: "%{count} entries have invalid latitudes."
+  cleaning_longitude: "Cleaning longitude data %{column}. Min longitude: %{min_longitude}, max longitude: %{max_longitude}."
+  invalid_longitudes: "%{count} entries have invalid longitudes."
+

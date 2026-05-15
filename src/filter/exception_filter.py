@@ -6,6 +6,8 @@ Ce module contient les classes d'exceptions qui sont levées lors du filtrage de
 
 from dataclasses import dataclass
 
+import i18n
+
 
 @dataclass(frozen=True)
 class DataCleaningFunctionError(Exception):
@@ -19,4 +21,6 @@ class DataCleaningFunctionError(Exception):
     """La fonction de nettoyage."""
 
     def __str__(self):
-        return f"La fonction de nettoyage '{self.function}' n'existe pas."
+        return i18n.t(
+            "filter.exception_filter.error_function_not_found", function=self.function
+        )

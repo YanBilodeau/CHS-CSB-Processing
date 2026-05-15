@@ -1,0 +1,6 @@
+en:
+  cleaning_data: "Cleaning data."
+  removing_tags: "Removing data with the following tags: %{tags}."
+  soundings_removed_by_tag: "%{count} soundings removed by filter '%{tag}'."
+  soundings_removed_total: "Total soundings removed: %{count}."
+

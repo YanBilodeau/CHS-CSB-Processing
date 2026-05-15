@@ -1,0 +1,4 @@
+en:
+  cleaning_time: "Cleaning time data %{column}."
+  invalid_dates: "%{count} entries have invalid dates."
+

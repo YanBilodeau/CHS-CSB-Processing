@@ -1,0 +1,4 @@
+fr:
+  cleaning_time: "Nettoyage des données de temps %{column}."
+  invalid_dates: "%{count} entrées ont des dates invalides."
+

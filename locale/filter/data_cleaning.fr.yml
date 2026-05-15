@@ -1,0 +1,6 @@
+fr:
+  cleaning_data: "Nettoyage des données."
+  removing_tags: "Suppression des données avec les tags suivants : %{tags}."
+  soundings_removed_by_tag: "%{count} sondes supprimées avec le filtre '%{tag}'."
+  soundings_removed_total: "Nombre de sondes supprimées : %{count}."
+

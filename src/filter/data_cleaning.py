@@ -7,6 +7,7 @@ Ce module contient les fonctions qui permettent de nettoyer les données en fonc
 from typing import Collection, Optional, Callable, Any, Type
 
 import geopandas as gpd
+import i18n
 from loguru import logger
 
 from .datetime_filter import filter_time
@@ -58,7 +59,7 @@ def filter_data_by_outlier_tags(
     if not tags_to_suppress:
         return geodataframe
 
-    LOGGER.info(f"Suppression des données avec les tags suivants : {tags_to_suppress}.")
+    LOGGER.info(i18n.t("filter.data_cleaning.removing_tags", tags=tags_to_suppress))
 
     # Compter le nombre de sondes supprimées par tag
     initial_count = len(geodataframe)
@@ -74,7 +75,13 @@ def filter_data_by_outlier_tags(
     # Journal des comptages par tag
     for tag, count in counts_by_tag.items():
         if count > 0:
-            LOGGER.warning(f"{count:,} sondes supprimées avec le filtre '{tag}'.")
+            LOGGER.warning(
+                i18n.t(
+                    "filter.data_cleaning.soundings_removed_by_tag",
+                    count=f"{count:,}",
+                    tag=tag,
+                )
+            )
 
     # Appliquer le filtre
     geodataframe = geodataframe[
@@ -89,7 +96,12 @@ def filter_data_by_outlier_tags(
     final_count = len(geodataframe)
     difference_count = initial_count - final_count
     if difference_count > 0:
-        LOGGER.success(f"Nombre de sondes supprimées : {difference_count:,}.")
+        LOGGER.success(
+            i18n.t(
+                "filter.data_cleaning.soundings_removed_total",
+                count=f"{difference_count:,}",
+            )
+        )
 
     return geodataframe
 
@@ -112,7 +124,7 @@ def clean_data(
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     :raises DataCleaningFunctionError: Si la fonction de nettoyage n'existe pas.
     """
-    LOGGER.debug("Nettoyage des données.")
+    LOGGER.debug(i18n.t("filter.data_cleaning.cleaning_data"))
 
     if cleaning_func is None:
         cleaning_func = CLEANING_FUNCTION

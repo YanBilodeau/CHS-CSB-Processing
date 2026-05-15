@@ -1,0 +1,4 @@
+en:
+  cleaning_speed: "Cleaning speed data %{column}. Min speed: %{min_speed}, max speed: %{max_speed}."
+  invalid_speeds: "%{count} entries have invalid speeds."
+

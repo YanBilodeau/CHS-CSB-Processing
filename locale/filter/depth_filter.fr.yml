@@ -1,0 +1,4 @@
+fr:
+  cleaning_depth: "Nettoyage des données de profondeur %{column}. Profondeur minimale : %{min_depth}, profondeur maximale : %{max_depth}."
+  invalid_depths: "%{count} entrées ont des profondeurs invalides."
+

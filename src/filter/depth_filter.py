@@ -5,6 +5,7 @@ Ce module contient les fonctions qui permettent de nettoyer les données de prof
 """
 
 import geopandas as gpd
+import i18n
 from loguru import logger
 import pandas as pd
 
@@ -34,8 +35,12 @@ def depth_depth(
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
     LOGGER.debug(
-        f"Nettoyage des données de profondeur {[schema_ids.DEPTH_RAW_METER]}. "
-        f"Profondeur minimale : {min_depth}, profondeur maximale : {max_depth}."
+        i18n.t(
+            "filter.depth_filter.cleaning_depth",
+            column=[schema_ids.DEPTH_RAW_METER],
+            min_depth=min_depth,
+            max_depth=max_depth,
+        )
     )
 
     invalid_depths: pd.Series = (
@@ -50,15 +55,13 @@ def depth_depth(
 
     if invalid_depths.any():
         LOGGER.warning(
-            f"{invalid_depths.sum():,} entrées ont des profondeurs invalides."
+            i18n.t(
+                "filter.depth_filter.invalid_depths", count=f"{invalid_depths.sum():,}"
+            )
         )
 
         geodataframe.loc[invalid_depths, schema_ids.OUTLIER] = geodataframe.loc[
             invalid_depths, schema_ids.OUTLIER
         ].apply(lambda x: x.tags.append(Status.REJECTED_BY_DEPTH_FILTER) or x)
-
-    # geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
-    #     ~invalid_depths
-    # ]
 
     return geodataframe

@@ -1,0 +1,4 @@
+fr:
+  cleaning_speed: "Nettoyage des données de vitesse %{column}. Vitesse minimale : %{min_speed}, vitesse maximale : %{max_speed}."
+  invalid_speeds: "%{count} entrées ont des vitesses invalides."
+

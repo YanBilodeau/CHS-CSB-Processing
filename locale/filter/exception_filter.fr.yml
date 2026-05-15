@@ -1,0 +1,3 @@
+fr:
+  error_function_not_found: "La fonction de nettoyage '%{function}' n'existe pas."
+

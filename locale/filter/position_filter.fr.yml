@@ -1,0 +1,6 @@
+fr:
+  cleaning_latitude: "Nettoyage des données de latitude %{column}. Latitude minimale : %{min_latitude}, latitude maximale : %{max_latitude}."
+  invalid_latitudes: "%{count} entrées ont des latitudes invalides."
+  cleaning_longitude: "Nettoyage des données de longitude %{column}. Longitude minimale : %{min_longitude}, longitude maximale : %{max_longitude}."
+  invalid_longitudes: "%{count} entrées ont des longitudes invalides."
+

@@ -1,0 +1,4 @@
+en:
+  cleaning_depth: "Cleaning depth data %{column}. Min depth: %{min_depth}, max depth: %{max_depth}."
+  invalid_depths: "%{count} entries have invalid depths."
+

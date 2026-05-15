@@ -1,0 +1,3 @@
+en:
+  error_function_not_found: "The cleaning function '%{function}' does not exist."
+

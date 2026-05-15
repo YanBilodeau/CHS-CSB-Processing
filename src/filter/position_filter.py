@@ -5,6 +5,7 @@ Ce module contient les fonctions qui permettent de nettoyer les données de posi
 """
 
 import geopandas as gpd
+import i18n
 from loguru import logger
 import pandas as pd
 
@@ -34,8 +35,12 @@ def filter_latitude(
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
     LOGGER.debug(
-        f"Nettoyage des données de latitude {[schema_ids.LATITUDE_WGS84]}. "
-        f"Latitude minimale : {min_latitude}, latitude maximale : {max_latitude}."
+        i18n.t(
+            "filter.position_filter.cleaning_latitude",
+            column=[schema_ids.LATITUDE_WGS84],
+            min_latitude=min_latitude,
+            max_latitude=max_latitude,
+        )
     )
 
     invalid_latitudes: pd.Series = (
@@ -45,16 +50,15 @@ def filter_latitude(
     )
     if invalid_latitudes.any():
         LOGGER.warning(
-            f"{invalid_latitudes.sum():,} entrées ont des latitudes invalides."
+            i18n.t(
+                "filter.position_filter.invalid_latitudes",
+                count=f"{invalid_latitudes.sum():,}",
+            )
         )
 
         geodataframe.loc[invalid_latitudes, schema_ids.OUTLIER] = geodataframe.loc[
             invalid_latitudes, schema_ids.OUTLIER
         ].apply(lambda x: x.tags.append(Status.REJECTED_BY_LATITUDE_FILTER) or x)
-
-    # geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
-    #     ~invalid_latitudes
-    # ]
 
     return geodataframe
 
@@ -78,8 +82,12 @@ def filter_longitude(
     :rtype: gpd.GeoDataFrame[schema.DataLoggerSchema]
     """
     LOGGER.debug(
-        f"Nettoyage des données de longitude {[schema_ids.LONGITUDE_WGS84]}. "
-        f"Longitude minimale : {min_longitude}, longitude maximale : {max_longitude}."
+        i18n.t(
+            "filter.position_filter.cleaning_longitude",
+            column=[schema_ids.LONGITUDE_WGS84],
+            min_longitude=min_longitude,
+            max_longitude=max_longitude,
+        )
     )
 
     invalid_longitudes: pd.Series = (
@@ -89,15 +97,14 @@ def filter_longitude(
     )
     if invalid_longitudes.any():
         LOGGER.warning(
-            f"{invalid_longitudes.sum()} entrées ont des longitudes invalides."
+            i18n.t(
+                "filter.position_filter.invalid_longitudes",
+                count=f"{invalid_longitudes.sum()}",
+            )
         )
 
         geodataframe.loc[invalid_longitudes, schema_ids.OUTLIER] = geodataframe.loc[
             invalid_longitudes, schema_ids.OUTLIER
         ].apply(lambda x: x.tags.append(Status.REJECTED_BY_LONGITUDE_FILTER) or x)
-
-    # geodataframe: gpd.GeoDataFrame[schema.DataLoggerSchema] = geodataframe[
-    #     ~invalid_longitudes
-    # ]
 
     return geodataframe
