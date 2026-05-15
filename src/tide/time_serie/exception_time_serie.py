@@ -7,6 +7,7 @@ Ce module contient les exceptions sont utilisées pour gérer les erreurs lors d
 from dataclasses import dataclass
 from datetime import timedelta
 
+import i18n
 import pandas as pd
 
 from .time_serie_models import DataGapPeriod, TimeSeriesProtocol
@@ -34,7 +35,12 @@ class NoWaterLevelDataError(Exception):
     """Date de fin."""
 
     def __str__(self) -> str:
-        return f"Aucune donnée n'a été récupérée pour la station '{self.station_id}' de {self.from_time} à {self.to_time}."
+        return i18n.t(
+            "tide.time_serie.exception_time_serie.no_water_level_error",
+            station_id=self.station_id,
+            from_time=self.from_time,
+            to_time=self.to_time,
+        )
 
 
 @dataclass(frozen=True)
@@ -58,9 +64,11 @@ class WaterLevelDataGapError(Exception):
     """Limite permise pour les données."""
 
     def __str__(self) -> str:
-        return (
-            f"Il y a des périodes de données manquantes qui excède la limite permise de {self.max_time_gap} pour la"
-            f" station {self.station_id}. {get_data_gaps_message(gaps=self.gaps)}"
+        return i18n.t(
+            "tide.time_serie.exception_time_serie.data_gap_error",
+            max_time_gap=self.max_time_gap,
+            station_id=self.station_id,
+            gaps_message=get_data_gaps_message(gaps=self.gaps),
         )
 
 
@@ -96,7 +104,11 @@ def get_data_gaps_message(gaps: pd.DataFrame) -> str:
         sum((gap.duration for gap in data_gaps_list), timedelta()).total_seconds() / 60
     )
 
-    return f"{total_duration_minutes} minutes de données manquantes {gaps.attrs.get(schema_ids.NAME_METADATA)}."
+    return i18n.t(
+        "tide.time_serie.exception_time_serie.data_gaps_message",
+        total_minutes=total_duration_minutes,
+        metadata=gaps.attrs.get(schema_ids.NAME_METADATA),
+    )
 
 
 @dataclass(frozen=True)
@@ -120,7 +132,9 @@ class InterpolationValueError(Exception):
     """Série temporelle."""
 
     def __str__(self) -> str:
-        return (
-            f"Impossible d'interpoler les valeurs de {self.from_time} à {self.to_time} pour la série temporelle "
-            f"{self.time_serie}. Il manque des données pour réaliser l'interpolation."
+        return i18n.t(
+            "tide.time_serie.exception_time_serie.interpolation_error",
+            from_time=self.from_time,
+            to_time=self.to_time,
+            time_serie=self.time_serie,
         )

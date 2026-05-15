@@ -1,0 +1,3 @@
+en:
+  doubling_buffer: "Increasing buffer time for next interpolation attempt from %{old} to %{new}."
+  excluding_time_serie: "Adding time series %{time_serie} to exclusion list."

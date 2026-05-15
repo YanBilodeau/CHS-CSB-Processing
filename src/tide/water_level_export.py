@@ -11,6 +11,7 @@ from typing import Collection, Sequence
 import pandas as pd
 import geopandas as gpd
 from loguru import logger
+import i18n
 
 from . import voronoi, plot
 import schema
@@ -58,7 +59,9 @@ def export_water_level_dataframe(
     )
 
     # Export the water level data to a CSV file
-    LOGGER.info(f"Enregistrement des données de niveaux d'eau : {output_path}.")
+    LOGGER.info(
+        i18n.t("tide.water_level_export.saving_water_level_data", path=output_path)
+    )
     export.export_dataframe_to_csv(
         dataframe=wl_dataframe,
         output_path=output_path,
@@ -106,7 +109,11 @@ def export_plot_water_level_data(
     :type export_path: Path
     """
     LOGGER.info(
-        f"Enregistrement des graphiques des données de niveaux d'eau {station_titles}: {export_path}."
+        i18n.t(
+            "tide.water_level_export.saving_water_level_plots",
+            titles=station_titles,
+            path=export_path,
+        )
     )
 
     plot.plot_time_series_dataframe(

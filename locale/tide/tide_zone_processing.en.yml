@@ -1,0 +1,3 @@
+﻿en:
+  getting_tide_zones: "Retrieving tide zones based on data extent."
+  getting_time_range: "Retrieving start and end time for data based on tide zones."

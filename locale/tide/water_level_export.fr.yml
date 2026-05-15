@@ -1,0 +1,3 @@
+fr:
+  saving_water_level_data: "Enregistrement des données de niveaux d'eau : %{path}."
+  saving_water_level_plots: "Enregistrement des graphiques des données de niveaux d'eau %{titles}: %{path}."

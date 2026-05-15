@@ -1,0 +1,3 @@
+fr:
+  doubling_buffer: "Augmentation du temps tampon pour la prochaine tentative d'interpolation de %{old} à %{new}."
+  excluding_time_serie: "Ajout de la série temporelle %{time_serie} à la liste d'exclusion."

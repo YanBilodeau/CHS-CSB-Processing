@@ -15,6 +15,7 @@ import geopandas as gpd
 import pandas as pd
 from loguru import logger
 from shapely.geometry import Point
+import i18n
 
 from .cache_wrapper import cache_result, init_cache
 from .exception_stations import StationsError
@@ -46,7 +47,12 @@ class StationsHandlerABC(ABC):
         :param cache_path: Chemin du cache.
         :type cache_path: Path
         """
-        LOGGER.debug(f"Initialisation d'un objet {self.__class__.__name__}.")
+        LOGGER.debug(
+            i18n.t(
+                "tide.stations.stations_abc.init_object",
+                class_name=self.__class__.__name__,
+            )
+        )
 
         self.api: IWLSapiProtocol = api
         self.ttl: int = ttl
@@ -64,7 +70,11 @@ class StationsHandlerABC(ABC):
 
         if not stations.is_ok:
             LOGGER.error(
-                f"Erreur lors de la récupération des stations: {stations.message} - {stations.error}."
+                i18n.t(
+                    "tide.stations.stations_abc.error_getting_stations",
+                    message=stations.message,
+                    error=stations.error,
+                )
             )
             raise StationsError(
                 message=stations.message,
@@ -95,7 +105,7 @@ class StationsHandlerABC(ABC):
             :return: Carte d'identifiant et de code pour les stations.
             :rtype: dict[str, str]
             """
-            LOGGER.debug("Création de la carte d'identifiant et de code des stations.")
+            LOGGER.debug(i18n.t("tide.stations.stations_abc.creating_code_id_map"))
 
             return {station["code"]: station["id"] for station in self.stations}
 
@@ -148,7 +158,7 @@ class StationsHandlerABC(ABC):
         :return: Liste des points.
         :rtype: list[Point]
         """
-        LOGGER.debug("Création des géométries des stations.")
+        LOGGER.debug(i18n.t("tide.stations.stations_abc.creating_geometry"))
 
         return [
             Point(station["longitude"], station["latitude"]) for station in stations
@@ -189,7 +199,7 @@ class StationsHandlerABC(ABC):
         :return: Liste des attributs.
         :rtype: list[dict]
         """
-        LOGGER.debug("Création des attributs des stations.")
+        LOGGER.debug(i18n.t("tide.stations.stations_abc.creating_attributes"))
 
         return [
             {
@@ -287,7 +297,7 @@ class StationsHandlerABC(ABC):
         :return: Données des stations sous forme de GeoDataFrame.
         :rtype: gpd.GeoDataFrame[schema.StationsSchema]
         """
-        LOGGER.debug("Création du GeoDataFrame des stations.")
+        LOGGER.debug(i18n.t("tide.stations.stations_abc.creating_stations_gdf"))
 
         filtered_stations: list[dict] = (
             self._filter_stations(
@@ -343,11 +353,7 @@ class StationsHandlerABC(ABC):
         """
         ...
 
-    def get_stations_geodataframe_from_codes(
-        self,
-        station_codes: Collection[str],
-        filter_time_series: Collection[TimeSeriesProtocol],
-    ) -> gpd.GeoDataFrame:
+    def get_stations_geodataframe_from_codes(self, station_codes, filter_time_series):
         """
         Récupère les données d'une station sous forme de GeoDataFrame.
 
@@ -358,7 +364,11 @@ class StationsHandlerABC(ABC):
         :return: Données de la station sous forme de GeoDataFrame.
         :rtype: gpd.GeoDataFrame[schema.StationsSchema]
         """
-        LOGGER.debug(f"Récupération des données des stations '{station_codes}'.")
+        LOGGER.debug(
+            i18n.t(
+                "tide.stations.stations_abc.getting_stations_data", codes=station_codes
+            )
+        )
 
         gdf_stations: gpd.GeoDataFrame = self.get_stations_geodataframe(
             filter_time_series=filter_time_series
@@ -369,10 +379,18 @@ class StationsHandlerABC(ABC):
         ]
 
         if gdf_station.empty:
-            LOGGER.error(f"Aucune donnée trouvée pour les stations '{station_codes}'.")
+            LOGGER.error(
+                i18n.t(
+                    "tide.stations.stations_abc.no_data_for_stations",
+                    codes=station_codes,
+                )
+            )
 
             raise StationsError(
-                message=f"Aucune donnée trouvée pour les stations '{station_codes}'.",
+                message=i18n.t(
+                    "tide.stations.stations_abc.no_data_for_stations",
+                    codes=station_codes,
+                ),
                 error="StationNotFound",
                 status_code=404,
             )
@@ -488,8 +506,14 @@ class StationsHandlerABC(ABC):
         :rtype: pd.DataFrame[schema.WaterLevelSerieDataSchema]
         """
         LOGGER.debug(
-            f"Récupération des données {time_serie_code} pour la station '{station}' du {from_time} au {to_time} "
-            f"par block de {time_delta}."
+            i18n.t(
+                "tide.stations.stations_abc.fetching_time_series_data",
+                time_serie=time_serie_code,
+                station=station,
+                from_time=from_time,
+                to_time=to_time,
+                time_delta=time_delta,
+            )
         )
 
         data: ResponseProtocol = self.api.get_time_serie_block_data(
@@ -504,16 +528,28 @@ class StationsHandlerABC(ABC):
 
         if not data.is_ok:
             LOGGER.error(
-                f"Status code {data.status_code} : Erreur lors de la récupération des données pour la station "
-                f"'{station}' et la série temporelle '{time_serie_code}' entre le {from_time} et le {to_time}. "
-                f"{data.message} - {data.error}."
+                i18n.t(
+                    "tide.stations.stations_abc.error_fetching_data",
+                    status_code=data.status_code,
+                    station=station,
+                    time_serie=time_serie_code,
+                    from_time=from_time,
+                    to_time=to_time,
+                    message=data.message,
+                    error=data.error,
+                )
             )
             return pd.DataFrame()
 
         if not data.data:
             LOGGER.warning(
-                f"Aucune donnée de la série temporelle '{time_serie_code}' pour la station '{station}' "
-                f"entre le {from_time} et le {to_time}."
+                i18n.t(
+                    "tide.stations.stations_abc.no_time_serie_data",
+                    time_serie=time_serie_code,
+                    station=station,
+                    from_time=from_time,
+                    to_time=to_time,
+                )
             )
             return pd.DataFrame(
                 columns=list(schema.WaterLevelSerieDataSchema.__annotations__.keys())

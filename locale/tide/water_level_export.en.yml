@@ -1,0 +1,3 @@
+﻿en:
+  saving_water_level_data: "Saving water level data: %{path}."
+  saving_water_level_plots: "Saving water level plots for %{titles}: %{path}."

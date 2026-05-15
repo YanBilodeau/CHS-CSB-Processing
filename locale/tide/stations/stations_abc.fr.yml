@@ -1,0 +1,12 @@
+fr:
+  init_object: "Initialisation d'un objet %{class_name}."
+  error_getting_stations: "Erreur lors de la récupération des stations : %{message} - %{error}."
+  creating_code_id_map: "Création de la carte d'identifiant et de code des stations."
+  creating_geometry: "Création des géométries des stations."
+  creating_attributes: "Création des attributs des stations."
+  getting_stations_data: "Récupération des données des stations '%{codes}'."
+  no_data_for_stations: "Aucune donnée trouvée pour les stations '%{codes}'."
+  creating_stations_gdf: "Création du GeoDataFrame des stations."
+  fetching_time_series_data: "Récupération des données %{time_serie} pour la station '%{station}' du %{from_time} au %{to_time} par block de %{time_delta}."
+  error_fetching_data: "Status code %{status_code} : Erreur lors de la récupération des données pour la station '%{station}' et la série temporelle '%{time_serie}' entre le %{from_time} et le %{to_time}. %{message} - %{error}."
+  no_time_serie_data: "Aucune donnée de la série temporelle '%{time_serie}' pour la station '%{station}' entre le %{from_time} et le %{to_time}."

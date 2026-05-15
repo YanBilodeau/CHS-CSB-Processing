@@ -1,0 +1,8 @@
+en:
+  no_tide_zone_intersection: "No tide zone intersects the remaining data (%{count} soundings). Validate sounding positions and tide zones."
+  tide_zone_info: "Zone %{zone}: min=%{min_time}, max=%{max_time}, series=%{time_series}."
+  fetching_water_levels: "Fetching water levels for each station."
+  exceptions: "Exceptions: %{exceptions}."
+  exporting_voronoi: "Exporting Voronoi diagram: %{path}."
+  iteration: "Iteration %{iteration}. Excluded stations: %{excluded_stations}."
+

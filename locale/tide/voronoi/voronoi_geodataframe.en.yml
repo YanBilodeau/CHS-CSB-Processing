@@ -1,0 +1,11 @@
+en:
+  transforming_geometry: "Transforming Shapely geometry of type %{type} to GeoDataFrame."
+  joining_stations_voronoi: "Spatial join between stations and Voronoi polygons."
+  merging_attributes: "Merging station attributes with Voronoi polygons."
+  getting_polygon: "Retrieving Voronoi polygon for station '%{station_id}'."
+  getting_time_series: "Retrieving time series for station '%{station_id}'."
+  getting_code: "Retrieving station code for station '%{station_id}'."
+  getting_name: "Retrieving station name for station '%{station_id}'."
+  getting_position: "Retrieving station position for station '%{station_id}'."
+  getting_polygon_by_geometry: "Retrieving Voronoi polygons intersecting geometries."
+  creating_concave_hull: "Creating concave hull with ratio %{ratio}."

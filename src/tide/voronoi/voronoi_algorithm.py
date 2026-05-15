@@ -5,12 +5,10 @@ Module qui contient l'algorithme de création des polygones de Voronoi.
 from typing import Optional
 
 from loguru import logger
-from shapely import (
-    Geometry,
-    GeometryCollection,
-    voronoi_polygons,
-)
-from shapely.geometry import box
+import i18n
+from shapely import voronoi_polygons
+from shapely.geometry import box, GeometryCollection
+from shapely.geometry.base import BaseGeometry as Geometry
 
 LOGGER = logger.bind(name="CSB-Processing.Tide.Voronoi.Algorithm")
 
@@ -41,7 +39,7 @@ def create_voronoi_polygons(
     :return: Collection de polygones de Voronoi.
     :rtype: GeometryCollection
     """
-    LOGGER.debug(f"Création des polygones de Voronoi à partir de la géométrie.")
+    LOGGER.debug(i18n.t("tide.voronoi.voronoi_algorithm.creating_voronoi"))
 
     return voronoi_polygons(
         geometry=geometry,

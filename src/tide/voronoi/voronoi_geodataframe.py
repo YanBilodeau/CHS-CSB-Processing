@@ -11,6 +11,8 @@ import dask_geopandas as dgpd
 import geopandas as gpd
 import shapely
 from loguru import logger
+import i18n
+
 from shapely import (
     Geometry,
     GeometryCollection,
@@ -41,7 +43,10 @@ def from_shapely_object_to_geodataframe(
     :rtype: gpd.GeoDataFrame
     """
     LOGGER.debug(
-        f"Transformation de la géométrie Shapely de type {geometry.geom_type} en GeoDataFrame."
+        i18n.t(
+            "tide.voronoi.voronoi_geodataframe.transforming_geometry",
+            type=type(geometry).__name__,
+        )
     )
     if isinstance(geometry, GeometryCollection):
         geometries = list(geometry.geoms)
@@ -78,7 +83,7 @@ def join_stations_voronoi(
     :return: Le GeoDataFrame joint.
     :rtype: gpd.GeoDataFrame
     """
-    LOGGER.debug("Jointure spatiale entre les stations et les polygones de Voronoi.")
+    LOGGER.debug(i18n.t("tide.voronoi.voronoi_geodataframe.joining_stations_voronoi"))
 
     return gpd.sjoin(gdf_stations, gdf_voronoi, how="inner", predicate="within")
 
@@ -96,7 +101,7 @@ def merge_attributes(
     :return: Le GeoDataFrame avec les attributs fusionnés.
     :rtype: gpd.GeoDataFrame
     """
-    LOGGER.debug("Fusion des attributs des stations avec les polygones de Voronoi.")
+    LOGGER.debug(i18n.t("tide.voronoi.voronoi_geodataframe.merging_attributes"))
 
     gdf_voronoi = (
         gdf_voronoi.merge(
@@ -180,7 +185,11 @@ def get_polygon_by_station_id(
     :return: Le polygone de Voronoi de la station.
     :rtype: gpd.GeoDataFrame
     """
-    LOGGER.debug(f"Récupération du polygone de Voronoi de la station '{station_id}'.")
+    LOGGER.debug(
+        i18n.t(
+            "tide.voronoi.voronoi_geodataframe.getting_polygon", station_id=station_id
+        )
+    )
 
     return gdf_voronoi.loc[gdf_voronoi[schema_ids.ID] == station_id]
 
@@ -198,7 +207,12 @@ def get_time_series_by_station_id(
     :return: Les séries temporelles de la station.
     :rtype: list[str]
     """
-    LOGGER.debug(f"Récupération des séries temporelles de la station '{station_id}'.")
+    LOGGER.debug(
+        i18n.t(
+            "tide.voronoi.voronoi_geodataframe.getting_time_series",
+            station_id=station_id,
+        )
+    )
 
     return gdf_voronoi.loc[gdf_voronoi[schema_ids.ID] == station_id][
         schema_ids.TIME_SERIES
@@ -216,7 +230,9 @@ def get_code_by_station_id(gdf_voronoi: gpd.GeoDataFrame, station_id: str) -> st
     :return: Le code de la station.
     :rtype: str
     """
-    LOGGER.debug(f"Récupération du code de la station '{station_id}'.")
+    LOGGER.debug(
+        i18n.t("tide.voronoi.voronoi_geodataframe.getting_code", station_id=station_id)
+    )
 
     return gdf_voronoi.loc[gdf_voronoi[schema_ids.ID] == station_id][
         schema_ids.CODE
@@ -234,14 +250,16 @@ def get_name_by_station_id(gdf_voronoi: gpd.GeoDataFrame, station_id: str) -> st
     :return: Le nom de la station.
     :rtype: str
     """
-    LOGGER.debug(f"Récupération du nom de la station '{station_id}'.")
+    LOGGER.debug(
+        i18n.t("tide.voronoi.voronoi_geodataframe.getting_name", station_id=station_id)
+    )
 
     return gdf_voronoi.loc[gdf_voronoi[schema_ids.ID] == station_id][
         schema_ids.NAME
     ].values[0]
 
 
-def get_station_position_by_station_id(
+def get_position_by_station_id(
     gdf_voronoi: gpd.GeoDataFrame, station_id: str
 ) -> gpd.GeoSeries:
     """
@@ -254,14 +272,18 @@ def get_station_position_by_station_id(
     :return: La position de la station.
     :rtype: gpd.GeoSeries
     """
-    LOGGER.debug(f"Récupération de la position de la station '{station_id}'.")
+    LOGGER.debug(
+        i18n.t(
+            "tide.voronoi.voronoi_geodataframe.getting_position", station_id=station_id
+        )
+    )
 
     return gdf_voronoi.loc[gdf_voronoi[schema_ids.ID] == station_id][
         schema_ids.STATION_POSITION
     ]
 
 
-def get_polygon_by_geometry(
+def get_voronoi_polygon_by_geometry(
     gdf_voronoi: gpd.GeoDataFrame,
     geometry: gpd.GeoDataFrame,
 ) -> gpd.GeoDataFrame:
@@ -276,7 +298,9 @@ def get_polygon_by_geometry(
     :rtype: gpd.GeoDataFrame[schema.TideZoneSchema]
     """
     LOGGER.debug(
-        "Récupération des polygones de Voronoi qui intersectent les géométries."
+        i18n.t(
+            "tide.voronoi.voronoi_geodataframe.getting_polygon_by_geometry",
+        )
     )
 
     dask_gdf_voronoi: dgpd.GeoDataFrame[schema.TideZoneStationSchema] = (
@@ -310,7 +334,12 @@ def get_concave_hull(
     :return: L'enveloppe concave des polygones.
     :rtype: Geometry
     """
-    LOGGER.debug(f"Création de l'enveloppe concave avec un ratio de {ratio}.")
+    LOGGER.debug(
+        i18n.t(
+            "tide.voronoi.voronoi_geodataframe.creating_concave_hull",
+            ratio=ratio,
+        )
+    )
 
     return concave_hull(geometry, ratio=ratio, allow_holes=allow_holes)
 

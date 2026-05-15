@@ -1,0 +1,3 @@
+fr:
+  filtering_stations: "Filtrage des stations en fonction des séries temporelles [%{time_series}] et des stations exclues [%{excluded}]."
+  fetching_metadata: "Récupération des métadonnées des stations."

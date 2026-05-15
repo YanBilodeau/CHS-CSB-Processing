@@ -5,6 +5,7 @@ Ce module contient la fonction factory qui permet de récupérer la factory de s
 """
 
 from loguru import logger
+import i18n
 
 from .stations_abc import StationsHandlerABC
 from .stations_models import EndpointTypeProtocol
@@ -33,7 +34,7 @@ def get_stations_factory(
     :rtype: type[StationsHandlerABC]
     """
     LOGGER.debug(
-        f"Récupération de la factory de stations pour le endpoint '{enpoint_type}'."
+        i18n.t("tide.stations.factory_stations.getting_factory", endpoint=enpoint_type)
     )
 
     return STATIONS_FACTORY.get(enpoint_type)

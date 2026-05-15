@@ -1,0 +1,12 @@
+en:
+  init_object: "Initializing %{class_name} object."
+  error_getting_stations: "Error retrieving stations: %{message} - %{error}."
+  creating_code_id_map: "Creating station code/ID map."
+  creating_geometry: "Creating station geometries."
+  creating_attributes: "Creating station attributes."
+  getting_stations_data: "Retrieving station data '%{codes}'."
+  no_data_for_stations: "No data found for stations '%{codes}'."
+  creating_stations_gdf: "Creating stations GeoDataFrame."
+  fetching_time_series_data: "Fetching %{time_serie} data for station '%{station}' from %{from_time} to %{to_time} in blocks of %{time_delta}."
+  error_fetching_data: "Status code %{status_code}: Error fetching data for station '%{station}' and time series '%{time_serie}' between %{from_time} and %{to_time}. %{message} - %{error}."
+  no_time_serie_data: "No %{time_serie} data for station '%{station}' between %{from_time} and %{to_time}."

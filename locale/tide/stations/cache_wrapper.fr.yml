@@ -1,0 +1,5 @@
+fr:
+  init_cache: "Initialisation du cache avec le chemin : %{path}."
+  cache_hit: "Récupération des données depuis le cache : %{key}."
+  cache_set: "Ajout de données dans le cache avec un ttl de %{ttl} secondes : '%{key}'."
+  cache_cleared: "Le cache a été vidé."

@@ -15,6 +15,7 @@ from typing import Optional
 import geopandas as gpd
 import pandas as pd
 from loguru import logger
+import i18n
 
 from . import voronoi
 from . import tide_zone_processing as tide_zone
@@ -83,18 +84,25 @@ def _fetch_and_export_water_levels(
     )
     if tide_zone_info.empty:
         LOGGER.warning(
-            f"Aucune zone de marée ne touche les données restantes "
-            f"({data[schema_ids.DEPTH_PROCESSED_METER].isna().sum()} sondes). "
-            f"Valider la position des sondes et les zones de marée."
+            i18n.t(
+                "tide.water_level_workflow.no_tide_zone_intersection",
+                count=data[schema_ids.DEPTH_PROCESSED_METER].isna().sum(),
+            )
         )
         return None
 
     for zone, min_time, max_time, time_series in tide_zone_info.itertuples(index=False):
         LOGGER.info(
-            f"Zone {zone} : min={min_time}, max={max_time}, séries={time_series}."
+            i18n.t(
+                "tide.water_level_workflow.tide_zone_info",
+                zone=zone,
+                min_time=min_time,
+                max_time=max_time,
+                time_series=time_series,
+            )
         )
 
-    LOGGER.info("Récupération des niveaux d'eau pour chaque station.")
+    LOGGER.info(i18n.t("tide.water_level_workflow.fetching_water_levels"))
     wl_combineds, wl_exceptions = time_serie.get_water_level_data_for_stations(
         stations_handler=stations_handler,
         tide_zone_info=tide_zone_info,
@@ -108,11 +116,15 @@ def _fetch_and_export_water_levels(
         gdf_voronoi=gdf_voronoi,
         export_tide_path=export_tide_path,
     )
-    LOGGER.debug(f"Exceptions : {wl_exceptions}.")
+    LOGGER.debug(
+        i18n.t("tide.water_level_workflow.exceptions", exceptions=wl_exceptions)
+    )
 
     if wl_combineds:
         voronoi_path = export_tide_path / f"StationVoronoi-{iteration}.gpkg"
-        LOGGER.info(f"Exportation du diagramme de Voronoi : {voronoi_path}.")
+        LOGGER.info(
+            i18n.t("tide.water_level_workflow.exporting_voronoi", path=voronoi_path)
+        )
         export.export_geodataframe_to_gpkg(
             geodataframe=gdf_voronoi, output_path=voronoi_path
         )
@@ -249,7 +261,13 @@ def run_water_level_reduction(
     iteration: int = 0
 
     for iteration in range(1, max_iterations + 1):
-        LOGGER.info(f"Itération {iteration}. Stations exclues : {excluded_stations}.")
+        LOGGER.info(
+            i18n.t(
+                "tide.water_level_workflow.iteration",
+                iteration=iteration,
+                excluded_stations=excluded_stations,
+            )
+        )
         gdf_voronoi: gpd.GeoDataFrame[schema.TideZoneStationSchema] = (
             voronoi.get_voronoi_geodataframe(
                 stations_handler=stations_handler,

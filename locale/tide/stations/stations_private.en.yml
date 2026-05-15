@@ -1,0 +1,3 @@
+en:
+  filtering_stations: "Filtering stations by time series [%{time_series}] and excluded stations [%{excluded}]."
+  fetching_metadata_time_series: "Fetching station metadata and time series."

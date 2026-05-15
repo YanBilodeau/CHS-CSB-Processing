@@ -8,6 +8,7 @@ from datetime import timedelta
 from functools import partial
 
 from loguru import logger
+import i18n
 import pandas as pd
 from tenacity import (
     retry,
@@ -37,8 +38,11 @@ def double_buffer_time(retry_state: RetryCallState) -> None:
         buffer_time = timedelta(hours=24)
 
     LOGGER.debug(
-        f"Augmentation du temps tampon pour la prochaine tentative d'interpolation de "
-        f"{retry_state.kwargs.get('buffer_time')} à {buffer_time * 2}."
+        i18n.t(
+            "tide.time_serie.time_serie_retry.doubling_buffer",
+            old=retry_state.kwargs.get("buffer_time"),
+            new=buffer_time * 2,
+        )
     )
 
     retry_state.kwargs["buffer_time"] = buffer_time * 2
@@ -58,7 +62,10 @@ def exclude_time_serie_retry(retry_state: RetryCallState) -> pd.DataFrame:
     error: InterpolationValueError = retry_state.outcome.exception()
 
     LOGGER.debug(
-        f"Ajout de la série temporelle {error.time_serie} à la liste d'exclusion."
+        i18n.t(
+            "tide.time_serie.time_serie_retry.excluding_time_serie",
+            time_serie=error.time_serie,
+        )
     )
 
     time_series: list[TimeSeriesProtocol] = retry_state.kwargs.setdefault(

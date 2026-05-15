@@ -10,7 +10,7 @@ from typing import Callable
 
 from diskcache import Cache
 from loguru import logger
-
+import i18n
 
 LOGGER = logger.bind(name="CSB-Processing.Tide.Station.Cache")
 cache: Cache | None = None
@@ -26,7 +26,7 @@ def init_cache(cache_path: Path) -> None:
     global cache
 
     if cache is None:
-        LOGGER.debug(f"Initialisation du cache avec le chemin : {cache_path}.")
+        LOGGER.debug(i18n.t("tide.stations.cache_wrapper.init_cache", path=cache_path))
         cache = Cache(str(cache_path))
 
 
@@ -60,13 +60,15 @@ def cache_result(ttl: int = 86400) -> Callable:
             cache_key = f"{func.__name__}_{args}_{kwargs}"
 
             if cache_key in cache:
-                LOGGER.trace(f"Récupération des données depuis le cache : {cache_key}.")
+                LOGGER.trace(
+                    i18n.t("tide.stations.cache_wrapper.cache_hit", key=cache_key)
+                )
                 return cache[cache_key]
 
             result = func(*args, **kwargs)
 
             LOGGER.trace(
-                f"Ajout de données dans le cache avec un ttl de {ttl} secondes : '{cache_key}'."
+                i18n.t("tide.stations.cache_wrapper.cache_set", ttl=ttl, key=cache_key)
             )
             cache.set(key=cache_key, value=result, expire=ttl)
 
@@ -82,4 +84,4 @@ def clear_cache():
     Fonction pour vider le cache.
     """
     cache.clear()
-    LOGGER.debug("Le cache a été vidé.")
+    LOGGER.debug(i18n.t("tide.stations.cache_wrapper.cache_cleared"))

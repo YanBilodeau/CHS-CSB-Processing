@@ -5,6 +5,7 @@ Ce module contient la classe StationsError pour les erreurs des stations.
 """
 
 from dataclasses import dataclass
+import i18n
 
 
 @dataclass(frozen=True)
@@ -28,4 +29,9 @@ class StationsError(Exception):
     """Code de statut de l'erreur."""
 
     def __str__(self) -> str:
-        return f"StationError: {self.message} - {self.error} (Status code: {self.status_code})"
+        return i18n.t(
+            "tide.stations.exception_stations.station_error",
+            message=self.message,
+            error=self.error,
+            status_code=self.status_code,
+        )

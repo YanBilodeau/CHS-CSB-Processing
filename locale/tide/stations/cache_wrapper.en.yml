@@ -1,0 +1,5 @@
+en:
+  init_cache: "Initializing cache at: %{path}."
+  cache_hit: "Retrieving data from cache: %{key}."
+  cache_set: "Adding data to cache with TTL %{ttl} seconds: '%{key}'."
+  cache_cleared: "Cache cleared."

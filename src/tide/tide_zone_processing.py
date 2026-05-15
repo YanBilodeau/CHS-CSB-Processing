@@ -9,6 +9,7 @@ from typing import Optional, Collection
 import pandas as pd
 import geopandas as gpd
 from loguru import logger
+import i18n
 
 import schema
 import schema.model_ids as schema_ids
@@ -38,7 +39,7 @@ def add_tide_zone_id_to_geodataframe(
     :return: Les données des DataLoggers avec les zones de marées.
     :rtype: gpd.GeoDataFrame[schema.DataLoggerWithTideZoneSchema]
     """
-    LOGGER.debug(f"Récupération des zones de marées selon l'extension des données.")
+    LOGGER.debug(i18n.t("tide.tide_zone_processing.getting_tide_zones"))
 
     columns: list[str] = [
         *schema.DataLoggerSchema.__annotations__.keys(),
@@ -143,9 +144,7 @@ def get_intersected_tide_zone_info(
     :return: Les zones de marées et le temps de début et de fin pour les données.
     :rtype: pd.DataFrame[schema.TideZoneInfoSchema]
     """
-    LOGGER.debug(
-        f"Récupération du temps de début et de fin pour les données selon les zones de marées."
-    )
+    LOGGER.debug(i18n.t("tide.tide_zone_processing.getting_time_range"))
 
     gap_threshold = pd.Timedelta(minutes=max_gap_minutes)
 

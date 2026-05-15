@@ -12,6 +12,7 @@ from typing import Optional, Collection
 from dateutil import parser
 import geopandas as gpd
 from loguru import logger
+import i18n
 
 from .stations_abc import StationsHandlerABC
 from .stations_models import TimeSeriesProtocol, IWLSapiProtocol
@@ -61,8 +62,11 @@ class StationsHandlerPublic(StationsHandlerABC):
         :rtype: list[dict]
         """
         LOGGER.debug(
-            f"Filtrage des stations en fonction des séries temporelles [{filter_time_series}] "
-            f"et des stations exclues [{excluded_stations}]."
+            i18n.t(
+                "tide.stations.stations_public.filtering_stations",
+                time_series=filter_time_series,
+                excluded=excluded_stations,
+            )
         )
 
         return [
@@ -106,7 +110,7 @@ class StationsHandlerPublic(StationsHandlerABC):
         :return: Données des stations avec les séries temporelles.
         :rtype: list[dict]
         """
-        LOGGER.debug("Récupération des métadonnées des stations.")
+        LOGGER.debug(i18n.t("tide.stations.stations_public.fetching_metadata"))
 
         stations: list[dict] = copy.deepcopy(self.stations)
         stations_id: list[dict] = [station["id"] for station in stations]

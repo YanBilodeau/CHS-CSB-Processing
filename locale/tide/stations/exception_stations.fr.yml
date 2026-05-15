@@ -1,0 +1,2 @@
+fr:
+  station_error: "StationError : %{message} - %{error} (Code de statut : %{status_code})"

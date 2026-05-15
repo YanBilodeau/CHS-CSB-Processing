@@ -1,0 +1,5 @@
+en:
+  no_water_level_error: "No data retrieved for station '%{station_id}' from %{from_time} to %{to_time}."
+  data_gap_error: "There are missing data periods exceeding the allowed limit of %{max_time_gap} for station %{station_id}. %{gaps_message}"
+  interpolation_error: "Cannot interpolate values from %{from_time} to %{to_time} for time series %{time_serie}. Missing data required for interpolation."
+  data_gaps_message: "%{total_minutes} minutes of missing data %{metadata}."

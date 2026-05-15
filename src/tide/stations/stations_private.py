@@ -13,6 +13,7 @@ from typing import Optional, Collection
 
 import geopandas as gpd
 from loguru import logger
+import i18n
 
 from .cache_wrapper import cache_result
 from .stations_abc import StationsHandlerABC
@@ -63,8 +64,11 @@ class StationsHandlerPrivate(StationsHandlerABC):
         :rtype: list[dict]
         """
         LOGGER.debug(
-            f"Filtrage des stations en fonction des séries temporelles [{filter_time_series}] "
-            f"et des stations exclues [{excluded_stations}]."
+            i18n.t(
+                "tide.stations.stations_private.filtering_stations",
+                time_series=filter_time_series,
+                excluded=excluded_stations,
+            )
         )
 
         return [
@@ -154,7 +158,7 @@ class StationsHandlerPrivate(StationsHandlerABC):
         :rtype: list[dict]
         """
         LOGGER.debug(
-            "Récupération des métadonnées et des séries temporelles des stations."
+            i18n.t("tide.stations.stations_private.fetching_metadata_time_series")
         )
 
         stations: list[dict] = copy.deepcopy(self.stations)

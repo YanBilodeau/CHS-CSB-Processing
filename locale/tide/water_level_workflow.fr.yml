@@ -1,0 +1,7 @@
+fr:
+  no_tide_zone_intersection: "Aucune zone de marée ne touche les données restantes (%{count} sondes). Valider la position des sondes et les zones de marée."
+  tide_zone_info: "Zone %{zone} : min=%{min_time}, max=%{max_time}, séries=%{time_series}."
+  fetching_water_levels: "Récupération des niveaux d'eau pour chaque station."
+  exceptions: "Exceptions : %{exceptions}."
+  exporting_voronoi: "Exportation du diagramme de Voronoi : %{path}."
+  iteration: "Itération %{iteration}. Stations exclues : %{excluded_stations}."

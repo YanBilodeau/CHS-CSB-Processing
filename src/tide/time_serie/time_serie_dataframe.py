@@ -12,6 +12,7 @@ import operator
 from typing import Optional, Any, Collection, Literal
 
 from loguru import logger
+import i18n
 import numpy as np
 import pandas as pd
 from scipy.interpolate import CubicSpline
@@ -51,11 +52,18 @@ def get_water_level_data_retrieval_message(
     :return: (str) Le message de log.
     """
     series_label = (
-        "les séries temporelles"
+        i18n.t("tide.time_serie.time_serie_dataframe.series_label_multiple")
         if len(time_series_priority) > 1
-        else "la série temporelle"
+        else i18n.t("tide.time_serie.time_serie_dataframe.series_label_single")
     )
-    return f"Récupération des données de niveau d'eau pour la station '{station_id}' de {from_time} à {to_time} avec {series_label} : {time_series_priority}."
+    return i18n.t(
+        "tide.time_serie.time_serie_dataframe.water_level_retrieval_message",
+        station_id=station_id,
+        from_time=from_time,
+        to_time=to_time,
+        series_label=series_label,
+        time_series=time_series_priority,
+    )
 
 
 def get_row_by_index(wl_dataframe: pd.DataFrame, index: int) -> pd.DataFrame:
@@ -159,12 +167,16 @@ def identify_interpolation_and_fill_gaps(
             < pd.Timedelta(threshold_interpolation_filling)
         ]
     )
-    gaps_to_interpolate.attrs[schema_ids.NAME_METADATA] = "à interpoler"
+    gaps_to_interpolate.attrs[schema_ids.NAME_METADATA] = i18n.t(
+        "tide.time_serie.time_serie_dataframe.gaps_to_interpolate_label"
+    )
 
     gaps_to_fill: pd.DataFrame[schema.WaterLevelSerieDataSchema] = gaps_dataframe[
         gaps_dataframe["data_time_gap"] >= pd.Timedelta(threshold_interpolation_filling)
     ]
-    gaps_to_fill.attrs[schema_ids.NAME_METADATA] = "à remplir"
+    gaps_to_fill.attrs[schema_ids.NAME_METADATA] = i18n.t(
+        "tide.time_serie.time_serie_dataframe.gaps_to_fill_label"
+    )
 
     return gaps_to_interpolate, gaps_to_fill
 
@@ -189,8 +201,11 @@ def identify_data_gaps(
     :rtype: tuple[pd.DataFrame[schema.TimeSerieDataSchema], pd.DataFrame[schema.TimeSerieDataSchema], pd.DataFrame[schema.TimeSerieDataSchema]]
     """
     LOGGER.debug(
-        f"Identification des périodes de données manquantes de plus de {max_time_gap} pour "
-        f"{wl_dataframe[schema_ids.TIME_SERIE_CODE].unique().tolist()}."
+        i18n.t(
+            "tide.time_serie.time_serie_dataframe.identifying_gaps",
+            max_time_gap=max_time_gap,
+            time_series=wl_dataframe[schema_ids.TIME_SERIE_CODE].unique().tolist(),
+        )
     )
 
     first_row, last_row = get_first_and_last_rows(wl_dataframe=wl_dataframe)
@@ -203,7 +218,9 @@ def identify_data_gaps(
     gaps_dataframe: pd.DataFrame[schema.WaterLevelSerieDataSchema] = non_nan_dataframe[
         non_nan_dataframe["data_time_gap"] > pd.Timedelta(max_time_gap)
     ]
-    gaps_dataframe.attrs[schema_ids.NAME_METADATA] = "au total"
+    gaps_dataframe.attrs[schema_ids.NAME_METADATA] = i18n.t(
+        "tide.time_serie.time_serie_dataframe.gaps_total_label"
+    )
 
     if threshold_interpolation_filling is None:
         return gaps_dataframe, pd.DataFrame(), gaps_dataframe
@@ -228,7 +245,7 @@ def resample_data(wl_dataframe: pd.DataFrame, time: str) -> pd.DataFrame:
     :rtype: pd.DataFrame
     """
     LOGGER.debug(
-        f"Rééchantillonnage des données avec un intervalle de temps de {time}."
+        i18n.t("tide.time_serie.time_serie_dataframe.resampling_data", time=time)
     )
 
     wl_resampled: pd.DataFrame = wl_dataframe.resample(time).asfreq()
@@ -255,9 +272,11 @@ def check_for_missing_values_for_interpolation(
     """
     if values.isna().any():
         LOGGER.warning(
-            "L'interpolation cubique slpine ne peut pas être effectuée avec des données manquantes. "
-            "Des données manquantes ont été détectées dans les données de niveau d'eau de "
-            f"{wl_resampled.index[0]} à {wl_resampled.index[-1]}."
+            i18n.t(
+                "tide.time_serie.time_serie_dataframe.missing_values_warning",
+                from_time=wl_resampled.index[0],
+                to_time=wl_resampled.index[-1],
+            )
         )
 
         raise InterpolationValueError(
@@ -288,7 +307,9 @@ def cubic_spline_interpolation(
     """
     check_for_missing_values_for_interpolation(values=values, wl_resampled=wl_resampled)
 
-    LOGGER.debug("Interpolation des données manquantes avec une spline cubique.")
+    LOGGER.debug(
+        i18n.t("tide.time_serie.time_serie_dataframe.interpolating_cubic_spline")
+    )
 
     cubic_spline_interplation: CubicSpline = CubicSpline(index_time, values)
     # Convertir l'index en valeur numérique
@@ -314,7 +335,7 @@ def reset_and_sort_index(
     :param wl_dataframe: DataFrame contenant les données.
     :type wl_dataframe: pd.DataFrame
     """
-    LOGGER.trace("Réinitialisation de l'index et trie par event_date du DataFrame.")
+    LOGGER.trace(i18n.t("tide.time_serie.time_serie_dataframe.reset_sort_index"))
 
     wl_dataframe.sort_values(by=schema_ids.EVENT_DATE, inplace=inplace)  # type: ignore
     wl_dataframe.reset_index(inplace=inplace, drop=drop)
@@ -336,7 +357,10 @@ def interpolate_data_gaps(
     :rtype: pd.DataFrame[schema.TimeSerieDataSchema]
     """
     LOGGER.debug(
-        f"Interpolation des données manquantes de {wl_dataframe[schema_ids.TIME_SERIE_CODE].unique().tolist()}."
+        i18n.t(
+            "tide.time_serie.time_serie_dataframe.interpolating_gaps",
+            time_series=wl_dataframe[schema_ids.TIME_SERIE_CODE].unique().tolist(),
+        )
     )
 
     wl_dataframe.set_index(schema_ids.EVENT_DATE, inplace=True)
@@ -389,9 +413,12 @@ def process_gaps_to_interpolate(
 
     if gaps_to_interpolate.empty:
         LOGGER.debug(
-            f"Aucune période de données manquantes de plus de {max_time_gap} à interpoler pour "
-            f"{wl_dataframe[schema_ids.TIME_SERIE_CODE].unique().tolist()} avec un seuil de "
-            f"{threshold_interpolation_filling}."
+            i18n.t(
+                "tide.time_serie.time_serie_dataframe.no_gaps_to_interpolate",
+                max_time_gap=max_time_gap,
+                time_series=wl_dataframe[schema_ids.TIME_SERIE_CODE].unique().tolist(),
+                threshold=threshold_interpolation_filling,
+            )
         )
         return wl_dataframe
 
@@ -479,9 +506,13 @@ def fill_data_gaps(
     :rtype: pd.DataFrame[schema.TimeSerieDataSchema]
     """
     LOGGER.debug(
-        f"Remplissage des données manquantes de la série temporelle "
-        f"{wl_combined_dataframe[schema_ids.TIME_SERIE_CODE].unique().tolist()} "
-        f"à partir de {wl_dataframe[schema_ids.TIME_SERIE_CODE].unique().tolist()}."
+        i18n.t(
+            "tide.time_serie.time_serie_dataframe.filling_gaps",
+            combined=wl_combined_dataframe[schema_ids.TIME_SERIE_CODE]
+            .unique()
+            .tolist(),
+            data=wl_dataframe[schema_ids.TIME_SERIE_CODE].unique().tolist(),
+        )
     )
 
     gaps_dataframe_list: list[pd.DataFrame] = get_gaps_dataframe_list(
@@ -581,7 +612,9 @@ def add_nan_date_row(wl_dataframe: pd.DataFrame, time: str) -> pd.DataFrame:
     :return: DataFrame contenant la ligne ajouter aux autres données.
     :rtype: pd.DataFrame[schema.TimeSerieDataSchema]
     """
-    LOGGER.debug(f"Ajout d'une ligne de données NaN à partir de la date '{time}'.")
+    LOGGER.debug(
+        i18n.t("tide.time_serie.time_serie_dataframe.adding_nan_row", time=time)
+    )
 
     nan_row: NanDateRow = create_nan_date_row(date_time=time)
     nan_row_df: pd.DataFrame = pd.DataFrame(
@@ -611,9 +644,7 @@ def clean_time_series_data(
     :return: Données de la série temporelle nettoyées.
     :rtype: pd.DataFrame[schema.TimeSerieDataSchema]
     """
-    LOGGER.debug(
-        "Nettoyage des données de la série temporelle et validation du temps de début et de fin."
-    )
+    LOGGER.debug(i18n.t("tide.time_serie.time_serie_dataframe.cleaning_time_series"))
 
     wl_dataframe.dropna(subset=[schema_ids.VALUE], inplace=True)
 
@@ -649,7 +680,12 @@ def get_buffered_time(
     operation: Callable = operator.sub if operation == "-" else operator.add
 
     LOGGER.debug(
-        f"Application d'un temps tampon de {buffer_time} à la date {time}: {operation.__name__}."
+        i18n.t(
+            "tide.time_serie.time_serie_dataframe.applying_buffer",
+            buffer=buffer_time,
+            time=time,
+            operation=operation.__name__,
+        )
     )
 
     return get_iso8601_from_datetime(
@@ -691,8 +727,13 @@ def get_water_level_time_serie(
     :rtype: pd.DataFrame[schema.WaterLevelSerieDataSchema] | None
     """
     LOGGER.debug(
-        f"Récupération des données de la série temporelle {time_serie_code} pour la station {station_id} "
-        f"de {from_time} à {to_time}."
+        i18n.t(
+            "tide.time_serie.time_serie_dataframe.fetching_time_serie",
+            time_serie=time_serie_code,
+            station_id=station_id,
+            from_time=from_time,
+            to_time=to_time,
+        )
     )
 
     from_time_buffered: str = get_buffered_time(
@@ -777,9 +818,12 @@ def get_threshold_interpolation_filling_value(
     :rtype: str | None
     """
     LOGGER.debug(
-        f"Obtention du seuil d'interpolation pour la série temporelle {time_serie} avec un seuil de "
-        f"{threshold_interpolation_filling} et les séries temporelles {time_series_excluded_from_interpolation} "
-        f"exclues de l'interpolation."
+        i18n.t(
+            "tide.time_serie.time_serie_dataframe.getting_threshold",
+            time_serie=time_serie,
+            threshold=threshold_interpolation_filling,
+            excluded=time_series_excluded_from_interpolation,
+        )
     )
 
     if threshold_interpolation_filling is None:
@@ -811,7 +855,7 @@ def finalize_time_serie_dataframe(
     :return: Données de la série temporelle finalisées.
     :rtype: pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]
     """
-    LOGGER.debug("Finalisation des données de la série temporelle.")
+    LOGGER.debug(i18n.t("tide.time_serie.time_serie_dataframe.finalizing_time_serie"))
 
     reset_and_sort_index(wl_dataframe=wl_dataframe, drop=True)
     wl_dataframe: pd.DataFrame = wl_dataframe.dropna(subset=[schema_ids.VALUE])
@@ -870,7 +914,7 @@ def add_metadata_to_time_serie_dataframe(
     :return: Données de la série temporelle avec les métadonnées.
     :rtype: pd.DataFrame[schema.WaterLevelSerieDataWithMetaDataSchema]
     """
-    LOGGER.debug("Ajout des métadonnées aux données de la série temporelle.")
+    LOGGER.debug(i18n.t("tide.time_serie.time_serie_dataframe.adding_metadata"))
 
     wl_dataframe.attrs[schema_ids.NAME_METADATA] = "WaterLevel"
     wl_dataframe.attrs[schema_ids.STATION_ID] = station_id
@@ -948,13 +992,22 @@ def get_water_level_data(
 
         if wl_data is None:
             LOGGER.debug(
-                f"Aucune donnée {time_serie} n'a été récupérée pour la station {station_id} de {from_time} à {to_time}."
+                i18n.t(
+                    "tide.time_serie.time_serie_dataframe.no_data_fetched",
+                    time_serie=time_serie,
+                    station_id=station_id,
+                    from_time=from_time,
+                    to_time=to_time,
+                )
             )
             continue
 
         if max_time_gap is None:
             LOGGER.debug(
-                f"L'interpolation et le remplissage des données manquantes est désactivée pour la station {station_id}."
+                i18n.t(
+                    "tide.time_serie.time_serie_dataframe.no_interpolation_disabled",
+                    station_id=station_id,
+                )
             )
 
             return finalize_time_serie_dataframe(
@@ -975,8 +1028,11 @@ def get_water_level_data(
 
         if gaps_total.empty:
             LOGGER.debug(
-                f"Aucune donnée manquante pour la station {station_id} avec les séries temporelles: "
-                f"{time_series_priority[:index + 1]}."
+                i18n.t(
+                    "tide.time_serie.time_serie_dataframe.no_missing_data",
+                    station_id=station_id,
+                    time_series=time_series_priority[: index + 1],
+                )
             )
             wl_combined = wl_data if wl_combined.empty else wl_combined
             break
@@ -1007,7 +1063,11 @@ def get_water_level_data(
 
     else:
         LOGGER.debug(
-            f"Toutes les séries temporelles disponibles pour la station {station_id} ont été traitées: {time_series_priority}."
+            i18n.t(
+                "tide.time_serie.time_serie_dataframe.all_series_processed",
+                station_id=station_id,
+                time_series=time_series_priority,
+            )
         )
 
     return finalize_time_serie_dataframe(
@@ -1091,7 +1151,10 @@ def get_water_level_data_for_stations(
 
             if data.empty:
                 LOGGER.warning(
-                    f"Aucune donnée de niveau d'eau n'a été récupérée pour la station {station_id}."
+                    i18n.t(
+                        "tide.time_serie.time_serie_dataframe.no_water_level_data",
+                        station_id=station_id,
+                    )
                 )
 
                 raise NoWaterLevelDataError(
@@ -1101,8 +1164,13 @@ def get_water_level_data_for_stations(
             return data, station_id, None
 
         except Exception as error:
-            LOGGER.warning(f"Erreur pour la station {station_id} : {error}")
-
+            LOGGER.warning(
+                i18n.t(
+                    "tide.time_serie.time_serie_dataframe.station_error",
+                    station_id=station_id,
+                    error=error,
+                )
+            )
             return None, station_id, error
 
     wl_combineds: dict[str, pd.DataFrame] = {}
@@ -1135,7 +1203,10 @@ def get_water_level_data_for_stations(
 
             except Exception as error_future:
                 LOGGER.error(
-                    f"Erreur lors de la récupération des données de niveau d'eau : {error_future}"
+                    i18n.t(
+                        "tide.time_serie.time_serie_dataframe.future_error",
+                        error=error_future,
+                    )
                 )
                 exceptions["Unknown"].append(error_future)
 
