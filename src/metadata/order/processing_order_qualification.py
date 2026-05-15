@@ -9,6 +9,7 @@ from __future__ import annotations
 import math
 
 import geopandas as gpd
+import i18n
 import pandas as pd
 from loguru import logger
 
@@ -54,7 +55,9 @@ def calculate_order_statistics(
     :return: Statistiques pour le groupe.
     :rtype: OrderStatistics
     """
-    LOGGER.debug(f"Calcul des statistiques pour un groupe de sondes.")
+    LOGGER.debug(
+        i18n.t("metadata.processing_order_qualification.calculating_order_statistics")
+    )
 
     return OrderStatistics(
         sounding_count_within_order=len(group),
@@ -93,7 +96,9 @@ def classify_iho_order(
     :return: La qualification des données selon les ordres IHO.
     :rtype: IHOorderQualifiquation
     """
-    LOGGER.debug(f"Classification de l'ordre IHO des données.")
+    LOGGER.debug(
+        i18n.t("metadata.processing_order_qualification.classifying_iho_order")
+    )
 
     filtered_data = data_geodataframe.dropna(subset=[schema_ids.IHO_ORDER])
     grouped = filtered_data.groupby(schema_ids.IHO_ORDER)
@@ -107,7 +112,12 @@ def classify_iho_order(
         ]
 
         if not grouped_orders_list:
-            LOGGER.debug(f"Aucun groupe trouvé pour l'ordre {order_type}.")
+            LOGGER.debug(
+                i18n.t(
+                    "metadata.processing_order_qualification.no_group_for_order",
+                    order=order_type,
+                )
+            )
 
             return OrderStatistics(
                 sounding_pourcentage_within_order=0, sounding_count_within_order=0

@@ -7,6 +7,7 @@ Ce module contient les modèles de métadonnées pour les données du CSB.
 from dataclasses import dataclass, field
 from typing import Collection, Optional
 
+import i18n
 from loguru import logger
 
 from ingestion import DataLoggerType
@@ -14,16 +15,6 @@ from .order.order_models import IHOorderQualifiquation
 from processing_context import ProcessingContext
 
 LOGGER = logger.bind(name="CSB-Processing.Metadata.Models")
-
-
-REDUCTION_METHOD = "The dataset has been reduced to CD thanks to water level pulled from IWLS at the following stations: {stations}."
-"""Méthode de réduction du niveau d'eau"""
-NO_TIDE_STATIONS = "The dataset has not been reduced to CD."
-"""Pas de stations de marée"""
-ALREADY_AT_CHART_DATUM = "The dataset was provided already reduced to Chart Datum. No water level reduction was applied."
-"""Données déjà au zéro des cartes"""
-CHART_DATUM = "Chart Datum"
-"""Niveau de référence des cartes"""
 
 DEFAULT_POSITIONING_METHOD: str = "Wide Area Augmentation System (WAAS)"
 """Méthode de positionnement par défaut."""
@@ -39,17 +30,17 @@ def get_positioning_method(datalogger_type: DataLoggerType) -> str:
     """
     Retourne la méthode de positionnement associée au type de capteur.
 
-    Retourne ``DEFAULT_POSITIONING_METHOD`` si le type n'est pas présent dans
-    ``POSITIONING_METHOD_BY_DATALOGGER``.
+    Retourne la méthode par défaut si le type n'est pas présent dans le mapping.
 
     :param datalogger_type: Type de capteur.
     :type datalogger_type: DataLoggerType
     :return: Méthode de positionnement.
     :rtype: str
     """
-    return POSITIONING_METHOD_BY_DATALOGGER.get(
-        datalogger_type, DEFAULT_POSITIONING_METHOD
-    )
+    if datalogger_type == DataLoggerType.HYDROBLOCK:
+        return i18n.t("metadata.metadata_models.positioning_method_hydroblock")
+
+    return i18n.t("metadata.metadata_models.default_positioning_method")
 
 
 @dataclass
@@ -84,7 +75,11 @@ class CSBmetadata:
     """Méthode de réduction du niveau d'eau"""
     already_at_chart_datum: bool = field(init=False, default=False)
     """Les données sont déjà réduites au zéro des cartes (dérivé de processing_context)"""
-    positioning_method: str = DEFAULT_POSITIONING_METHOD
+    positioning_method: str = field(
+        default_factory=lambda: i18n.t(
+            "metadata.metadata_models.default_positioning_method"
+        )
+    )
     """Méthode de positionnement"""
     resolution: str = "Point Cloud"
     """Résolution des données"""
@@ -112,17 +107,22 @@ class CSBmetadata:
         )
 
         self.water_Level_reduction_method = (
-            REDUCTION_METHOD.format(stations=", ".join(self.tide_stations))
+            i18n.t(
+                "metadata.metadata_models.reduction_method",
+                stations=", ".join(self.tide_stations),
+            )
             if self.tide_stations
             else (
-                ALREADY_AT_CHART_DATUM
+                i18n.t("metadata.metadata_models.already_at_chart_datum")
                 if self.already_at_chart_datum
-                else NO_TIDE_STATIONS
+                else i18n.t("metadata.metadata_models.no_tide_stations")
             )
         )
 
         self.vertical_coordinate_reference_system = (
-            CHART_DATUM if (self.tide_stations or self.already_at_chart_datum) else None
+            i18n.t("metadata.metadata_models.chart_datum")
+            if (self.tide_stations or self.already_at_chart_datum)
+            else None
         )
 
     def __dict__(self) -> dict:

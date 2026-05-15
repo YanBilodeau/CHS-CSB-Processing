@@ -1,0 +1,6 @@
+fr:
+  cannot_convert_int: "Ne peut pas convertir en int : %{value} (%{error})."
+  using_nbins: "Utilisation de nbins_x=%{nbins_x}, nbins_y=%{nbins_y} pour %{band}."
+  generating_plots: "Génération des graphiques des métadonnées pour : %{title}."
+  pdf_save_error: "Erreur lors de la sauvegarde du PDF : %{error}."
+

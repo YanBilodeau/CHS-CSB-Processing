@@ -1,0 +1,3 @@
+fr:
+  export_metadata_json: "Export des métadonnées au format JSON : %{path}."
+

@@ -10,6 +10,7 @@ import textwrap
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import i18n
 import pandas as pd
 from loguru import logger
 
@@ -249,4 +250,4 @@ def export_metadata_table_as_pdf(df: pd.DataFrame, output_path: Path) -> None:
 
     fig.tight_layout(pad=0.5)
     fig.savefig(str(output_path), format="pdf", bbox_inches="tight")
-    LOGGER.debug(f"PDF de métadonnées exporté via matplotlib : {output_path}")
+    LOGGER.debug(i18n.t("metadata.pdf_export.pdf_exported", path=output_path))

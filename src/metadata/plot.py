@@ -7,6 +7,7 @@ Ce module contient les fonctions pour afficher les métadonnées des levés hydr
 from pathlib import Path
 from typing import Optional
 
+import i18n
 from loguru import logger
 import pandas as pd
 import plotly.graph_objects as go
@@ -162,7 +163,7 @@ def format_order_label(value: object) -> str:
         iv = int(value)  # type: ignore
 
     except Exception as e:
-        LOGGER.debug(f"Ne peut pas convertir en int: {value} ({e})")
+        LOGGER.debug(i18n.t("metadata.plot.cannot_convert_int", value=value, error=e))
 
         return str(value)
 
@@ -491,7 +492,12 @@ def plot_depth_uncertainty_with_thresholds(
         )
 
     LOGGER.debug(
-        f"Utilisation de nbins_x={nbins_x}, nbins_y={nbins_y} pour {uncertainty_band}."
+        i18n.t(
+            "metadata.plot.using_nbins",
+            nbins_x=nbins_x,
+            nbins_y=nbins_y,
+            band=uncertainty_band,
+        )
     )
 
     # Créer la heatmap
@@ -718,7 +724,7 @@ def plot_metadata(
     :return: Figure Plotly contenant les métadonnées.
     :rtype: go.Figure
     """
-    LOGGER.debug(f"Génération des graphiques des métadonnées pour : {title}.")
+    LOGGER.debug(i18n.t("metadata.plot.generating_plots", title=title))
 
     fig: go.Figure = create_metadata_figure()
 
@@ -791,6 +797,6 @@ def plot_metadata(
         try:
             export_metadata_table_as_pdf(df, output_path.with_suffix(".pdf"))
         except Exception as e:
-            LOGGER.warning(f"Erreur lors de la sauvegarde du PDF : {e}")
+            LOGGER.warning(i18n.t("metadata.plot.pdf_save_error", error=e))
 
     return fig

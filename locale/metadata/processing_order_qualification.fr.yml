@@ -1,0 +1,5 @@
+fr:
+  calculating_order_statistics: "Calcul des statistiques pour un groupe de sondes."
+  classifying_iho_order: "Classification de l'ordre IHO des données."
+  no_group_for_order: "Aucun groupe trouvé pour l'ordre %{order}."
+

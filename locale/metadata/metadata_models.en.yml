@@ -1,0 +1,8 @@
+en:
+  reduction_method: "The dataset has been reduced to CD thanks to water level pulled from IWLS at the following stations: %{stations}."
+  no_tide_stations: "The dataset has not been reduced to CD."
+  already_at_chart_datum: "The dataset was provided already reduced to Chart Datum. No water level reduction was applied."
+  chart_datum: "Chart Datum"
+  default_positioning_method: "Wide Area Augmentation System (WAAS)"
+  positioning_method_hydroblock: "Precise Point Positioning (PPP)"
+

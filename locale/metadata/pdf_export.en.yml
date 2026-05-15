@@ -1,0 +1,3 @@
+en:
+  pdf_exported: "Metadata PDF exported via matplotlib: %{path}."
+

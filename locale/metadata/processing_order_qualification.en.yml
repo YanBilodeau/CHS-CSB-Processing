@@ -1,0 +1,5 @@
+en:
+  calculating_order_statistics: "Calculating statistics for a sounding group."
+  classifying_iho_order: "Classifying IHO order for the data."
+  no_group_for_order: "No group found for order %{order}."
+
