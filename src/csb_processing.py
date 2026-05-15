@@ -559,5 +559,5 @@ def processing_workflow(
     # todo créer fichier vectoriel avec les stations et leurs incertitudes associées
     # todo option pour prendre un fichier vectoriel en entrée au lieu de calculer un voronoi
 
-    # todo refaire le rapport pour style et theme comme dans S44-report
+    # todo adapter S44-report pour analyser des points cloud
     # todo ajouter au métadonnée la longueur de ligne de sondage et le temps de sondage
