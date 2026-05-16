@@ -56,6 +56,8 @@ The supported file formats are as follows:
 - Actisense: coming soon.
 - BlackBox: `.TXT` extension without header with columns in the order `Time`, `Date`, `Latitude`, `Longitude`, `Speed (km/h)` and `Depth (m)`.
 - [WIBL](https://github.com/CCOMJHC/WIBL/tree/main): numeric extension (e.g., `.1`, `.2`, `.3`, etc.).
+- HydroBlock: `.TXT` extension, semicolon-delimited, with the header `timestamp;latitude;longitude;chartdatumheight`.
+              Depth is already reduced to chart datum (positive axis downward).
 
 ---
 

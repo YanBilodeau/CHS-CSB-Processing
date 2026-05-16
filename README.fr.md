@@ -57,6 +57,8 @@ Les formats de fichiers pris en charge sont les suivants :
 - BlackBox : extension `.TXT` sans entête avec les colonnes dans l'ordre `Time`, `Date`, `Latitude`, `Longitude`, `Speed (km/h)` 
           et `Depth (m)`.
 - [WIBL](https://github.com/CCOMJHC/WIBL/tree/main) : extension numérique (ex: `.1`, `.2`, `.3`, etc.).
+- HydroBlock : extension `.TXT`, délimitée par des points-virgules, avec l'entête `timestamp;latitude;longitude;chartdatumheight`.
+               La profondeur est déjà réduite au zéro des cartes (axe positif vers le bas).
 
 ---
 
