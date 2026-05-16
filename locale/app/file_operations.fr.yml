@@ -1,0 +1,13 @@
+fr:
+  file_removed: "Fichier supprimé : %{name}"
+  error_removing_file: "Erreur lors de la suppression du fichier : %{name}"
+  error_during_removal: "Erreur lors de la suppression : %{error}"
+  error_removing_log: "Erreur lors de la suppression du fichier %{name} : %{error}"
+  directory_selected: "Répertoire sélectionné : %{name}"
+  no_directory_selected: "Aucun répertoire sélectionné"
+  error_open_dir: "Erreur lors de l'ouverture du dialogue de répertoire : %{error}"
+  no_file_selected: "Aucun fichier sélectionné"
+  config_file_selected: "Fichier de configuration sélectionné : %{name}"
+  error_open_config_file: "Erreur lors de l'ouverture du dialogue de fichier : %{error}"
+  output_dir_selected_log: "Répertoire de sortie sélectionné : %{path}"
+  config_file_selected_log: "Fichier de configuration sélectionné : %{path}"

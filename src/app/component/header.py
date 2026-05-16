@@ -4,6 +4,7 @@ Header Component module.
 Contains the HeaderComponent for handling application header functionality.
 """
 
+import i18n
 from nicegui import ui
 
 from .protocols import ThemeManagerProtocol
@@ -25,15 +26,14 @@ class HeaderComponent:
             # Page title - centered
             with ui.column().classes("flex-1 items-center"):
                 ui.html(
-                    "<h1 class='text-4xl font-bold text-center text-blue-600'>Bathymetric Data Processing Tool</h1>",
+                    f"<h1 class='text-4xl font-bold text-center text-blue-600'>"
+                    f"{i18n.t('app.component.header.title')}</h1>",
                     sanitize=False,
                 )
 
             # Spacer for symmetry
             ui.element().classes("w-32")
 
-        ui.markdown(
-            """
-        This application allows you to process CSB bathymetric data files and georeference them.
-        """
-        ).classes("text-center text-gray-600 mb-6")
+        ui.markdown(i18n.t("app.component.header.subtitle")).classes(
+            "text-center text-gray-600 mb-6"
+        )

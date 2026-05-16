@@ -1,0 +1,4 @@
+en:
+  no_files_selected: "No files selected"
+  selected_files: "Selected files (%{count}):"
+  remove_tooltip: "Remove this file"

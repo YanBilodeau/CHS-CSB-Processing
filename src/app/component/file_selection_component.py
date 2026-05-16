@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Generator, Collection
 import tempfile
 
+import i18n
 from nicegui import ui, app, events
 from loguru import logger
 
@@ -56,48 +57,41 @@ class FileSelectionComponentNative(FileSelectionComponentABC):
 
     def create(self):
         """Create the file selection section."""
-        ui.label("File Selection *").classes("text-lg font-bold text-red-600")
+        ui.label(
+            i18n.t("app.component.file_selection_component.file_selection_label")
+        ).classes("text-lg font-bold text-red-600")
 
         # File selection with dialog
         with ui.row().classes("w-full gap-4 items-center"):
             ui.button(
-                "Select files...",
+                i18n.t("app.component.file_selection_component.select_files_button"),
                 on_click=self._open_file_dialog,
                 icon="folder_open",
             ).props("color=primary")
 
             ui.button(
-                "Clear selection",
+                i18n.t("app.component.file_selection_component.clear_selection_button"),
                 on_click=self._clear_files,
                 icon="clear",
             ).props("color=negative outline")
 
         with ui.row().classes("justify-center items-center mb-6"):
             ui.markdown(
-                """
-            Accepted formats: .csv, .txt, .xyz, .geojson, .*
-            """
+                i18n.t("app.component.file_selection_component.accepted_formats")
             ).classes("text-center text-gray-600")
 
             with ui.icon("info").classes("text-blue-500 cursor-pointer ml-2"):
-                with ui.menu() as menu:
+                with ui.menu():
                     with ui.card().classes("max-w-lg p-4"):
                         ui.markdown(
-                            """
-                        **Supported file formats:**
-
-                        - **OFM**: `.xyz` extension with at least the columns LON, LAT, DEPTH, TIME in the header.
-                        - **DCDB**: `.csv` extension with at least the columns LON, LAT, DEPTH, TIME in the header.
-                        - **Lowrance**: `.csv` extension with at least the columns Longitude[°WGS84], Latitude[°WGS84], WaterDepth[Feet], DateTime[UTC] in the header. These files are the result of SL3 files from Lowrance exported by the tool [SL3Reader](https://github.com/halmaia/SL3Reader).
-                        - **Actisense**: coming soon.
-                        - **BlackBox**: `.TXT` extension without header with columns in the order Time, Date, Latitude, Longitude, Speed (km/h) and Depth (m).
-                        - **[WIBL](https://github.com/CCOMJHC/WIBL/tree/main)**: numeric extension (e.g., `.1`, `.2`, `.3`, etc.).
-                        """
+                            i18n.t(
+                                "app.component.file_selection_component.supported_formats"
+                            )
                         ).classes("text-sm")
 
-        # Warning label for files selection
+        # Warning label for files selection (Native)
         self.files_warning_label = ui.label(
-            "⚠️ Required: Please select at least one file to process"
+            i18n.t("app.component.file_selection_component.files_warning")
         ).classes("text-sm text-red-500")
 
         # Files display using FileDisplay component
@@ -112,11 +106,25 @@ class FileSelectionComponentNative(FileSelectionComponentABC):
             if result:
                 self._add_selected_files(result)
             else:
-                ui.notification("No file selected", type="info")
+                ui.notification(
+                    i18n.t("app.component.file_selection_component.no_file_selected"),
+                    type="info",
+                )
 
         except Exception as ex:
-            LOGGER.error(f"Error opening file dialog: {ex}")
-            ui.notification(f"Error opening file dialog: {str(ex)}", type="negative")
+            LOGGER.error(
+                i18n.t(
+                    "app.component.file_selection_component.error_open_dialog",
+                    error=str(ex),
+                )
+            )
+            ui.notification(
+                i18n.t(
+                    "app.component.file_selection_component.error_open_dialog",
+                    error=str(ex),
+                ),
+                type="negative",
+            )
 
     def _add_selected_files(self, file_paths: Collection[Path]):
         """Add selected files from dialog."""
@@ -129,14 +137,32 @@ class FileSelectionComponentNative(FileSelectionComponentABC):
 
             if added_count > 0:
                 ui.notification(
-                    f"{added_count} file(s) added successfully", type="positive"
+                    i18n.t(
+                        "app.component.file_selection_component.files_added",
+                        count=added_count,
+                    ),
+                    type="positive",
                 )
             elif len(file_paths) > 0:
-                ui.notification("No new files added", type="info")
+                ui.notification(
+                    i18n.t("app.component.file_selection_component.no_new_files"),
+                    type="info",
+                )
 
         except Exception as ex:
-            LOGGER.error(f"Error adding files: {ex}")
-            ui.notification(f"Error adding files: {str(ex)}", type="negative")
+            LOGGER.error(
+                i18n.t(
+                    "app.component.file_selection_component.error_adding_files",
+                    error=str(ex),
+                )
+            )
+            ui.notification(
+                i18n.t(
+                    "app.component.file_selection_component.error_adding_files",
+                    error=str(ex),
+                ),
+                type="negative",
+            )
 
     def _clear_files(self):
         """Clear all selected files."""
@@ -145,7 +171,10 @@ class FileSelectionComponentNative(FileSelectionComponentABC):
 
         if not self.validator.validate_file_selection():
             self.set_warning_visible(True)
-        ui.notification("All files have been removed", type="info")
+        ui.notification(
+            i18n.t("app.component.file_selection_component.all_files_removed"),
+            type="info",
+        )
 
 
 class FileSelectionComponentWeb(FileSelectionComponentABC):
@@ -162,7 +191,9 @@ class FileSelectionComponentWeb(FileSelectionComponentABC):
 
     def create(self) -> None:
         """Create the file selection section."""
-        ui.label("File Selection *").classes("text-lg font-bold text-red-600")
+        ui.label(
+            i18n.t("app.component.file_selection_component.file_selection_label")
+        ).classes("text-lg font-bold text-red-600")
 
         # File upload section
         with ui.row().classes("w-full gap-4 items-center"):
@@ -181,7 +212,7 @@ class FileSelectionComponentWeb(FileSelectionComponentABC):
             )
 
             ui.button(
-                "Clear selection",
+                i18n.t("app.component.file_selection_component.clear_selection_button"),
                 on_click=self._clear_files,
                 icon="clear",
             ).props("color=negative outline")
@@ -190,52 +221,53 @@ class FileSelectionComponentWeb(FileSelectionComponentABC):
 
         with ui.row().classes("justify-center items-center mb-6"):
             ui.markdown(
-                """
-            Accepted formats: .csv, .txt, .xyz, .geojson, .*
-            Max file size: 100MB | Max total: 500MB | Max files: 50
-            """
+                i18n.t("app.component.file_selection_component.web_accepted_formats")
             ).classes("text-center text-gray-600")
 
             with ui.icon("info").classes("text-blue-500 cursor-pointer ml-2"):
-                with ui.menu() as menu:
+                with ui.menu():
                     with ui.card().classes("max-w-lg p-4"):
                         ui.markdown(
-                            """
-                        **Supported file formats:**
-
-                        - **OFM**: `.xyz` extension with at least the columns LON, LAT, DEPTH, TIME in the header.
-                        - **DCDB**: `.csv` extension with at least the columns LON, LAT, DEPTH, TIME in the header.
-                        - **Lowrance**: `.csv` extension with at least the columns Longitude[°WGS84], Latitude[°WGS84], WaterDepth[Feet], DateTime[UTC] in the header. These files are the result of SL3 files from Lowrance exported by the tool [SL3Reader](https://github.com/halmaia/SL3Reader).
-                        - **Actisense**: coming soon.
-                        - **BlackBox**: `.TXT` extension without header with columns in the order Time, Date, Latitude, Longitude, Speed (km/h) and Depth (m).
-                        - **[WIBL](https://github.com/CCOMJHC/WIBL/tree/main)**: numeric extension (e.g., `.1`, `.2`, `.3`, etc.).
-                        """
+                            i18n.t(
+                                "app.component.file_selection_component.supported_formats"
+                            )
                         ).classes("text-sm")
 
-        # Warning label for files selection
+        # Warning label for files selection (Web)
         self.files_warning_label = ui.label(
-            "⚠️ Required: Please select at least one file to process"
+            i18n.t("app.component.file_selection_component.files_warning")
         ).classes("text-sm text-red-500")
 
     def _handle_upload(self, event: events.UploadEventArguments):
         """Handle file upload event."""
         try:
             file_path_generator = self._save_uploaded_file(event)
-            file_path = next(
-                file_path_generator, None
-            )  # Get the file path from the generator
+            file_path = next(file_path_generator, None)
             if file_path and file_path.exists():
                 self._add_uploaded_files((file_path,))
 
         except Exception as ex:
-            LOGGER.error(f"Error handling upload: {ex}")
-            ui.notification(f"Error uploading files: {str(ex)}", type="negative")
+            LOGGER.error(
+                i18n.t(
+                    "app.component.file_selection_component.error_handling_upload",
+                    error=str(ex),
+                )
+            )
+            ui.notification(
+                i18n.t(
+                    "app.component.file_selection_component.error_handling_upload",
+                    error=str(ex),
+                ),
+                type="negative",
+            )
 
     @staticmethod
     def _handle_rejected(event: events.UiEventArguments):
         """Handle rejected file uploads."""
-        message = "Some files were rejected"
-        ui.notification(message, type="warning")
+        ui.notification(
+            i18n.t("app.component.file_selection_component.files_rejected"),
+            type="warning",
+        )
 
     @staticmethod
     def _save_uploaded_file(
@@ -257,7 +289,13 @@ class FileSelectionComponentWeb(FileSelectionComponentABC):
                 file_path.unlink()
 
         except Exception as ex:
-            LOGGER.error(f"Error saving uploaded file {file_info.name}: {ex}")
+            LOGGER.error(
+                i18n.t(
+                    "app.component.file_selection_component.error_saving_upload",
+                    name=file_info.name,
+                    error=str(ex),
+                )
+            )
 
     def _add_uploaded_files(self, file_paths: Collection[Path]):
         """Add uploaded files to file manager."""
@@ -270,14 +308,32 @@ class FileSelectionComponentWeb(FileSelectionComponentABC):
 
             if added_count > 0:
                 ui.notification(
-                    f"{added_count} file(s) uploaded successfully", type="positive"
+                    i18n.t(
+                        "app.component.file_selection_component.files_uploaded",
+                        count=added_count,
+                    ),
+                    type="positive",
                 )
             elif len(file_paths) > 0:
-                ui.notification("No new files added", type="info")
+                ui.notification(
+                    i18n.t("app.component.file_selection_component.no_new_files"),
+                    type="info",
+                )
 
         except Exception as ex:
-            LOGGER.error(f"Error adding uploaded files: {ex}")
-            ui.notification(f"Error adding files: {str(ex)}", type="negative")
+            LOGGER.error(
+                i18n.t(
+                    "app.component.file_selection_component.error_adding_uploaded",
+                    error=str(ex),
+                )
+            )
+            ui.notification(
+                i18n.t(
+                    "app.component.file_selection_component.error_adding_uploaded",
+                    error=str(ex),
+                ),
+                type="negative",
+            )
 
     def _clear_files(self):
         """Clear all selected files."""
@@ -290,4 +346,7 @@ class FileSelectionComponentWeb(FileSelectionComponentABC):
 
         if not self.validator.validate_file_selection():
             self.set_warning_visible(True)
-        ui.notification("All files have been removed", type="info")
+        ui.notification(
+            i18n.t("app.component.file_selection_component.all_files_removed"),
+            type="info",
+        )

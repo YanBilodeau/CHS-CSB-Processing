@@ -1,0 +1,6 @@
+fr:
+  init_error: "Erreur lors de l'initialisation de la configuration : %{error}"
+  updating_output_path: "Mise à jour du chemin de sortie avec la valeur : %{path}"
+  output_path_updated: "Chemin de sortie mis à jour : %{path}"
+  updating_config_path: "Mise à jour du chemin de configuration avec la valeur : %{path}"
+  config_path_updated: "Chemin de configuration mis à jour : %{path}"

@@ -4,6 +4,7 @@ import asyncio
 from pathlib import Path
 from typing import Any, Iterable
 
+import i18n
 from loguru import logger
 
 from csb_processing import run_processing_workflow
@@ -237,18 +238,28 @@ class ProcessingHandler:
 
     async def _handle_success(self) -> None:
         """Handle successful processing completion."""
-        success_msg = f"✅ Processing completed! Files have been saved to {self.config_manager.output_path}"
+        success_msg = i18n.t(
+            "app.processing_handler.status_success",
+            output_path=str(self.config_manager.output_path),
+        )
         self.status_display.set_status(success_msg, "success")
-        show_notification("Processing completed successfully!", type="positive")
-        LOGGER.info("CSB Processing Workflow Completed")
+        show_notification(
+            i18n.t("app.processing_handler.notif_completed"), type="positive"
+        )
+        LOGGER.info(i18n.t("app.processing_handler.workflow_done"))
 
     async def _handle_error(self, error: Exception) -> None:
         """Handle processing errors."""
-        error_msg = f"An error occurred during processing: {str(error)}"
-        self.status_display.set_status(f"❌ {error_msg}", "error")
-        show_notification(error_msg, type="negative")
-        LOGGER.error(f"Processing failed with error: {str(error)}")
-        LOGGER.error("CSB Processing Workflow Failed")
+        error_msg = i18n.t("app.processing_handler.status_error", error=str(error))
+        self.status_display.set_status(error_msg, "error")
+        show_notification(
+            i18n.t("app.processing_handler.notif_error", error=str(error)),
+            type="negative",
+        )
+        LOGGER.error(
+            i18n.t("app.processing_handler.processing_failed", error=str(error))
+        )
+        LOGGER.error(i18n.t("app.processing_handler.workflow_failed"))
 
         if self.log_display:
             self.log_display.show()

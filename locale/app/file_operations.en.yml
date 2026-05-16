@@ -1,0 +1,13 @@
+en:
+  file_removed: "File removed: %{name}"
+  error_removing_file: "Error removing file: %{name}"
+  error_during_removal: "Error during removal: %{error}"
+  error_removing_log: "Error removing file %{name}: %{error}"
+  directory_selected: "Directory selected: %{name}"
+  no_directory_selected: "No directory selected"
+  error_open_dir: "Error opening directory dialog: %{error}"
+  no_file_selected: "No file selected"
+  config_file_selected: "Configuration file selected: %{name}"
+  error_open_config_file: "Error opening file dialog: %{error}"
+  output_dir_selected_log: "Output directory selected: %{path}"
+  config_file_selected_log: "Config file selected: %{path}"

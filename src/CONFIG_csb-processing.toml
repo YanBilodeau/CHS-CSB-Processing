@@ -165,7 +165,7 @@ json_config_path = "./CONFIG_vessels.json"
 # Pour le format csar, la section [CARIS.Environment] doit être configurée.
 # List of export formats for processed data {"geojson", "gpkg", "csar", "parquet", "feather", "csv", "geotiff"}
 # For the csar format, the [CARIS.Environment] section must be configured.
-export_format = ["gpkg"]
+export_format = ["gpkg", "csar"]
 # Résolution spatiale en degrés pour les exports au format raster GeoTIFF {float}.
 # Spatial resolution in degrees for exports in GeoTIFF raster format {float}.
 resolution = 0.00005
@@ -181,7 +181,7 @@ nbin_y = 35
 
 [CSB.Processing.options]
 # Niveau de log {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
-log_level = "INFO"
+log_level = "DEBUG"
 # Nombre maximal d'itérations pour la réduction des données au zéro des cartes. Valeur minimale de 1 {int}
 # Maximum number of iterations for reducing data to chart datum. Minimum value of 1 {int}
 max_iterations = 5

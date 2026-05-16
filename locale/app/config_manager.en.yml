@@ -1,0 +1,7 @@
+en:
+  init_error: "Error initialising configuration: %{error}"
+  updating_output_path: "Updating output path with input: %{path}"
+  output_path_updated: "Output path updated to: %{path}"
+  updating_config_path: "Updating config path with input: %{path}"
+  config_path_updated: "Config path updated to: %{path}"
+

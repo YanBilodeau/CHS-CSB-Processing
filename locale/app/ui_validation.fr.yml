@@ -1,0 +1,6 @@
+fr:
+  no_file_selected: "❌ Veuillez sélectionner au moins un fichier à traiter"
+  no_output_path: "❌ Veuillez spécifier un répertoire de sortie"
+  mutual_exclusivity: "❌ Vous ne pouvez utiliser qu'une seule option parmi 'identifiant de navire' et 'ligne d'eau'"
+  no_vessel_id: "❌ Veuillez spécifier un identifiant de navire"
+  invalid_waterline: "❌ Veuillez spécifier une valeur de ligne d'eau valide (>= 0)"

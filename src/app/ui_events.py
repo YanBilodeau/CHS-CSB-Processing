@@ -4,6 +4,7 @@ UI Event Handler for CSB-Processing
 
 from typing import Any, Protocol
 
+import i18n
 from loguru import logger
 
 from .component.log_display import LogDisplay
@@ -50,8 +51,17 @@ class UIEventHandler:
                 file_selection_component.set_warning_visible(True)
 
         except Exception as ex:
-            LOGGER.error(f"Error removing file {file_info['name']}: {ex}")
-            show_notification(f"Error during removal: {str(ex)}", type="negative")
+            LOGGER.error(
+                i18n.t(
+                    "app.ui_events.error_removing_file_log",
+                    name=file_info["name"],
+                    error=str(ex),
+                )
+            )
+            show_notification(
+                i18n.t("app.ui_events.error_during_removal", error=str(ex)),
+                type="negative",
+            )
 
     # Options-related methods for use as callbacks
     def update_output_path(self, path: str) -> None:
@@ -72,7 +82,7 @@ class UIEventHandler:
             return ""
 
         except Exception as ex:
-            LOGGER.error(f"Error in select_output_directory: {ex}")
+            LOGGER.error(i18n.t("app.ui_events.error_select_output_dir", error=str(ex)))
             if self.log_display:
                 self.log_display.show()
             raise
@@ -87,7 +97,9 @@ class UIEventHandler:
             return ""
 
         except Exception as ex:
-            LOGGER.error(f"Error in select_config_file: {ex}")
+            LOGGER.error(
+                i18n.t("app.ui_events.error_select_config_file", error=str(ex))
+            )
             if self.log_display:
                 self.log_display.show()
             raise
@@ -99,14 +111,16 @@ class UIEventHandler:
         # Validate mutual exclusivity and vessel configuration
         if not self.validator.validate_mutual_exclusivity():
             show_notification(
-                "Invalid configuration: mutual exclusivity violated", type="negative"
+                i18n.t("app.ui_events.mutual_exclusivity_violated"), type="negative"
             )
 
         if (
             self.config_manager.use_vessel
             and not self.validator.validate_vessel_configuration()
         ):
-            show_notification("Please specify a vessel identifier", type="warning")
+            show_notification(
+                i18n.t("app.ui_events.specify_vessel_identifier"), type="warning"
+            )
 
         return waterline_was_disabled
 
@@ -117,7 +131,7 @@ class UIEventHandler:
         # Validate mutual exclusivity and waterline configuration
         if not self.validator.validate_mutual_exclusivity():
             show_notification(
-                "Invalid configuration: mutual exclusivity violated", type="negative"
+                i18n.t("app.ui_events.mutual_exclusivity_violated"), type="negative"
             )
 
         if (
@@ -125,7 +139,7 @@ class UIEventHandler:
             and not self.validator.validate_waterline_configuration()
         ):
             show_notification(
-                "Please specify a valid waterline value (> 0)", type="warning"
+                i18n.t("app.ui_events.specify_valid_waterline"), type="warning"
             )
 
         return vessel_was_disabled

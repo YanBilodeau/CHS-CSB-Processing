@@ -1,0 +1,8 @@
+en:
+  mutual_exclusivity_violated: "Invalid configuration: mutual exclusivity violated"
+  specify_vessel_identifier: "Please specify a vessel identifier"
+  specify_valid_waterline: "Please specify a valid waterline value (> 0)"
+  error_during_removal: "Error during removal: %{error}"
+  error_removing_file_log: "Error removing file %{name}: %{error}"
+  error_select_output_dir: "Error in select_output_directory: %{error}"
+  error_select_config_file: "Error in select_config_file: %{error}"

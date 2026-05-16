@@ -6,6 +6,7 @@ import asyncio
 import inspect
 from typing import Callable
 
+import i18n
 from nicegui import ui
 
 from .log_display import LogDisplay
@@ -25,7 +26,7 @@ class ProcessingSection:
         with ui.row().classes("w-full justify-center mt-6"):
             self.process_button = (
                 ui.button(
-                    "Process files",
+                    i18n.t("app.component.ui_sections.process_button"),
                     on_click=self._on_click,
                     icon="play_arrow",
                 )
@@ -68,7 +69,9 @@ class StatusSection:
     def create(self):
         """Create status section."""
         ui.separator()
-        ui.label("Processing Status").classes("text-lg font-bold mt-4")
+        ui.label(i18n.t("app.component.ui_sections.processing_status")).classes(
+            "text-lg font-bold mt-4"
+        )
 
         # Create status display component
         self.status_display.create()

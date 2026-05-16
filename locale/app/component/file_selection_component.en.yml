@@ -1,0 +1,27 @@
+en:
+  file_selection_label: "File Selection *"
+  select_files_button: "Select files..."
+  clear_selection_button: "Clear selection"
+  accepted_formats: "Accepted formats: .csv, .txt, .xyz, .geojson, .*"
+  web_accepted_formats: "Accepted formats: .csv, .txt, .xyz, .geojson, .*\nMax file size: 100MB | Max total: 500MB | Max files: 50"
+  files_warning: "⚠️ Required: Please select at least one file to process"
+  no_file_selected: "No file selected"
+  files_added: "%{count} file(s) added successfully"
+  no_new_files: "No new files added"
+  all_files_removed: "All files have been removed"
+  files_rejected: "Some files were rejected"
+  files_uploaded: "%{count} file(s) uploaded successfully"
+  error_open_dialog: "Error opening file dialog: %{error}"
+  error_adding_files: "Error adding files: %{error}"
+  error_adding_uploaded: "Error adding uploaded files: %{error}"
+  error_saving_upload: "Error saving uploaded file %{name}: %{error}"
+  error_handling_upload: "Error handling upload: %{error}"
+  supported_formats: |
+    **Supported file formats:**
+
+    - **OFM**: `.xyz` extension with at least the columns LON, LAT, DEPTH, TIME in the header.
+    - **DCDB**: `.csv` extension with at least the columns LON, LAT, DEPTH, TIME in the header.
+    - **Lowrance**: `.csv` extension with at least the columns Longitude[°WGS84], Latitude[°WGS84], WaterDepth[Feet], DateTime[UTC] in the header. These files are the result of SL3 files from Lowrance exported by the tool [SL3Reader](https://github.com/halmaia/SL3Reader).
+    - **Actisense**: coming soon.
+    - **BlackBox**: `.TXT` extension without header with columns in the order Time, Date, Latitude, Longitude, Speed (km/h) and Depth (m).
+    - **[WIBL](https://github.com/CCOMJHC/WIBL/tree/main)**: numeric extension (e.g., `.1`, `.2`, `.3`, etc.).

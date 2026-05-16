@@ -1,0 +1,6 @@
+fr:
+  log_output_label: "Journal de sortie"
+  clear_logs_button: "Effacer les journaux"
+  show_logs_button: "Afficher les journaux"
+  hide_logs_button: "Masquer les journaux"
+  logs_cleared: "Journaux effacés"

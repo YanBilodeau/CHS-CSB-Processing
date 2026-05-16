@@ -1,0 +1,12 @@
+fr:
+  error_open_dir_dialog: "Erreur lors de l'ouverture du dialogue de répertoire : %{error}"
+  error_open_config_dialog: "Erreur lors de l'ouverture du dialogue de configuration : %{error}"
+  attempting_add_file: "Tentative d'ajout du fichier : %{name}"
+  duplicate_file_ignored: "Fichier en double ignoré : %{name}"
+  file_not_found: "Fichier introuvable : %{path}"
+  unsupported_format: "Format non supporté : %{name}"
+  file_added: "Fichier ajouté avec succès : %{name}"
+  error_adding_file: "Erreur lors de l'ajout du fichier %{path} : %{error}"
+  file_removed: "Fichier retiré de la liste : %{name}"
+  file_not_in_list: "Fichier introuvable dans la liste : %{name}"
+  all_files_cleared: "Tous les fichiers supprimés de la sélection"

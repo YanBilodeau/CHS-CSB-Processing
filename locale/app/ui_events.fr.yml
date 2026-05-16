@@ -1,0 +1,8 @@
+fr:
+  mutual_exclusivity_violated: "Configuration invalide : exclusivité mutuelle violée"
+  specify_vessel_identifier: "Veuillez spécifier un identifiant de navire"
+  specify_valid_waterline: "Veuillez spécifier une valeur de ligne d'eau valide (> 0)"
+  error_during_removal: "Erreur lors de la suppression : %{error}"
+  error_removing_file_log: "Erreur lors de la suppression du fichier %{name} : %{error}"
+  error_select_output_dir: "Erreur dans select_output_directory : %{error}"
+  error_select_config_file: "Erreur dans select_config_file : %{error}"

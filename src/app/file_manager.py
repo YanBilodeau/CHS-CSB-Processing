@@ -8,7 +8,7 @@ from typing import Any, Iterable
 
 from nicegui import app
 from loguru import logger
-import webview
+import i18n
 
 LOGGER = logger.bind(name="CSB-Processing.FileManager")
 
@@ -127,19 +127,26 @@ class FileManager:
         """Remove a file from the collection."""
         try:
             self.files.remove(file_info)
-            LOGGER.debug(f"File removed from list: {file_info['name']}")
+            LOGGER.debug(
+                i18n.t("app.file_manager.file_removed", name=file_info["name"])
+            )
 
             return True
 
         except ValueError:
-            LOGGER.error(f"File not found in list: {file_info.get('name', 'Unknown')}")
+            LOGGER.error(
+                i18n.t(
+                    "app.file_manager.file_not_in_list",
+                    name=file_info.get("name", "Unknown"),
+                )
+            )
 
             return False
 
     def clear_files(self):
         """Clear all files from the collection."""
         self.files.clear()
-        LOGGER.debug("All files cleared from selection")
+        LOGGER.debug(i18n.t("app.file_manager.all_files_cleared"))
 
     def get_files(self) -> list[dict[str, Any]]:
         """Get all files in the collection."""

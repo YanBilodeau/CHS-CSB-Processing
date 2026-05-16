@@ -3,6 +3,7 @@
 from pathlib import Path
 from typing import Any
 
+import i18n
 from loguru import logger
 
 from .component.notifications import show_notification
@@ -31,18 +32,34 @@ class FileOperations:
         try:
             success = self.file_manager.remove_file(file_info)
             if success:
-                show_notification(f"File removed: {file_info['name']}", type="info")
+                show_notification(
+                    i18n.t("app.file_operations.file_removed", name=file_info["name"]),
+                    type="info",
+                )
                 # Return True if no files remain (for warning display)
                 return len(self.file_manager.get_files()) == 0
             else:
                 show_notification(
-                    f"Error removing file: {file_info['name']}", type="negative"
+                    i18n.t(
+                        "app.file_operations.error_removing_file",
+                        name=file_info["name"],
+                    ),
+                    type="negative",
                 )
                 return False
 
         except Exception as ex:
-            LOGGER.error(f"Error removing file {file_info['name']}: {ex}")
-            show_notification(f"Error during removal: {str(ex)}", type="negative")
+            LOGGER.error(
+                i18n.t(
+                    "app.file_operations.error_removing_log",
+                    name=file_info["name"],
+                    error=str(ex),
+                )
+            )
+            show_notification(
+                i18n.t("app.file_operations.error_during_removal", error=str(ex)),
+                type="negative",
+            )
             return False
 
     def get_files(self):
@@ -66,21 +83,30 @@ class FileOperations:
                     output_warning_label.visible = False
 
                 show_notification(
-                    f"Directory selected: {self.config_manager.output_path.name}",
+                    i18n.t(
+                        "app.file_operations.directory_selected",
+                        name=self.config_manager.output_path.name,
+                    ),
                     type="positive",
                 )
                 LOGGER.debug(
-                    f"Output directory selected: {self.config_manager.output_path}"
+                    i18n.t(
+                        "app.file_operations.output_dir_selected_log",
+                        path=str(self.config_manager.output_path),
+                    )
                 )
                 return str(self.config_manager.output_path)
             else:
-                show_notification("No directory selected", type="info")
+                show_notification(
+                    i18n.t("app.file_operations.no_directory_selected"), type="info"
+                )
                 return None
 
         except Exception as ex:
-            LOGGER.error(f"Error opening directory dialog: {ex}")
+            LOGGER.error(i18n.t("app.file_operations.error_open_dir", error=str(ex)))
             show_notification(
-                f"Error opening directory dialog: {str(ex)}", type="negative"
+                i18n.t("app.file_operations.error_open_dir", error=str(ex)),
+                type="negative",
             )
             return None
 
@@ -96,16 +122,31 @@ class FileOperations:
             if selected_file:
                 self.config_manager.config_path = Path(selected_file)
                 show_notification(
-                    f"Configuration file selected: {self.config_manager.config_path.name}",
+                    i18n.t(
+                        "app.file_operations.config_file_selected",
+                        name=self.config_manager.config_path.name,
+                    ),
                     type="positive",
                 )
-                LOGGER.debug(f"Config file selected: {self.config_manager.config_path}")
+                LOGGER.debug(
+                    i18n.t(
+                        "app.file_operations.config_file_selected_log",
+                        path=str(self.config_manager.config_path),
+                    )
+                )
                 return str(self.config_manager.config_path)
             else:
-                show_notification("No file selected", type="info")
+                show_notification(
+                    i18n.t("app.file_operations.no_file_selected"), type="info"
+                )
                 return None
 
         except Exception as ex:
-            LOGGER.error(f"Error opening config file dialog: {ex}")
-            show_notification(f"Error opening file dialog: {str(ex)}", type="negative")
+            LOGGER.error(
+                i18n.t("app.file_operations.error_open_config_file", error=str(ex))
+            )
+            show_notification(
+                i18n.t("app.file_operations.error_open_config_file", error=str(ex)),
+                type="negative",
+            )
             return None

@@ -1,0 +1,12 @@
+en:
+  error_open_dir_dialog: "Error opening directory dialog: %{error}"
+  error_open_config_dialog: "Error opening config file dialog: %{error}"
+  attempting_add_file: "Attempting to add file: %{name}"
+  duplicate_file_ignored: "Duplicate file ignored: %{name}"
+  file_not_found: "File not found: %{path}"
+  unsupported_format: "Unsupported format: %{name}"
+  file_added: "File added successfully: %{name}"
+  error_adding_file: "Error adding file %{path}: %{error}"
+  file_removed: "File removed from list: %{name}"
+  file_not_in_list: "File not found in list: %{name}"
+  all_files_cleared: "All files cleared from selection"

@@ -2,6 +2,7 @@
 Reusable UI component for displaying selected files in a card format.
 """
 
+import i18n
 from nicegui import ui
 from typing import Callable
 
@@ -38,11 +39,15 @@ class FileDisplay:
 
         with self.container:
             if not files or len(files) == 0:
-                ui.label("No files selected").classes("text-gray-500 italic")
+                ui.label(
+                    i18n.t("app.component.file_display.no_files_selected")
+                ).classes("text-gray-500 italic")
             else:
-                ui.label(f"Selected files ({len(files)}):").classes(
-                    "font-bold text-blue-600"
-                )
+                ui.label(
+                    i18n.t(
+                        "app.component.file_display.selected_files", count=len(files)
+                    )
+                ).classes("font-bold text-blue-600")
 
                 # Create cards for each file
                 for file_info in files:
@@ -72,7 +77,7 @@ class FileDisplay:
                 remove_btn = (
                     ui.button(icon="delete")
                     .props("size=sm color=red outline round")
-                    .tooltip("Remove this file")
+                    .tooltip(i18n.t("app.component.file_display.remove_tooltip"))
                 )
                 remove_btn.on_click(lambda file=file_info: self._handle_remove(file))
 

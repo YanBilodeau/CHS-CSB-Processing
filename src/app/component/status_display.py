@@ -1,5 +1,6 @@
 """Status display component for showing processing status in the UI."""
 
+import i18n
 from nicegui import ui
 
 
@@ -11,7 +12,7 @@ class StatusDisplay:
 
     def create(self) -> ui.label:
         """Create the status display component."""
-        self.label = ui.label("⏳ Ready to process files").classes(
+        self.label = ui.label(i18n.t("app.component.status_display.ready")).classes(
             "text-gray-600 text-base p-2"
         )
         return self.label

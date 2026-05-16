@@ -5,6 +5,8 @@ UI Validation Module
 from pathlib import Path
 from typing import Protocol, Callable
 
+import i18n
+
 
 class ConfigManagerProtocol(Protocol):
     """Protocol for configuration manager to manage settings."""
@@ -42,29 +44,27 @@ class Validator:
         errors = []
 
         if not self.get_files_func():
-            errors.append("❌ Please select at least one file to process")
+            errors.append(i18n.t("app.ui_validation.no_file_selected"))
 
         # Use config_manager for all configuration properties
         output_path = self.config_manager.output_path
         if not output_path or str(output_path).strip() == "" or output_path == Path():
-            errors.append("❌ Please specify an output directory")
+            errors.append(i18n.t("app.ui_validation.no_output_path"))
 
         use_vessel = self.config_manager.use_vessel
         use_waterline = self.config_manager.use_waterline
 
         if use_vessel and use_waterline:
-            errors.append(
-                "❌ You can only use one of 'vessel identifier' or 'waterline' options"
-            )
+            errors.append(i18n.t("app.ui_validation.mutual_exclusivity"))
 
         # Additional validations for vessel and waterline values
         vessel_id = self.config_manager.vessel_id
         if use_vessel and not vessel_id.strip():
-            errors.append("❌ Please specify a vessel identifier")
+            errors.append(i18n.t("app.ui_validation.no_vessel_id"))
 
         waterline_value = self.config_manager.waterline_value
         if use_waterline and waterline_value < 0:
-            errors.append("❌ Please specify a valid waterline value (>= 0)")
+            errors.append(i18n.t("app.ui_validation.invalid_waterline"))
 
         return errors
 

@@ -1,5 +1,6 @@
 """Log Display Component for displaying log output in a web UI."""
 
+import i18n
 from typing import Protocol
 
 from nicegui import ui
@@ -29,15 +30,21 @@ class LogDisplay:
         """Create the log display component."""
         # Log section header with toggle button
         with ui.row().classes("w-full justify-between items-center mt-4"):
-            ui.label("Log Output").classes("text-lg font-bold")
+            ui.label(i18n.t("app.component.log_display.log_output_label")).classes(
+                "text-lg font-bold"
+            )
 
             with ui.row().classes("gap-2"):
                 ui.button(
-                    "Clear logs", on_click=self.clear_logs, icon="clear_all"
+                    i18n.t("app.component.log_display.clear_logs_button"),
+                    on_click=self.clear_logs,
+                    icon="clear_all",
                 ).props("size=sm color=secondary outline")
 
                 self.toggle_button = ui.button(
-                    "Show logs", on_click=self.toggle_visibility, icon="visibility"
+                    i18n.t("app.component.log_display.show_logs_button"),
+                    on_click=self.toggle_visibility,
+                    icon="visibility",
                 ).props("size=sm color=primary outline")
 
         # Log container (initially hidden)
@@ -68,7 +75,9 @@ class LogDisplay:
         if not self.visible:
             self.visible = True
             self.container.visible = True
-            self.toggle_button.text = "Hide logs"
+            self.toggle_button.text = i18n.t(
+                "app.component.log_display.hide_logs_button"
+            )
             self.toggle_button.icon = "visibility_off"
             self.update_logs()
 
@@ -77,7 +86,9 @@ class LogDisplay:
         if self.visible:
             self.visible = False
             self.container.visible = False
-            self.toggle_button.text = "Show logs"
+            self.toggle_button.text = i18n.t(
+                "app.component.log_display.show_logs_button"
+            )
             self.toggle_button.icon = "visibility"
 
     def clear_logs(self) -> None:
@@ -87,7 +98,7 @@ class LogDisplay:
         if self.output:
             self.output.clear()
 
-        ui.notification("Logs cleared", type="info")
+        ui.notification(i18n.t("app.component.log_display.logs_cleared"), type="info")
 
     def update_logs(self) -> None:
         """Update log display with new log entries."""

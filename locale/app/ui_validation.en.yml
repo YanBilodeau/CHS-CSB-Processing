@@ -1,0 +1,6 @@
+en:
+  no_file_selected: "❌ Please select at least one file to process"
+  no_output_path: "❌ Please specify an output directory"
+  mutual_exclusivity: "❌ You can only use one of 'vessel identifier' or 'waterline' options"
+  no_vessel_id: "❌ Please specify a vessel identifier"
+  invalid_waterline: "❌ Please specify a valid waterline value (>= 0)"

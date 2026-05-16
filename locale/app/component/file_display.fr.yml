@@ -1,0 +1,4 @@
+fr:
+  no_files_selected: "Aucun fichier sélectionné"
+  selected_files: "Fichiers sélectionnés (%{count}) :"
+  remove_tooltip: "Supprimer ce fichier"

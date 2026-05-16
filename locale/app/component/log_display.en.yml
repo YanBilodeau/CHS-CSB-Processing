@@ -1,0 +1,6 @@
+en:
+  log_output_label: "Log Output"
+  clear_logs_button: "Clear logs"
+  show_logs_button: "Show logs"
+  hide_logs_button: "Hide logs"
+  logs_cleared: "Logs cleared"
