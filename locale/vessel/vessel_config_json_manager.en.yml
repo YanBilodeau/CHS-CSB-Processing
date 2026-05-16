@@ -1,0 +1,9 @@
+en:
+  loading_config_file: "Loading vessel configuration file: %{json_config_path}."
+  saving_config_file: "Saving vessel configuration file: %{json_config_path}."
+  not_serializable: "Objects of type %{class_name} are not serializable."
+  getting_vessel_config: "Retrieving vessel configuration: %{vessel_id}."
+  getting_all_vessel_configs: "Retrieving configuration for all vessels."
+  adding_vessel_config: "Adding vessel configuration: %{vessel_id}."
+  updating_vessel_config: "Updating vessel configuration: %{vessel_id}."
+  deleting_vessel_config: "Deleting vessel configuration: %{vessel_id}."

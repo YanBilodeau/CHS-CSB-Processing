@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 
 from loguru import logger
+import i18n
 
 from .exception_vessel import VesselConfigNotFoundError
 from .vessel_config_manager_abc import VesselConfigManagerABC
@@ -57,7 +58,10 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
             json_config_path = Path(__file__).parent.parent / json_config_path
 
         LOGGER.debug(
-            f"Chargement du fichier de configuration des navires : {json_config_path}."
+            i18n.t(
+                "vessel.vessel_config_json_manager.loading_config_file",
+                json_config_path=json_config_path,
+            )
         )
 
         if not json_config_path.exists():
@@ -87,11 +91,17 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
                 return object_.strftime("%Y-%m-%dT%H:%M:%S%z")
 
             raise TypeError(
-                f"Les objets de type {object_.__class__.__name__} ne sont pas sérialisables."
+                i18n.t(
+                    "vessel.vessel_config_json_manager.not_serializable",
+                    class_name=object_.__class__.__name__,
+                )
             )
 
         LOGGER.debug(
-            f"Sauvegarde du fichier de configuration des navires : {json_config_path}."
+            i18n.t(
+                "vessel.vessel_config_json_manager.saving_config_file",
+                json_config_path=json_config_path,
+            )
         )
 
         with open(json_config_path, "w") as file:
@@ -112,7 +122,12 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
         :rtype: VesselConfig
         :raises VesselConfigNotFoundError: Si la configuration du navire n'existe pas.
         """
-        LOGGER.debug(f"Récupération de la configuration du navire : {vessel_id}.")
+        LOGGER.debug(
+            i18n.t(
+                "vessel.vessel_config_json_manager.getting_vessel_config",
+                vessel_id=vessel_id,
+            )
+        )
 
         if vessel_id not in self._vessel_configs:
             raise VesselConfigNotFoundError(vessel_id=vessel_id)
@@ -126,7 +141,9 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
         :return: Configurations des navires.
         :rtype: list[VesselConfig]
         """
-        LOGGER.debug("Récupération de la configuration de tous les navires.")
+        LOGGER.debug(
+            i18n.t("vessel.vessel_config_json_manager.getting_all_vessel_configs")
+        )
 
         return [config for config in self._vessel_configs.values()]
 
@@ -137,7 +154,12 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
         :param vessel_config: Configuration du navire.
         :type vessel_config: VesselConfig
         """
-        LOGGER.debug(f"Ajout de la configuration du navire : {vessel_config.id}.")
+        LOGGER.debug(
+            i18n.t(
+                "vessel.vessel_config_json_manager.adding_vessel_config",
+                vessel_id=vessel_config.id,
+            )
+        )
 
         self._vessel_configs[vessel_config.id] = vessel_config
 
@@ -150,7 +172,12 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
         :param vessel_config: Configuration du navire.
         :type vessel_config: VesselConfig
         """
-        LOGGER.debug(f"Mise à jour de la configuration du navire : {vessel_id}.")
+        LOGGER.debug(
+            i18n.t(
+                "vessel.vessel_config_json_manager.updating_vessel_config",
+                vessel_id=vessel_id,
+            )
+        )
 
         self._vessel_configs[vessel_id] = vessel_config
 
@@ -161,6 +188,11 @@ class VesselConfigJsonManager(VesselConfigManagerABC):
         :param vessel_id: Identifiant du navire.
         :type vessel_id: str
         """
-        LOGGER.debug(f"Suppression de la configuration du navire : {vessel_id}.")
+        LOGGER.debug(
+            i18n.t(
+                "vessel.vessel_config_json_manager.deleting_vessel_config",
+                vessel_id=vessel_id,
+            )
+        )
 
         del self._vessel_configs[vessel_id]

@@ -1,0 +1,4 @@
+fr:
+  unsupported_vessel_type: "Type non supporté pour la récupération de la configuration du navire : %{vessel_type}."
+  vessel_config_passthrough: "Configuration du navire (passthrough) : %{vessel}."
+  vessel_config_loaded: "Configuration du navire chargée : %{vessel_config}."

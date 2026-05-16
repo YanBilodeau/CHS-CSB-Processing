@@ -8,6 +8,7 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 from loguru import logger
+import i18n
 
 from .vessel_config import VesselConfig
 
@@ -27,7 +28,10 @@ class VesselConfigManagerABC(ABC):
         :type kwargs: dict
         """
         LOGGER.debug(
-            f"Initialisation du gestionnaire de configuration des navires : {self.__class__.__name__}."
+            i18n.t(
+                "vessel.vessel_config_manager_abc.init_manager",
+                class_name=self.__class__.__name__,
+            )
         )
 
     @abstractmethod

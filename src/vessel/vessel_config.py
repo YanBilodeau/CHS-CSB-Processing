@@ -9,6 +9,7 @@ from enum import StrEnum
 from typing import Optional, Literal, Tuple
 
 from loguru import logger
+import i18n
 from pydantic import BaseModel
 
 from .exception_vessel import (
@@ -197,7 +198,11 @@ class VesselConfig(BaseModel):
         :raises SensorNotFoundError: Si le capteur n'existe pas.
         """
         LOGGER.debug(
-            f"Récupération des données du capteur {sensor_name} pour {timestamp}."
+            i18n.t(
+                "vessel.vessel_config.getting_sensor",
+                sensor_name=sensor_name,
+                timestamp=timestamp,
+            )
         )
 
         sensors: list[Sensor | Waterline | SoundSpeedProfile | BDBattribute] = getattr(

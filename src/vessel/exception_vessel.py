@@ -8,6 +8,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
+import i18n
+
 
 @dataclass(frozen=True)
 class MissingConfigKeyError(Exception):
@@ -22,7 +24,9 @@ class MissingConfigKeyError(Exception):
     """Les clés manquantes."""
 
     def __str__(self) -> str:
-        return f"Certaines clés de configuration sont manquantes: {self.missing_keys}."
+        return i18n.t(
+            "vessel.exception_vessel.missing_config_key", missing_keys=self.missing_keys
+        )
 
 
 @dataclass(frozen=True)  #
@@ -42,7 +46,11 @@ class SensorNotFoundError(Exception):
     """Le timestamp."""
 
     def __str__(self) -> str:
-        return f"Aucun capteur de type {self.sensor_name} trouvé pour le timestamp {self.timestamp}."
+        return i18n.t(
+            "vessel.exception_vessel.sensor_not_found",
+            sensor_name=self.sensor_name,
+            timestamp=self.timestamp,
+        )
 
 
 @dataclass(frozen=True)
@@ -58,7 +66,9 @@ class VesselConfigNotFoundError(Exception):
     """L'identifiant du navire."""
 
     def __str__(self) -> str:
-        return f"La configuration du navire {self.vessel_id} n'existe pas."
+        return i18n.t(
+            "vessel.exception_vessel.vessel_config_not_found", vessel_id=self.vessel_id
+        )
 
 
 @dataclass(frozen=True)
@@ -74,7 +84,10 @@ class VesselConfigManagerIdentifierError(Exception):
     """Le type de gestionnaire de navire."""
 
     def __str__(self) -> str:
-        return f"Le type de gestionnaire de navire '{self.manager_type}' n'existe pas."
+        return i18n.t(
+            "vessel.exception_vessel.manager_type_not_found",
+            manager_type=self.manager_type,
+        )
 
 
 @dataclass(frozen=True)
@@ -87,7 +100,10 @@ class SensorConfigurationError(Exception):
     """Le type de capteur."""
 
     def __str__(self) -> str:
-        return f"La configuration du capteur {self.sensor_type} a changé durant la période de temps couverte par les données."
+        return i18n.t(
+            "vessel.exception_vessel.sensor_config_changed",
+            sensor_type=self.sensor_type,
+        )
 
 
 @dataclass(frozen=True)
@@ -108,7 +124,8 @@ class VesselConfigManagerError(Exception):
     """La configuration du gestionnaire de navires."""
 
     def __str__(self) -> str:
-        return (
-            f"La configuration du gestionnaire de navires [{self.vessel_config_manager}] est "
-            f"manquante ou incomplète pour récupérer la configuration du navire : {self.vessel_id}."
+        return i18n.t(
+            "vessel.exception_vessel.manager_config_missing",
+            vessel_config_manager=self.vessel_config_manager,
+            vessel_id=self.vessel_id,
         )

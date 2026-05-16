@@ -1,0 +1,4 @@
+en:
+  unsupported_vessel_type: "Unsupported type for vessel configuration retrieval: %{vessel_type}."
+  vessel_config_passthrough: "Vessel configuration (passthrough): %{vessel}."
+  vessel_config_loaded: "Vessel configuration loaded: %{vessel_config}."

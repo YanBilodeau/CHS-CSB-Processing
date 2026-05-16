@@ -9,6 +9,7 @@ from enum import StrEnum
 from typing import Any, Optional, Protocol
 
 from loguru import logger
+import i18n
 
 from .exception_vessel import VesselConfigManagerIdentifierError
 from .vessel_config_manager_abc import VesselConfigManagerABC
@@ -59,7 +60,10 @@ def get_vessel_config_manager_factory(
     :raises VesselConfigManagerIdentifierError: Si le type de gestionnaire de navire n'est pas reconnu.
     """
     LOGGER.debug(
-        f"Récupération de la factory du gestionnaire de navire pour le type '{manager_type}'."
+        i18n.t(
+            "vessel.factory_vessel_config_manager.getting_factory",
+            manager_type=manager_type,
+        )
     )
 
     if manager_type not in VESSEL_CONFIG_MANAGER_FACTORY:

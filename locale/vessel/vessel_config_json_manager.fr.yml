@@ -1,0 +1,9 @@
+fr:
+  loading_config_file: "Chargement du fichier de configuration des navires : %{json_config_path}."
+  saving_config_file: "Sauvegarde du fichier de configuration des navires : %{json_config_path}."
+  not_serializable: "Les objets de type %{class_name} ne sont pas sérialisables."
+  getting_vessel_config: "Récupération de la configuration du navire : %{vessel_id}."
+  getting_all_vessel_configs: "Récupération de la configuration de tous les navires."
+  adding_vessel_config: "Ajout de la configuration du navire : %{vessel_id}."
+  updating_vessel_config: "Mise à jour de la configuration du navire : %{vessel_id}."
+  deleting_vessel_config: "Suppression de la configuration du navire : %{vessel_id}."

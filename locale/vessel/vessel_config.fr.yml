@@ -1,0 +1,2 @@
+fr:
+  getting_sensor: "Récupération des données du capteur %{sensor_name} pour %{timestamp}."

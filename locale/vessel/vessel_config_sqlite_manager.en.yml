@@ -1,0 +1,3 @@
+en:
+  db_file_not_found: "The SQLite database configuration file does not exist: %{sqlite_config_path}."
+  connecting_to_db: "Connecting to SQLite database: %{sqlite_config_path}."

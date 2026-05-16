@@ -5,21 +5,16 @@ Ce module contient la classe VesselConfigSQLiteManager qui permet de gérer la c
 d'une base de données SQLite.
 """
 
-from datetime import datetime
 from pathlib import Path
 
 from loguru import logger
+import i18n
 from sqlalchemy import create_engine, Engine
 from sqlalchemy.orm import sessionmaker, Session
 
-from .exception_vessel import VesselConfigNotFoundError
 from .vessel_config_manager_abc import VesselConfigManagerABC
-from .vessel_config import (
-    VesselConfig,
-    get_vessel_config_from_config_dict,
-    VesselConfigDict,
-)
-from . import vessel_ids as ids
+from .vessel_config import VesselConfig
+
 
 LOGGER = logger.bind(name="CSB-Processing.Vessel.VesselConfigManager.SQLite")
 
@@ -58,10 +53,18 @@ class VesselConfigSQLiteManager(VesselConfigManagerABC):
 
         if not sqlite_config_path.exists():
             raise FileNotFoundError(
-                f"Le fichier de configuration de la base de données SQLite n'existe pas : {sqlite_config_path}."
+                i18n.t(
+                    "vessel.vessel_config_sqlite_manager.db_file_not_found",
+                    sqlite_config_path=sqlite_config_path,
+                )
             )
 
-        LOGGER.debug(f"Connexion à la base de données SQLite : {sqlite_config_path}.")
+        LOGGER.debug(
+            i18n.t(
+                "vessel.vessel_config_sqlite_manager.connecting_to_db",
+                sqlite_config_path=sqlite_config_path,
+            )
+        )
 
         engine: Engine = create_engine(f"sqlite:///{sqlite_config_path}")
         session_maker: sessionmaker = sessionmaker(bind=engine)

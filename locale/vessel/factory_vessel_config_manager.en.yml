@@ -1,0 +1,2 @@
+en:
+  getting_factory: "Retrieving the vessel manager factory for type '%{manager_type}'."

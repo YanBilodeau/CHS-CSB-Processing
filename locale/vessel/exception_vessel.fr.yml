@@ -1,0 +1,7 @@
+fr:
+  missing_config_key: "Certaines clés de configuration sont manquantes: %{missing_keys}."
+  sensor_not_found: "Aucun capteur de type %{sensor_name} trouvé pour le timestamp %{timestamp}."
+  vessel_config_not_found: "La configuration du navire %{vessel_id} n'existe pas."
+  manager_type_not_found: "Le type de gestionnaire de navire '%{manager_type}' n'existe pas."
+  sensor_config_changed: "La configuration du capteur %{sensor_type} a changé durant la période de temps couverte par les données."
+  manager_config_missing: "La configuration du gestionnaire de navires [%{vessel_config_manager}] est manquante ou incomplète pour récupérer la configuration du navire : %{vessel_id}."

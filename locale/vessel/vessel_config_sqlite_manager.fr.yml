@@ -1,0 +1,3 @@
+fr:
+  db_file_not_found: "Le fichier de configuration de la base de données SQLite n'existe pas : %{sqlite_config_path}."
+  connecting_to_db: "Connexion à la base de données SQLite : %{sqlite_config_path}."

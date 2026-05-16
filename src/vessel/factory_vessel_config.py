@@ -7,6 +7,7 @@ Ce module permet de récupérer la configuration du navire.
 from functools import singledispatch
 
 from loguru import logger
+import i18n
 
 from .factory_vessel_config_manager import (
     get_vessel_config_manager_factory,
@@ -36,7 +37,10 @@ def get_vessel_config(
     :rtype: VesselConfig
     """
     raise TypeError(
-        f"Type non supporté pour la récupération de la configuration du navire : {type(vessel).__name__}."
+        i18n.t(
+            "vessel.factory_vessel_config.unsupported_vessel_type",
+            vessel_type=type(vessel).__name__,
+        )
     )
 
 
@@ -53,7 +57,9 @@ def _(
     :return: Configuration du navire.
     :rtype: VesselConfig
     """
-    LOGGER.debug(f"Configuration du navire : {vessel}.")
+    LOGGER.debug(
+        i18n.t("vessel.factory_vessel_config.vessel_config_passthrough", vessel=vessel)
+    )
 
     return vessel
 
@@ -81,6 +87,11 @@ def _(
         vessel_id=vessel
     )
 
-    LOGGER.debug(f"Configuration du navire : {vessel_config}.")
+    LOGGER.debug(
+        i18n.t(
+            "vessel.factory_vessel_config.vessel_config_loaded",
+            vessel_config=vessel_config,
+        )
+    )
 
     return vessel_config

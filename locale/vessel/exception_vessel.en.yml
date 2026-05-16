@@ -1,0 +1,7 @@
+en:
+  missing_config_key: "Some configuration keys are missing: %{missing_keys}."
+  sensor_not_found: "No sensor of type %{sensor_name} found for timestamp %{timestamp}."
+  vessel_config_not_found: "The vessel configuration %{vessel_id} does not exist."
+  manager_type_not_found: "The vessel manager type '%{manager_type}' does not exist."
+  sensor_config_changed: "The sensor configuration %{sensor_type} changed during the time period covered by the data."
+  manager_config_missing: "The vessel manager configuration [%{vessel_config_manager}] is missing or incomplete to retrieve the vessel configuration: %{vessel_id}."
