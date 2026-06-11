@@ -1,34 +1,33 @@
 # Table of Contents
 
 - [CHS-CSB-Processing](#chs-csb-processing)
-  - [Description](#description)
+    - [Description](#description)
 - [Installation](#installation)
-  - [Prerequisites](#prerequisites)
-  - [Environment Setup](#environment-setup)
+    - [Prerequisites](#prerequisites)
+    - [Environment Setup](#environment-setup)
 - [Graphical User Interface (GUI)](#graphical-user-interface-gui)
 - [Command-Line Interface Tutorial for Bathymetric File Processing](#command-line-interface-tutorial-for-bathymetric-file-processing)
-  - [Available Commands](#available-commands)
-    - [1. `process` Command](#1-process-command)
-      - [Syntax](#syntax)
-      - [Arguments](#arguments)
-      - [Available Options](#available-options)
-      - [Usage Examples](#usage-examples)
-    - [2. `convert` Command](#2-convert-command)
-      - [Syntax](#syntax-1)
-      - [Arguments](#arguments-1)
-      - [Available Options](#available-options-1)
-      - [Supported Output Formats](#supported-output-formats)
-      - [Usage Examples](#usage-examples-1)
-  - [Error Handling](#error-handling)
-    - [Invalid Files](#invalid-files)
-    - [Missing Parameters](#missing-parameters)
-    - [Restrictions and Validations](#restrictions-and-validations)
+    - [Available Commands](#available-commands)
+        - [1. `process` Command](#1-process-command)
+            - [Syntax](#syntax)
+            - [Arguments](#arguments)
+            - [Available Options](#available-options)
+            - [Usage Examples](#usage-examples)
+        - [2. `convert` Command](#2-convert-command)
+            - [Syntax](#syntax-1)
+            - [Arguments](#arguments-1)
+            - [Available Options](#available-options-1)
+            - [Supported Output Formats](#supported-output-formats)
+            - [Usage Examples](#usage-examples-1)
+    - [Error Handling](#error-handling)
+        - [Invalid Files](#invalid-files)
+        - [Missing Parameters](#missing-parameters)
+        - [Restrictions and Validations](#restrictions-and-validations)
 - [Processing Flow Diagram](#processing-flow-diagram)
 - [Configuration File (TOML)](#configuration-file-toml)
-  - [Main Sections](#main-sections)
+    - [Main Sections](#main-sections)
 - [Vessel File (Vessels)](#vessel-file-vessels)
-  - [Field Descriptions](#field-descriptions)
-
+    - [Field Descriptions](#field-descriptions)
 
 ---
 
@@ -42,22 +41,25 @@ You can visit the [documentation](https://chs-csb-processing.readthedocs.io/en/l
 ## Description
 
 This module is designed to automate the processing of bathymetric data files. It allows you to:
+
 - Identify and load appropriate files (CSV, TXT, XYZ, GeoJSON).
 - Perform georeferencing based on specific configurations.
 - Manage vessel identifiers and associated configurations.
 - Convert processed files to different output formats.
 
 The supported file formats are as follows:
+
 - OFM: `.xyz` extension with at least the columns `LON`, `LAT`, `DEPTH`, `TIME` in the header.
 - DCDB: `.csv` extension with at least the columns `LON`, `LAT`, `DEPTH`, `TIME` in the header.
-- Lowrance: `.csv` extension with at least the columns `Longitude[°WGS84]`, `Latitude[°WGS84]`, `WaterDepth[Feet]`, 
-            `DateTime[UTC]` in the header. These files are the result of `SL3` files from Lowrance exported by 
-            the tool [SL3Reader](https://github.com/halmaia/SL3Reader).
+- Lowrance: `.csv` extension with at least the columns `Longitude[°WGS84]`, `Latitude[°WGS84]`, `WaterDepth[Feet]`,
+  `DateTime[UTC]` in the header. These files are the result of `SL3` files from Lowrance exported by
+  the tool [SL3Reader](https://github.com/halmaia/SL3Reader).
 - Actisense: coming soon.
-- BlackBox: `.TXT` extension without header with columns in the order `Time`, `Date`, `Latitude`, `Longitude`, `Speed (km/h)` and `Depth (m)`.
+- BlackBox: `.TXT` extension without header with columns in the order `Time`, `Date`, `Latitude`, `Longitude`,
+  `Speed (km/h)` and `Depth (m)`.
 - [WIBL](https://github.com/CCOMJHC/WIBL/tree/main): numeric extension (e.g., `.1`, `.2`, `.3`, etc.).
 - HydroBlock: `.TXT` extension, semicolon-delimited, with the header `timestamp;latitude;longitude;chartdatumheight`.
-              Depth is already reduced to chart datum (positive axis downward).
+  Depth is already reduced to chart datum (positive axis downward).
 
 ---
 
@@ -65,7 +67,8 @@ The supported file formats are as follows:
 
 ## Prerequisites
 
-This project uses [UV](https://github.com/astral-sh/uv) as a Python package and environment manager. UV is a modern, fast, and reliable tool that simplifies dependency management.
+This project uses [UV](https://github.com/astral-sh/uv) as a Python package and environment manager. UV is a modern,
+fast, and reliable tool that simplifies dependency management.
 
 To install UV, follow the instructions on the [official page](https://docs.astral.sh/uv/getting-started/installation/).
 
@@ -82,6 +85,7 @@ uv sync
 ```
 
 This command:
+
 - Automatically creates a Python virtual environment
 - Installs all dependencies specified in `pyproject.toml`
 - Ensures all package versions are compatible
@@ -102,7 +106,8 @@ You are now ready to use the CHS-CSB-Processing module!
 
 # Graphical User Interface (GUI)
 
-A graphical user interface (GUI) is available to facilitate the processing of bathymetric files. You can launch the GUI by running the following command:
+A graphical user interface (GUI) is available to facilitate the processing of bathymetric files. You can launch the GUI
+by running the following command:
 
 ```bash
 python web_ui.py
@@ -112,10 +117,11 @@ python web_ui.py
 
 # Command-Line Interface Tutorial for Bathymetric File Processing
 
-This tutorial provides a detailed explanation of how to use the command-line module to process and georeference 
+This tutorial provides a detailed explanation of how to use the command-line module to process and georeference
 bathymetric data files. It covers every parameter and provides practical examples.
 
 The CLI now offers two main commands:
+
 - `process`: for processing and georeferencing bathymetric data
 - `convert`: for converting GPKG/GeoJSON files to different formats
 
@@ -128,83 +134,96 @@ The CLI now offers two main commands:
 Processes bathymetric data files and georeferences them.
 
 #### Syntax
+
 ```bash
 python cli.py process [FILES...] [OPTIONS]
 ```
 
 #### Arguments
+
 - `FILES`: One or more paths to files or directories to process. Supported formats:
-  - `.csv`, `.txt`, `.xyz`, `.geojson`
-  - Numeric extensions (`.1`, `.2`, `.3`, etc.)
+    - `.csv`, `.txt`, `.xyz`, `.geojson`
+    - Numeric extensions (`.1`, `.2`, `.3`, etc.)
 
 #### Available Options
 
-| Option                        | Type           | Required   | Description                                                                                                                                                                                                                                                                                                                                       |
-|-------------------------------|----------------|------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `--output`                    | Path           | **Yes**    | Output directory path                                                                                                                                                                                                                                                                                                                             |
-| `--vessel`                    | Text           | No         | Vessel identifier. If not specified, a default vessel with lever arms at 0 will be used. **Incompatible with `--waterline`**                                                                                                                                                                                                                      |
-| `--waterline`                 | Decimal        | No         | Vessel waterline in meters. If not specified, a value of 0 will be used. **Incompatible with `--vessel`**                                                                                                                                                                                                                                         |
-| `--vessel-name`               | Text           | No         | Vessel name used for export. Overrides the name from vessel configuration if provided. Available independently of `--vessel` and `--waterline`                                                                                                                                                                                                    |
-| `--config`                    | Path           | No         | Configuration file path. If not specified, the default configuration file will be used                                                                                                                                                                                                                                                            |
-| `--apply-water-level`         | Flag           | No         | Apply water level reduction when georeferencing soundings (default: enabled). Use `--no-apply-water-level` to disable                                                                                                                                                                                                                                      |
-| `--water-level-station`       | Text           | No         | Water level station code(s) to use for processing. Can be specified multiple times. ([Stations list](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=en))                                                                                                                                                                          |
-| `--excluded-station`          | Text           | No         | Water level station code(s) to exclude from processing. Can be specified multiple times. ([Stations list](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=en))                                                                                                                                                                     |
-| `--already-at-chart-datum`    | Flag           | No         | Indicates that input data is already reduced to chart datum. Water level reduction is automatically disabled. Modifies TVU calculation (per-datalogger constant from `datalogger_uncertainty.json`). **Incompatible with `--apply-water-level`** |
-| `--merge-files`               | Flag           | No         | Merge all input files into a single output file (default: enabled). Use `--no-merge-files` to process each file separately; the output filename will then match the input filename                                                                                                                                                                        |
+| Option                     | Type    | Required | Description                                                                                                                                                                                                                                      |
+|----------------------------|---------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `--output`                 | Path    | **Yes**  | Output directory path                                                                                                                                                                                                                            |
+| `--vessel`                 | Text    | No       | Vessel identifier. If not specified, a default vessel with lever arms at 0 will be used. **Incompatible with `--waterline`**                                                                                                                     |
+| `--waterline`              | Decimal | No       | Vessel waterline in meters. If not specified, a value of 0 will be used. **Incompatible with `--vessel`**                                                                                                                                        |
+| `--vessel-name`            | Text    | No       | Vessel name used for export. Overrides the name from vessel configuration if provided. Available independently of `--vessel` and `--waterline`                                                                                                   |
+| `--config`                 | Path    | No       | Configuration file path. If not specified, the default configuration file will be used                                                                                                                                                           |
+| `--apply-water-level`      | Flag    | No       | Apply water level reduction when georeferencing soundings (default: enabled). Use `--no-apply-water-level` to disable                                                                                                                            |
+| `--water-level-station`    | Text    | No       | Water level station code(s) to use for processing. Can be specified multiple times. ([Stations list](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=en))                                                                         |
+| `--excluded-station`       | Text    | No       | Water level station code(s) to exclude from processing. Can be specified multiple times. ([Stations list](https://egisp.dfo-mpo.gc.ca/apps/tides-stations-marees/?locale=en))                                                                    |
+| `--already-at-chart-datum` | Flag    | No       | Indicates that input data is already reduced to chart datum. Water level reduction is automatically disabled. Modifies TVU calculation (per-datalogger constant from `datalogger_uncertainty.json`). **Incompatible with `--apply-water-level`** |
+| `--merge-files`            | Flag    | No       | Merge all input files into a single output file (default: enabled). Use `--no-merge-files` to process each file separately; the output filename will then match the input filename                                                               |
 
 #### Usage Examples
 
 **Basic processing with default vessel:**
+
 ```bash
 python cli.py process data.csv --output ./results
 ```
 
 **Processing with specific vessel:**
+
 ```bash
 python cli.py process data.csv --vessel "CCGS_CARTIER" --output ./results
 ```
 
 **Processing with custom waterline:**
+
 ```bash
 python cli.py process data.csv --waterline 2.5 --output ./results
 ```
 
 **Processing with custom configuration:**
+
 ```bash
 python cli.py process data.csv --config ./custom_config.toml --output ./results
 ```
 
 **Processing without water level reduction:**
+
 ```bash
 python cli.py process data.csv --no-apply-water-level --output ./results
 ```
 
 **Processing with specific water level station:**
+
 ```bash
 python cli.py process data.csv --water-level-station "04435" --water-level-station "04436" --output ./results
 ```
 
 **Processing excluding certain water level stations:**
+
 ```bash
 python cli.py process data.csv --excluded-station "04435" --excluded-station "04436" --output ./results
 ```
 
 **Processing multiple files:**
+
 ```bash
 python cli.py process file1.csv file2.xyz directory/ --output ./results
 ```
 
 **Processing with a custom vessel name for export:**
+
 ```bash
 python cli.py process data.csv --vessel "CCGS_CARTIER" --vessel-name "Cartier Survey 2025" --output ./results
 ```
 
 **Processing data already reduced to chart datum:**
+
 ```bash
 python cli.py process data.csv --already-at-chart-datum --output ./results
 ```
 
 **Processing multiple files without merging (one output per file):**
+
 ```bash
 python cli.py process file1.csv file2.xyz --no-merge-files --output ./results
 ```
@@ -214,21 +233,23 @@ python cli.py process file1.csv file2.xyz --no-merge-files --output ./results
 Converts GPKG/GeoJSON files to different output formats.
 
 #### Syntax
+
 ```bash
 python cli.py convert [INPUT_FILES...] [OPTIONS]
 ```
 
 #### Arguments
+
 - `INPUT_FILES`: One or more GPKG (`.gpkg`) or GeoJSON (`.geojson`) files to convert
 
 #### Available Options
 
-| Option | Type | Required | Description |
-|--------|------|----------|-------------|
-| `--output` | Path | **Yes** | Output directory path |
-| `--format` | Multiple choice | **Yes** | Desired output format(s). Can be specified multiple times to export to multiple formats |
-| `--config` | Path | No | Configuration file path. If not specified, the default configuration file will be used |
-| `--group-by-iho-order` | Boolean | No | Group data by IHO order during export (default: `false`) |
+| Option                 | Type            | Required | Description                                                                             |
+|------------------------|-----------------|----------|-----------------------------------------------------------------------------------------|
+| `--output`             | Path            | **Yes**  | Output directory path                                                                   |
+| `--format`             | Multiple choice | **Yes**  | Desired output format(s). Can be specified multiple times to export to multiple formats |
+| `--config`             | Path            | No       | Configuration file path. If not specified, the default configuration file will be used  |
+| `--group-by-iho-order` | Boolean         | No       | Group data by IHO order during export (default: `false`)                                |
 
 #### Supported Output Formats
 
@@ -245,26 +266,31 @@ The following formats are available via the `--format` option:
 #### Usage Examples
 
 **Convert to single format:**
+
 ```bash
 python cli.py convert input.gpkg --output ./output --format geojson
 ```
 
 **Convert to multiple formats:**
+
 ```bash
 python cli.py convert input.gpkg --output ./output --format geojson --format csv --format parquet
 ```
 
 **Convert with IHO order grouping:**
+
 ```bash
 python cli.py convert input.gpkg --output ./output --format gpkg --group-by-iho-order true
 ```
 
 **Convert multiple files:**
+
 ```bash
 python cli.py convert file1.gpkg file2.geojson --output ./output --format geotiff
 ```
 
 **Convert with custom configuration:**
+
 ```bash
 python cli.py convert input.gpkg --output ./output --format csv --config ./custom_config.toml
 ```
@@ -276,6 +302,7 @@ python cli.py convert input.gpkg --output ./output --format csv --config ./custo
 The module includes robust error handling to avoid unexpected interruptions. Below are the main cases covered:
 
 ### Invalid Files
+
 - **Issue**: If a provided file is invalid (incorrect format or non-existent).
 - **Solution**: The script logs an error and skips invalid files.
   ```bash
@@ -283,6 +310,7 @@ The module includes robust error handling to avoid unexpected interruptions. Bel
   ```
 
 ### Missing Parameters
+
 - **Issue**: If a required parameter such as `--output` is missing or there are no files to process.
 - **Solution**: The script displays an error message explaining the missing parameter.
   ```bash
@@ -291,16 +319,17 @@ The module includes robust error handling to avoid unexpected interruptions. Bel
 
 ### Restrictions and Validations
 
-1. **Mutually exclusive options**: The `--vessel` and `--waterline` options cannot be used simultaneously in the `process` command.
+1. **Mutually exclusive options**: The `--vessel` and `--waterline` options cannot be used simultaneously in the
+   `process` command.
 
 2. **Waterline validation**: The `--waterline` value must be positive.
 
 3. **Supported files for `process`**:
-   - Extensions: `.csv`, `.txt`, `.xyz`, `.geojson`
-   - Numeric extensions: `.1`, `.2`, `.3`, etc.
+    - Extensions: `.csv`, `.txt`, `.xyz`, `.geojson`
+    - Numeric extensions: `.1`, `.2`, `.3`, etc.
 
 4. **Supported files for `convert`**:
-   - Only: `.gpkg` and `.geojson`
+    - Only: `.gpkg` and `.geojson`
 
 ### Default Behavior
 
@@ -318,97 +347,97 @@ The CLI displays explicit error messages in French and English to facilitate deb
 
 ```mermaid
 flowchart TD
-    %% Global styles for the diagram
-    classDef start fill:#66FF66,stroke:#009900,stroke-width:2px,color:#000000,font-weight:bold
-    classDef process fill:#B9E0FF,stroke:#0078D7,stroke-width:1px,color:#000000
-    classDef decision fill:#FFD700,stroke:#B8860B,stroke-width:1px,color:#000000
-    classDef endNode fill:#FFA500,stroke:#FF4500,stroke-width:2px,color:#000000,font-weight:bold
-    classDef highlighted fill:#CCEBFF,stroke:#0078D7,stroke-width:1px,color:#000000,font-weight:bold
-    classDef iteration fill:#FF9ED2,stroke:#E63F8B,stroke-width:1px,color:#000000
-    classDef export fill:#CCFFCC,stroke:#009900,stroke-width:1px,color:#000000
-
-    %% Diagram nodes
+%% Global styles for the diagram
+    classDef start fill: #66FF66, stroke: #009900, stroke-width: 2px, color: #000000, font-weight: bold
+    classDef process fill: #B9E0FF, stroke: #0078D7, stroke-width: 1px, color: #000000
+    classDef decision fill: #FFD700, stroke: #B8860B, stroke-width: 1px, color: #000000
+    classDef endNode fill: #FFA500, stroke: #FF4500, stroke-width: 2px, color: #000000, font-weight: bold
+    classDef highlighted fill: #CCEBFF, stroke: #0078D7, stroke-width: 1px, color: #000000, font-weight: bold
+    classDef iteration fill: #FF9ED2, stroke: #E63F8B, stroke-width: 1px, color: #000000
+    classDef export fill: #CCFFCC, stroke: #009900, stroke-width: 1px, color: #000000
+%% Diagram nodes
     Start[Begin CSB workflow] --> Config[Loading configurations]
     Config --> CarisConfig{CSAR format required ?}
     CarisConfig -->|Yes| LoadCarisAPI[Loading Caris API configuration]
     CarisConfig -->|No| VesselConfig["<b>Loading vessel manager</b>
     • Retrieving vessel configuration"]
-    LoadCarisAPI --> VesselConfig
+LoadCarisAPI --> VesselConfig
 
-    VesselConfig --> ParseFiles["<b>Parsing raw files:</b>
-    • Format identification
-    • Data reading
-    • Conversion to GeoDataFrame
-    • Pre-filtering of data"]
-    ParseFiles --> CleanData["<b>Data cleaning and filtering:</b>
-    • Duplicate removal
-    • Min/max depth filtering
-    • Invalid coordinate filtering
-    • Invalid timestamp filtering
-    • Min/max speed filtering"]
-    CleanData --> CheckData{Valid data ?}
-    CheckData -->|No| EndNoData[End: no valid data]
-    CheckData -->|Yes| Outliers[Outlier detection]
-    Outliers --> GetSensors[Retrieving sensor configurations based on vessel]
+VesselConfig --> ParseFiles["<b>Parsing raw files:</b>
+• Format identification
+• Data reading
+• Conversion to GeoDataFrame
+• Pre-filtering of data"]
+ParseFiles --> CleanData["<b>Data cleaning and filtering:</b>
+• Duplicate removal
+• Min/max depth filtering
+• Invalid coordinate filtering
+• Invalid timestamp filtering
+• Min/max speed filtering"]
+CleanData --> CheckData{Valid data ?}
+CheckData -->|No|EndNoData[End: no valid data]
+CheckData -->|Yes|Outliers[Outlier detection]
+Outliers --> GetSensors[Retrieving sensor configurations based on vessel]
 
-    GetSensors --> ApplyWL{Apply water level ?}
-    ApplyWL -->|No| GeoreferenceNoWL["<b>Georeferencing without water level:</b>
-    • TVU calculation
-    • THU calculation
-    • Survey order calculation"]
-    GeoreferenceNoWL --> ExportNoWL[Exporting data & metadata]
-    ExportNoWL --> EndNoWL[End: georeferenced data without water level]
+GetSensors --> ApplyWL{Apply water level ?}
+ApplyWL -->|No|GeoreferenceNoWL["<b>Georeferencing without water level:</b>
+• TVU calculation
+• THU calculation
+• Survey order calculation"]
+GeoreferenceNoWL --> ExportNoWL[Exporting data & metadata]
+ExportNoWL --> EndNoWL[End: georeferenced data without water level]
 
-    ApplyWL -->|Yes| LoadIWLS[Loading IWLS API configuration]
-    LoadIWLS --> RunIter["run = 1, excluded_stations = (empty)"]
+ApplyWL -->|Yes|LoadIWLS[Loading IWLS API configuration]
+LoadIWLS --> RunIter["run = 1, excluded_stations = (empty)"]
 
-    RunIter --> IterCheck{run <= max_iterations ?}
-    IterCheck -->|No| EndMaxRun[Incomplete processing: max iterations reached]
-    EndMaxRun --> PlotWL
+RunIter --> IterCheck{run <= max_iterations ?}
+IterCheck -->|No|EndMaxRun[Incomplete processing: max iterations reached]
+EndMaxRun --> PlotWL
 
-    IterCheck -->|Yes| GetVoronoi["Retrieving tidal zones (Voronoi)
-    without excluded stations"]
-    GetVoronoi --> GetTideInfo[Retrieving tidal zone information
-    intersecting with data]
+IterCheck -->|Yes|GetVoronoi["Retrieving tidal zones (Voronoi)
+without excluded stations"]
+GetVoronoi --> GetTideInfo[Retrieving tidal zone information
+intersecting with data]
 
-    GetTideInfo --> GetWaterLevel[Retrieving water level data
-    for each station]
-    GetWaterLevel --> ExportWL[Exporting water level data]
-    ExportWL --> Georeference["<b>Georeferencing bathymetric data:</b>
-    • Applying water levels
-    • TVU calculation
-    • THU calculation
-    • Survey order calculation"]
+GetTideInfo --> GetWaterLevel[Retrieving water level data
+for each station]
+GetWaterLevel --> ExportWL[Exporting water level data]
+ExportWL --> Georeference["<b>Georeferencing bathymetric data:</b>
+• Applying water levels
+• TVU calculation
+• THU calculation
+• Survey order calculation"]
 
-    Georeference --> DataComplete{Processing completed ?
-    DEPTH_PROCESSED_METER without NaN ?}
-    DataComplete -->|Yes| PlotWL[Creating water level charts]
+Georeference --> DataComplete{Processing completed ?
+DEPTH_PROCESSED_METER without NaN ?}
+DataComplete -->|Yes|PlotWL[Creating water level charts]
 
-    DataComplete -->|No| AddExcluded[Adding problematic stations
-    to exclude]
-    AddExcluded --> Increment[run += 1]
-    Increment --> IterCheck
+DataComplete -->|No|AddExcluded[Adding problematic stations
+to exclude]
+AddExcluded --> Increment[run += 1]
+Increment --> IterCheck
 
-    PlotWL --> ExportData[Exporting processed data]
-    ExportData --> ExportMetadata[Exporting metadata]
-    ExportMetadata --> End[End: georeferenced data with water level]
+PlotWL --> ExportData[Exporting processed data]
+ExportData --> ExportMetadata[Exporting metadata]
+ExportMetadata --> End[End: georeferenced data with water level]
 
-    %% Applying styles to nodes
-    class Start start
-    class Config,LoadCarisAPI,VesselConfig,GetSensors,LoadIWLS process
-    class CarisConfig,ApplyWL,IterCheck,DataComplete,CheckData decision
-    class EndNoData,EndNoWL,EndMaxRun,End endNode
-    class ParseFiles,CleanData,GeoreferenceNoWL,Georeference highlighted
-    class RunIter,GetVoronoi,GetTideInfo,GetWaterLevel,AddExcluded,Increment iteration
-    class ExportNoWL,ExportWL,PlotWL,ExportData,ExportMetadata export
-    class Outliers process
+%% Applying styles to nodes
+class Start start
+class Config, LoadCarisAPI, VesselConfig, GetSensors, LoadIWLS process
+class CarisConfig, ApplyWL, IterCheck, DataComplete,CheckData decision
+class EndNoData, EndNoWL, EndMaxRun, End endNode
+class ParseFiles, CleanData, GeoreferenceNoWL, Georeference highlighted
+class RunIter, GetVoronoi, GetTideInfo, GetWaterLevel, AddExcluded, Increment iteration
+class ExportNoWL, ExportWL, PlotWL,ExportData, ExportMetadata export
+class Outliers process
 ```
 
 ---
 
 # Configuration File (TOML)
 
-The TOML configuration file defines parameters for processing. Below is an example of the default configuration file (./src/CONFIG_csb-processing.toml):
+The TOML configuration file defines parameters for processing. Below is an example of the default configuration file (
+./src/CONFIG_csb-processing.toml):
 
 ```toml
 [IWLS.API.TimeSeries]
@@ -453,11 +482,11 @@ max_speed = 30  # Maximum speed in knots (optional).
 min_depth = 0
 max_depth = 1000  # Maximum depth value (optional).
 filter_to_apply = [
-  "LATITUDE_FILTER",
-  "LONGITUDE_FILTER",
-  "TIME_FILTER",
-  "SPEED_FILTER",
-  "DEPTH_FILTER"
+    "LATITUDE_FILTER",
+    "LONGITUDE_FILTER",
+    "TIME_FILTER",
+    "SPEED_FILTER",
+    "DEPTH_FILTER"
 ]
 
 [DATA.Georeference.water_level]
@@ -473,10 +502,6 @@ max_distance_ssp = 30000  # Maximum distance to link an SSP value (in meters).
 [DATA.Georeference.uncertainty.thu]
 cone_angle_sonar = 20  # Sonar cone angle for THU calculation (in degrees).
 constant_thu = 3  # THU constant.
-
-[DATA.Processing.bins]
-nbin_x = 35  # Number of bins in X for histograms.
-nbin_y = 35  # Number of bins in Y for histograms.
 
 [CSB.Processing.vessel]
 manager_type = "VesselConfigJsonManager"
@@ -502,45 +527,49 @@ args = []  # Additional arguments for exporting data in CSAR format.
 
 ## Main Sections
 
-- `[IWLS.API.TimeSeries]` (Optional): Parameters for time series. If no parameter is defined, default values will be used and no interpolation will be performed.
-  - `priority`: List of time series to use by priority (e.g., [`"wlo"`, `"wlp"`]).
-  - `max_time_gap`: Maximum time without data before interpolation (format: `"<number> <unit>"`, e.g., `"1 min"`).
-  - `threshold_interpolation_filling`: Threshold for interpolation and filling missing data (e.g., `"4 h"`).
-  - `wlo_qc_flag_filter`: Quality filters for WLO data.
-  - `buffer_time`: Buffer time for interpolations (format: `"<number> <unit>"`, e.g., `"24 h"`).
+- `[IWLS.API.TimeSeries]` (Optional): Parameters for time series. If no parameter is defined, default values will be
+  used and no interpolation will be performed.
+    - `priority`: List of time series to use by priority (e.g., [`"wlo"`, `"wlp"`]).
+    - `max_time_gap`: Maximum time without data before interpolation (format: `"<number> <unit>"`, e.g., `"1 min"`).
+    - `threshold_interpolation_filling`: Threshold for interpolation and filling missing data (e.g., `"4 h"`).
+    - `wlo_qc_flag_filter`: Quality filters for WLO data.
+    - `buffer_time`: Buffer time for interpolations (format: `"<number> <unit>"`, e.g., `"24 h"`).
 
-- `[IWLS.API.Profile]` (Optional): Defines the active profile (`"dev"`, `"prod"`, `"public"`). A public profile is used by default with 15 calls per second.
+- `[IWLS.API.Profile]` (Optional): Defines the active profile (`"dev"`, `"prod"`, `"public"`). A public profile is used
+  by default with 15 calls per second.
 
 - `[IWLS.API.Environment.<profile>]` (Optional): Environment-specific parameters
-  - `name`: Name of the environment (e.g., `"PUBLIC"`).
-  - `endpoint`: API endpoint (e.g., `"EndpointPublic"`). Note that only public endpoints are accessible to everyone.
-  - `calls`: Maximum number of calls per period.
-  - `period`: Time period for calls.
+    - `name`: Name of the environment (e.g., `"PUBLIC"`).
+    - `endpoint`: API endpoint (e.g., `"EndpointPublic"`). Note that only public endpoints are accessible to everyone.
+    - `calls`: Maximum number of calls per period.
+    - `period`: Time period for calls.
 
 - `[IWLS.API.Cache]` (Optional): Defines cache management.
-  - `ttl`: Cache data lifetime (in seconds).
-  - `cache_path`: Directory for cache storage.
+    - `ttl`: Cache data lifetime (in seconds).
+    - `cache_path`: Directory for cache storage.
 
 - `[DATA.Transformation.filter]` (Optional): Defines geographic, depth and speed limits for tagging inconsistent data.
-  - `min_speed`: Minimum speed in knots (optional).
-  - `max_speed`: Maximum speed in knots (optional).
-  - `max_depth`: Maximum depth value in meters (optional).
-  - `filter_to_apply`: List of filters to apply. Data is directly rejected if the filter is applied, otherwise data is simply tagged. Available filters are:
-    - `DEPTH_FILTER`: Depth filter (limit defined by `min_depth` and `max_depth`).
-    - `LATITUDE_FILTER`: Latitude filter (limit defined by `min_latitude` and `max_latitude`).
-    - `LONGITUDE_FILTER`: Longitude filter (limit defined by `min_longitude` and `max_longitude`).
-    - `TIME_FILTER`: Time filter (checks valid timestamps).
-    - `SPEED_FILTER`: Speed filter (limit defined by `min_speed` and `max_speed`).
+    - `min_speed`: Minimum speed in knots (optional).
+    - `max_speed`: Maximum speed in knots (optional).
+    - `max_depth`: Maximum depth value in meters (optional).
+    - `filter_to_apply`: List of filters to apply. Data is directly rejected if the filter is applied, otherwise data is
+      simply tagged. Available filters are:
+        - `DEPTH_FILTER`: Depth filter (limit defined by `min_depth` and `max_depth`).
+        - `LATITUDE_FILTER`: Latitude filter (limit defined by `min_latitude` and `max_latitude`).
+        - `LONGITUDE_FILTER`: Longitude filter (limit defined by `min_longitude` and `max_longitude`).
+        - `TIME_FILTER`: Time filter (checks valid timestamps).
+        - `SPEED_FILTER`: Speed filter (limit defined by `min_speed` and `max_speed`).
 
-- `[DATA.Georeference.water_level]` (Optional): Defines tolerance for georeferencing based on water levels (format: `"<number> <unit>"`, e.g., `"15 min"`).
+- `[DATA.Georeference.water_level]` (Optional): Defines tolerance for georeferencing based on water levels (format:
+  `"<number> <unit>"`, e.g., `"15 min"`).
 
 - `[DATA.Georeference.uncertainty.tvu]` (Optional): Configuration for TVU (Total Vertical Uncertainty) calculation.
-  - `constant_tvu_wlo`: TVU constant for WLO water levels (default: 0.04).
-  - `default_constant_tvu_wlp`: TVU constant for WLP water levels (default: 0.35).
-  - `depth_coefficient_tvu`: Depth coefficient for TVU calculation (default: 0.5).
-  - `default_depth_ssp_error_coefficient`: Default SSP error coefficient (default: 4.1584).
-  - `max_distance_ssp`: Maximum distance to link an SSP value in meters (default: 30000).
-  
+    - `constant_tvu_wlo`: TVU constant for WLO water levels (default: 0.04).
+    - `default_constant_tvu_wlp`: TVU constant for WLP water levels (default: 0.35).
+    - `depth_coefficient_tvu`: Depth coefficient for TVU calculation (default: 0.5).
+    - `default_depth_ssp_error_coefficient`: Default SSP error coefficient (default: 4.1584).
+    - `max_distance_ssp`: Maximum distance to link an SSP value in meters (default: 30000).
+
   **TVU Calculation Formula:**
   ```
   TVU = c + (a × d)
@@ -554,9 +583,9 @@ args = []  # Additional arguments for exporting data in CSAR format.
   ```
 
 - `[DATA.Georeference.uncertainty.thu]` (Optional): Configuration for THU (Total Horizontal Uncertainty) calculation.
-  - `cone_angle_sonar`: Sonar cone angle for THU calculation in degrees (default: 20).
-  - `constant_thu`: THU constant (default: 3).
-  
+    - `cone_angle_sonar`: Sonar cone angle for THU calculation in degrees (default: 20).
+    - `constant_thu`: THU constant (default: 3).
+
   **THU Calculation Formula:**
   ```
   THU = c + (d × tan(θ/2))
@@ -566,30 +595,28 @@ args = []  # Additional arguments for exporting data in CSAR format.
   - θ = sonar beam angular opening (cone_angle_sonar, in degrees)
   ```
 
-- `[DATA.Processing.bins]` (Optional): Configuration for data histograms.
-  - `nbin_x`: Number of bins in X for histograms (default: 35).
-  - `nbin_y`: Number of bins in Y for histograms (default: 35).
-
-- `[CSB.Processing.vessel]` (Optional): Configures the vessel manager and vessel file. Required only if you use vessels for georeferencing.
-  - `manager_type`: Type of vessel manager (e.g., `"VesselConfigJsonManager"`).
-  - `json_config_path` (Used with `"VesselConfigJsonManager"`): Path to the vessel configuration file.
+- `[CSB.Processing.vessel]` (Optional): Configures the vessel manager and vessel file. Required only if you use vessels
+  for georeferencing.
+    - `manager_type`: Type of vessel manager (e.g., `"VesselConfigJsonManager"`).
+    - `json_config_path` (Used with `"VesselConfigJsonManager"`): Path to the vessel configuration file.
 
 - `[CSB.Processing.export]` (Optional): Export parameters for processed data.
-  - `export_format`: List of file formats for exporting processed data: {`"geojson"`, `"gpkg"`, `"csar"`, `"parquet"`, `"feather"`, `"csv"`, `"geotiff"`} (e.g., [`"gpkg"`, `"csv"`]).
-  - `resolution`: Grid resolution for exporting data in raster format (in degrees).
-  - `group_by_iho_order`: Group data by IHO order: {`true`, `false`}.
+    - `export_format`: List of file formats for exporting processed data: {`"geojson"`, `"gpkg"`, `"csar"`, `"parquet"`,
+      `"feather"`, `"csv"`, `"geotiff"`} (e.g., [`"gpkg"`, `"csv"`]).
+    - `resolution`: Grid resolution for exporting data in raster format (in degrees).
+    - `group_by_iho_order`: Group data by IHO order: {`true`, `false`}.
 
 - `[CSB.Processing.options]` (Optional): Processing options.
-  - `log_level`: Log level: {`"DEBUG"`, `"INFO"`, `"WARNING"`, `"ERROR"`, `"CRITICAL"`}.
-  - `max_iterations`: Maximum number of iterations (default: 5).
-  - `decimal_precision`: Number of significant decimal places for processed data.
+    - `log_level`: Log level: {`"DEBUG"`, `"INFO"`, `"WARNING"`, `"ERROR"`, `"CRITICAL"`}.
+    - `max_iterations`: Maximum number of iterations (default: 5).
+    - `decimal_precision`: Number of significant decimal places for processed data.
 
 - `[CARIS.Environment]` (Optional): CARIS environment-specific parameters. Used to export data in CSAR format.
-  - `base_path`: Path to CARIS software installation (default: `"C:/Program Files/CARIS"`).
-  - `software`: CARIS software used (e.g., `"BASE Editor"`, `"HIPS and SIPS"`).
-  - `version`: Specific version of CARIS software (e.g., `"6.1"`).
-  - `python_version`: Python version used by the CARIS API (e.g., `"3.11"`).
-  - `args`: Additional arguments for exporting data in CSAR format.
+    - `base_path`: Path to CARIS software installation (default: `"C:/Program Files/CARIS"`).
+    - `software`: CARIS software used (e.g., `"BASE Editor"`, `"HIPS and SIPS"`).
+    - `version`: Specific version of CARIS software (e.g., `"6.1"`).
+    - `python_version`: Python version used by the CARIS API (e.g., `"3.11"`).
+    - `args`: Additional arguments for exporting data in CSAR format.
 
 ---
 
@@ -603,12 +630,13 @@ calculation. They are loaded automatically during processing.
 This file allows overriding the `constant_thu` and `constant_tvu` TOML values for
 specific sensor types. It is used in two contexts:
 
-| Constant        | Usage context                                                                                     |
-|-----------------|---------------------------------------------------------------------------------------------------|
-| `constant_thu`  | Always — JSON value takes priority over TOML for the identified sensor type                      |
-| `constant_tvu`  | Only when `--already-at-chart-datum` — data bypasses tidal correction                            |
+| Constant       | Usage context                                                               |
+|----------------|-----------------------------------------------------------------------------|
+| `constant_thu` | Always — JSON value takes priority over TOML for the identified sensor type |
+| `constant_tvu` | Only when `--already-at-chart-datum` — data bypasses tidal correction       |
 
 **Format:**
+
 ```json
 {
   "HydroBlock": {
