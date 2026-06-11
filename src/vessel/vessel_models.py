@@ -91,6 +91,8 @@ class AttributeDict(dict):
     """Technologie du sondeur."""
     sdghdw: str
     """Système de sondage."""
+    posmdt: str
+    """Méthode de positionnement."""
     poshdw: str
     """Système de positionnement."""
     bureau: str

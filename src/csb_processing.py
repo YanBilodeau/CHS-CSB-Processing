@@ -295,7 +295,7 @@ def _process_with_water_level(
     iwls_api_config, stations_handler = iwls_api.initialize_iwls_api(
         config_path=config_path
     )
-    resolved_excluded: list[str] = (
+    resolved_excluded: list[str | None] = (
         [stations_handler.get_station_id_by_code(c) for c in excluded_stations]
         if excluded_stations
         else []
@@ -525,7 +525,7 @@ def processing_workflow(
     )
 
     if not setup.apply_water_level:
-        return _process_without_water_level(
+        _process_without_water_level(
             data=data,
             waterline=waterline,
             sounder=sounder,
@@ -536,8 +536,9 @@ def processing_workflow(
             vessel_name=vessel_name,
             output_file_name=output_file_name,
         )
+        return None
 
-    return _process_with_water_level(
+    _process_with_water_level(
         data=data,
         waterline=waterline,
         sounder=sounder,
@@ -551,6 +552,7 @@ def processing_workflow(
         config_path=config_path,
         output_file_name=output_file_name,
     )
+    return None
 
     # todo gérer la valeur np.nan dans les configurations des capteurs
     # todo optimiser les opérations dans tide.time_serie.time_serie_dataframe
@@ -559,5 +561,4 @@ def processing_workflow(
     # todo créer fichier vectoriel avec les stations et leurs incertitudes associées
     # todo option pour prendre un fichier vectoriel en entrée au lieu de calculer un voronoi
 
-    # todo adapter S44-report pour analyser des points cloud
     # todo ajouter au métadonnée la longueur de ligne de sondage et le temps de sondage

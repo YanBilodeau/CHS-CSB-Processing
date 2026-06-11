@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="{{ html_lang }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>__EXPORT_TITLE__</title>
+    <link rel="icon" href="{{ favicon_href }}" type="image/svg+xml">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <style>
+        /* ── Material Symbols ─────────────────────────────────────────────────── */
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal; font-style: normal;
+            font-size: 16px; line-height: 1;
+            letter-spacing: normal; text-transform: none;
+            display: inline-block; white-space: nowrap;
+            direction: ltr; -webkit-font-smoothing: antialiased;
+            vertical-align: middle;
+        }
+
+        /* ── Generated at card ─────────────────────────────────────── */
+        .generated-at-card .content-card-title {
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .generated-date {
+            margin-left: 8px;
+            font-size: 13px;
+            color: #6c757d;
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        /* ── Info cards repliables (palette « Note bleue » QCR / s44) ─────────── */
+        .info-card {
+            border: 1px solid #b8cce8;
+            border-radius: 14px;
+            padding: 14px 20px;
+            background-color: #eef3fb;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        .info-card > summary {
+            font-weight: 700; font-size: 14px; color: #3b5999;
+            cursor: pointer; user-select: none; list-style: none;
+            display: flex; align-items: center; gap: 6px; letter-spacing: 0.2px;
+        }
+        .info-card > summary::-webkit-details-marker { display: none; }
+        .info-card-body {
+            margin-top: 10px;
+            font-size: 12.5px; color: #3d4a63; line-height: 1.65;
+        }
+        .info-card-body p { margin: 4px 0 8px 0; }
+    </style>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            padding-top: 182px;
+            background: #f0f2f5;
+            font-family: {{ font_family }};
+        }
+        button, input, select, textarea { font-family: inherit; }
+
+        /* ── Header ────────────────────────────────────────────────────────────── */
+        .app-header {
+            position: fixed; top: 0; left: 0; right: 0; min-height: 120px;
+            background-color: #2c3e50; color: white;
+            display: flex; flex-direction: column;
+            align-items: flex-start; justify-content: center;
+            padding: 12px 24px;
+            z-index: 1100; box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+        .app-header h5 { margin: 0 0 4px 0; font-size: 38px; font-weight: 700; }
+        .app-header-desc {
+            font-size: 13px; color: rgba(255,255,255,0.72);
+            margin: 0; line-height: 1.4; max-width: 850px;
+        }
+
+        /* ── Barre d'onglets (Bootstrap nav-tabs, positionnement fixe, style S-44) ── */
+        .tab-nav {
+            position: fixed; top: 120px; left: 0; right: 0;
+            background: #f4f6f8;
+            border-bottom: 1px solid #dee2e6;
+            z-index: 1099;
+            padding: 10px 24px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.07);
+        }
+        .tab-nav .nav-tabs {
+            border-bottom: none;
+            display: flex;
+            gap: 8px;
+            flex-wrap: nowrap;
+            align-items: stretch;
+        }
+        .tab-nav .nav-tabs .nav-item {
+            flex: 1 1 0;
+            min-width: 0;
+            display: flex;
+        }
+        /* Overrides Bootstrap nav-tabs → style "pill arrondi" S-44 */
+        .tab-nav .nav-tabs .nav-link {
+            border-radius: 10px !important;
+            background-color: #eef1f5;
+            color: #6c757d;
+            border: 1px solid #dee2e6 !important;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 18px;
+            transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+        }
+        .tab-nav .nav-tabs .nav-link:hover:not(.active) {
+            background-color: #e4e8ed;
+            color: #495057;
+            border-color: #c8cfd8 !important;
+        }
+        .tab-nav .nav-tabs .nav-link.active {
+            background-color: #ffffff;
+            color: #495057;
+            font-weight: 600;
+            border: 2px solid #4e79a7 !important;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+        }
+        @media (max-width: 514px) {
+            .tab-nav .nav-tabs          { flex-wrap: wrap; }
+            .tab-nav .nav-tabs .nav-item { flex: 0 0 100%; }
+        }
+
+        /* ── Cards ──────────────────────────────────────────────────────────────── */
+        .content-card {
+            border: 1px solid #dee2e6; border-radius: 14px;
+            padding: 24px 28px; background: #fff;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.07); margin-bottom: 20px;
+        }
+        .content-card-title {
+            font-weight: 700; font-size: 14px; color: #6c757d;
+            text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 16px;
+            display: flex; align-items: center; gap: 8px;
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
+        .content-card-title .material-symbols-outlined {
+            font-size: 18px; color: #4e79a7;
+        }
+        /* Carte contenant une figure Plotly — pas de padding bas, overflow caché */
+        .content-card-figure {
+            overflow: hidden;
+            position: relative;
+        }
+        .content-card-figure .plotly-graph-div { width: 100% !important; }
+        .content-card-figure > div { margin: 0 !important; }
+
+        /* ── Paramètres ─────────────────────────────────────────────────────────── */
+        .param-block { margin-top: 14px; }
+        .param-block:first-child { margin-top: 0; }
+        .param-label {
+            font-weight: 600; font-size: 13px; color: #495057;
+            margin-bottom: 6px; display: block;
+        }
+        .param-value { font-size: 13px; color: #2c3e50; }
+        .none-text { font-size: 13px; font-style: italic; color: #6c757d; }
+
+        /* ── Table ───────────────────────────────────────────────────────────────── */
+        .content-card table {
+            width: 100%; border-collapse: separate; border-spacing: 0;
+            table-layout: fixed;
+            font-size: 13px; font-family: inherit;
+            border: 1px solid #dee2e6; border-radius: 10px; overflow: hidden;
+        }
+        .content-card table thead th {
+            background-color: #2c3e50; color: white;
+            font-weight: 600; font-size: 12px;
+            text-align: center;
+            border-right: 1px solid #4a6278;
+            border-bottom: 2px solid rgba(255,255,255,0.15);
+            padding: 8px 12px;
+        }
+        .content-card table thead th:last-child { border-right: none; }
+        .content-card table tbody td {
+            text-align: left; font-family: inherit;
+            padding: 8px 12px;
+            border-right: 1px solid #dee2e6;
+            border-bottom: 1px solid #dee2e6;
+            word-wrap: break-word;
+        }
+        .content-card table tbody td:last-child { border-right: none; }
+        .content-card table tbody tr:last-child td { border-bottom: none; }
+        .content-card table tbody td:first-child {
+            font-weight: 600; color: #495057;
+            background-color: #f8f9fa;
+        }
+        .table-striped > tbody > tr:nth-of-type(odd) > td:not(:first-child) {
+            --bs-table-bg-type: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-header">
+    <h5>__EXPORT_TITLE__</h5>
+    <p class="app-header-desc">{{ labels.report_subtitle }}</p>
+</div>
+
+<nav class="tab-nav">
+    <ul class="nav nav-tabs" id="reportTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active"
+                    data-bs-toggle="tab"
+                    data-bs-target="#tab-metadata"
+                    type="button" role="tab"
+                    aria-controls="tab-metadata" aria-selected="true">
+                <span class="material-symbols-outlined">description</span>
+                {{ labels.tab_metadata }}
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link"
+                    data-bs-toggle="tab"
+                    data-bs-target="#tab-stats"
+                    type="button" role="tab"
+                    aria-controls="tab-stats" aria-selected="false">
+                <span class="material-symbols-outlined">monitoring</span>
+                {{ labels.tab_stats }}
+            </button>
+        </li>
+    </ul>
+</nav>
+
+<div class="container-fluid py-4">
+    <div class="tab-content" id="reportTabContent">
+
+        <!-- ──────────────────────────────────────────────────────────────────── -->
+        <!-- Onglet 1 — Métadonnées                                                -->
+        <!-- ──────────────────────────────────────────────────────────────────── -->
+        <div id="tab-metadata" class="tab-pane fade show active" role="tabpanel"
+             aria-labelledby="tab-metadata-btn">
+
+            <div class="content-card generated-at-card">
+                <div class="content-card-title">
+                    <span class="material-symbols-outlined">schedule</span>
+                    {{ labels.generated_at }} <span class="generated-date">__GENERATED_AT__</span>
+                </div>
+            </div>
+
+            __METADATA_SECTIONS__
+
+        </div>
+
+        <!-- ──────────────────────────────────────────────────────────────────── -->
+        <!-- Onglet 2 — Statistiques                                               -->
+        <!-- ──────────────────────────────────────────────────────────────────── -->
+        <div id="tab-stats" class="tab-pane fade" role="tabpanel"
+             aria-labelledby="tab-stats-btn">
+
+            <!--STATS_CONTENT-->
+
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // ── Resize Plotly figures when a tab becomes visible ──────────────────
+    // Bootstrap fires shown.bs.tab AFTER the pane is visible (display:block),
+    // so Plotly's ResizeObserver has a defined container width at that point.
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('#reportTabs button[data-bs-toggle="tab"]').forEach(function (btn) {
+            btn.addEventListener('shown.bs.tab', function (e) {
+                if (typeof Plotly === 'undefined') return;
+                var pane = document.querySelector(e.target.getAttribute('data-bs-target'));
+                if (!pane) return;
+                pane.querySelectorAll('.plotly-graph-div').forEach(function (div) {
+                    Plotly.Plots.resize(div);
+                });
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

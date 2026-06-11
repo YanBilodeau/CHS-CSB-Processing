@@ -21,10 +21,12 @@ from .factory_export import FileTypes, export_geodataframe
 
 LOGGER = logger.bind(name="CSB-Processing.Export.Helpers")
 
+UNKNOWN: str = "unknown"
+
 
 def get_export_file_name(
     data_geodataframe: gpd.GeoDataFrame,
-    datalogger_type: str,
+    datalogger_type: str | None,
     vessel_name: Optional[str],
 ) -> str:
     """
@@ -120,7 +122,7 @@ def export_processed_data(
     data_geodataframe: gpd.GeoDataFrame,
     output_data_path: Path,
     file_type: FileTypes,
-    resolution: float,
+    resolution: float | None,
     **kwargs,
 ) -> None:
     """
@@ -228,8 +230,6 @@ def export_metadata(
     vessel_config,
     tide_stations: Optional[Collection[str]],
     decimal_precision: int,
-    nbins_x: Optional[int] = 35,
-    nbins_y: Optional[int] = 35,
     vessel_name: Optional[str] = None,
     software_version: str = "",
     processing_context=None,
@@ -247,10 +247,6 @@ def export_metadata(
     :type tide_stations: Optional[Collection[str]]
     :param decimal_precision: Précision des décimales.
     :type decimal_precision: int
-    :param nbins_x: Nombre de colonnes dans les graphiques.
-    :type nbins_x: Optional[int]
-    :param nbins_y: Nombre de lignes dans les graphiques.
-    :type nbins_y: Optional[int]
     :param vessel_name: Nom du navire pour l'export (surcharge vessel_config.name).
     :type vessel_name: Optional[str]
     :param software_version: Version du logiciel à inscrire dans les métadonnées.
@@ -290,10 +286,16 @@ def export_metadata(
         start_date=min_time.strftime("%Y-%m-%d"),
         end_date=max_time.strftime("%Y-%m-%d"),
         vessel=f"{effective_vessel_name}",
+        datalogger_type=f"{processing_context.datalogger_type if processing_context else ''}",
         sounding_hardware=(
-            f"{processing_context.datalogger_type if processing_context else ''} - {attributes.sdghdw}"
+            f"{attributes.sdghdw if attributes.sdghdw != UNKNOWN else i18n.t('metadata.metadata_models.sounding_hardware')}"
         ),
-        sounding_technique=attributes.tecsou,
+        positioning_hardware=(
+            attributes.poshdw
+            if attributes.poshdw != UNKNOWN
+            else i18n.t("metadata.metadata_models.positioning_hardware")
+        ),
+        sounding_technique=attributes.tecsou if attributes.tecsou != UNKNOWN else "",
         sounder_draft=(
             processing_context.resolve_sounder_draft(sounder, waterline)
             if processing_context is not None
@@ -302,45 +304,26 @@ def export_metadata(
         sotfware_version=software_version,
         tide_stations=tide_stations,
         processing_context=processing_context,
-        tvu=(
-            data_geodataframe[data_geodataframe[schema_ids.DEPTH_PROCESSED_METER] < 50][
-                schema_ids.UNCERTAINTY
-            ].max()
-            if not data_geodataframe[
-                data_geodataframe[schema_ids.DEPTH_PROCESSED_METER] < 50
-            ].empty
-            else data_geodataframe[schema_ids.UNCERTAINTY].max()
-        ),
-        thu=(
-            data_geodataframe[data_geodataframe[schema_ids.DEPTH_PROCESSED_METER] < 50][
-                schema_ids.THU
-            ].max()
-            if not data_geodataframe[
-                data_geodataframe[schema_ids.DEPTH_PROCESSED_METER] < 50
-            ].empty
-            else data_geodataframe[schema_ids.THU].max()
-        ),
-        iho_order_statistic=_metadata.classify_iho_order(
-            data_geodataframe=data_geodataframe, decimal_precision=decimal_precision
-        ),
-        positioning_method=_metadata.get_positioning_method(
-            processing_context.datalogger_type
-            if processing_context is not None
-            else None
+        positioning_method=(
+            attributes.posmdt
+            if attributes.posmdt != UNKNOWN
+            else _metadata.get_positioning_method(
+                processing_context.datalogger_type
+                if processing_context is not None
+                else ""
+            )
         ),
     )
 
-    _metadata.export_metadata_to_json(
-        metadata=survey_metadata, output_path=json_output_path
+    statistic: _metadata.SurveyStatistics = _metadata.compute_survey_statistics(
+        gdf=data_geodataframe
     )
 
     _metadata.plot_metadata(
         metadata=survey_metadata.__dict__(),
         title=name,
         output_path=json_output_path,
-        dataframe=data_geodataframe,
-        nbins_x=nbins_x,
-        nbins_y=nbins_y,
+        statistics=statistic,
     )
 
 
@@ -405,8 +388,6 @@ def export_processed_data_and_metadata(
         vessel_config=vessel_config,
         tide_stations=tide_stations,
         decimal_precision=processing_config.options.decimal_precision,
-        nbins_x=processing_config.plot.nbin_x,
-        nbins_y=processing_config.plot.nbin_y,
         vessel_name=effective_vessel_name,
         software_version=software_version,
         processing_context=processing_context,

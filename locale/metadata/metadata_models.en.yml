@@ -5,4 +5,5 @@ en:
   chart_datum: "Chart Datum"
   default_positioning_method: "Wide Area Augmentation System (WAAS)"
   positioning_method_hydroblock: "Precise Point Positioning (PPP)"
-
+  sounding_hardware: "Marine Multifunction Display"
+  positioning_hardware: "Marine Multifunction Display"

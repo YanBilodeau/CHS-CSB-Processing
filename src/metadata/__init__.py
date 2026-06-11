@@ -9,12 +9,8 @@ from .metadata_models import (
     POSITIONING_METHOD_BY_DATALOGGER,
     get_positioning_method,
 )
-from .order.processing_order_qualification import (
-    IHOorderQualifiquation,
-    OrderStatistics,
-    classify_iho_order,
-)
-from .pdf_export import export_metadata_table_as_pdf
+from .statistic import SurveyStatistics, compute_survey_statistics
+
 from .plot import plot_metadata
 
 __all__ = [
@@ -23,9 +19,7 @@ __all__ = [
     "POSITIONING_METHOD_BY_DATALOGGER",
     "get_positioning_method",
     "export_metadata_to_json",
-    "export_metadata_table_as_pdf",
-    "IHOorderQualifiquation",
-    "OrderStatistics",
-    "classify_iho_order",
     "plot_metadata",
+    "SurveyStatistics",
+    "compute_survey_statistics",
 ]

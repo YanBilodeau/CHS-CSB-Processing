@@ -96,6 +96,8 @@ class BDBattribute(BaseModel):
     """Technologie du sondeur."""
     sdghdw: str = UNKNOWN
     """Système de sondage."""
+    posmdt: str = UNKNOWN
+    """Méthode de positionnement."""
     poshdw: str = UNKNOWN
     """Système de positionnement."""
     bureau: str = UNKNOWN

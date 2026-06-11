@@ -5,3 +5,5 @@ fr:
   chart_datum: "Zéro des cartes"
   default_positioning_method: "Wide Area Augmentation System (WAAS)"
   positioning_method_hydroblock: "Precise Point Positioning (PPP)"
+  sounding_hardware: "Afficheur multifonction marin"
+  positioning_hardware: "Afficheur multifonction marin"

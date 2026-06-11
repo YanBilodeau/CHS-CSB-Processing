@@ -20,7 +20,7 @@ from .helper import load_config
 
 LOGGER = logger.bind(name="CSB-Processing.Config.ProcessingConfig")
 
-ConfigDict = dict[str, int | float | str]
+ConfigDict = dict[str, int | float]
 CSBconfigDict = dict[str, dict[str, dict[str, ConfigDict | dict[str, ConfigDict]]]]
 
 
@@ -419,38 +419,6 @@ class OptionsConfig(BaseModel):
         return value
 
 
-class PlotConfig(BaseModel):
-    """
-    Classe de configuration pour les options de visualisation.
-
-    :param nbin_x: Le nombre de bins en X pour les heatmanps.
-    :type nbin_x: int
-    :param nbin_y: Le nombre de bins en Y pour les heatmanps.
-    :type nbin_y: int
-    """
-
-    nbin_x: int = NBIN_X
-    """Le nombre de bins en X pour les heatmanps."""
-    nbin_y: int = NBIN_Y
-    """Le nombre de bins en Y pour les heatmanps."""
-
-    @field_validator("nbin_x", "nbin_y")
-    def validate_nbin(cls, value: int) -> int:
-        """
-        Valide que nbin_x et nbin_y sont plus grand que 0.
-
-        :param value: La valeur de nbin_x ou nbin_y.
-        :type value: int
-        :return: La valeur de nbin_x ou nbin_y.
-        :rtype: int
-        :raises ValueError: Si nbin_x ou nbin_y est inférieur ou égal à 0.
-        """
-        if value <= 0:
-            raise ValueError(i18n.t("config.processing_config.error_nbin"))
-
-        return value
-
-
 class CSBprocessingConfig(BaseModel):
     """
     Classe de configuration pour la transformation des données et le géoréférencement.
@@ -475,8 +443,6 @@ class CSBprocessingConfig(BaseModel):
     """Configuration pour le gestionnaire de navires."""
     export: ExportConfig = ExportConfig()
     """Configuration pour l'exportation des données."""
-    plot: PlotConfig = PlotConfig()
-    """Configuration pour les options de visualisation."""
     options: OptionsConfig = OptionsConfig()
     """Configuration pour les options de traitement."""
 
@@ -496,13 +462,11 @@ def get_data_config(
 
     LOGGER.debug(i18n.t("config.processing_config.init_data_config"))
 
-    data_filter: ConfigDict = (
-        config_data.get("DATA", {}).get("Transformation", {}).get("filter")
-    )
-    data_georef_tide: ConfigDict = (
+    data_filter = config_data.get("DATA", {}).get("Transformation", {}).get("filter")
+    data_georef_tide = (
         config_data.get("DATA", {}).get("Georeference", {}).get("water_level")
     )
-    data_georef_tvu: ConfigDict = (
+    data_georef_tvu = (
         config_data.get("DATA", {})
         .get("Georeference", {})
         .get("uncertainty", {})
@@ -514,18 +478,9 @@ def get_data_config(
         .get("uncertainty", {})
         .get("thu", {})
     )
-    vessel_config: ConfigDict = (
-        config_data.get("CSB", {}).get("Processing", {}).get("vessel")
-    )
-    export_config: ConfigDict = (
-        config_data.get("CSB", {}).get("Processing", {}).get("export")
-    )
-    plot_config: ConfigDict = (
-        config_data.get("CSB", {}).get("Processing", {}).get("plot")
-    )
-    options_config: ConfigDict = (
-        config_data.get("CSB", {}).get("Processing", {}).get("options")
-    )
+    vessel_config = config_data.get("CSB", {}).get("Processing", {}).get("vessel")
+    export_config = config_data.get("CSB", {}).get("Processing", {}).get("export")
+    options_config = config_data.get("CSB", {}).get("Processing", {}).get("options")
 
     return CSBprocessingConfig(
         filter=(
@@ -583,7 +538,6 @@ def get_data_config(
             else None
         ),
         export=(ExportConfig(**export_config) if export_config else ExportConfig()),
-        plot=(PlotConfig(**plot_config) if plot_config else PlotConfig()),
         options=(
             OptionsConfig(**options_config) if options_config else OptionsConfig()
         ),

@@ -11,7 +11,6 @@ import i18n
 from loguru import logger
 
 from ingestion import DataLoggerType
-from .order.order_models import IHOorderQualifiquation
 from processing_context import ProcessingContext
 
 LOGGER = logger.bind(name="CSB-Processing.Metadata.Models")
@@ -55,19 +54,16 @@ class CSBmetadata:
     """Date de fin"""
     vessel: str
     """Identifiant et nom du navire"""
-    sounding_hardware: str
-    """Matériel de sondage"""
     sounding_technique: str
     """Technique de sondage"""
     sounder_draft: Optional[float]
     """Tirant d'eau du sondeur (None si les données sont déjà au zéro des cartes)"""
-    tvu: float
-    """Incertitude verticale"""
-    thu: float
-    """Incertitude horizontale"""
     sotfware_version: str = field(repr=False, metadata={"exclude": True})
     """Version du logiciel"""
-    tide_stations: Collection[str] = field(repr=False, metadata={"exclude": True})
+    tide_stations: Collection[str] | None = field(
+        repr=False, metadata={"exclude": True}
+    )
+    datalogger_type: Optional[str]
     """Stations de marée"""
     vertical_coordinate_reference_system: str = field(init=False)
     """Système de coordonnées vertical"""
@@ -81,6 +77,14 @@ class CSBmetadata:
         )
     )
     """Méthode de positionnement"""
+    sounding_hardware: str = field(
+        default_factory=lambda: i18n.t("metadata.metadata_models.sounding_hardware")
+    )
+    """Matériel de sondage"""
+    positioning_hardware: str = field(
+        default_factory=lambda: i18n.t("metadata.metadata_models.positioning_hardware")
+    )
+    """Matériel de postionnement"""
     resolution: str = "Point Cloud"
     """Résolution des données"""
     horizontal_coordinate_reference_system: str = "WGS 84 - EPSG:4326"
@@ -89,8 +93,6 @@ class CSBmetadata:
     """Logiciel de traitement des données"""
     processing_context: Optional[ProcessingContext] = field(default=None, repr=False)
     """Contexte de traitement (type de capteur, statut de réduction au zéro des cartes)"""
-    iho_order_statistic: IHOorderQualifiquation = None
-    """Statistiques des ordre IHO"""
 
     def __post_init__(self):
         """
@@ -119,7 +121,7 @@ class CSBmetadata:
             )
         )
 
-        self.vertical_coordinate_reference_system = (
+        self.vertical_coordinate_reference_system: str | None = (
             i18n.t("metadata.metadata_models.chart_datum")
             if (self.tide_stations or self.already_at_chart_datum)
             else None
@@ -130,19 +132,18 @@ class CSBmetadata:
         Convertit les données en un dictionnaire.
         """
         return {
-            "Start Date": self.start_date,
-            "End Date": self.end_date,
-            "Vessel": self.vessel,
-            "Horizontal Coordinate Reference System": self.horizontal_coordinate_reference_system,
-            "Vertical Coordinate Reference System": self.vertical_coordinate_reference_system,
-            "Sounding Hardware": self.sounding_hardware,
-            "Sounding Technique": self.sounding_technique,
-            "Positioning Method": self.positioning_method,
-            "Sounder Draft (m)": self.sounder_draft,
-            "TVU (m)": self.tvu,
-            "THU (m)": self.thu,
-            "Water Level Reduction Method": self.water_Level_reduction_method,
-            "Resolution": self.resolution,
-            "Data Processing Software": self.data_processing_software,
-            "IHO Order Statistic": self.iho_order_statistic.__dict__(),
+            "metadata.plot.param_start_date": self.start_date,
+            "metadata.plot.param_end_date": self.end_date,
+            "metadata.plot.param_vessel": self.vessel,
+            "metadata.plot.param_datalogger_type": self.datalogger_type,
+            "metadata.plot.param_horizontal_crs": self.horizontal_coordinate_reference_system,
+            "metadata.plot.param_vertical_crs": self.vertical_coordinate_reference_system,
+            "metadata.plot.param_sounding_technique": self.sounding_technique,
+            "metadata.plot.param_sounding_hardware": self.sounding_hardware,
+            "metadata.plot.param_positioning_method": self.positioning_method,
+            "metadata.plot.param_positioning_hardware": self.positioning_hardware,
+            "metadata.plot.param_sounder_draft": self.sounder_draft,
+            "metadata.plot.param_water_level_reduction": self.water_Level_reduction_method,
+            "metadata.plot.param_resolution": self.resolution,
+            "metadata.plot.param_data_processing_software": self.data_processing_software,
         }
