@@ -27,7 +27,7 @@ import vessel as vessel_manager
 from processing_context import ProcessingContext
 
 
-__version__ = "0.8.0"
+__version__ = "0.8.1"
 
 LOGGER = logger.bind(name="CSB-Processing.WorkFlow")
 configure_logger()
@@ -560,5 +560,3 @@ def processing_workflow(
     # todo web app pour convert
     # todo créer fichier vectoriel avec les stations et leurs incertitudes associées
     # todo option pour prendre un fichier vectoriel en entrée au lieu de calculer un voronoi
-
-    # todo ajouter au métadonnée la longueur de ligne de sondage et le temps de sondage
