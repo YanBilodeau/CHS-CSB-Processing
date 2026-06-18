@@ -54,7 +54,7 @@ fr:
   axis_date: "Date"
   axis_distance_nm: "Distance (NM)"
   axis_time_hours: "Temps (heures)"
-  axis_speed_knots: "Vitesse (nœuds)"
+  axis_speed_knots: "Vitesse (noeuds)"
   axis_point_count: "Nombre de sondes"
   legend_distance: "Distance"
   legend_time: "Temps"
@@ -65,4 +65,11 @@ fr:
   legend_trend: "Tendance"
   legend_daily_distance: "Distance quotidienne"
   legend_date: "Date"
-
+  # Édition des métadonnées
+  edit_metadata_title: "Éditer les métadonnées"
+  edit_metadata_info: "Les champs des tableaux ci-dessus sont éditables. Cliquez sur une valeur pour la modifier."
+  save_to_html: "Sauvegarder dans le HTML"
+  modified_on: "modifié le"
+  saved_success: "HTML sauvegardé avec succès"
+  no_modifications: "Aucune modification à sauvegarder"
+  modifications_restored: "Modifications restaurées"

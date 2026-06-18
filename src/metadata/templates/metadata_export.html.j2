@@ -199,6 +199,92 @@
             --bs-table-bg-type: #f8f9fa;
         }
     </style>
+    <style>
+        /* ── Editable cells ──────────────────────────────────────────────────── */
+        .editable-cell {
+            cursor: text;
+            transition: background-color 0.15s;
+            outline: none;
+        }
+        .editable-cell:empty::before {
+            content: '—';
+            color: #adb5bd;
+            font-style: italic;
+        }
+        .editable-cell:hover {
+            background-color: #f0f7ff !important;
+        }
+        .editable-cell:focus {
+            background-color: #e8f4fd !important;
+            outline: 2px solid #4e79a7;
+            outline-offset: -2px;
+            box-shadow: inset 0 0 0 2px rgba(78,121,167,0.15);
+        }
+        .editable-cell.modified {
+            background-color: #fffbe6 !important;
+            border-left: 3px solid #e6a800 !important;
+            padding-left: 9px !important;
+        }
+
+        /* ── Modification date (next to generated-at) ────────────────────────── */
+        .modified-date {
+            display: none;
+            margin-left: 20px;
+            font-size: 13px;
+            color: #e6a800;
+            font-weight: 500;
+            font-style: italic;
+        }
+        .modified-date.visible { display: inline; }
+
+        /* ── Save bar (barre fixe en bas) ────────────────────────────────────── */
+        body { padding-bottom: 68px; }
+        .save-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: #2c3e50;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 24px;
+            z-index: 1200;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.3);
+            gap: 16px;
+        }
+        .save-bar-info {
+            font-size: 12px; color: rgba(255,255,255,0.72);
+            flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .save-bar-info strong {
+            color: #fff; font-size: 13px;
+            display: block; margin-bottom: 1px;
+        }
+        .save-btn {
+            display: inline-flex; align-items: center; gap: 7px;
+            background-color: #4e79a7; color: #fff;
+            border: none; border-radius: 8px;
+            padding: 9px 18px; font-size: 13px; font-weight: 600;
+            cursor: pointer; white-space: nowrap;
+            transition: background-color 0.15s, transform 0.1s;
+            flex: 0 0 auto;
+        }
+        .save-btn:hover:not(:disabled) { background-color: #3a5f8a; transform: translateY(-1px); }
+        .save-btn:active:not(:disabled) { transform: translateY(0); }
+        .save-btn:disabled  { opacity: 0.55; cursor: not-allowed; }
+        .save-btn .material-symbols-outlined { font-size: 18px; }
+
+        /* ── Toast notification ──────────────────────────────────────────────── */
+        .toast-notif {
+            position: fixed; bottom: 72px; right: 24px;
+            padding: 11px 18px; border-radius: 10px;
+            font-size: 13px; font-weight: 500;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+            z-index: 1300; pointer-events: none; color: #fff;
+            opacity: 0; transform: translateY(6px);
+            transition: opacity 0.22s, transform 0.22s;
+        }
+        .toast-notif.success { background: #2e7d32; }
+        .toast-notif.info    { background: #1565c0; }
+        .toast-notif.show    { opacity: 1; transform: translateY(0); }
+    </style>
 </head>
 <body>
 
@@ -244,7 +330,7 @@
             <div class="content-card generated-at-card">
                 <div class="content-card-title">
                     <span class="material-symbols-outlined">schedule</span>
-                    {{ labels.generated_at }} <span class="generated-date">__GENERATED_AT__</span>
+                    {{ labels.generated_at }} <span class="generated-date">__GENERATED_AT__</span><span class="modified-date" id="modifiedDateDisplay"></span>
                 </div>
             </div>
 
@@ -265,13 +351,185 @@
     </div>
 </div>
 
+<!-- ── Barre de sauvegarde ─────────────────────────────────────────────────── -->
+<div class="save-bar" id="saveBar">
+    <div class="save-bar-info">
+        <strong>{{ labels.edit_metadata_title }}</strong>
+        {{ labels.edit_metadata_info }}
+    </div>
+    <button class="save-btn" id="saveBtnHtml">
+        <span class="material-symbols-outlined">save</span>
+        {{ labels.save_to_html }}
+    </button>
+</div>
+
+<!-- Toast notification -->
+<div class="toast-notif" id="toastNotif"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // ── Resize Plotly figures when a tab becomes visible ──────────────────
-    // Bootstrap fires shown.bs.tab AFTER the pane is visible (display:block),
-    // so Plotly's ResizeObserver has a defined container width at that point.
+    // ── Constants injected by Python (i18n + report UUID) ─────────────────────
+    var REPORT_ID       = '__REPORT_ID__';
+    var STORAGE_KEY     = 'csb-report-' + REPORT_ID;
+    var MSG_SAVED       = '__SAVED_TEXT__';
+    var MSG_RESTORED    = '__RESTORED_TEXT__';
+    var MSG_MODIFIED_ON = '__MODIFIED_ON_TEXT__';
+
+    // ── Utilities ─────────────────────────────────────────────────────────────
+    function _pad(n) { return String(n).padStart(2, '0'); }
+
+    function _formatDateTimeFile(d) {
+        return d.getFullYear() + '-' + _pad(d.getMonth() + 1) + '-' + _pad(d.getDate()) +
+               '_' + _pad(d.getHours()) + '-' + _pad(d.getMinutes());
+    }
+
+    function _formatDateTimeDisplay(d) {
+        return d.getFullYear() + '-' + _pad(d.getMonth() + 1) + '-' + _pad(d.getDate()) +
+               ' ' + _pad(d.getHours()) + ':' + _pad(d.getMinutes()) + ':' + _pad(d.getSeconds());
+    }
+
+    function showToast(message, type) {
+        var el = document.getElementById('toastNotif');
+        el.textContent = message;
+        el.className = 'toast-notif ' + (type || 'success') + ' show';
+        clearTimeout(el._hideTimer);
+        el._hideTimer = setTimeout(function () { el.classList.remove('show'); }, 3200);
+    }
+
+    // ── Editable cells ────────────────────────────────────────────────────────
+    function _markCell(cell) {
+        var isDirty = cell.textContent !== cell.getAttribute('data-original');
+        cell.classList.toggle('modified', isDirty);
+    }
+
+    function _persistCell(cell) {
+        var key      = cell.getAttribute('data-key');
+        var original = cell.getAttribute('data-original');
+        var current  = cell.textContent;
+        var stored   = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        if (current !== original) {
+            stored[key] = { value: current, at: new Date().toISOString() };
+        } else {
+            delete stored[key];
+        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
+    }
+
+    function _restoreFromStorage() {
+        var raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
+        var mods;
+        try { mods = JSON.parse(raw); } catch (e) { return false; }
+        var cells = document.querySelectorAll('.editable-cell');
+        var anyRestored = false;
+        cells.forEach(function (cell) {
+            var item = mods[cell.getAttribute('data-key')];
+            if (!item) return;
+            // Only apply if stored value differs from the HTML baseline
+            if (item.value !== cell.getAttribute('data-original')) {
+                cell.textContent = item.value;
+                cell.classList.add('modified');
+                anyRestored = true;
+            }
+        });
+        return anyRestored;
+    }
+
+    // ── Modification date display (baked in before serialisation) ─────────────
+    function _updateModifiedDateDisplay(now) {
+        var el = document.getElementById('modifiedDateDisplay');
+        if (!el) return;
+        el.textContent = '\u2014 ' + MSG_MODIFIED_ON + ' ' + _formatDateTimeDisplay(now);
+        el.classList.add('visible');
+    }
+
+    // ── Save to HTML file ─────────────────────────────────────────────────────
+    async function saveHtmlFile() {
+        var btn = document.getElementById('saveBtnHtml');
+        btn.disabled = true;
+        try {
+            var now = new Date();
+
+            // Stamp the modification date into the DOM before serialising
+            _updateModifiedDateDisplay(now);
+
+            // Build suggested filename: sanitised title + datetime suffix
+            var base  = document.title
+                            .replace(/[<>:"/\\|?*\x00-\x1f]/g, '_')
+                            .replace(/\s+/g, '_')
+                            .replace(/_+/g, '_')
+                            .replace(/^_|_$/g, '');
+            var fname = base + '_[' + _formatDateTimeFile(now) + ']'+ '.html';
+
+            // Serialise the live DOM — contenteditable values are already in textContent
+            var html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+
+            if (window.showSaveFilePicker) {
+                // File System Access API — shows native Save As dialog
+                var handle = await window.showSaveFilePicker({
+                    suggestedName: fname,
+                    types: [{ description: 'HTML', accept: { 'text/html': ['.html'] } }]
+                });
+                var writable = await handle.createWritable();
+                await writable.write(blob);
+                await writable.close();
+            } else {
+                // Fallback: silent <a download> (Firefox, Safari)
+                var url = URL.createObjectURL(blob);
+                var a   = document.createElement('a');
+                a.href  = url;
+                a.download = fname;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+            showToast(MSG_SAVED, 'success');
+        } catch (e) {
+            // AbortError = user cancelled the dialog — ignore silently
+            if (e && e.name !== 'AbortError') { console.error('CSB save error:', e); }
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', function () {
+
+        // 1. Wire up the save button
+        //    — re-enable in case a disabled state was baked in from a previous save,
+        //    — bind via addEventListener (more reliable than a serialised onclick).
+        var saveBtn = document.getElementById('saveBtnHtml');
+        if (saveBtn) {
+            saveBtn.disabled = false;
+            saveBtn.addEventListener('click', saveHtmlFile);
+        }
+
+        // 2. Wire up each editable value cell
+        document.querySelectorAll('.editable-cell').forEach(function (cell) {
+            // Reset any CSS state serialised from a previous save; store baseline
+            cell.classList.remove('modified');
+            cell.setAttribute('data-original', cell.textContent);
+
+            cell.addEventListener('input', function () {
+                _markCell(this);
+                _persistCell(this);
+            });
+
+            // Prevent Enter from inserting block elements
+            cell.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') { e.preventDefault(); this.blur(); }
+            });
+        });
+
+        // 3. Restore any locally-saved modifications (auto-persisted on previous visits)
+        if (_restoreFromStorage()) {
+            showToast(MSG_RESTORED, 'info');
+        }
+
+        // 4. Resize Plotly figures when a tab becomes visible
         document.querySelectorAll('#reportTabs button[data-bs-toggle="tab"]').forEach(function (btn) {
             btn.addEventListener('shown.bs.tab', function (e) {
                 if (typeof Plotly === 'undefined') return;

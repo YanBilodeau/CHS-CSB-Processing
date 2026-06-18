@@ -6,6 +6,7 @@ Ce module fusionne les deux onglets dans le template principal.
 
 from datetime import datetime
 from pathlib import Path
+import uuid
 
 import i18n
 
@@ -60,6 +61,7 @@ def _apply_common_replacements(html_content: str, title: str) -> str:
     html_lang = i18n.get("locale") or "en"
     favicon_href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'/>"
     font_family = "'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+    report_id = str(uuid.uuid4())
 
     replacements = {
         "__EXPORT_TITLE__": title,
@@ -71,6 +73,15 @@ def _apply_common_replacements(html_content: str, title: str) -> str:
         "{{ labels.tab_metadata }}": i18n.t("metadata.plot.tab_metadata"),
         "{{ labels.tab_stats }}": i18n.t("metadata.plot.tab_stats"),
         "{{ labels.generated_at }}": i18n.t("metadata.plot.generated_at"),
+        "{{ labels.edit_metadata_title }}": i18n.t("metadata.plot.edit_metadata_title"),
+        "{{ labels.edit_metadata_info }}": i18n.t("metadata.plot.edit_metadata_info"),
+        "{{ labels.save_to_html }}": i18n.t("metadata.plot.save_to_html"),
+        "__REPORT_ID__": report_id,
+        # Textes pour JavaScript
+        "__SAVED_TEXT__": i18n.t("metadata.plot.saved_success"),
+        "__RESTORED_TEXT__": i18n.t("metadata.plot.modifications_restored"),
+        "__NO_MODIFICATIONS_TEXT__": i18n.t("metadata.plot.no_modifications"),
+        "__MODIFIED_ON_TEXT__": i18n.t("metadata.plot.modified_on"),
     }
 
     for placeholder, value in replacements.items():

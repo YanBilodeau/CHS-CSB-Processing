@@ -65,4 +65,11 @@ en:
   legend_trend: "Trend"
   legend_daily_distance: "Daily Distance"
   legend_date: "Date"
-
+  # Metadata editing
+  edit_metadata_title: "Edit Metadata"
+  edit_metadata_info: "The fields in the tables above are editable. Click on a value to modify it."
+  save_to_html: "Save to HTML"
+  modified_on: "modified on"
+  saved_success: "HTML saved successfully"
+  no_modifications: "No modifications to save"
+  modifications_restored: "Modifications restored"

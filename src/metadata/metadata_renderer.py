@@ -91,7 +91,13 @@ def _group_metadata(metadata: dict) -> list[dict]:
         rows: list[dict] = []
         for key in keys:
             if key in metadata:
-                rows.append({"key": i18n.t(key), "value": _format_value(metadata[key])})
+                rows.append(
+                    {
+                        "raw_key": key,
+                        "key": i18n.t(key),
+                        "value": _format_value(metadata[key]),
+                    }
+                )
                 seen_keys.add(key)
         if rows:
             groups.append(
@@ -104,6 +110,7 @@ def _group_metadata(metadata: dict) -> list[dict]:
 
     other_rows: list[dict] = [
         {
+            "raw_key": key,
             "key": i18n.t(key) if key.startswith("metadata.") else key,
             "value": _format_value(value),
         }
@@ -140,13 +147,15 @@ def render_metadata_sections(metadata: dict) -> str:
 
     for group in groups:
         rows_html: list[str] = [
-            f"<tr><td>{row['key']}</td><td>{row['value']}</td></tr>"
+            f'<tr><td>{row["key"]}</td>'
+            f'<td class="editable-cell" contenteditable="true" data-key="{row["raw_key"]}">'
+            f'{row["value"]}</td></tr>'
             for row in group["rows"]
         ]
         body: str = (
             "\n".join(rows_html)
             if rows_html
-            else (f'<p class="none-text">{empty_label}</p>')
+            else f'<p class="none-text">{empty_label}</p>'
         )
         icon: str = _GROUP_ICONS.get(group["id"], _DEFAULT_ICON)
         parts.append(
