@@ -17,12 +17,12 @@ LOGGER = logger.bind(name="CSB-Processing.Config.LoadConfig")
 
 
 @lru_cache
-def load_config(config_file: Optional[Path]) -> dict:
+def load_config(config_file: Path) -> dict:
     """
     Retournes les données de configuration du fichier TOML.
 
     :param config_file: Le chemin du fichier de configuration.
-    :type config_file: Optional[Path]
+    :type config_file: Path
     :return: Les données de configuration.
     :rtype: DataConfigDict
     """
