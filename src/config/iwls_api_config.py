@@ -166,7 +166,7 @@ class IWLSAPIConfig(BaseModel):
     """Configuration du cache."""
 
 
-def get_api_config(config_file: Path) -> IWLSAPIConfig:
+def get_api_config(config_file: Path | None) -> IWLSAPIConfig:
     """
     Retournes la configuration de l'API IWLS
 
