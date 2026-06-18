@@ -226,6 +226,43 @@
             padding-left: 9px !important;
         }
 
+        /* ── Large editable text area (additional info card) ─────────────────── */
+        .editable-area {
+            min-height: 140px;
+            border: 1.5px dashed #c8d6e5;
+            border-radius: 8px;
+            padding: 14px 16px;
+            font-size: 13px;
+            color: #2c3e50;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            word-break: break-word;
+            cursor: text;
+            transition: border-color 0.15s, background-color 0.15s;
+        }
+        .editable-area:empty::before {
+            content: attr(data-placeholder);
+            color: #adb5bd;
+            font-style: italic;
+            pointer-events: none;
+        }
+        .editable-area:hover {
+            border-color: #9ab3d1;
+            background-color: #f8fbff;
+        }
+        .editable-area:focus {
+            border: 1.5px solid #4e79a7 !important;
+            background-color: #f0f7ff !important;
+            outline: none;
+        }
+        /* Override single-line modified style for the area */
+        .editable-area.modified {
+            border: 1.5px solid #e6a800 !important;
+            border-left: 1.5px solid #e6a800 !important;
+            padding-left: 16px !important;
+            background-color: #fffbe6 !important;
+        }
+
         /* ── Modification date (next to generated-at) ────────────────────────── */
         .modified-date {
             display: none;
@@ -336,6 +373,18 @@
 
             __METADATA_SECTIONS__
 
+            <!-- ── Carte : Informations additionnelles ──────────────────────────── -->
+            <div class="content-card">
+                <div class="content-card-title">
+                    <span class="material-symbols-outlined">edit_note</span>
+                    {{ labels.additional_info_title }}
+                </div>
+                <div class="editable-cell editable-area"
+                     contenteditable="true"
+                     data-key="additional_info"
+                     data-placeholder="{{ labels.additional_info_placeholder }}"></div>
+            </div>
+
         </div>
 
         <!-- ──────────────────────────────────────────────────────────────────── -->
@@ -397,16 +446,29 @@
         el._hideTimer = setTimeout(function () { el.classList.remove('show'); }, 3200);
     }
 
-    // ── Editable cells ────────────────────────────────────────────────────────
+    // ── Editable cells & areas ────────────────────────────────────────────────
+    // Use innerHTML for multi-line areas (preserves <br>/<div> from Enter key),
+    // textContent for single-line cells.
+    function _getCellValue(cell) {
+        return cell.classList.contains('editable-area') ? cell.innerHTML : cell.textContent;
+    }
+    function _setCellValue(cell, value) {
+        if (cell.classList.contains('editable-area')) {
+            cell.innerHTML = value;
+        } else {
+            cell.textContent = value;
+        }
+    }
+
     function _markCell(cell) {
-        var isDirty = cell.textContent !== cell.getAttribute('data-original');
+        var isDirty = _getCellValue(cell) !== cell.getAttribute('data-original');
         cell.classList.toggle('modified', isDirty);
     }
 
     function _persistCell(cell) {
         var key      = cell.getAttribute('data-key');
         var original = cell.getAttribute('data-original');
-        var current  = cell.textContent;
+        var current  = _getCellValue(cell);
         var stored   = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
         if (current !== original) {
             stored[key] = { value: current, at: new Date().toISOString() };
@@ -428,7 +490,7 @@
             if (!item) return;
             // Only apply if stored value differs from the HTML baseline
             if (item.value !== cell.getAttribute('data-original')) {
-                cell.textContent = item.value;
+                _setCellValue(cell, item.value);
                 cell.classList.add('modified');
                 anyRestored = true;
             }
@@ -511,16 +573,19 @@
         document.querySelectorAll('.editable-cell').forEach(function (cell) {
             // Reset any CSS state serialised from a previous save; store baseline
             cell.classList.remove('modified');
-            cell.setAttribute('data-original', cell.textContent);
+            cell.setAttribute('data-original', _getCellValue(cell));
 
             cell.addEventListener('input', function () {
                 _markCell(this);
                 _persistCell(this);
             });
 
-            // Prevent Enter from inserting block elements
+            // Allow Enter in multi-line areas; block it in single-line cells
             cell.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') { e.preventDefault(); this.blur(); }
+                if (e.key === 'Enter' && !this.classList.contains('editable-area')) {
+                    e.preventDefault();
+                    this.blur();
+                }
             });
         });
 

@@ -65,6 +65,9 @@ fr:
   legend_trend: "Tendance"
   legend_daily_distance: "Distance quotidienne"
   legend_date: "Date"
+  # Carte informations additionnelles
+  additional_info_title: "Informations additionnelles"
+  additional_info_placeholder: "Saisir des commentaires ou informations supplémentaires..."
   # Édition des métadonnées
   edit_metadata_title: "Éditer les métadonnées"
   edit_metadata_info: "Les champs des tableaux ci-dessus sont éditables. Cliquez sur une valeur pour la modifier."

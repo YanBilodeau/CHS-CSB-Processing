@@ -76,6 +76,12 @@ def _apply_common_replacements(html_content: str, title: str) -> str:
         "{{ labels.edit_metadata_title }}": i18n.t("metadata.plot.edit_metadata_title"),
         "{{ labels.edit_metadata_info }}": i18n.t("metadata.plot.edit_metadata_info"),
         "{{ labels.save_to_html }}": i18n.t("metadata.plot.save_to_html"),
+        "{{ labels.additional_info_title }}": i18n.t(
+            "metadata.plot.additional_info_title"
+        ),
+        "{{ labels.additional_info_placeholder }}": i18n.t(
+            "metadata.plot.additional_info_placeholder"
+        ),
         "__REPORT_ID__": report_id,
         # Textes pour JavaScript
         "__SAVED_TEXT__": i18n.t("metadata.plot.saved_success"),

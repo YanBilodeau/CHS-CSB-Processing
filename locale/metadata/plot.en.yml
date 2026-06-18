@@ -65,6 +65,9 @@ en:
   legend_trend: "Trend"
   legend_daily_distance: "Daily Distance"
   legend_date: "Date"
+  # Additional information card
+  additional_info_title: "Additional Information"
+  additional_info_placeholder: "Enter additional comments or information..."
   # Metadata editing
   edit_metadata_title: "Edit Metadata"
   edit_metadata_info: "The fields in the tables above are editable. Click on a value to modify it."
