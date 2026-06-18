@@ -49,6 +49,94 @@ class IterationResult:
     wl_exceptions: dict = field(compare=False, hash=False)
 
 
+def _export_voronoi(
+    wl_combineds: dict,
+    gdf_voronoi: gpd.GeoDataFrame,
+    export_tide_path: Path,
+    iteration: int,
+) -> None:
+    """
+    Exporte le diagramme de Voronoi au format GPKG si des niveaux d'eau ont été récupérés.
+
+    :param wl_combineds: Séries temporelles de niveaux d'eau par station.
+    :type wl_combineds: dict
+    :param gdf_voronoi: Diagramme de Voronoi des stations marégraphiques.
+    :type gdf_voronoi: gpd.GeoDataFrame
+    :param export_tide_path: Répertoire d'export des fichiers marégraphiques.
+    :type export_tide_path: Path
+    :param iteration: Numéro de l'itération courante (pour nommer le fichier).
+    :type iteration: int
+    :rtype: None
+    """
+    if not wl_combineds:
+        return
+
+    gdf_voronoi = _join_station_uncertainty(gdf_voronoi)
+
+    voronoi_path = export_tide_path / f"StationVoronoi-{iteration}.gpkg"
+    LOGGER.info(
+        i18n.t("tide.water_level_workflow.exporting_voronoi", path=voronoi_path)
+    )
+    export.export_geodataframe_to_gpkg(
+        geodataframe=gdf_voronoi, output_path=voronoi_path
+    )
+
+
+def _join_station_uncertainty(gdf_voronoi: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    """
+    Joint la colonne ``uncertainty_wlp_m`` depuis le fichier JSON des incertitudes station.
+
+    La jointure se fait sur la colonne ``code`` du GeoDataFrame et les clés du JSON.
+    Retourne une copie du GeoDataFrame avec la colonne ajoutée, ou le GeoDataFrame
+    original si le fichier n'existe pas.
+
+    :param gdf_voronoi: Diagramme de Voronoi des stations marégraphiques.
+    :type gdf_voronoi: gpd.GeoDataFrame
+    :return: GeoDataFrame avec la colonne ``uncertainty_wlp_m`` ajoutée.
+    :rtype: gpd.GeoDataFrame
+    """
+    uncertainty_path = (
+        Path(__file__).parent.parent
+        / "static"
+        / "uncertainty"
+        / "station_uncertainty.json"
+    )
+
+    if not uncertainty_path.is_file():
+        LOGGER.warning(
+            i18n.t(
+                "tide.water_level_workflow.uncertainty_file_not_found",
+                path=uncertainty_path,
+            )
+        )
+        return gdf_voronoi
+
+    import json
+
+    with uncertainty_path.open(encoding="utf-8") as f:
+        uncertainty_data: dict = json.load(f)
+
+    # Series indexée sur le code de station → colonne incertitude
+    uncertainty_series = pd.Series(
+        {k: v.get("uncertainty_m") for k, v in uncertainty_data.items()}
+    )
+    uncertainty_series.name = "uncertainty_m"
+
+    gdf_voronoi = gdf_voronoi.copy()
+    gdf_voronoi["uncertainty_wlp_m"] = gdf_voronoi[schema_ids.CODE].map(
+        uncertainty_series
+    )
+
+    LOGGER.info(
+        i18n.t(
+            "tide.water_level_workflow.uncertainty_joined",
+            count=len(gdf_voronoi),
+        )
+    )
+
+    return gdf_voronoi
+
+
 def _fetch_and_export_water_levels(
     data: gpd.GeoDataFrame,
     gdf_voronoi: gpd.GeoDataFrame,
@@ -120,14 +208,7 @@ def _fetch_and_export_water_levels(
         i18n.t("tide.water_level_workflow.exceptions", exceptions=wl_exceptions)
     )
 
-    if wl_combineds:
-        voronoi_path = export_tide_path / f"StationVoronoi-{iteration}.gpkg"
-        LOGGER.info(
-            i18n.t("tide.water_level_workflow.exporting_voronoi", path=voronoi_path)
-        )
-        export.export_geodataframe_to_gpkg(
-            geodataframe=gdf_voronoi, output_path=voronoi_path
-        )
+    _export_voronoi(wl_combineds, gdf_voronoi, export_tide_path, iteration)
 
     return IterationResult(
         data=data, wl_combineds=wl_combineds, wl_exceptions=wl_exceptions
