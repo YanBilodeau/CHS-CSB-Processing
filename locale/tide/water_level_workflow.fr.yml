@@ -5,3 +5,5 @@ fr:
   exceptions: "Exceptions : %{exceptions}."
   exporting_voronoi: "Exportation du diagramme de Voronoi : %{path}."
   iteration: "Itération %{iteration}. Stations exclues : %{excluded_stations}."
+  uncertainty_file_not_found: "Fichier d'incertitude station introuvable : %{path}."
+  uncertainty_joined: "Incertitude station jointe au diagramme de Voronoi (%{count} stations)."
