@@ -52,8 +52,24 @@ class FileSelectionComponentNative(FileSelectionComponentABC):
         file_manager: FileManagerProtocol,
         validator: ValidatorProtocol,
         file_display: FileDisplayProtocol,
+        accept_props: str = ".csv,.txt,.xyz,.geojson,.*",
+        accepted_formats_i18n_key: str = "app.component.file_selection_component.accepted_formats",
+        supported_formats_i18n_key: str = "app.component.file_selection_component.supported_formats",
     ):
+        """
+        Initialise le composant de sélection de fichiers natif.
+
+        :param file_manager: Gestionnaire de fichiers.
+        :param validator: Validateur.
+        :param file_display: Affichage des fichiers.
+        :param accept_props: Extensions acceptées pour le dialogue natif.
+        :param accepted_formats_i18n_key: Clé i18n pour les formats acceptés affichés.
+        :param supported_formats_i18n_key: Clé i18n pour les formats supportés détaillés.
+        """
         super().__init__(file_manager, validator, file_display)
+        self.accept_props = accept_props
+        self.accepted_formats_i18n_key = accepted_formats_i18n_key
+        self.supported_formats_i18n_key = supported_formats_i18n_key
 
     def create(self):
         """Create the file selection section."""
@@ -75,19 +91,17 @@ class FileSelectionComponentNative(FileSelectionComponentABC):
                 icon="clear",
             ).props("color=negative outline")
 
-        with ui.row().classes("justify-center items-center mb-6"):
-            ui.markdown(
-                i18n.t("app.component.file_selection_component.accepted_formats")
-            ).classes("text-center text-gray-600")
+        with ui.row().classes("text-lg items-center mb-6"):
+            ui.markdown(i18n.t(self.accepted_formats_i18n_key)).classes(
+                "text-center text-gray-600"
+            )
 
             with ui.icon("info").classes("text-blue-500 cursor-pointer ml-2"):
                 with ui.menu():
                     with ui.card().classes("max-w-lg p-4"):
-                        ui.markdown(
-                            i18n.t(
-                                "app.component.file_selection_component.supported_formats"
-                            )
-                        ).classes("text-sm")
+                        ui.markdown(i18n.t(self.supported_formats_i18n_key)).classes(
+                            "text-sm"
+                        )
 
         # Warning label for files selection (Native)
         self.files_warning_label = ui.label(
@@ -185,9 +199,25 @@ class FileSelectionComponentWeb(FileSelectionComponentABC):
         file_manager: FileManagerProtocol,
         validator: ValidatorProtocol,
         file_display: FileDisplayProtocol,
+        accept_props: str = ".csv,.txt,.xyz,.geojson,.*",
+        accepted_formats_i18n_key: str = "app.component.file_selection_component.web_accepted_formats",
+        supported_formats_i18n_key: str = "app.component.file_selection_component.supported_formats",
     ):
+        """
+        Initialise le composant de sélection de fichiers web.
+
+        :param file_manager: Gestionnaire de fichiers.
+        :param validator: Validateur.
+        :param file_display: Affichage des fichiers.
+        :param accept_props: Extensions acceptées pour l'upload HTML.
+        :param accepted_formats_i18n_key: Clé i18n pour les formats acceptés affichés.
+        :param supported_formats_i18n_key: Clé i18n pour les formats supportés détaillés.
+        """
         super().__init__(file_manager, validator, file_display)
         self.upload_component = None
+        self.accept_props = accept_props
+        self.accepted_formats_i18n_key = accepted_formats_i18n_key
+        self.supported_formats_i18n_key = supported_formats_i18n_key
 
     def create(self) -> None:
         """Create the file selection section."""
@@ -207,7 +237,7 @@ class FileSelectionComponentWeb(FileSelectionComponentABC):
                     max_files=50,  # Maximum 50 files
                     auto_upload=True,
                 )
-                .props("color=primary accept='.csv,.txt,.xyz,.geojson,.*'")
+                .props(f"color=primary accept='{self.accept_props}'")
                 .classes("w-full")
             )
 
@@ -220,18 +250,16 @@ class FileSelectionComponentWeb(FileSelectionComponentABC):
             self.file_display.create()
 
         with ui.row().classes("justify-center items-center mb-6"):
-            ui.markdown(
-                i18n.t("app.component.file_selection_component.web_accepted_formats")
-            ).classes("text-center text-gray-600")
+            ui.markdown(i18n.t(self.accepted_formats_i18n_key)).classes(
+                "text-center text-gray-600"
+            )
 
             with ui.icon("info").classes("text-blue-500 cursor-pointer ml-2"):
                 with ui.menu():
                     with ui.card().classes("max-w-lg p-4"):
-                        ui.markdown(
-                            i18n.t(
-                                "app.component.file_selection_component.supported_formats"
-                            )
-                        ).classes("text-sm")
+                        ui.markdown(i18n.t(self.supported_formats_i18n_key)).classes(
+                            "text-sm"
+                        )
 
         # Warning label for files selection (Web)
         self.files_warning_label = ui.label(

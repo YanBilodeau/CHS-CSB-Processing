@@ -16,11 +16,27 @@ LOGGER = logger.bind(name="CSB-Processing.FileManager")
 class FileManager:
     """Handles file operations for the application."""
 
-    ALLOWED_EXTENSIONS = {".csv", ".txt", ".xyz", ".geojson"}
-    # This set contains the allowed file extensions for bathymetric data files.
-    # WIBL files are not included in the allowed extensions, as they are handled separately wwith _is_numeric_extension.
+    def __init__(
+        self,
+        allowed_extensions: set[str] | None = None,
+        allow_numeric: bool = True,
+    ) -> None:
+        """
+        Initialise le gestionnaire de fichiers.
 
-    def __init__(self) -> None:
+        :param allowed_extensions: Extensions de fichier autorisées.
+            Par défaut : {".csv", ".txt", ".xyz", ".geojson"}.
+        :type allowed_extensions: set[str] | None
+        :param allow_numeric: Accepter les extensions numériques (ex: .1, .2, .3).
+        :type allow_numeric: bool
+        """
+        self.allowed_extensions = allowed_extensions or {
+            ".csv",
+            ".txt",
+            ".xyz",
+            ".geojson",
+        }
+        self.allow_numeric = allow_numeric
         self.files: list[dict[str, Any]] = []
 
     @staticmethod
@@ -100,9 +116,8 @@ class FileManager:
 
                 # Check file extension (known extensions or numeric extensions)
                 extension = file_path.suffix.lower()
-                if (
-                    extension not in self.ALLOWED_EXTENSIONS
-                    and not self._is_numeric_extension(extension)
+                if extension not in self.allowed_extensions and not (
+                    self.allow_numeric and self._is_numeric_extension(extension)
                 ):
                     LOGGER.debug(f"Unsupported format: {file_name}")
                     continue

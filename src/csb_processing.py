@@ -2,7 +2,7 @@
 Module principal pour le traitement des données des capteurs CSB.
 
 Ce module expose :func:`processing_workflow`, le workflow end-to-end de traitement
-des données de bathymétrie crowdsourcée (ingestion → nettoyage → géoréférencement →
+des données de bathymétrie crowdsource (ingestion → nettoyage → géoréférencement →
 export). Les helpers privés décomposent chaque étape en unités de ~20 lignes.
 """
 
@@ -27,15 +27,12 @@ import vessel as vessel_manager
 from processing_context import ProcessingContext
 
 
-__version__ = "0.8.1"
+__version__ = "0.8.2"
 
 LOGGER = logger.bind(name="CSB-Processing.WorkFlow")
 configure_logger()
 
 CONFIG_FILE: Path = Path(__file__).parent / "CONFIG_csb-processing.toml"
-
-# Ré-export pour compatibilité ascendante
-# VesselConfigManagerError = vessel_manager.VesselConfigManagerError
 
 
 @dataclass(frozen=True)
@@ -70,7 +67,7 @@ class WorkflowSetup:
 
 def _setup_run(
     output: Path,
-    config_path: Optional[Path],
+    config_path: Path,
     processing_config: Optional[config.CSBprocessingConfig],
     extra_logger: Optional[Iterable[dict]],
     apply_water_level: Optional[bool],
@@ -84,7 +81,7 @@ def _setup_run(
     :param output: Racine du répertoire de sortie.
     :type output: Path
     :param config_path: Chemin du fichier de configuration TOML.
-    :type config_path: Optional[Path]
+    :type config_path: Path
     :param processing_config: Config pré-chargée (remplace ``config_path`` si fournie).
     :type processing_config: Optional[config.CSBprocessingConfig]
     :param extra_logger: Sinks loguru supplémentaires.
@@ -129,7 +126,7 @@ def _setup_run(
 
 def _get_caris_api_config(
     processing_config: config.CSBprocessingConfig,
-    config_path: Optional[Path],
+    config_path: Path,
 ) -> Optional[config.CarisAPIConfig]:
     """
     Charge la configuration Caris si le format CSAR est demandé.
@@ -140,7 +137,7 @@ def _get_caris_api_config(
     :param processing_config: Configuration de traitement.
     :type processing_config: config.CSBprocessingConfig
     :param config_path: Chemin du fichier de configuration TOML.
-    :type config_path: Optional[Path]
+    :type config_path: Path
     :return: Configuration Caris ou ``None`` si CSAR non demandé.
     :rtype: Optional[config.CarisAPIConfig]
     :raises config.CarisConfigError: Si CSAR est demandé mais la config Caris est invalide.
@@ -295,7 +292,7 @@ def _process_with_water_level(
     iwls_api_config, stations_handler = iwls_api.initialize_iwls_api(
         config_path=config_path
     )
-    resolved_excluded: list[str | None] = (
+    resolved_excluded: list = (
         [stations_handler.get_station_id_by_code(c) for c in excluded_stations]
         if excluded_stations
         else []
@@ -433,7 +430,7 @@ def processing_workflow(
     files: Collection[Path],
     vessel: str | vessel_manager.VesselConfig,
     output: Path,
-    config_path: Optional[Path] = CONFIG_FILE,
+    config_path: Path = CONFIG_FILE,
     apply_water_level: Optional[bool] = True,
     extra_logger: Optional[Iterable[dict]] = None,
     water_level_stations: Optional[Collection[str]] = None,
@@ -479,7 +476,7 @@ def processing_workflow(
         LOGGER.warning(i18n.t("csb_processing.no_files"))
         return None
 
-    setup = _setup_run(
+    setup: WorkflowSetup = _setup_run(
         output=output,
         config_path=config_path,
         processing_config=processing_config,
@@ -557,6 +554,4 @@ def processing_workflow(
     # todo gérer la valeur np.nan dans les configurations des capteurs
     # todo optimiser les opérations dans tide.time_serie.time_serie_dataframe
     # todo mettre template pour le nom dans le fichier de config
-    # todo web app pour convert
-    # todo créer fichier vectoriel avec les stations et leurs incertitudes associées
     # todo option pour prendre un fichier vectoriel en entrée au lieu de calculer un voronoi

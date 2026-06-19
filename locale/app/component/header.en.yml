@@ -1,3 +1,6 @@
 en:
   title: "Bathymetric Data Processing Tool"
   subtitle: "This application allows you to process CSB bathymetric data files and georeference them."
+  section_menu: "Section"
+  section_process: "Process"
+  section_convert: "Convert"

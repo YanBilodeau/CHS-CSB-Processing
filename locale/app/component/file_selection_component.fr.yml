@@ -26,3 +26,12 @@ fr:
     - **BlackBox** : extension `.TXT` sans en-tête avec les colonnes dans l'ordre Time, Date, Latitude, Longitude, Speed (km/h) et Depth (m).
     - **[WIBL](https://github.com/CCOMJHC/WIBL/tree/main)** : extension numérique (ex. `.1`, `.2`, `.3`, etc.).
     - **HydroBlock** : extension `.TXT`, délimité par des points-virgules, avec l'en-tête `timestamp;latitude;longitude;chartdatumheight`. La profondeur est déjà réduite au zéro des cartes (axe positif vers le bas).
+
+  convert_accepted_formats: "Formats acceptés : .gpkg, .geojson"
+  convert_web_accepted_formats: "Formats acceptés : .gpkg, .geojson\nTaille max par fichier : 100 Mo | Total max : 500 Mo | Max fichiers : 50"
+  convert_supported_formats: |
+    **Formats de fichiers supportés pour la conversion :**
+
+    - **GPKG** : GeoPackage (.gpkg)
+    - **GeoJSON** : GeoJSON (.geojson)
+

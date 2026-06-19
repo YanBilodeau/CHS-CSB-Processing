@@ -31,7 +31,7 @@ class ProcessingSection:
                     icon="play_arrow",
                 )
                 .props("size=lg color=primary")
-                .classes("px-8 py-2")
+                .classes("px-8 py-2 big-action-btn")
             )
 
     async def _on_click(self, *args):

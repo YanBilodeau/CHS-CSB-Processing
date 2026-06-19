@@ -1,3 +1,10 @@
 fr:
   process_button: "Traiter les fichiers"
   processing_status: "Statut du traitement"
+  tab_process: "Traiter"
+  tab_convert: "Convertir"
+  convert_button: "Convertir les fichiers"
+  convert_output_dir_label: "Répertoire de sortie *"
+  convert_output_dir_placeholder: "Chemin du répertoire de sortie"
+  convert_output_dir_select_tooltip: "Sélectionner le répertoire"
+  convert_output_dir_warning: "⚠️ Obligatoire : Spécifiez où enregistrer les fichiers convertis"

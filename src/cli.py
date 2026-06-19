@@ -17,53 +17,9 @@ from csb_processing import run_processing_workflow, CONFIG_FILE
 from i18n_setup import setup_i18n
 from logger.loguru_config import configure_logger
 from vessel import UNKNOWN_VESSEL_CONFIG, UNKNOWN_DATE, Waterline
+from file_validation import get_files
 
 LOGGER = logger.bind(name="CSB-Processing.CLI")
-
-
-def is_valid_file(file: Path) -> bool:
-    """
-    Vérifie si le fichier est valide pour le traitement.
-
-    :param file: Chemin du fichier.
-    :type file: Path
-    :return: Vrai si le fichier est valide, faux sinon.
-    :rtype: bool
-    """
-    extension = file.suffix.lower()
-
-    # Vérifier les extensions connues
-    if extension in {".csv", ".txt", ".xyz", ".geojson"}:
-        return True
-
-    # Vérifier si l'extension est un nombre (ex: .1, .2, .3)
-    if extension.startswith(".") and extension[1:].isdigit():
-        return True
-
-    return False
-
-
-def get_files(paths: Collection[Path]) -> list[Path]:
-    """
-    Récupère les fichiers à traiter.
-
-    :param paths: Chemins des fichiers ou répertoires.
-    :type paths: Collection[Path]
-    :return: Liste des fichiers à traiter.
-    :rtype: list[Path]
-    """
-    files: list[Path] = []
-
-    for path in paths:
-        path = Path(path)
-
-        if path.is_file() and is_valid_file(path):
-            files.append(path)
-
-        elif path.is_dir():
-            files.extend(file for file in path.glob("**/*") if is_valid_file(file))
-
-    return files
 
 
 @click.group()

@@ -8,6 +8,8 @@ from .component.file_selection_component import (
     FileSelectionComponentWeb,
 )
 from .component.options_component import OptionsComponent
+from .component.convert_options_component import ConvertOptionsComponent
+from .convert_handler import ConvertHandler
 from .component.ui_sections import ProcessingSection, StatusSection, LogSection
 from .config_manager import ConfigManager
 from .file_manager import FileManager
@@ -45,4 +47,6 @@ __all__ = [
     "UIRunner",
     "GuiType",
     "DependencyContainer",
+    "ConvertOptionsComponent",
+    "ConvertHandler",
 ]

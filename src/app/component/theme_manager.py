@@ -20,7 +20,7 @@ class ThemeManager:
                 icon=("light_mode" if not self.dark_mode.value else "dark_mode"),
                 on_click=self.toggle_theme,
             )
-            .props("flat round")
+            .props("flat round size=lg")
             .tooltip("Toggle theme")
         )
         return self.theme_button

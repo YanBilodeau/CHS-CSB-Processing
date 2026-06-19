@@ -1,0 +1,12 @@
+en:
+  section_title: "Output Formats"
+  formats_hint: "Select at least one output format for conversion."
+  group_by_iho_order: "Group by IHO order"
+  group_by_iho_order_tooltip: "Groups exported data by the 'IHO_order' column if present."
+  format_gpkg: "GPKG"
+  format_geojson: "GeoJSON"
+  format_csar: "CSAR"
+  format_parquet: "Parquet"
+  format_feather: "Feather"
+  format_csv: "CSV"
+  format_geotiff: "GeoTIFF"

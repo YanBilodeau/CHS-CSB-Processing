@@ -1,3 +1,10 @@
 en:
   process_button: "Process files"
   processing_status: "Processing Status"
+  tab_process: "Process"
+  tab_convert: "Convert"
+  convert_button: "Convert files"
+  convert_output_dir_label: "Output Directory *"
+  convert_output_dir_placeholder: "Output directory path"
+  convert_output_dir_select_tooltip: "Select directory"
+  convert_output_dir_warning: "⚠️ Required: Specify where to save converted files"

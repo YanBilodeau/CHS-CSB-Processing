@@ -326,7 +326,6 @@ class OptionsComponent:
 
     def _create_filter_section(self):
         """Create the filter checkboxes section."""
-        ui.separator()
         ui.label(i18n.t("app.component.options_component.filters_title")).classes(
             "text-base font-bold mt-2"
         )
