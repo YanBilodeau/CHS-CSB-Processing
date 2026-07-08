@@ -23,6 +23,7 @@ from .parser_models import ParserFiles
 from .parser_b12_csb import DataParserB12CSB
 from .parser_wibl import DataParserWIBL
 from .parser_hydroblock import DataParserHydroBlock
+from .parser_yacht_device import DataParserYachtDevice
 
 LOGGER = logger.bind(name="CSB-Processing.Ingestion.Parser.Factory")
 
@@ -87,6 +88,14 @@ HYDROBLOCK_HEADER: Header = (
 )
 """Entête des fichiers HydroBlock."""
 
+YACHT_DEVICE_HEADER: Header = (
+    ids.TIME_YACHT_DEVICE,
+    ids.LATITUDE_YACHT_DEVICE,
+    ids.LONGITUDE_YACHT_DEVICE,
+    ids.DEPTH_YACHT_DEVICE,
+)
+"""Entête des fichiers Yacht Device."""
+
 
 FACTORY_PARSER: dict[tuple[Header | None, str], Type[DataParserABC]] = {
     (DCDB_HEADER, ids.NORMALIZED_CSV): DataParserBCDB,
@@ -97,6 +106,7 @@ FACTORY_PARSER: dict[tuple[Header | None, str], Type[DataParserABC]] = {
     (HYDROBLOCK_HEADER, ids.NORMALIZED_TXT): DataParserHydroBlock,
     (B12_CSB_HEADER, ids.NORMALIZED_GEOJSON): DataParserB12CSB,
     (WIBL_HEADER, ids.NORMALIZED_WIBL): DataParserWIBL,
+    (YACHT_DEVICE_HEADER, ids.NORMALIZED_CSV): DataParserYachtDevice,
 }
 """Dictionnaire associant les entêtes et les extensions aux parsers."""
 

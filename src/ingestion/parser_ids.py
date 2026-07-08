@@ -113,6 +113,20 @@ LONGITUDE_HYDROBLOCK: str = "longitude"
 CHARTDATUMHEIGHT_HYDROBLOCK: str = "chartdatumheight"
 """Valeur de la constante pour la colonne de profondeur au zéro des cartes des données HydroBlock."""
 
+# Constantes pour les noms des colonnes des données Yacht Device.
+YACHT_DEVICE: str = "YachtDevice"
+"""Valeur de la constante pour le type de données Yacht Device."""
+TIME_YACHT_DEVICE: str = "Time"
+"""Valeur de la constante pour la colonne de temps des données Yacht Device."""
+LATITUDE_YACHT_DEVICE: str = "Latitude"
+"""Valeur de la constante pour la colonne de latitude des données Yacht Device."""
+LONGITUDE_YACHT_DEVICE: str = "Longitude"
+"""Valeur de la constante pour la colonne de longitude des données Yacht Device."""
+DEPTH_YACHT_DEVICE: str = "Depth"
+"""Valeur de la constante pour la colonne de profondeur des données Yacht Device."""
+SOG_YACHT_DEVICE: str = "SOG"
+"""Valeur de la constante pour la colonne de vitesse sur le fond des données Yacht Device."""
+
 # Constantes pour les dtypes des données.
 FLOAT64: str = "float64"
 """Valeur de la constante pour le type de données float64."""
