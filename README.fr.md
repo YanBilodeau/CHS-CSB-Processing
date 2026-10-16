@@ -111,11 +111,15 @@ Vous êtes maintenant prêt à utiliser le module CHS-CSB-Processing !
 # Interface graphique utilisateur (GUI)
 
 Une interface graphique utilisateur (GUI) est disponible pour faciliter l'utilisation du module. Vous pouvez la lancer
-en exécutant la commande suivante dans le terminal :
+depuis l'environnement synchronisé par UV avec la commande suivante :
 
 ```bash
-python web_ui.py
+uv run python src\web_ui.py
 ```
+
+Si vous préférez activer l'environnement virtuel manuellement d'abord, exécutez `python src\web_ui.py` après
+l'activation. Évitez de lancer la GUI depuis un interpréteur global non synchronisé, car une dérive de versions entre
+NiceGUI, FastAPI et Starlette peut empêcher le démarrage.
 
 ---
 
@@ -754,4 +758,3 @@ de configuration TOML. Voici un exemple de fichier :
 Pour tous les attributs `time_stamp`, le format doit être ISO 8601 (ex. : `"2021-09-25T00:00:00Z"`). De plus, le
 `time_stamp`
 indique la date à partir de laquelle la configuration est valide.
-

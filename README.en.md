@@ -107,11 +107,14 @@ You are now ready to use the CHS-CSB-Processing module!
 # Graphical User Interface (GUI)
 
 A graphical user interface (GUI) is available to facilitate the processing of bathymetric files. You can launch the GUI
-by running the following command:
+from the UV-synced environment with the following command:
 
 ```bash
-python web_ui.py
+uv run python src\web_ui.py
 ```
+
+If you prefer to activate the virtual environment manually first, run `python src\web_ui.py` after activation. Avoid
+launching the GUI from an unsynced global interpreter, as NiceGUI/FastAPI/Starlette version drift can prevent startup.
 
 ---
 
@@ -738,4 +741,3 @@ Here is an example file:
 
 For all `time_stamp` attributes, the format must be ISO 8601 (e.g., `"2021-09-25T00:00:00Z"`). Additionally, the
 `time_stamp` indicates the date from which the configuration is valid.
-
