@@ -6,6 +6,7 @@ Public API: :func:`repair_wibl_timestamps_position_aware`.
 from __future__ import annotations
 
 import math
+from bisect import bisect_left
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -33,6 +34,78 @@ class RepairResult:
     gap_report_file: Path | None
     adaptive_reconstructed_intervals: int = 0
     low_confidence_reconstructed_intervals: int = 0
+    rejected_timestamp_anchors: int = 0
+    ambiguous_anchor_conflicts: int = 0
+
+
+def _longest_increasing_anchor_sequence(
+    candidate_indices: np.ndarray, parsed_ns: np.ndarray
+) -> np.ndarray:
+    """Return the longest strictly increasing time sequence in file order.
+
+    This is an O(n log n) longest-increasing-subsequence implementation. When
+    duplicate timestamps create equivalent tails, the earlier row is retained
+    deterministically. The function selects only which timestamps may be used
+    as anchors; it never changes any timestamp itself.
+    """
+    if len(candidate_indices) == 0:
+        return np.array([], dtype=np.int64)
+
+    tails_ns: list[int] = []
+    tails_positions: list[int] = []
+    predecessor = np.full(len(candidate_indices), -1, dtype=np.int64)
+
+    for position, row_index in enumerate(candidate_indices):
+        value = int(parsed_ns[int(row_index)])
+        slot = bisect_left(tails_ns, value)
+        if slot > 0:
+            predecessor[position] = tails_positions[slot - 1]
+
+        if slot == len(tails_ns):
+            tails_ns.append(value)
+            tails_positions.append(position)
+        elif value < tails_ns[slot]:
+            tails_ns[slot] = value
+            tails_positions[slot] = position
+        # For equal timestamps, keep the earlier tail. A duplicate timestamp
+        # cannot be a strictly increasing anchor after the first occurrence.
+
+    cursor = tails_positions[-1]
+    selected_positions: list[int] = []
+    while cursor >= 0:
+        selected_positions.append(cursor)
+        cursor = int(predecessor[cursor])
+    selected_positions.reverse()
+    return candidate_indices[np.asarray(selected_positions, dtype=np.int64)]
+
+
+def _classify_rejected_anchor(
+    row_index: int,
+    timestamp_ns: int,
+    accepted_indices: np.ndarray,
+    parsed_ns: np.ndarray,
+    margin_seconds: float,
+) -> tuple[str, int | None, int | None]:
+    """Classify a discarded candidate as clearly inconsistent or ambiguous.
+
+    Automatic rejection is considered well-supported only when the candidate
+    lies at least ``margin_seconds`` outside timestamps of accepted anchors on
+    both sides. Otherwise its surrounding interval is kept unresolved.
+    """
+    insertion = int(np.searchsorted(accepted_indices, row_index))
+    previous_row = int(accepted_indices[insertion - 1]) if insertion > 0 else None
+    next_row = (
+        int(accepted_indices[insertion]) if insertion < len(accepted_indices) else None
+    )
+    if previous_row is None or next_row is None:
+        return "ambiguous_unbracketed_anchor", previous_row, next_row
+
+    previous_ns = int(parsed_ns[previous_row])
+    next_ns = int(parsed_ns[next_row])
+    margin_ns = int(round(margin_seconds * 1e9))
+    if timestamp_ns <= previous_ns - margin_ns or timestamp_ns >= next_ns + margin_ns:
+        return "rejected_outside_monotonic_envelope", previous_row, next_row
+    return "ambiguous_alternative_monotonic_sequence", previous_row, next_row
 
 
 def _utc_cutoff(value: str | datetime | pd.Timestamp | None) -> pd.Timestamp:
@@ -287,6 +360,7 @@ def repair_wibl_timestamps_position_aware(
     adaptive_max_period_factor: float = 1.25,
     adaptive_low_confidence_max_factor: float = 1.5,
     adaptive_reconstruct_low_confidence: bool = False,
+    anchor_inconsistency_margin_seconds: float = 30.0,
 ) -> RepairResult:
     """Repair corrupt times without interpolating blindly through likely gaps.
 
@@ -303,6 +377,14 @@ def repair_wibl_timestamps_position_aware(
     explicitly low-confidence estimates. ``cadence_mode="strict"`` retains
     the prior behavior of leaving all warned intervals without a position
     boundary unresolved.
+
+    Candidate anchors must form a strictly increasing timestamp sequence. A
+    longest-increasing-subsequence filter discards conflicting candidates. A
+    discarded candidate is automatically classified as clearly inconsistent
+    only when bracketed accepted anchors place it at least
+    ``anchor_inconsistency_margin_seconds`` outside their time envelope. If the
+    evidence is ambiguous, the affected interval (or file edge) remains blank
+    in the output rather than being reconstructed speculatively.
     """
     source, destination = Path(input_file), Path(output_file)
     cutoff = _utc_cutoff(valid_until)
@@ -315,6 +397,7 @@ def repair_wibl_timestamps_position_aware(
         "gap_factor": gap_factor,
         "min_gap_excess_seconds": min_gap_excess_seconds,
         "position_jump_margin": position_jump_margin,
+        "anchor_inconsistency_margin_seconds": anchor_inconsistency_margin_seconds,
     }.items():
         if not math.isfinite(value) or value <= 0:
             raise ValueError(f"{name} must be a finite positive value.")
@@ -357,20 +440,78 @@ def repair_wibl_timestamps_position_aware(
 
     original_times = df[time_col].copy()
     parsed = _parse_times(df[time_col])
-    anchor_mask = (parsed.notna() & (parsed <= cutoff)).to_numpy()
-    anchors = np.flatnonzero(anchor_mask)
+    candidate_anchor_mask = (parsed.notna() & (parsed <= cutoff)).to_numpy()
+    candidate_anchors = np.flatnonzero(candidate_anchor_mask)
+    parsed_ns = parsed.astype("int64", copy=False).to_numpy()
+    if len(candidate_anchors) < 2:
+        raise ValueError(
+            f"Only {len(candidate_anchors)} timestamp candidates found; at least two are required."
+        )
+
+    # Do not assume that every non-future timestamp is valid. Remove only the
+    # conflicting candidates from the anchor set instead of failing the entire
+    # file. Actual row timestamps are reconstructed later where evidence allows.
+    anchors = _longest_increasing_anchor_sequence(candidate_anchors, parsed_ns)
     if len(anchors) < 2:
         raise ValueError(
-            f"Only {len(anchors)} valid anchors found; at least two are required."
+            "Fewer than two strictly increasing timestamp anchors remain after "
+            "temporal consistency screening; safe reconstruction is not possible."
         )
-    parsed_ns = parsed.astype("int64", copy=False).to_numpy()
+    anchor_mask = np.zeros(len(df), dtype=bool)
+    anchor_mask[anchors] = True
+    rejected_anchor_indices = np.setdiff1d(
+        candidate_anchors, anchors, assume_unique=True
+    )
+    rejected_anchor_mask = np.zeros(len(df), dtype=bool)
+    rejected_anchor_mask[rejected_anchor_indices] = True
+    anchor_rejection_reason = np.full(len(df), "", dtype=object)
+    ambiguous_anchor_rows: set[int] = set()
+    anchor_events: list[dict[str, object]] = []
+    for row_index in rejected_anchor_indices:
+        row_index = int(row_index)
+        reason, previous_row, next_row = _classify_rejected_anchor(
+            row_index,
+            int(parsed_ns[row_index]),
+            anchors,
+            parsed_ns,
+            anchor_inconsistency_margin_seconds,
+        )
+        anchor_rejection_reason[row_index] = reason
+        if reason.startswith("ambiguous"):
+            ambiguous_anchor_rows.add(row_index)
+        anchor_events.append(
+            {
+                "event_type": (
+                    "timestamp_anchor_rejected"
+                    if reason.startswith("rejected")
+                    else "timestamp_anchor_conflict_ambiguous"
+                ),
+                "candidate_row": row_index + 1,
+                "original_timestamp": str(original_times.iloc[row_index]),
+                "anchor_selection_reason": reason,
+                "previous_accepted_anchor_row": (
+                    previous_row + 1 if previous_row is not None else ""
+                ),
+                "previous_accepted_anchor_time": (
+                    str(original_times.iloc[previous_row])
+                    if previous_row is not None
+                    else ""
+                ),
+                "next_accepted_anchor_row": (
+                    next_row + 1 if next_row is not None else ""
+                ),
+                "next_accepted_anchor_time": (
+                    str(original_times.iloc[next_row]) if next_row is not None else ""
+                ),
+                "inconsistency_margin_seconds": anchor_inconsistency_margin_seconds,
+                "handling": (
+                    "rejected_and_reconstructable"
+                    if reason.startswith("rejected")
+                    else "ambiguous_region_left_unresolved"
+                ),
+            }
+        )
     anchor_ns = parsed_ns[anchors]
-    if np.any(np.diff(anchor_ns) <= 0):
-        bad = int(np.flatnonzero(np.diff(anchor_ns) <= 0)[0])
-        raise ValueError(
-            "Trustworthy timestamp anchors are not strictly increasing near rows "
-            f"{anchors[bad] + 1} and {anchors[bad + 1] + 1}."
-        )
 
     lon = pd.to_numeric(df[lon_col], errors="coerce").to_numpy(dtype=float)
     lat = pd.to_numeric(df[lat_col], errors="coerce").to_numpy(dtype=float)
@@ -672,6 +813,34 @@ def repair_wibl_timestamps_position_aware(
             else flags["base_period"]
         )
 
+        ambiguous_inside = sorted(
+            row for row in ambiguous_anchor_rows if left < row < right
+        )
+        if ambiguous_inside:
+            # A candidate that could belong to another equally plausible anchor
+            # sequence makes the bracket ambiguous. Keep the timestamps blank
+            # over this interval instead of selecting a reconstruction arbitrarily.
+            status[left + 1 : right] = "unresolved_ambiguous_timestamp_anchor_conflict"
+            unresolved_intervals.append(pair)
+            for event in temporal_events:
+                if (
+                    event["left_anchor_row"] == left + 1
+                    and event["right_anchor_row"] == right + 1
+                ):
+                    event["handling"] = "unresolved_ambiguous_timestamp_anchor_conflict"
+            temporal_events.append(
+                {
+                    "event_type": "ambiguous_anchor_conflict_interval",
+                    "left_anchor_row": left + 1,
+                    "right_anchor_row": right + 1,
+                    "ambiguous_candidate_rows": ";".join(
+                        str(row + 1) for row in ambiguous_inside
+                    ),
+                    "handling": "left_unresolved_to_avoid_speculative_reconstruction",
+                }
+            )
+            continue
+
         if cut_indices:
             # Baseline time is assigned to normal steps; any excess elapsed time
             # is concentrated at the position discontinuity(ies), not smeared
@@ -836,18 +1005,26 @@ def repair_wibl_timestamps_position_aware(
         )
     )
     first, last = int(anchors[0]), int(anchors[-1])
-    for row in range(first - 1, -1, -1):
-        corrected_ns[row] = int(parsed_ns[first]) - int(
-            round((first - row) * leading_period * 1e9)
-        )
-        assigned[row] = True
-        status[row] = "extrapolated_before_first_anchor"
-    for row in range(last + 1, row_count):
-        corrected_ns[row] = int(parsed_ns[last]) + int(
-            round((row - last) * trailing_period * 1e9)
-        )
-        assigned[row] = True
-        status[row] = "extrapolated_after_last_anchor"
+    ambiguous_leading = any(row < first for row in ambiguous_anchor_rows)
+    ambiguous_trailing = any(row > last for row in ambiguous_anchor_rows)
+    if ambiguous_leading:
+        status[:first] = "unresolved_ambiguous_timestamp_anchor_at_leading_edge"
+    else:
+        for row in range(first - 1, -1, -1):
+            corrected_ns[row] = int(parsed_ns[first]) - int(
+                round((first - row) * leading_period * 1e9)
+            )
+            assigned[row] = True
+            status[row] = "extrapolated_before_first_anchor"
+    if ambiguous_trailing:
+        status[last + 1 :] = "unresolved_ambiguous_timestamp_anchor_at_trailing_edge"
+    else:
+        for row in range(last + 1, row_count):
+            corrected_ns[row] = int(parsed_ns[last]) + int(
+                round((row - last) * trailing_period * 1e9)
+            )
+            assigned[row] = True
+            status[row] = "extrapolated_after_last_anchor"
 
     # Segment labels reflect only accepted position boundaries.
     segment_id = np.ones(row_count, dtype=int)
@@ -905,7 +1082,10 @@ def repair_wibl_timestamps_position_aware(
             "data_row": np.arange(1, row_count + 1),
             "segment_id": segment_id,
             "timestamp_status": status,
+            "timestamp_anchor_candidate": candidate_anchor_mask,
             "anchor_preserved": anchor_mask,
+            "anchor_rejected_from_trusted_set": rejected_anchor_mask,
+            "anchor_rejection_reason": anchor_rejection_reason,
             "original_time": original_times,
             "corrected_time": time_text,
             "timestamp_assigned": assigned,
@@ -1005,7 +1185,9 @@ def repair_wibl_timestamps_position_aware(
         _atomic_csv(report_frame, report_path)
     gap_path = Path(gap_report_file) if gap_report_file else None
     if gap_path:
-        _atomic_csv(pd.DataFrame(temporal_events + position_events), gap_path)
+        _atomic_csv(
+            pd.DataFrame(temporal_events + position_events + anchor_events), gap_path
+        )
 
     corrected_count = int((assigned & ~anchor_mask).sum())
     unresolved_count = int((~assigned).sum())
@@ -1023,4 +1205,6 @@ def repair_wibl_timestamps_position_aware(
         gap_report_file=gap_path,
         adaptive_reconstructed_intervals=adaptive_reconstructed_intervals,
         low_confidence_reconstructed_intervals=low_confidence_reconstructed_intervals,
+        rejected_timestamp_anchors=int(len(rejected_anchor_indices)),
+        ambiguous_anchor_conflicts=int(len(ambiguous_anchor_rows)),
     )

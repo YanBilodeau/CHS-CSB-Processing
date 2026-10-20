@@ -97,6 +97,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="Also reconstruct low-confidence intervals; may interpolate across an unlocated gap.",
     )
     parser.add_argument(
+        "--anchor-inconsistency-margin-seconds",
+        type=float,
+        default=30.0,
+        help=(
+            "Minimum time-envelope violation needed to reject a conflicting anchor "
+            "automatically (default 30 s). Smaller conflicts are left unresolved."
+        ),
+    )
+    parser.add_argument(
         "--report",
         action="store_true",
         help="Write row-level QA and gap-event CSV reports.",
@@ -130,12 +139,16 @@ def _process_one(
         adaptive_max_period_factor=args.adaptive_max_period_factor,
         adaptive_low_confidence_max_factor=args.adaptive_low_confidence_max_factor,
         adaptive_reconstruct_low_confidence=args.adaptive_reconstruct_low_confidence,
+        anchor_inconsistency_margin_seconds=args.anchor_inconsistency_margin_seconds,
         report_file=report_path,
         gap_report_file=gap_path,
     )
     print(
         f"[OK] {source.name}: {result.corrected_rows:,} timestamps corrected, {result.anchors:,} anchors, "
-        f"{result.unresolved_rows:,} rows unresolved, {result.segment_boundaries} segment boundaries, "
+        f"{result.unresolved_rows:,} rows unresolved, "
+        f"{result.rejected_timestamp_anchors:,} conflicting anchors rejected, "
+        f"{result.ambiguous_anchor_conflicts:,} ambiguous anchor conflicts, "
+        f"{result.segment_boundaries} segment boundaries, "
         f"{result.adaptive_reconstructed_intervals} adaptive intervals "
         f"({result.low_confidence_reconstructed_intervals} low-confidence); "
         f"fallback cadence={result.nominal_seconds_per_row:.3f} s/row -> {destination}"

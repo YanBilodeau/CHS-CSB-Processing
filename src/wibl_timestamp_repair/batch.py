@@ -11,7 +11,6 @@ import pandas as pd
 
 from .repair import RepairResult, _find_column, repair_wibl_timestamps_position_aware
 
-WIBL_EXTENSIONS = frozenset({".0", ".1", ".2", ".x"})
 TABLE_EXTENSIONS = frozenset({".txt", ".csv"})
 
 
@@ -44,11 +43,7 @@ def discover_wibl_files(
         raise NotADirectoryError(f"WIBL directory does not exist: {root}")
     iterator = root.rglob("*") if recursive else root.iterdir()
     return sorted(
-        (
-            path
-            for path in iterator
-            if path.is_file() and path.suffix.casefold() in WIBL_EXTENSIONS
-        ),
+        (path for path in iterator if path.is_file() and path.suffix[1:].isdigit()),
         key=lambda path: str(path).casefold(),
     )
 
@@ -99,6 +94,7 @@ def repair_wibl_files(
     adaptive_max_period_factor: float = 1.25,
     adaptive_low_confidence_max_factor: float = 1.5,
     adaptive_reconstruct_low_confidence: bool = False,
+    anchor_inconsistency_margin_seconds: float = 30.0,
 ) -> BatchRepairResult:
     """Repair multiple converted TXT/CSV files into one output directory.
 
@@ -151,6 +147,7 @@ def repair_wibl_files(
                 adaptive_max_period_factor=adaptive_max_period_factor,
                 adaptive_low_confidence_max_factor=adaptive_low_confidence_max_factor,
                 adaptive_reconstruct_low_confidence=adaptive_reconstruct_low_confidence,
+                anchor_inconsistency_margin_seconds=anchor_inconsistency_margin_seconds,
                 report_file=report_path,
                 gap_report_file=gap_path,
             )

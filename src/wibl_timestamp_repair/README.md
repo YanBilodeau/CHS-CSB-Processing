@@ -27,6 +27,38 @@ print(result.corrected_rows, result.unresolved_rows)
 ```
 
 
+## Temporal anchor consistency (v0.4.0)
+
+A timestamp earlier than `valid_until` is only a *candidate* anchor; it is not
+automatically trusted. The repair API now selects a maximum strictly increasing
+sequence of timestamp candidates in file order (longest increasing subsequence).
+Conflicting candidates no longer abort the entire file. They are listed in the
+gap-event report as `timestamp_anchor_rejected` or
+`timestamp_anchor_conflict_ambiguous`, and the row-level report exposes
+`timestamp_anchor_candidate`, `anchor_preserved`,
+`anchor_rejected_from_trusted_set`, and `anchor_rejection_reason`.
+
+```python
+result = repair_wibl_timestamps_position_aware(
+    input_file=r"D:\Survey\wibl-raw.10.txt",
+    output_file=r"D:\Survey\repaired\wibl-raw.10.txt",
+    valid_until="2026-10-20T23:59:59Z",
+    anchor_inconsistency_margin_seconds=30.0,
+    report_file=r"D:\Survey\repaired\position_report.csv",
+    gap_report_file=r"D:\Survey\repaired\gap_events.csv",
+)
+print("Rejected candidates:", result.rejected_timestamp_anchors)
+print("Ambiguous conflicts:", result.ambiguous_anchor_conflicts)
+```
+
+`anchor_inconsistency_margin_seconds` is the minimum time by which a rejected
+candidate must lie outside the accepted anchors' temporal envelope to be treated
+as clearly inconsistent. The default is 30 seconds. If it cannot be safely
+classified—for example, it is not bracketed by accepted anchors or falls within
+the envelope within the tolerance—the affected interval or file edge remains
+unresolved instead of being interpolated speculatively. The discarded candidate
+rows and their neighboring anchors are recorded in the event report.
+
 ## Cadence-aware gap screening
 
 Use `expected_record_frequency_hz` to specify the expected *output-record cadence* in records per second (not the sonar acoustic carrier frequency). For example, `1.0` means one record per second; `0.5` means one record every two seconds. This parameter is optional, so the existing inferred-local-cadence behavior remains the default.
@@ -92,7 +124,7 @@ for path in raw_files:
     print(path)
 ```
 
-This function only locates the raw files; it does **not** decode/convert the binary WIBL format. Timestamp repair operates on converted TXT/CSV tables containing `Time`, `Longitude` and `Latitude` columns.
+The function accepts numbered suffixes via `path.suffix[1:].isdigit()` and also retains `.x`; paths are sorted by `str(path).casefold()`. This only locates raw files; it does **not** decode/convert the binary WIBL format. Timestamp repair operates on converted TXT/CSV tables containing `Time`, `Longitude` and `Latitude` columns.
 
 ## Repair several converted tables
 
