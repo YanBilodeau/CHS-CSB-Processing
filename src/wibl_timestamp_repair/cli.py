@@ -51,7 +51,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--gap-factor",
         type=float,
         default=2.5,
-        help="Strong-gap threshold relative to local cadence (default 2.5).",
+        help="Strong-gap threshold relative to the reference cadence (configured rate if provided; otherwise inferred local cadence; default 2.5).",
     )
     parser.add_argument(
         "--min-gap-excess-seconds",
@@ -64,6 +64,37 @@ def build_parser() -> argparse.ArgumentParser:
         type=float,
         default=1.5,
         help="Safety margin on max-speed distance per record (default 1.5).",
+    )
+    parser.add_argument(
+        "--expected-record-frequency-hz",
+        type=float,
+        help=(
+            "Expected output-record cadence in records/second (e.g. 1.0 for one record per second); "
+            "used as an independent baseline to flag suspicious anchor intervals."
+        ),
+    )
+    parser.add_argument(
+        "--cadence-mode",
+        choices=("adaptive", "strict"),
+        default="adaptive",
+        help="Adaptive reconstruction for plausible cadence regimes (default) or strict conservative mode.",
+    )
+    parser.add_argument(
+        "--adaptive-max-period-factor",
+        type=float,
+        default=1.25,
+        help="Maximum relative deviation from an adjacent clean cadence regime for medium confidence (default 1.25).",
+    )
+    parser.add_argument(
+        "--adaptive-low-confidence-max-factor",
+        type=float,
+        default=1.5,
+        help="Maximum relative deviation eligible for low-confidence reconstruction (default 1.5).",
+    )
+    parser.add_argument(
+        "--adaptive-reconstruct-low-confidence",
+        action="store_true",
+        help="Also reconstruct low-confidence intervals; may interpolate across an unlocated gap.",
     )
     parser.add_argument(
         "--report",
@@ -94,12 +125,19 @@ def _process_one(
         gap_factor=args.gap_factor,
         min_gap_excess_seconds=args.min_gap_excess_seconds,
         position_jump_margin=args.position_jump_margin,
+        expected_record_frequency_hz=args.expected_record_frequency_hz,
+        cadence_mode=args.cadence_mode,
+        adaptive_max_period_factor=args.adaptive_max_period_factor,
+        adaptive_low_confidence_max_factor=args.adaptive_low_confidence_max_factor,
+        adaptive_reconstruct_low_confidence=args.adaptive_reconstruct_low_confidence,
         report_file=report_path,
         gap_report_file=gap_path,
     )
     print(
         f"[OK] {source.name}: {result.corrected_rows:,} timestamps corrected, {result.anchors:,} anchors, "
-        f"{result.unresolved_rows:,} rows unresolved, {result.segment_boundaries} segment boundaries; "
+        f"{result.unresolved_rows:,} rows unresolved, {result.segment_boundaries} segment boundaries, "
+        f"{result.adaptive_reconstructed_intervals} adaptive intervals "
+        f"({result.low_confidence_reconstructed_intervals} low-confidence); "
         f"fallback cadence={result.nominal_seconds_per_row:.3f} s/row -> {destination}"
     )
     return result

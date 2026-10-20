@@ -362,6 +362,7 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    files = find_wibl_files(Path(r"D:\WIBL\logs"))
-    convert_wibl_files_to_directory(files, Path(r"D:\WIBL\output"))
+    # files = find_wibl_files(Path(r"D:\WIBL\logs"))
+    # convert_wibl_files_to_directory(files, Path(r"D:\WIBL\output"))
+    convert_wibl_to_ascii(Path(r"D:\WIBL\wibl-raw.27"), Path(r"D:\WIBL\wibl-raw.txt"))
     # raise SystemExit(main())

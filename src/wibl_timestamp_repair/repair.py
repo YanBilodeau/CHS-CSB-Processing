@@ -31,6 +31,8 @@ class RepairResult:
     temporal_gap_candidates: int
     report_file: Path | None
     gap_report_file: Path | None
+    adaptive_reconstructed_intervals: int = 0
+    low_confidence_reconstructed_intervals: int = 0
 
 
 def _utc_cutoff(value: str | datetime | pd.Timestamp | None) -> pd.Timestamp:
@@ -183,6 +185,85 @@ def _edge_period(
     return float(np.median([rate for _, rate in selected]))
 
 
+def _neighbor_regime_period(
+    direction: str,
+    interval_index: int,
+    anchor_indices: np.ndarray,
+    anchor_rates: np.ndarray,
+    temporal_flags: dict[tuple[int, int], dict[str, object]],
+    global_period: float,
+    position_cuts: set[int],
+    *,
+    window: int = 8,
+) -> float | None:
+    """Estimate the adjacent cadence regime from nearby non-suspicious intervals.
+
+    Anchor-pair rates already account for the number of rows between anchors.
+    Suspicious temporal intervals and intervals containing a large position step
+    are excluded so they cannot contaminate the local baseline.
+    """
+    if direction == "before":
+        indices = range(interval_index - 1, max(-1, interval_index - window - 1), -1)
+    elif direction == "after":
+        indices = range(
+            interval_index + 1, min(len(anchor_rates), interval_index + window + 1)
+        )
+    else:
+        raise ValueError("direction must be 'before' or 'after'.")
+
+    samples: list[float] = []
+    for j in indices:
+        left, right = int(anchor_indices[j]), int(anchor_indices[j + 1])
+        flags = temporal_flags.get((left, right), {})
+        if bool(flags.get("warning", False)):
+            continue
+        if any(left <= cut < right for cut in position_cuts):
+            continue
+        rate = float(anchor_rates[j])
+        if not math.isfinite(rate) or rate <= 0:
+            continue
+        # Broad limits reject corrupt/outlying intervals but retain genuine local
+        # regimes such as approximately 1.0 s/record and 1.33 s/record.
+        if not global_period * 0.25 <= rate <= global_period * 2.5:
+            continue
+        samples.append(rate)
+    return float(np.median(samples)) if samples else None
+
+
+def _classify_adaptive_cadence(
+    observed_period: float,
+    before_period: float | None,
+    after_period: float | None,
+    medium_factor: float,
+    low_factor: float,
+) -> tuple[str, float | None, str]:
+    """Classify whether a warned interval is compatible with a cadence regime.
+
+    The best matching adjacent regime is used only as a plausibility check. The
+    interval's own anchor-to-anchor mean remains the interpolation period because
+    it is the only value that preserves both trustworthy anchors exactly.
+    """
+    candidates = [
+        period for period in (before_period, after_period) if period is not None
+    ]
+    if not candidates:
+        return "none", None, "no_clean_adjacent_cadence_regime"
+    deviations = [abs(observed_period - period) / period for period in candidates]
+    best_deviation = min(deviations)
+    if best_deviation <= medium_factor - 1.0:
+        confidence = "medium"
+        reason = "observed_period_matches_adjacent_regime_within_medium_tolerance"
+    elif best_deviation <= low_factor - 1.0:
+        confidence = "low"
+        reason = "observed_period_matches_adjacent_regime_only_with_low_confidence"
+    else:
+        confidence = "none"
+        reason = (
+            "observed_period_too_different_from_adjacent_regimes_possible_unlocated_gap"
+        )
+    return confidence, float(best_deviation), reason
+
+
 def _atomic_csv(frame: pd.DataFrame, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(path.name + ".tmp")
@@ -201,8 +282,28 @@ def repair_wibl_timestamps_position_aware(
     position_jump_margin: float = 1.5,
     report_file: str | Path | None = None,
     gap_report_file: str | Path | None = None,
+    expected_record_frequency_hz: float | None = None,
+    cadence_mode: str = "adaptive",
+    adaptive_max_period_factor: float = 1.25,
+    adaptive_low_confidence_max_factor: float = 1.5,
+    adaptive_reconstruct_low_confidence: bool = False,
 ) -> RepairResult:
-    """Repair corrupt times without interpolating blindly through likely gaps."""
+    """Repair corrupt times without interpolating blindly through likely gaps.
+
+    ``expected_record_frequency_hz`` is the expected output-record cadence in
+    records per second (not the sonar's acoustic carrier frequency). When set,
+    it provides an independent baseline to flag anchor intervals whose elapsed
+    time is incompatible with the expected sampling cadence.
+
+    ``cadence_mode="adaptive"`` (default) allows a warned interval to be
+    reconstructed when its observed mean period is plausibly explained by one
+    of the adjacent clean cadence regimes. It preserves both anchors exactly.
+    Intervals that require a much slower unexplained regime remain unresolved
+    by default; ``adaptive_reconstruct_low_confidence=True`` opts in to those
+    explicitly low-confidence estimates. ``cadence_mode="strict"`` retains
+    the prior behavior of leaving all warned intervals without a position
+    boundary unresolved.
+    """
     source, destination = Path(input_file), Path(output_file)
     cutoff = _utc_cutoff(valid_until)
     if not source.is_file():
@@ -217,6 +318,31 @@ def repair_wibl_timestamps_position_aware(
     }.items():
         if not math.isfinite(value) or value <= 0:
             raise ValueError(f"{name} must be a finite positive value.")
+    if expected_record_frequency_hz is not None and (
+        not math.isfinite(expected_record_frequency_hz)
+        or expected_record_frequency_hz <= 0
+    ):
+        raise ValueError(
+            "expected_record_frequency_hz must be a finite positive value when provided."
+        )
+    if cadence_mode not in {"adaptive", "strict"}:
+        raise ValueError("cadence_mode must be either 'adaptive' or 'strict'.")
+    for name, value in {
+        "adaptive_max_period_factor": adaptive_max_period_factor,
+        "adaptive_low_confidence_max_factor": adaptive_low_confidence_max_factor,
+    }.items():
+        if not math.isfinite(value) or value <= 1.0:
+            raise ValueError(f"{name} must be finite and greater than 1.0.")
+    if adaptive_low_confidence_max_factor < adaptive_max_period_factor:
+        raise ValueError(
+            "adaptive_low_confidence_max_factor must be greater than or equal to "
+            "adaptive_max_period_factor."
+        )
+    configured_record_period = (
+        1.0 / expected_record_frequency_hz
+        if expected_record_frequency_hz is not None
+        else None
+    )
 
     df = pd.read_csv(source, dtype=str, keep_default_na=False)
     if df.empty:
@@ -225,6 +351,7 @@ def repair_wibl_timestamps_position_aware(
     epoch_col = _find_column(df.columns, "Epoch")
     lon_col = _find_column(df.columns, "Longitude")
     lat_col = _find_column(df.columns, "Latitude")
+    depth_col = _find_column(df.columns, "Depth")
     if not time_col or not lon_col or not lat_col:
         raise ValueError("Required columns: Time, Longitude, Latitude.")
 
@@ -247,14 +374,25 @@ def repair_wibl_timestamps_position_aware(
 
     lon = pd.to_numeric(df[lon_col], errors="coerce").to_numpy(dtype=float)
     lat = pd.to_numeric(df[lat_col], errors="coerce").to_numpy(dtype=float)
+    depth = (
+        pd.to_numeric(df[depth_col], errors="coerce").to_numpy(dtype=float)
+        if depth_col
+        else np.full(len(df), np.nan, dtype=float)
+    )
     row_count = len(df)
     distances = haversine_distances(lon, lat)
     global_period, anchor_rates = _estimate_global_period(anchors, anchor_ns)
 
     # First pass: position discontinuities that exceed the distance a vessel
     # could plausibly travel in one normal record interval.
+    position_reference_period = (
+        configured_record_period
+        if configured_record_period is not None
+        else global_period
+    )
     initial_threshold = (
-        max_speed_knots * KNOT_TO_MPS * global_period * position_jump_margin + 3.0
+        max_speed_knots * KNOT_TO_MPS * position_reference_period * position_jump_margin
+        + 3.0
     )
     raw_jump_candidates: set[int] = set()
     spike_rows: set[int] = set()
@@ -272,11 +410,23 @@ def repair_wibl_timestamps_position_aware(
     )
     period_per_row = np.full(row_count, global_period, dtype=float)
     for k, (left, right) in enumerate(zip(anchors[:-1], anchors[1:])):
-        period_per_row[int(left) : int(right)] = periods_initial[k]
+        period_per_row[int(left) : int(right)] = (
+            configured_record_period
+            if configured_record_period is not None
+            else periods_initial[k]
+        )
     if anchors[0] > 0:
-        period_per_row[: int(anchors[0])] = periods_initial[0]
+        period_per_row[: int(anchors[0])] = (
+            configured_record_period
+            if configured_record_period is not None
+            else periods_initial[0]
+        )
     if anchors[-1] < row_count - 1:
-        period_per_row[int(anchors[-1]) :] = periods_initial[-1]
+        period_per_row[int(anchors[-1]) :] = (
+            configured_record_period
+            if configured_record_period is not None
+            else periods_initial[-1]
+        )
     per_step_threshold = (
         max_speed_knots * KNOT_TO_MPS * period_per_row[:-1] * position_jump_margin + 3.0
     )
@@ -303,9 +453,17 @@ def repair_wibl_timestamps_position_aware(
         span = right - left
         observed_per_row = elapsed / span
         base_period = float(local_periods[k])
-        expected = span * base_period
+        # A configured record rate gives an independent reference. Without one,
+        # preserve the existing behavior based on inferred local cadence.
+        reference_period = (
+            configured_record_period
+            if configured_record_period is not None
+            else base_period
+        )
+        expected = span * reference_period
         excess = elapsed - expected
-        ratio = observed_per_row / base_period
+        ratio = observed_per_row / reference_period
+        local_ratio = observed_per_row / base_period
         severe = bool(ratio >= gap_factor and excess >= min_gap_excess_seconds)
         warning = bool(ratio >= 1.25 and excess >= min_gap_excess_seconds)
         temporal_flags[(left, right)] = {
@@ -313,9 +471,11 @@ def repair_wibl_timestamps_position_aware(
             "span": span,
             "observed_per_row": observed_per_row,
             "base_period": base_period,
+            "reference_period": reference_period,
             "expected": expected,
             "excess": excess,
             "ratio": ratio,
+            "local_ratio": local_ratio,
             "severe": severe,
             "warning": warning,
         }
@@ -335,13 +495,51 @@ def repair_wibl_timestamps_position_aware(
                 "right_anchor_row": right + 1,
                 "elapsed_seconds": round(elapsed, 6),
                 "records_between_anchors": span - 1,
+                "record_intervals_between_anchors": span,
                 "observed_seconds_per_row": round(observed_per_row, 6),
                 "estimated_local_seconds_per_row": round(base_period, 6),
-                "expected_seconds_at_local_cadence": round(expected, 6),
-                "excess_seconds_over_local_cadence": round(excess, 6),
-                "observed_to_local_cadence_ratio": round(ratio, 6),
+                "expected_record_frequency_hz": (
+                    round(float(expected_record_frequency_hz), 6)
+                    if expected_record_frequency_hz is not None
+                    else ""
+                ),
+                "reference_seconds_per_record": round(reference_period, 6),
+                "cadence_reference": (
+                    "configured_record_frequency"
+                    if configured_record_period is not None
+                    else "estimated_local_cadence"
+                ),
+                "expected_seconds_at_local_cadence": round(span * base_period, 6),
+                "excess_seconds_over_local_cadence": round(
+                    elapsed - span * base_period, 6
+                ),
+                "observed_to_local_cadence_ratio": round(local_ratio, 6),
+                "expected_seconds_at_reference_cadence": round(expected, 6),
+                "excess_seconds_over_reference_cadence": round(excess, 6),
+                "observed_to_reference_cadence_ratio": round(ratio, 6),
                 "severe_gap_candidate": severe,
                 "position_boundary_rows": "",
+                "cadence_regime_before_s_per_record": np.nan,
+                "cadence_regime_after_s_per_record": np.nan,
+                "adaptive_period_s_per_record": np.nan,
+                "adaptive_best_regime_deviation_pct": np.nan,
+                "adaptive_confidence": "not_evaluated",
+                "adaptive_decision": "pending_position_check",
+                "depth_median_in_interval": (
+                    round(float(np.nanmedian(depth[left : right + 1])), 3)
+                    if np.isfinite(depth[left : right + 1]).any()
+                    else np.nan
+                ),
+                "depth_min_in_interval": (
+                    round(float(np.nanmin(depth[left : right + 1])), 3)
+                    if np.isfinite(depth[left : right + 1]).any()
+                    else np.nan
+                ),
+                "depth_max_in_interval": (
+                    round(float(np.nanmax(depth[left : right + 1])), 3)
+                    if np.isfinite(depth[left : right + 1]).any()
+                    else np.nan
+                ),
                 "handling": "pending_position_check",
             }
         )
@@ -354,6 +552,99 @@ def repair_wibl_timestamps_position_aware(
         if contained:
             cut_by_pair[pair] = contained
 
+    # Evaluate whether each warned interval is compatible with a neighboring
+    # cadence regime. This stage is diagnostic; the main reconstruction loop
+    # below decides whether to apply the estimate based on cadence_mode.
+    adaptive_decisions: dict[tuple[int, int], dict[str, object]] = {}
+    pair_indices = {
+        (int(left), int(right)): k
+        for k, (left, right) in enumerate(zip(anchors[:-1], anchors[1:]))
+    }
+    for pair in sorted(warning_pairs):
+        left, right = pair
+        k = pair_indices[pair]
+        before_period = _neighbor_regime_period(
+            "before",
+            k,
+            anchors,
+            anchor_rates,
+            temporal_flags,
+            global_period,
+            raw_jump_candidates,
+        )
+        after_period = _neighbor_regime_period(
+            "after",
+            k,
+            anchors,
+            anchor_rates,
+            temporal_flags,
+            global_period,
+            raw_jump_candidates,
+        )
+        observed_period = float(temporal_flags[pair]["observed_per_row"])
+        confidence, deviation, reason = _classify_adaptive_cadence(
+            observed_period,
+            before_period,
+            after_period,
+            adaptive_max_period_factor,
+            adaptive_low_confidence_max_factor,
+        )
+        if pair in cut_by_pair:
+            reason = "position_boundary_available_use_position_aware_reconstruction"
+            confidence = "position_aware"
+        can_reconstruct = (
+            cadence_mode == "adaptive"
+            and pair not in cut_by_pair
+            and (
+                confidence == "medium"
+                or (confidence == "low" and adaptive_reconstruct_low_confidence)
+            )
+        )
+        adaptive_decisions[pair] = {
+            "before_period": before_period if before_period is not None else np.nan,
+            "after_period": after_period if after_period is not None else np.nan,
+            "observed_period": observed_period,
+            "best_deviation": deviation if deviation is not None else np.nan,
+            "confidence": confidence,
+            "decision": reason,
+            "reconstruct": can_reconstruct,
+        }
+        for event in temporal_events:
+            if (
+                event["left_anchor_row"] == left + 1
+                and event["right_anchor_row"] == right + 1
+            ):
+                event["cadence_regime_before_s_per_record"] = (
+                    round(float(before_period), 6)
+                    if before_period is not None
+                    else np.nan
+                )
+                event["cadence_regime_after_s_per_record"] = (
+                    round(float(after_period), 6)
+                    if after_period is not None
+                    else np.nan
+                )
+                event["adaptive_period_s_per_record"] = round(observed_period, 6)
+                event["adaptive_best_regime_deviation_pct"] = (
+                    round(float(deviation) * 100.0, 2)
+                    if deviation is not None
+                    else np.nan
+                )
+                event["adaptive_confidence"] = confidence
+                event["adaptive_decision"] = reason
+                if can_reconstruct:
+                    event["handling"] = (
+                        "adaptive_regime_reconstruction_medium_confidence"
+                        if confidence == "medium"
+                        else "adaptive_regime_reconstruction_low_confidence"
+                    )
+                elif cadence_mode == "strict" and pair not in cut_by_pair:
+                    event["handling"] = "unresolved_no_position_boundary_strict_mode"
+                elif pair not in cut_by_pair:
+                    event["handling"] = (
+                        "unresolved_no_position_boundary_adaptive_rejected"
+                    )
+
     corrected_ns = np.zeros(row_count, dtype=np.int64)
     assigned = np.zeros(row_count, dtype=bool)
     corrected_ns[anchors] = anchor_ns
@@ -364,6 +655,8 @@ def repair_wibl_timestamps_position_aware(
     unresolved_intervals: list[tuple[int, int]] = []
     position_events: list[dict[str, object]] = []
     cut_to_distance: dict[int, float] = {}
+    adaptive_reconstructed_intervals = 0
+    low_confidence_reconstructed_intervals = 0
 
     # Solve each anchor-bounded interval independently.
     for k, (left, right) in enumerate(zip(anchors[:-1], anchors[1:])):
@@ -373,7 +666,11 @@ def repair_wibl_timestamps_position_aware(
         flags = temporal_flags[pair]
         cut_indices = cut_by_pair.get(pair, [])
         elapsed = float(flags["elapsed"])
-        base_period = float(flags["base_period"])
+        base_period = float(
+            configured_record_period
+            if configured_record_period is not None
+            else flags["base_period"]
+        )
 
         if cut_indices:
             # Baseline time is assigned to normal steps; any excess elapsed time
@@ -462,22 +759,46 @@ def repair_wibl_timestamps_position_aware(
                     )
                     event["handling"] = handling
         else:
-            # Without a position boundary, do not manufacture a chronology across
-            # intervals whose duration is inconsistent with the local cadence.
+            # When there is no position boundary, a temporal warning is only
+            # reconstructed if the interval's observed mean cadence is compatible
+            # with a clean adjacent regime. The mean is required to preserve both
+            # anchors. We do not invent an unobservable changepoint inside the span.
             if pair in warning_pairs and span > 1:
-                status[left + 1 : right] = (
-                    "unresolved_temporal_gap_no_position_boundary"
-                )
-                unresolved_intervals.append(pair)
-                handling = "unresolved_no_position_boundary"
-                for event in temporal_events:
-                    if (
-                        event["left_anchor_row"] == left + 1
-                        and event["right_anchor_row"] == right + 1
-                    ):
-                        event["handling"] = handling
-                continue
-            if span > 1:
+                decision = adaptive_decisions.get(pair, {})
+                if bool(decision.get("reconstruct", False)):
+                    positions = np.arange(left + 1, right, dtype=np.int64)
+                    total_ns = int(parsed_ns[right]) - int(parsed_ns[left])
+                    corrected_ns[positions] = int(parsed_ns[left]) + (
+                        total_ns * (positions - left) // span
+                    )
+                    assigned[positions] = True
+                    confidence = str(decision.get("confidence", "medium"))
+                    status[positions] = (
+                        "adaptive_cadence_regime_reconstruction_low_confidence"
+                        if confidence == "low"
+                        else "adaptive_cadence_regime_reconstruction_medium_confidence"
+                    )
+                    adaptive_reconstructed_intervals += 1
+                    if confidence == "low":
+                        low_confidence_reconstructed_intervals += 1
+                else:
+                    status[left + 1 : right] = (
+                        "unresolved_temporal_gap_no_position_boundary"
+                    )
+                    unresolved_intervals.append(pair)
+                    handling = (
+                        "unresolved_no_position_boundary_strict_mode"
+                        if cadence_mode == "strict"
+                        else "unresolved_no_position_boundary_adaptive_rejected"
+                    )
+                    for event in temporal_events:
+                        if (
+                            event["left_anchor_row"] == left + 1
+                            and event["right_anchor_row"] == right + 1
+                        ):
+                            event["handling"] = handling
+                    continue
+            elif span > 1:
                 positions = np.arange(left + 1, right, dtype=np.int64)
                 total_ns = int(parsed_ns[right]) - int(parsed_ns[left])
                 corrected_ns[positions] = int(parsed_ns[left]) + (
@@ -488,23 +809,31 @@ def repair_wibl_timestamps_position_aware(
 
     # File-edge rows can be extrapolated from nearby non-suspicious anchors.
     suspicious_pairs = set(warning_pairs)
-    leading_period = _edge_period(
-        "leading",
-        anchors,
-        anchor_rates,
-        local_periods,
-        raw_jump_candidates,
-        suspicious_pairs,
-        global_period,
+    leading_period = (
+        configured_record_period
+        if configured_record_period is not None
+        else _edge_period(
+            "leading",
+            anchors,
+            anchor_rates,
+            local_periods,
+            raw_jump_candidates,
+            suspicious_pairs,
+            global_period,
+        )
     )
-    trailing_period = _edge_period(
-        "trailing",
-        anchors,
-        anchor_rates,
-        local_periods,
-        raw_jump_candidates,
-        suspicious_pairs,
-        global_period,
+    trailing_period = (
+        configured_record_period
+        if configured_record_period is not None
+        else _edge_period(
+            "trailing",
+            anchors,
+            anchor_rates,
+            local_periods,
+            raw_jump_candidates,
+            suspicious_pairs,
+            global_period,
+        )
     )
     first, last = int(anchors[0]), int(anchors[-1])
     for row in range(first - 1, -1, -1):
@@ -580,6 +909,18 @@ def repair_wibl_timestamps_position_aware(
             "original_time": original_times,
             "corrected_time": time_text,
             "timestamp_assigned": assigned,
+            "expected_record_frequency_hz": (
+                float(expected_record_frequency_hz)
+                if expected_record_frequency_hz is not None
+                else np.nan
+            ),
+            "cadence_mode": cadence_mode,
+            "depth": depth,
+            "expected_seconds_per_record": (
+                float(configured_record_period)
+                if configured_record_period is not None
+                else np.nan
+            ),
             "longitude": lon,
             "latitude": lat,
             "distance_to_next_m": np.round(dist_next, 3),
@@ -680,4 +1021,6 @@ def repair_wibl_timestamps_position_aware(
         temporal_gap_candidates=len(warning_pairs),
         report_file=report_path,
         gap_report_file=gap_path,
+        adaptive_reconstructed_intervals=adaptive_reconstructed_intervals,
+        low_confidence_reconstructed_intervals=low_confidence_reconstructed_intervals,
     )
